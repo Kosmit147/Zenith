@@ -8,8 +8,14 @@
 #define ZTH_API __declspec(dllimport)
 #endif
 
-#else
+#endif
 
+#ifdef ZTH_PLATFORM_LINUX
+
+#ifdef ZTH_BUILD_SO
+#define ZTH_API __attribute__((visibility("default")))
+#else
 #define ZTH_API
+#endif
 
 #endif
