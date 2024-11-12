@@ -30,3 +30,21 @@
 *.exe
 *.out
 *.app
+
+# Cache
+.cache
+
+# Visual Studio
+.vs
+CMakeSettings.json
+Folder.DotSettings.user
+
+# Visual Studio Code
+.vscode
+
+# IntelliJ IDEA
+.idea
+
+# Build Directories
+build
+out
