@@ -17,8 +17,10 @@ else()
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(ZTH_PLATFORM_WINDOWS True)
 	add_compile_definitions(ZTH_PLATFORM_WINDOWS)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(ZTH_PLATFORM_LINUX True)
 	add_compile_definitions(ZTH_PLATFORM_LINUX)
 endif()
 
