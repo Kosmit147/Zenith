@@ -29,12 +29,47 @@ auto terminate_glfw() -> void
 
 } // namespace
 
+auto Window::create(const WindowSpec& spec) -> std::optional<Window>
+{
+    Window window(spec);
+
+    if (window._window == nullptr)
+        return {};
+
+    return std::move(window);
+}
+
+Window::Window(Window&& other) noexcept
+{
+    _window = other._window;
+    other._window = nullptr;
+}
+
+auto Window::operator=(Window&& other) noexcept -> Window&
+{
+    _window = other._window;
+    other._window = nullptr;
+    return *this;
+}
+
+Window::~Window()
+{
+    if (!_window)
+        return;
+    
+    glfwDestroyWindow(_window);
+    _window_count--;
+
+    if (_window_count == 0)
+        terminate_glfw();
+}
+
 Window::Window(const WindowSpec& spec)
 {
     if (!init_glfw())
     {
         std::println(std::cerr, "GLFW failed to initialize.");
-        throw std::runtime_error("GLFW failed to initialize.");
+        return;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
@@ -50,22 +85,13 @@ Window::Window(const WindowSpec& spec)
             terminate_glfw();
 
         std::println(std::cerr, "Failed to create a window.");
-        throw std::runtime_error("Failed to create a window.");
+        return;
     }
 
-    make_context_current();
+    set_active();
     set_vsync(spec.vsync);
 
     _window_count++;
-}
-
-Window::~Window()
-{
-    glfwDestroyWindow(_window);
-    _window_count--;
-
-    if (_window_count == 0)
-        terminate_glfw();
 }
 
 } // namespace zth
