@@ -3,7 +3,7 @@ project(Zenith LANGUAGES CXX)
 
 add_library(
 	Zenith SHARED
-	"src/test.cpp"
+	"src/Platform/Window.cpp"
 )
 
 target_include_directories(Zenith PUBLIC "include")
@@ -18,3 +18,5 @@ endif()
 
 target_precompile_headers(Zenith PRIVATE "src/pch.hpp")
 set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+
+target_link_libraries(Zenith PUBLIC glfw)

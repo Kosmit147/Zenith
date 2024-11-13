@@ -26,5 +26,7 @@ endif()
 
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
+add_subdirectory("dependencies/GLFW")
+
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")
