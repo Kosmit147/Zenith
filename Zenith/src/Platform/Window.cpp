@@ -8,9 +8,6 @@ bool glfw_initialized = false;
 
 auto init_glfw() -> bool
 {
-    if (glfw_initialized)
-        return true;
-
     if (!glfwInit())
         return false;
 
@@ -56,7 +53,7 @@ Window::~Window()
 {
     if (!_window)
         return;
-    
+
     glfwDestroyWindow(_window);
     _window_count--;
 
@@ -66,10 +63,13 @@ Window::~Window()
 
 Window::Window(const WindowSpec& spec)
 {
-    if (!init_glfw())
+    if (!glfw_initialized)
     {
-        std::println(std::cerr, "GLFW failed to initialize.");
-        return;
+        if (!init_glfw())
+        {
+            std::println(std::cerr, "GLFW failed to initialize.");
+            return;
+        }
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
