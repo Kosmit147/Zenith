@@ -2,6 +2,14 @@ IndentWidth: 4
 PointerAlignment: Left
 SortIncludes: true
 
+IncludeCategories:
+  - Regex:           'glad.h'
+    Priority:        1
+    CaseSensitive:   true
+  - Regex:           'glfw3.h'
+    Priority:        2
+    CaseSensitive:   true
+
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: true
