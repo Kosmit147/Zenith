@@ -19,4 +19,5 @@ endif()
 target_precompile_headers(Zenith PRIVATE "src/pch.hpp")
 set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
+target_link_libraries(Zenith PUBLIC glad)
 target_link_libraries(Zenith PUBLIC glfw)
