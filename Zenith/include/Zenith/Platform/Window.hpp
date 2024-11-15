@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <optional>
@@ -25,6 +26,8 @@ struct WindowSpec
 class ZTH_API Window
 {
 public:
+    using OnResizeCallback = void (*)(GLFWwindow* window, int new_width, int new_height);
+
     [[nodiscard]] static auto create(const WindowSpec& spec = {}) -> std::optional<Window>;
 
     ZTH_NO_COPY(Window)
@@ -40,6 +43,7 @@ public:
     auto swap_buffers() const -> void { glfwSwapBuffers(_window); }
     auto poll_events() const -> void { glfwPollEvents(); }
     auto set_vsync(bool value) const -> void { glfwSwapInterval(value); }
+    auto set_resize_callback(OnResizeCallback callback) const -> void;
 
 private:
     GLFWwindow* _window = nullptr;
