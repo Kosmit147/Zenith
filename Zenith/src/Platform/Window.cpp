@@ -5,9 +5,13 @@ namespace zth {
 namespace {
 
 bool glfw_initialized = false;
+bool glad_initialized = false;
 
-auto init_glfw() -> bool
+auto ensure_glfw_initialized() -> bool
 {
+    if (glfw_initialized)
+        return true;
+
     if (!glfwInit())
         return false;
 
@@ -22,6 +26,18 @@ auto terminate_glfw() -> void
 
     glfwTerminate();
     glfw_initialized = false;
+}
+
+auto ensure_glad_initialized() -> bool
+{
+    if (glad_initialized)
+        return true;
+
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+        return false;
+
+    glad_initialized = true;
+    return true;
 }
 
 } // namespace
@@ -60,15 +76,17 @@ Window::~Window()
         terminate_glfw();
 }
 
+auto Window::set_resize_callback(OnResizeCallback callback) const -> void
+{
+    glfwSetFramebufferSizeCallback(_window, callback);
+}
+
 Window::Window(const WindowSpec& spec)
 {
-    if (!glfw_initialized)
+    if (!ensure_glfw_initialized())
     {
-        if (!init_glfw())
-        {
-            std::println(std::cerr, "GLFW failed to initialize.");
-            return;
-        }
+        std::println(std::cerr, "Failed to initialize GLFW.");
+        return;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
@@ -89,6 +107,23 @@ Window::Window(const WindowSpec& spec)
 
     set_active();
     set_vsync(spec.vsync);
+
+    if (!ensure_glad_initialized())
+    {
+        if (_window_count == 0)
+        {
+            glfwDestroyWindow(_window);
+            terminate_glfw();
+        }
+
+        std::println(std::cerr, "Failed to initialize glad.");
+        return;
+    }
+
+    glViewport(0, 0, static_cast<GLsizei>(spec.width), static_cast<GLsizei>(spec.height));
+    set_resize_callback([]([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) {
+        glViewport(0, 0, new_width, new_height);
+    });
 
     _window_count++;
 }
