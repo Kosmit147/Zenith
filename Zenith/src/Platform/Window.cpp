@@ -12,11 +12,8 @@ auto ensure_glfw_initialized() -> bool
     if (glfw_initialized)
         return true;
 
-    if (!glfwInit())
-        return false;
-
-    glfw_initialized = true;
-    return true;
+    glfw_initialized = glfwInit();
+    return glfw_initialized;
 }
 
 auto terminate_glfw() -> void
@@ -33,11 +30,8 @@ auto ensure_glad_initialized() -> bool
     if (glad_initialized)
         return true;
 
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-        return false;
-
-    glad_initialized = true;
-    return true;
+    glad_initialized = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+    return glad_initialized;
 }
 
 } // namespace
