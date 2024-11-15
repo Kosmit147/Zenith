@@ -3,4 +3,4 @@
 	url = https://github.com/glfw/glfw.git
 [submodule "dependencies/glad"]
 	path = dependencies/glad
-	url = https://github.com/Kosmit147/glad
+	url = https://github.com/Kosmit147/glad.git
