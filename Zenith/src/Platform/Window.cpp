@@ -33,12 +33,11 @@ auto Window::create(const WindowSpec& spec) -> std::optional<Window>
     if (window._window == nullptr)
         return {};
 
-    return std::move(window);
+    return std::optional{ std::move(window) };
 }
 
-Window::Window(Window&& other) noexcept
+Window::Window(Window&& other) noexcept : _window(other._window)
 {
-    _window = other._window;
     other._window = nullptr;
 }
 
