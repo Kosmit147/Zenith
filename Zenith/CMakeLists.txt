@@ -3,6 +3,7 @@ project(Zenith LANGUAGES CXX)
 
 add_library(
 	Zenith SHARED
+	"src/Core/Application.cpp"
 	"src/Platform/Window.cpp"
 )
 
