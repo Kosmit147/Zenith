@@ -1,5 +1,8 @@
 #include <Zenith/Zenith.hpp>
 
+#include <iostream>
+#include <print>
+
 namespace {
 
 const zth::ApplicationSpec app_spec = {
@@ -17,11 +20,21 @@ const zth::ApplicationSpec app_spec = {
 
 auto main() -> int
 {
-    auto maybe_app = zth::Application::create(app_spec);
-
-    if (!maybe_app)
-        return -1;
-
-    auto& app = maybe_app.value();
-    app.run();
+    try
+    {
+        zth::Application app(app_spec);
+        app.run();
+    }
+    catch (const spdlog::spdlog_ex& e)
+    {
+        std::println(std::cerr, "Failed to initialize logger: {}", e.what());
+    }
+    catch (const zth::Exception& e)
+    {
+        ZTH_CRITICAL("{}\n{}", e.what(), e.stacktrace());
+    }
+    catch (const std::exception& e)
+    {
+        ZTH_CRITICAL(e.what());
+    }
 }
