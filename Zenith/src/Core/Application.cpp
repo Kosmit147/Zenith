@@ -21,12 +21,18 @@ Application::~Application()
 
 auto Application::run() -> void
 {
-    auto& window = Engine::get().window;
+    auto& engine = Engine::get();
+    auto& window = engine.window;
+    auto& renderer = engine.renderer;
+
     window.set_active();
 
     while (!window.should_close())
     {
+        renderer.clear();
+
         on_update();
+        engine.on_update();
 
         window.swap_buffers();
         window.poll_events();

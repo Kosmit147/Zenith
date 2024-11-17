@@ -23,6 +23,8 @@ auto Engine::shut_down() -> void
     engine.reset();
 }
 
+auto Engine::on_update() -> void {}
+
 Engine::Engine(const WindowSpec& window_spec) : window(window_spec) {}
 
 } // namespace zth
