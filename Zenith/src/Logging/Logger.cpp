@@ -11,29 +11,24 @@ namespace {
 std::shared_ptr<spdlog::logger> core_logger;
 std::shared_ptr<spdlog::logger> client_logger;
 
-[[nodiscard]] auto create_logger(const LoggerSpec& spec) -> std::shared_ptr<spdlog::logger>
-{
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(spec.log_file_path, true);
-
-    spdlog::sinks_init_list sink_list = { console_sink, file_sink };
-    auto logger = std::make_shared<spdlog::logger>(spec.logger_name, sink_list);
-
-#ifdef _DEBUG
-    logger->set_level(spdlog::level::trace);
-#else
-    logger->set_level(spdlog::level::info);
-#endif
-
-    return logger;
-}
-
 } // namespace
 
-auto Logger::init(const LoggerSpec& core_logger_spec, const LoggerSpec& client_logger_spec) -> void
+auto Logger::init(const LoggerSpec& logger_spec) -> void
 {
-    core_logger = create_logger(core_logger_spec);
-    client_logger = create_logger(client_logger_spec);
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logger_spec.log_file_path, true);
+
+    spdlog::sinks_init_list sink_list = { console_sink, file_sink };
+    core_logger = std::make_shared<spdlog::logger>(logger_spec.core_logger_label, sink_list);
+    client_logger = std::make_shared<spdlog::logger>(logger_spec.client_logger_label, sink_list);
+
+#ifdef _DEBUG
+    core_logger->set_level(spdlog::level::trace);
+    client_logger->set_level(spdlog::level::trace);
+#else
+    core_logger->set_level(spdlog::level::info);
+    client_logger->set_level(spdlog::level::info);
+#endif
 }
 
 auto Logger::shut_down() -> void

@@ -6,6 +6,7 @@ add_library(
 	"src/Core/Application.cpp"
 	"src/Core/Engine.cpp"
 	"src/Core/Exception.cpp"
+	"src/Core/main.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/Window.cpp"
 )
