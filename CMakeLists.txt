@@ -21,6 +21,7 @@ get_compile_warnings(ZTH_COMPILE_WARNINGS)
 add_subdirectory("dependencies/glad")
 add_subdirectory("dependencies/GLFW")
 add_subdirectory("dependencies/spdlog")
+add_subdirectory("dependencies/GLM")
 
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")
