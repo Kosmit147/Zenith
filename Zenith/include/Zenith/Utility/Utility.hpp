@@ -23,3 +23,17 @@
 #define ZTH_DEFAULT_COPY_DEFAULT_MOVE(type)                                                                            \
     ZTH_DEFAULT_COPY(type);                                                                                            \
     ZTH_DEFAULT_MOVE(type);
+
+#if defined(_MSC_VER)
+
+#define ZTH_NO_INLINE __declspec(noinline)
+
+#elif defined(__GNUC__) || defined(__clang__)
+
+#define ZTH_NO_INLINE __attribute__((noinline))
+
+#else
+
+#define ZTH_NO_INLINE
+
+#endif
