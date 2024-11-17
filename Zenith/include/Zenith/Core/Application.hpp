@@ -4,13 +4,21 @@
 #include "Zenith/Platform/Window.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
+#define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
+    namespace zth {                                                                                                    \
+                                                                                                                       \
+    [[nodiscard]] auto create_application() -> Application*                                                            \
+    {                                                                                                                  \
+        return new user_app;                                                                                           \
+    }                                                                                                                  \
+    }
+
 namespace zth {
 
 struct ApplicationSpec
 {
     WindowSpec window_spec{};
-    LoggerSpec core_logger_spec{ .logger_name = "ZENITH", .log_file_path = "zenith_log.txt" };
-    LoggerSpec client_logger_spec{ .logger_name = "APP", .log_file_path = "app_log.txt" };
+    LoggerSpec logger_spec{};
 };
 
 class Application
@@ -22,11 +30,10 @@ public:
 
     virtual ~Application();
 
-    auto run() const -> void;
+    auto run() -> void;
 
 private:
-    // virtual auto on_update() -> void;
-    // virtual auto on_event() -> void;
+    virtual auto on_update() -> void {}
 };
 
 } // namespace zth

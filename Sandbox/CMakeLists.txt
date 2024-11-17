@@ -3,7 +3,7 @@ project(Sandbox LANGUAGES CXX)
 
 add_executable(
 	Sandbox
-	"src/main.cpp"
+	"src/Sandbox.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")

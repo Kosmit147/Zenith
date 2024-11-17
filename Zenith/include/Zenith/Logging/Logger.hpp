@@ -8,14 +8,15 @@ namespace zth {
 
 struct LoggerSpec
 {
-    std::string logger_name = "LOGGER";
-    std::string log_file_path = "log.txt";
+    std::string core_logger_label = "ZENITH";
+    std::string client_logger_label = "APP";
+    std::string log_file_path = "log/log.txt";
 };
 
 class Logger
 {
 public:
-    static auto init(const LoggerSpec& core_logger_spec, const LoggerSpec& client_logger_spec) -> void;
+    static auto init(const LoggerSpec& logger_spec) -> void;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto get_core_logger() -> spdlog::logger&;
