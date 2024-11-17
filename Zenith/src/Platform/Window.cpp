@@ -2,6 +2,7 @@
 
 #include "Zenith/Core/Exception.hpp"
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Platform/Input.hpp"
 
 namespace zth {
 
@@ -84,8 +85,21 @@ Window::Window(const WindowSpec& spec)
     }
 
     glViewport(0, 0, static_cast<GLsizei>(spec.width), static_cast<GLsizei>(spec.height));
-    set_resize_callback([]([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) {
+
+    set_glfw_resize_callback([]([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) {
         glViewport(0, 0, new_width, new_height);
+    });
+
+    set_glfw_key_callback([]([[maybe_unused]] GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action,
+                             [[maybe_unused]] int mods) {
+        auto pressed = false;
+
+        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+            pressed = true;
+        else if (action == GLFW_RELEASE)
+            pressed = false;
+
+        Input::set_key_pressed(glfw_key_to_key(key), pressed);
     });
 
     _window_count++;
@@ -103,9 +117,14 @@ Window::~Window()
         terminate_glfw();
 }
 
-auto Window::set_resize_callback(OnResizeCallback callback) const -> void
+auto Window::set_glfw_resize_callback(ResizeCallback callback) const -> void
 {
     glfwSetFramebufferSizeCallback(_window, callback);
+}
+
+auto Window::set_glfw_key_callback(KeyCallback callback) const -> void
+{
+    glfwSetKeyCallback(_window, callback);
 }
 
 } // namespace zth

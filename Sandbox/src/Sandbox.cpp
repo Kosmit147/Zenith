@@ -25,5 +25,6 @@ Sandbox::Sandbox() : Application(app_spec) {}
 
 auto Sandbox::on_update() -> void
 {
-    ZTH_INFO("On update!");
+    if (zth::Input::is_key_pressed(zth::Key::Space))
+        ZTH_INFO("Space pressed!");
 }
