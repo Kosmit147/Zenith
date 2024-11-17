@@ -25,7 +25,7 @@ class Window
 {
 public:
     using ResizeCallback = void (*)(GLFWwindow* window, int new_width, int new_height);
-    using KeyCallback = void(*)(GLFWwindow* window, int key, int scancode, int action, int mods);
+    using KeyCallback = void (*)(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     explicit Window(const WindowSpec& spec = {});
 
