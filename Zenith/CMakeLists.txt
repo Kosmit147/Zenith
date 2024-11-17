@@ -8,6 +8,8 @@ add_library(
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
 	"src/Logging/Logger.cpp"
+	"src/Platform/Input.cpp"
+	"src/Platform/Key.cpp"
 	"src/Platform/Window.cpp"
 )
 

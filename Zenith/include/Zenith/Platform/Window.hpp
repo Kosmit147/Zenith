@@ -24,7 +24,8 @@ struct WindowSpec
 class Window
 {
 public:
-    using OnResizeCallback = void (*)(GLFWwindow* window, int new_width, int new_height);
+    using ResizeCallback = void (*)(GLFWwindow* window, int new_width, int new_height);
+    using KeyCallback = void(*)(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     explicit Window(const WindowSpec& spec = {});
 
@@ -38,11 +39,14 @@ public:
     auto swap_buffers() const -> void { glfwSwapBuffers(_window); }
     auto poll_events() const -> void { glfwPollEvents(); }
     auto set_vsync(bool value) const -> void { glfwSwapInterval(value); }
-    auto set_resize_callback(OnResizeCallback callback) const -> void;
 
 private:
     GLFWwindow* _window = nullptr;
     static inline u32 _window_count = 0;
+
+private:
+    auto set_glfw_resize_callback(ResizeCallback callback) const -> void;
+    auto set_glfw_key_callback(KeyCallback callback) const -> void;
 };
 
 } // namespace zth
