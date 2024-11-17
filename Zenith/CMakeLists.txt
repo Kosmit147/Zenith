@@ -7,6 +7,7 @@ add_library(
 	"src/Core/Engine.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
+	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/Input.cpp"
 	"src/Platform/Key.cpp"
