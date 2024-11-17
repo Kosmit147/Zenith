@@ -8,3 +8,7 @@
 	path = dependencies/spdlog
 	url = https://github.com/gabime/spdlog.git
 	branch = v1.x
+[submodule "dependencies/GLM"]
+	path = dependencies/GLM
+	url = https://github.com/g-truc/glm.git
+	branch = master
