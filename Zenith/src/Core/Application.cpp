@@ -1,38 +1,36 @@
 #include "Zenith/Core/Application.hpp"
 
+#include <spdlog/spdlog.h>
+
+#include "Zenith/Core/Engine.hpp"
+
 namespace zth {
 
-auto Application::create(const ApplicationSpec& spec) -> std::optional<Application>
+Application::Application(const ApplicationSpec& spec)
 {
-    auto maybe_window = Window::create(spec.window_spec);
-
-    if (!maybe_window)
-        return {};
-
-    auto& window = maybe_window.value();
-
-    return std::optional{ Application{ std::move(window) } };
+    Logger::init(spec.core_logger_spec, spec.client_logger_spec);
+    Engine::init(spec.window_spec);
 }
 
-Application::Application(Application&& other) noexcept : _window(std::move(other._window)) {}
-
-auto Application::operator=(Application&& other) noexcept -> Application&
+Application::~Application()
 {
-    _window = std::move(other._window);
-    return *this;
+    // this must be called before main finishes if using asynchronous loggers
+    spdlog::drop_all();
+
+    Engine::shut_down();
+    Logger::shut_down();
 }
 
 auto Application::run() const -> void
 {
-    _window.set_active();
+    auto& window = Engine::get().window;
+    window.set_active();
 
-    while (!_window.should_close())
+    while (!window.should_close())
     {
-        _window.swap_buffers();
-        _window.poll_events();
+        window.swap_buffers();
+        window.poll_events();
     }
 }
-
-Application::Application(Window&& window) : _window(std::move(window)) {}
 
 } // namespace zth

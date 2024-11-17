@@ -16,18 +16,11 @@ else()
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION On)
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(ZTH_PLATFORM_WINDOWS True)
-	add_compile_definitions(ZTH_PLATFORM_WINDOWS)
-elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(ZTH_PLATFORM_LINUX True)
-	add_compile_definitions(ZTH_PLATFORM_LINUX)
-endif()
-
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
 add_subdirectory("dependencies/glad")
 add_subdirectory("dependencies/GLFW")
+add_subdirectory("dependencies/spdlog")
 
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <optional>
-
-#include "Zenith/Core/ZthApi.hpp"
+#include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Window.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
@@ -11,28 +9,22 @@ namespace zth {
 struct ApplicationSpec
 {
     WindowSpec window_spec{};
+    LoggerSpec core_logger_spec{ .logger_name = "ZENITH", .log_file_path = "zenith_log.txt" };
+    LoggerSpec client_logger_spec{ .logger_name = "APP", .log_file_path = "app_log.txt" };
 };
 
-class ZTH_API Application
+class Application
 {
 public:
-    [[nodiscard]] static auto create(const ApplicationSpec& spec = {}) -> std::optional<Application>;
+    explicit Application(const ApplicationSpec& spec = {});
 
-    ZTH_NO_COPY(Application)
+    ZTH_NO_COPY_NO_MOVE(Application)
 
-    Application(Application&& other) noexcept;
-    auto operator=(Application&& other) noexcept -> Application&;
-
-    virtual ~Application() = default;
+    virtual ~Application();
 
     auto run() const -> void;
 
 private:
-    Window _window;
-
-private:
-    explicit Application(Window&& window);
-
     // virtual auto on_update() -> void;
     // virtual auto on_event() -> void;
 };

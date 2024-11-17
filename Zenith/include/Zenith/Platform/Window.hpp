@@ -3,11 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <optional>
 #include <string>
 
 #include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Core/ZthApi.hpp"
 #include "Zenith/Platform/OpenGl/GlContext.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
@@ -23,17 +21,14 @@ struct WindowSpec
     bool vsync = true;
 };
 
-class ZTH_API Window
+class Window
 {
 public:
     using OnResizeCallback = void (*)(GLFWwindow* window, int new_width, int new_height);
 
-    [[nodiscard]] static auto create(const WindowSpec& spec = {}) -> std::optional<Window>;
+    explicit Window(const WindowSpec& spec = {});
 
-    ZTH_NO_COPY(Window)
-
-    Window(Window&& other) noexcept;
-    auto operator=(Window&& other) noexcept -> Window&;
+    ZTH_NO_COPY_NO_MOVE(Window)
 
     ~Window();
 
@@ -48,9 +43,6 @@ public:
 private:
     GLFWwindow* _window = nullptr;
     static inline u32 _window_count = 0;
-
-private:
-    explicit Window(const WindowSpec& spec);
 };
 
 } // namespace zth
