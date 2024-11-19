@@ -53,6 +53,12 @@ Window::Window(const WindowSpec& spec)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, static_cast<int>(spec.gl_version.minor));
     glfwWindowHint(GLFW_OPENGL_PROFILE, static_cast<int>(to_gl_enum(spec.gl_profile)));
 
+#ifdef _DEBUG
+
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+
+#endif
+
     _window = glfwCreateWindow(static_cast<int>(spec.width), static_cast<int>(spec.height), spec.title.data(), nullptr,
                                nullptr);
 
@@ -66,6 +72,8 @@ Window::Window(const WindowSpec& spec)
 
         throw Exception(error_message);
     }
+
+    ZTH_CORE_INFO("Window initialized.");
 
     set_active();
     set_vsync(spec.vsync);
@@ -83,6 +91,70 @@ Window::Window(const WindowSpec& spec)
 
         throw Exception(error_message);
     }
+
+    {
+        auto vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+        auto renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+        auto version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+        auto glsl_version = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+        ZTH_CORE_INFO("Initialized OpenGL context:\n"
+                      "\tVendor: {}\n"
+                      "\tRenderer: {}\n"
+                      "\tVersion: {}\n"
+                      "\tGLSL Version: {}",
+                      vendor, renderer, version, glsl_version);
+    }
+
+#ifdef _DEBUG
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(
+        []([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]] GLuint id, GLenum severity,
+           [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam) {
+            auto type_str = [=] {
+                switch (type)
+                {
+                case GL_DEBUG_TYPE_ERROR:
+                    return "Error";
+                case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+                    return "Deprecated behavior";
+                case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+                    return "Undefined behavior";
+                case GL_DEBUG_TYPE_PORTABILITY:
+                    return "Portability";
+                case GL_DEBUG_TYPE_PERFORMANCE:
+                    return "Performance";
+                case GL_DEBUG_TYPE_MARKER:
+                    return "Marker";
+                case GL_DEBUG_TYPE_OTHER:
+                    return "Other";
+                default:
+                    return "";
+                }
+            }();
+
+            switch (severity)
+            {
+            case GL_DEBUG_SEVERITY_NOTIFICATION:
+                ZTH_CORE_INFO("[OpenGL] {}: {}", type_str, message);
+                break;
+            case GL_DEBUG_SEVERITY_LOW:
+                ZTH_CORE_WARN("[OpenGL] {}: {}", type_str, message);
+                break;
+            case GL_DEBUG_SEVERITY_MEDIUM:
+                ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
+                break;
+            case GL_DEBUG_SEVERITY_HIGH:
+                ZTH_CORE_CRITICAL("[OpenGL] {}: {}", type_str, message);
+                break;
+            default:
+                break;
+            }
+        },
+        nullptr);
+
+#endif
 
     glViewport(0, 0, static_cast<GLsizei>(spec.width), static_cast<GLsizei>(spec.height));
 
