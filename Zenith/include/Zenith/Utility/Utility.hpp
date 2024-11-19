@@ -24,6 +24,28 @@
     ZTH_DEFAULT_COPY(type);                                                                                            \
     ZTH_DEFAULT_MOVE(type);
 
+// ZTH_DEBUG_BREAK
+
+#if defined(_MSC_VER)
+
+#define ZTH_DEBUG_BREAK __debugbreak()
+
+#elif defined(__GNUC__)
+
+#define ZTH_DEBUG_BREAK __builtin_trap()
+
+#elif defined(__clang__)
+
+#define ZTH_DEBUG_BREAK __builtin_debugtrap()
+
+#else
+
+#define ZTH_DEBUG_BREAK
+
+#endif
+
+// ZTH_NO_INLINE
+
 #if defined(_MSC_VER)
 
 #define ZTH_NO_INLINE __declspec(noinline)
