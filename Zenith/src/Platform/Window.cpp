@@ -109,6 +109,7 @@ Window::Window(const WindowSpec& spec)
 #ifdef _DEBUG
 
     glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(
         []([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]] GLuint id, GLenum severity,
            [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam) {
@@ -143,10 +144,8 @@ Window::Window(const WindowSpec& spec)
                 ZTH_CORE_WARN("[OpenGL] {}: {}", type_str, message);
                 break;
             case GL_DEBUG_SEVERITY_MEDIUM:
-                ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
-                break;
             case GL_DEBUG_SEVERITY_HIGH:
-                ZTH_CORE_CRITICAL("[OpenGL] {}: {}", type_str, message);
+                ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
                 break;
             default:
                 break;
