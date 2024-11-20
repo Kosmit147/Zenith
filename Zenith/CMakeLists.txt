@@ -9,6 +9,7 @@ add_library(
 	"src/Core/main.cpp"
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
+	"src/Platform/OpenGl/Shader.cpp"
 	"src/Platform/Input.cpp"
 	"src/Platform/Key.cpp"
 	"src/Platform/Window.cpp"

@@ -44,6 +44,13 @@
 
 #endif
 
+#ifndef _DEBUG
+
+#undef ZTH_DEBUG_BREAK
+#define ZTH_DEBUG_BREAK
+
+#endif
+
 // ZTH_NO_INLINE
 
 #if defined(_MSC_VER)

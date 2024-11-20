@@ -256,7 +256,7 @@ constexpr std::array key_enumerations = {
     Key::Menu,
 };
 
-auto glfw_key_to_key(int key) -> Key;
-auto to_string(Key key) -> const char*;
+[[nodiscard]] auto glfw_key_to_key(int key) -> Key;
+[[nodiscard]] auto to_string(Key key) -> const char*;
 
 } // namespace zth
