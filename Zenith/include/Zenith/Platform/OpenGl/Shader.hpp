@@ -27,6 +27,8 @@ public:
     auto bind() const -> void { glUseProgram(_id); }
     auto unbind() const -> void { glUseProgram(0); }
 
+    [[nodiscard]] auto native_handle() const { return _id; }
+
 private:
     GLuint _id = 0; // 0 is not a valid shader id
 };
