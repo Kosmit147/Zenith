@@ -31,6 +31,7 @@ auto compile_shader(GLuint id, ShaderType type) -> bool
     return true;
 }
 
+// returns 0 if failed to create a shader
 auto create_shader(std::string_view source, ShaderType type) -> GLuint
 {
     auto shader = glCreateShader(to_gl_enum(type));
@@ -75,6 +76,7 @@ auto link_shader_program(GLuint id) -> bool
     return true;
 }
 
+// returns 0 if failed to create a shader program
 auto create_shader_program(GLuint vertex_shader, GLuint fragment_shader) -> GLuint
 {
     auto program = glCreateProgram();
