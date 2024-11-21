@@ -65,9 +65,7 @@ Sandbox::Sandbox() : Application(app_spec), _shader(vertex_shader_src, fragment_
         TriangleVertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
     };
 
-    GLuint va;
-    glGenVertexArrays(1, &va);
-    glBindVertexArray(va);
+    _va.bind();
 
     GLuint vb;
     glGenBuffers(1, &vb);

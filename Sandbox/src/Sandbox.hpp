@@ -9,6 +9,7 @@ public:
     ~Sandbox() override = default;
 
 private:
+    zth::VertexArray _va;
     zth::Shader _shader;
 
 private:
