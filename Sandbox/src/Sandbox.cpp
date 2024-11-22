@@ -57,20 +57,25 @@ struct Vertex
     glm::vec4 color;
 };
 
-Sandbox::Sandbox() : Application(app_spec), _shader(vertex_shader_src, fragment_shader_src)
+namespace {
+
+constexpr std::array vertices = {
+    Vertex{ { -0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+    Vertex{ { -0.5f, -0.5f }, { 0.2f, 0.9f, 0.5f, 1.0f } },
+};
+
+constexpr std::array<GLushort, 6> indices = {
+    0, 1, 2, 2, 3, 0,
+};
+
+} // namespace
+
+Sandbox::Sandbox()
+    : Application(app_spec), _ib(indices, zth::BufferUsage::static_draw),
+      _shader(vertex_shader_src, fragment_shader_src)
 {
-    static constexpr std::array vertices = {
-        Vertex{ { -0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        Vertex{ { 0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        Vertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-        Vertex{ { -0.5f, -0.5f }, { 0.2f, 0.9f, 0.5f, 1.0f } },
-    };
-
-    static constexpr std::array<GLushort, 6> indices = {
-        0, 1, 2,
-        2, 3, 0,
-    };
-
     _va.bind();
 
     GLuint vb;
@@ -84,13 +89,9 @@ Sandbox::Sandbox() : Application(app_spec), _shader(vertex_shader_src, fragment_
 
     // color
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          reinterpret_cast<const void*>(sizeof(Vertex::pos)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(sizeof(Vertex::pos)));
 
-    GLuint ib;
-    glGenBuffers(1, &ib);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), indices.data(), GL_STATIC_DRAW);
+    _ib.bind();
 }
 
 auto Sandbox::on_update() -> void
@@ -98,6 +99,7 @@ auto Sandbox::on_update() -> void
     if (zth::Input::is_key_pressed(zth::Key::Space))
         ZTH_INFO("Space pressed!");
 
+    _va.bind();
     _shader.bind();
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 }

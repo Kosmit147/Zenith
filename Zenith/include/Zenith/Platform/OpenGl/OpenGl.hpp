@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BufferUsage.hpp"
 #include "GlContext.hpp"
 #include "IndexBuffer.hpp"
 #include "Shader.hpp"

@@ -136,8 +136,7 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
 
 Shader::~Shader()
 {
-    if (_id != 0)
-        glDeleteProgram(_id);
+    glDeleteProgram(_id);
 }
 
 } // namespace zth
