@@ -10,6 +10,7 @@ public:
 
 private:
     zth::VertexArray _va;
+    zth::IndexBuffer _ib;
     zth::Shader _shader;
 
 private:

@@ -51,35 +51,47 @@ void main()
 }
 )";
 
-struct TriangleVertex
+struct Vertex
 {
     glm::vec2 pos;
     glm::vec4 color;
 };
 
-Sandbox::Sandbox() : Application(app_spec), _shader(vertex_shader_src, fragment_shader_src)
-{
-    static constexpr std::array vertices = {
-        TriangleVertex{ { -0.5f, -0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        TriangleVertex{ { 0.0f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        TriangleVertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-    };
+namespace {
 
+constexpr std::array vertices = {
+    Vertex{ { -0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+    Vertex{ { -0.5f, -0.5f }, { 0.2f, 0.9f, 0.5f, 1.0f } },
+};
+
+constexpr std::array<GLushort, 6> indices = {
+    0, 1, 2, 2, 3, 0,
+};
+
+} // namespace
+
+Sandbox::Sandbox()
+    : Application(app_spec), _ib(indices, zth::BufferUsage::static_draw),
+      _shader(vertex_shader_src, fragment_shader_src)
+{
     _va.bind();
 
     GLuint vb;
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(TriangleVertex), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
     // position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), reinterpret_cast<const void*>(0));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(0));
 
     // color
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex),
-                          reinterpret_cast<const void*>(sizeof(TriangleVertex::pos)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(sizeof(Vertex::pos)));
+
+    _ib.bind();
 }
 
 auto Sandbox::on_update() -> void
@@ -87,6 +99,7 @@ auto Sandbox::on_update() -> void
     if (zth::Input::is_key_pressed(zth::Key::Space))
         ZTH_INFO("Space pressed!");
 
+    _va.bind();
     _shader.bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 }

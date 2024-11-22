@@ -19,7 +19,7 @@ public:
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
-    GLuint _id;
+    GLuint _id = 0; // 0 is an invalid vertex array id
 };
 
 } // namespace zth

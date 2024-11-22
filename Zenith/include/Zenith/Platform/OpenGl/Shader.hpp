@@ -30,7 +30,7 @@ public:
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
-    GLuint _id = 0; // 0 is not a valid shader id
+    GLuint _id = 0; // 0 is an invalid shader id
 };
 
 [[nodiscard]] constexpr auto to_gl_enum(ShaderType shader_type) -> GLenum
