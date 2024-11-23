@@ -75,7 +75,7 @@ public:
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
-    GLuint _id = 0; // 0 is an invalid buffer id
+    GLuint _id = GL_NONE;
 
 private:
     auto create() -> void { glCreateBuffers(1, &_id); }
