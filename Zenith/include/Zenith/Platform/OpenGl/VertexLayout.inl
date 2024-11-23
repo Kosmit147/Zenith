@@ -45,7 +45,7 @@ template<typename VertexType> constexpr auto VertexLayout::from_vertex() -> Vert
     else if constexpr (arity == 1)
     {
         [[maybe_unused]] auto& [e1] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(e1) };
+        return { to_vertex_layout_elem<decltype(e1)>() };
     }
     else if constexpr (arity == 2)
     {

@@ -8,7 +8,7 @@ namespace {
 
 const zth::ApplicationSpec app_spec = {
     .window_spec = {
-        .width = 1920,
+        .width = 1080,
         .height = 1080,
         .title = "Sandbox",
         .gl_version = { 4, 6 },
@@ -25,14 +25,13 @@ const auto vertex_shader_source = b::embed<"src/shaders/rect.vert">().str();
 const auto fragment_shader_source = b::embed<"src/shaders/rect.frag">().str();
 
 constexpr std::array vertices = {
-    Vertex{ { -0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-    Vertex{ { 0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-    Vertex{ { 0.5f, -0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-    Vertex{ { -0.5f, -0.5f }, { 0.2f, 0.9f, 0.5f, 1.0f } },
+    Vertex{ { 1.0f, 0.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.0f, 1.0f, 0.0f, 1.0f } },
+    Vertex{ { 0.0f, 0.0f, 1.0f, 1.0f } },
 };
 
 constexpr std::array<GLushort, 6> indices = {
-    0, 1, 2, 2, 3, 0,
+    0, 1, 2
 };
 
 } // namespace
@@ -52,7 +51,10 @@ auto Sandbox::on_update() -> void
     if (zth::Input::is_key_pressed(zth::Key::Space))
         ZTH_INFO("Space pressed!");
 
+    auto time = static_cast<float>(glfwGetTime());
+
     _va.bind();
     _shader.bind();
+    _shader.set_unif("time", time);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 }

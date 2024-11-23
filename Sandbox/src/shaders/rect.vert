@@ -1,12 +1,18 @@
 #version 460 core
 
-layout (location = 0) in vec2 inPosition;
-layout (location = 1) in vec4 inColor;
+#define PI 3.14159265359 
+
+layout (location = 0) in vec4 inColor;
+
+uniform float time;
 
 out vec4 Color;
 
 void main()
 {
-    gl_Position = vec4(inPosition, 0.0, 1.0);
+    float offset = (2.0 * PI / 3.0) * gl_VertexID;
+    vec2 pos = vec2(sin(time + offset) * 0.5, cos(time + offset) * 0.5);
+
+    gl_Position = vec4(pos, 0.0, 1.0);
     Color = inColor;
 }

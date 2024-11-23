@@ -132,11 +132,75 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
 #endif
 
     _id = program;
+    retrieve_unif_info();
 }
 
 Shader::~Shader()
 {
     glDeleteProgram(_id);
+}
+
+auto Shader::retrieve_unif_info() -> void
+{
+    GLint uniform_count = 0;
+    glGetProgramiv(_id, GL_ACTIVE_UNIFORMS, &uniform_count);
+
+    if (uniform_count == 0)
+        return;
+
+    GLint max_unif_name_len = 0;
+    glGetProgramiv(_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_unif_name_len);
+
+    auto uniform_name = std::make_unique<char[]>(max_unif_name_len);
+
+    for (GLint i = 0; i < uniform_count; i++)
+    {
+        GLsizei unif_name_length;
+        GLsizei unif_size;
+        GLenum unif_type;
+
+        glGetActiveUniform(_id, i, max_unif_name_len, &unif_name_length, &unif_size, &unif_type, uniform_name.get());
+
+        auto uniform_info = UniformInfo{
+            .location = glGetUniformLocation(_id, uniform_name.get()),
+            .size = unif_size,
+        };
+
+        _uniform_map.emplace(std::string(uniform_name.get(), unif_name_length), uniform_info);
+    }
+}
+
+auto Shader::get_unif_info(const std::string& name) const -> std::optional<UniformInfo>
+{
+    if (auto res = _uniform_map.find(name); res != _uniform_map.end())
+    {
+        auto& unif_info = res->second;
+        return unif_info;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+auto Shader::set_unif(GLint location, GLfloat val) const -> void
+{
+    glUniform1f(location, val);
+}
+
+auto Shader::set_unif(GLint location, glm::vec2 val) const -> void
+{
+    glUniform2f(location, val.x, val.y);
+}
+
+auto Shader::set_unif(GLint location, glm::vec3 val) const -> void
+{
+    glUniform3f(location, val.x, val.y, val.z);
+}
+
+auto Shader::set_unif(GLint location, glm::vec4 val) const -> void
+{
+    glUniform4f(location, val.x, val.y, val.z, val.w);
 }
 
 } // namespace zth

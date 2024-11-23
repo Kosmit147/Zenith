@@ -53,7 +53,7 @@ public:
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
-    GLuint _id = 0; // 0 is an invalid vertex array id
+    GLuint _id = GL_NONE;
 
 private:
     auto create() -> void { glCreateVertexArrays(1, &_id); }
