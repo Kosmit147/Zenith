@@ -6,3 +6,4 @@
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
+#include "VertexLayout.hpp"
