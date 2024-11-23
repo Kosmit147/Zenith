@@ -42,20 +42,9 @@ Sandbox::Sandbox()
       _shader(vertex_shader_source, fragment_shader_source)
 {
     _va.bind();
-    // with DSA
-    // _va.bind_vertex_buffer(_vb);
-    // _va.bind_index_buffer(_ib);
-
-    _vb.bind();
-    _ib.bind();
-
-    // position
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(0));
-
-    // color
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(sizeof(Vertex::pos)));
+    _va.bind_vertex_buffer(_vb);
+    _va.bind_index_buffer(_ib);
+    _va.bind_layout(zth::VertexLayout::from_vertex<Vertex>());
 }
 
 auto Sandbox::on_update() -> void
