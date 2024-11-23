@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StructArity.hpp"
+
 #define ZTH_NO_COPY(type)                                                                                              \
     type(const type&) = delete;                                                                                        \
     auto operator=(const type&) = delete;
