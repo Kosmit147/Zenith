@@ -12,3 +12,6 @@
 	path = dependencies/GLM
 	url = https://github.com/g-truc/glm.git
 	branch = master
+[submodule "dependencies/embed"]
+	path = dependencies/embed
+	url = https://github.com/batterycenter/embed
