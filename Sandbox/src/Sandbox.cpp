@@ -1,7 +1,5 @@
 #include "Sandbox.hpp"
 
-#include <glm/glm.hpp>
-
 namespace {
 
 const zth::ApplicationSpec app_spec = {
@@ -51,12 +49,6 @@ void main()
 }
 )";
 
-struct Vertex
-{
-    glm::vec2 pos;
-    glm::vec4 color;
-};
-
 namespace {
 
 constexpr std::array vertices = {
@@ -73,15 +65,16 @@ constexpr std::array<GLushort, 6> indices = {
 } // namespace
 
 Sandbox::Sandbox()
-    : Application(app_spec), _ib(indices, zth::BufferUsage::static_draw),
+    : Application(app_spec), _vb(vertices, zth::BufferUsage::static_draw), _ib(indices, zth::BufferUsage::static_draw),
       _shader(vertex_shader_src, fragment_shader_src)
 {
     _va.bind();
+    // with DSA
+    // _va.bind_vertex_buffer(_vb);
+    // _va.bind_index_buffer(_ib);
 
-    GLuint vb;
-    glGenBuffers(1, &vb);
-    glBindBuffer(GL_ARRAY_BUFFER, vb);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+    _vb.bind();
+    _ib.bind();
 
     // position
     glEnableVertexAttribArray(0);
@@ -90,8 +83,6 @@ Sandbox::Sandbox()
     // color
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<const void*>(sizeof(Vertex::pos)));
-
-    _ib.bind();
 }
 
 auto Sandbox::on_update() -> void

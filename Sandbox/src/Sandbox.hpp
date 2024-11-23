@@ -1,6 +1,13 @@
 #pragma once
 
 #include <Zenith/Zenith.hpp>
+#include <glm/glm.hpp>
+
+struct Vertex
+{
+    glm::vec2 pos;
+    glm::vec4 color;
+};
 
 class Sandbox : public zth::Application
 {
@@ -10,7 +17,8 @@ public:
 
 private:
     zth::VertexArray _va;
-    zth::IndexBuffer _ib;
+    zth::VertexBuffer<Vertex> _vb;
+    zth::IndexBuffer<GLushort> _ib;
     zth::Shader _shader;
 
 private:
