@@ -6,6 +6,9 @@ add_executable(
 	"src/Sandbox.cpp"
 )
 
+b_embed(Sandbox "src/shaders/rect.vert")
+b_embed(Sandbox "src/shaders/rect.frag")
+
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
 	target_link_libraries(Sandbox PRIVATE -lstdc++exp)
 endif()

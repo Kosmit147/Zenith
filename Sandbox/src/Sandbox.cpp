@@ -1,5 +1,9 @@
 #include "Sandbox.hpp"
 
+#include <battery/embed.hpp>
+
+ZTH_IMPLEMENT_APP(Sandbox)
+
 namespace {
 
 const zth::ApplicationSpec app_spec = {
@@ -17,39 +21,8 @@ const zth::ApplicationSpec app_spec = {
     }
 };
 
-}
-
-ZTH_IMPLEMENT_APP(Sandbox)
-
-static constexpr auto vertex_shader_src = R"(
-#version 460 core
-
-layout (location = 0) in vec2 inPosition;
-layout (location = 1) in vec4 inColor;
-
-out vec4 Color;
-
-void main()
-{
-    gl_Position = vec4(inPosition, 0.0, 1.0);
-    Color = inColor;
-}
-)";
-
-static constexpr auto fragment_shader_src = R"(
-#version 460 core
-
-in vec4 Color;
-
-out vec4 outColor;
-
-void main()
-{
-    outColor = Color;
-}
-)";
-
-namespace {
+const auto vertex_shader_source = b::embed<"src/shaders/rect.vert">().str();
+const auto fragment_shader_source = b::embed<"src/shaders/rect.frag">().str();
 
 constexpr std::array vertices = {
     Vertex{ { -0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
@@ -66,7 +39,7 @@ constexpr std::array<GLushort, 6> indices = {
 
 Sandbox::Sandbox()
     : Application(app_spec), _vb(vertices, zth::BufferUsage::static_draw), _ib(indices, zth::BufferUsage::static_draw),
-      _shader(vertex_shader_src, fragment_shader_src)
+      _shader(vertex_shader_source, fragment_shader_source)
 {
     _va.bind();
     // with DSA
