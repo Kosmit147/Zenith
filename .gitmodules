@@ -15,3 +15,6 @@
 [submodule "dependencies/embed"]
 	path = dependencies/embed
 	url = https://github.com/batterycenter/embed
+[submodule "dependencies/stb_image"]
+	path = dependencies/stb_image
+	url = https://github.com/Kosmit147/stb_image.git
