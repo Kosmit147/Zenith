@@ -22,21 +22,17 @@ public:
     }
 
     template<typename T, usize DataSize>
-    explicit GlBuffer(std::span<const T, DataSize> data, BufferUsage usage) : GlBuffer()
-    {
-        buffer_data(data, usage);
-    }
+    explicit GlBuffer(std::span<const T, DataSize> data, BufferUsage usage)
+        : GlBuffer(std::span<const T, std::dynamic_extent>{ data }, usage)
+    {}
 
     template<typename T, usize DataSize>
-    explicit GlBuffer(const std::array<T, DataSize>& data, BufferUsage usage) : GlBuffer()
-    {
-        buffer_data(data, usage);
-    }
+    explicit GlBuffer(const std::array<T, DataSize>& data, BufferUsage usage) : GlBuffer(std::span{ data }, usage)
+    {}
 
-    template<typename T> explicit GlBuffer(const std::vector<T>& data, BufferUsage usage) : GlBuffer()
-    {
-        buffer_data(data, usage);
-    }
+    template<typename T>
+    explicit GlBuffer(const std::vector<T>& data, BufferUsage usage) : GlBuffer(std::span{ data }, usage)
+    {}
 
     ZTH_NO_COPY_NO_MOVE(GlBuffer)
 
@@ -49,18 +45,18 @@ public:
 
     template<typename T, usize DataSize> auto buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void
     {
-        glNamedBufferData(_id, data.size_bytes(), data.data(), to_gl_enum(usage));
+        buffer_data(std::span<const T, std::dynamic_extent>{ data }, usage);
     }
 
     template<typename T, usize DataSize>
     auto buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void
     {
-        glNamedBufferData(_id, DataSize * sizeof(T), data.data(), to_gl_enum(usage));
+        buffer_data(std::span{ data }, usage);
     }
 
     template<typename T> auto buffer_data(const std::vector<T>& data, BufferUsage usage) -> void
     {
-        glNamedBufferData(_id, data.size() * sizeof(T), data.data(), to_gl_enum(usage));
+        buffer_data(std::span{ data }, usage);
     }
 
     virtual auto bind() const -> void = 0;

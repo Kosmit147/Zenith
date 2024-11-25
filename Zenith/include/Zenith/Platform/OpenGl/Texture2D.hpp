@@ -15,19 +15,21 @@ namespace zth {
 class Texture2D
 {
 public:
-    // clang-format off
     explicit Texture2D(std::span<const u8> data, const TextureParams& params = {});
 
     template<usize DataSize>
-    explicit Texture2D(std::span<const u8, DataSize> data, const TextureParams& params = {}) : Texture2D(data, params) {} 
+    explicit Texture2D(std::span<const u8, DataSize> data, const TextureParams& params = {})
+        : Texture2D(std::span<const u8, std::dynamic_extent>{ data }, params)
+    {}
 
     template<usize DataSize>
     explicit Texture2D(const std::array<u8, DataSize>& data, const TextureParams& params = {})
-        : Texture2D(std::span{ data }, params) {}
+        : Texture2D(std::span{ data }, params)
+    {}
 
     explicit Texture2D(const std::vector<u8>& data, const TextureParams& params = {})
-        : Texture2D(std::span{ data }, params) {}
-    // clang-format on
+        : Texture2D(std::span{ data }, params)
+    {}
 
     ZTH_NO_COPY_NO_MOVE(Texture2D)
     ~Texture2D() { destroy(); }
