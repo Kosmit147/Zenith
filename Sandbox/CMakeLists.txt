@@ -8,6 +8,9 @@ add_executable(
 
 b_embed(Sandbox "src/shaders/rect.vert")
 b_embed(Sandbox "src/shaders/rect.frag")
+b_embed(Sandbox "assets/container.jpg")
+b_embed(Sandbox "assets/emoji.png")
+b_embed(Sandbox "assets/wall.jpg")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
 	target_link_libraries(Sandbox PRIVATE -lstdc++exp)

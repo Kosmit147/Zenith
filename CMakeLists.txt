@@ -23,6 +23,7 @@ add_subdirectory("dependencies/GLFW")
 add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/GLM")
 add_subdirectory("dependencies/embed")
+add_subdirectory("dependencies/stb_image")
 
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")

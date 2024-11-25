@@ -8,7 +8,7 @@
 
 namespace zth {
 
-template<typename VertexLayoutElementType> constexpr auto to_vertex_layout_elem() -> VertexLayoutElement
+template<typename T> constexpr auto to_vertex_layout_elem() -> VertexLayoutElement
 {
     static_assert(false, "not implemented");
 }

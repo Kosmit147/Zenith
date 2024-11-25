@@ -60,6 +60,7 @@ private:
     auto retrieve_unif_info() -> void;
     [[nodiscard]] auto get_unif_info(const std::string& name) const -> std::optional<UniformInfo>;
 
+    auto set_unif(GLint location, GLint val) const -> void;
     auto set_unif(GLint location, GLfloat val) const -> void;
     auto set_unif(GLint location, glm::vec2 val) const -> void;
     auto set_unif(GLint location, glm::vec3 val) const -> void;

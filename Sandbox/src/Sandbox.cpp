@@ -23,22 +23,23 @@ const zth::ApplicationSpec app_spec = {
 
 const auto vertex_shader_source = b::embed<"src/shaders/rect.vert">().str();
 const auto fragment_shader_source = b::embed<"src/shaders/rect.frag">().str();
+const auto container_texture = b::embed<"assets/container.jpg">().vec();
+const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
+const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
 
 constexpr std::array vertices = {
-    Vertex{ { 1.0f, 0.0f, 0.0f, 1.0f } },
-    Vertex{ { 0.0f, 1.0f, 0.0f, 1.0f } },
-    Vertex{ { 0.0f, 0.0f, 1.0f, 1.0f } },
+    Vertex{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
+    Vertex{ { 0.0f, 1.0f, 0.0f, 1.0f },{ 0.5f, 1.0f } },
+    Vertex{ { 0.0f, 0.0f, 1.0f, 1.0f },{ 1.0f, 0.0f } },
 };
 
-constexpr std::array<GLushort, 6> indices = {
-    0, 1, 2
-};
+constexpr std::array<GLushort, 3> indices = { 0, 1, 2 };
 
 } // namespace
 
 Sandbox::Sandbox()
     : Application(app_spec), _vb(vertices, zth::BufferUsage::static_draw), _ib(indices, zth::BufferUsage::static_draw),
-      _shader(vertex_shader_source, fragment_shader_source)
+      _shader(vertex_shader_source, fragment_shader_source), _texture(wall_texture)
 {
     _va.bind();
     _va.bind_vertex_buffer(_vb);
@@ -54,7 +55,9 @@ auto Sandbox::on_update() -> void
     auto time = static_cast<float>(glfwGetTime());
 
     _va.bind();
+    _texture.bind();
     _shader.bind();
     _shader.set_unif("time", time);
+    _shader.set_unif("tex", 0);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, nullptr);
 }
