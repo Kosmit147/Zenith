@@ -25,9 +25,7 @@ class Application
 {
 public:
     explicit Application(const ApplicationSpec& spec = {});
-
     ZTH_NO_COPY_NO_MOVE(Application)
-
     virtual ~Application();
 
     auto run() -> void;

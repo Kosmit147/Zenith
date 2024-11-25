@@ -183,6 +183,11 @@ auto Shader::get_unif_info(const std::string& name) const -> std::optional<Unifo
     }
 }
 
+auto Shader::set_unif(GLint location, GLint val) const -> void
+{
+    glUniform1i(location, val);
+}
+
 auto Shader::set_unif(GLint location, GLfloat val) const -> void
 {
     glUniform1f(location, val);

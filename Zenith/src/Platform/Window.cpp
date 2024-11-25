@@ -54,9 +54,7 @@ Window::Window(const WindowSpec& spec)
     glfwWindowHint(GLFW_OPENGL_PROFILE, static_cast<int>(to_gl_enum(spec.gl_profile)));
 
 #ifdef _DEBUG
-
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-
 #endif
 
     _window = glfwCreateWindow(static_cast<int>(spec.width), static_cast<int>(spec.height), spec.title.data(), nullptr,
@@ -107,7 +105,6 @@ Window::Window(const WindowSpec& spec)
     }
 
 #ifdef _DEBUG
-
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(
@@ -152,7 +149,6 @@ Window::Window(const WindowSpec& spec)
             }
         },
         nullptr);
-
 #endif
 
     glViewport(0, 0, static_cast<GLsizei>(spec.width), static_cast<GLsizei>(spec.height));

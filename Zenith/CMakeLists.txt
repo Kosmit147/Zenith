@@ -10,6 +10,7 @@ add_library(
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/OpenGl/Shader.cpp"
+	"src/Platform/OpenGl/Texture2D.cpp"
 	"src/Platform/Input.cpp"
 	"src/Platform/Key.cpp"
 	"src/Platform/Window.cpp"
@@ -25,3 +26,4 @@ target_link_libraries(Zenith PUBLIC glad)
 target_link_libraries(Zenith PUBLIC glfw)
 target_link_libraries(Zenith PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(Zenith PUBLIC glm)
+target_link_libraries(Zenith PUBLIC stb_image)

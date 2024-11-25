@@ -6,6 +6,7 @@
 struct Vertex
 {
     glm::vec4 color;
+    glm::vec2 tex_coords;
 };
 
 class Sandbox : public zth::Application
@@ -19,6 +20,7 @@ private:
     zth::VertexBuffer<Vertex> _vb;
     zth::IndexBuffer<GLushort> _ib;
     zth::Shader _shader;
+    zth::Texture2D _texture;
 
 private:
     auto on_update() -> void override;
