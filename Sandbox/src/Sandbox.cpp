@@ -21,8 +21,8 @@ const zth::ApplicationSpec app_spec = {
     }
 };
 
-const auto vertex_shader_source = b::embed<"src/shaders/rect.vert">().str();
-const auto fragment_shader_source = b::embed<"src/shaders/rect.frag">().str();
+const auto vertex_shader_source = b::embed<"src/shaders/test.vert">().str();
+const auto fragment_shader_source = b::embed<"src/shaders/test.frag">().str();
 const auto container_texture = b::embed<"assets/container.jpg">().vec();
 const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
 const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
