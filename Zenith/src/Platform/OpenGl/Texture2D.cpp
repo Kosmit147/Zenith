@@ -34,6 +34,7 @@ Texture2D::Texture2D(std::span<const u8> data, const TextureParams& params)
     glGenerateTextureMipmap(_id);
 
     stbi_image_free(image);
+    stbi_set_flip_vertically_on_load(false);
 }
 
 } // namespace zth
