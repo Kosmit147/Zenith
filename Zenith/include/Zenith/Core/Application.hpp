@@ -2,6 +2,7 @@
 
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Window.hpp"
+#include "Zenith/Time/Timer.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
 #define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
@@ -29,6 +30,10 @@ public:
     virtual ~Application();
 
     auto run() -> void;
+
+private:
+    Timer _time_timer;
+    Timer _delta_time_timer;
 
 private:
     virtual auto on_update() -> void {}
