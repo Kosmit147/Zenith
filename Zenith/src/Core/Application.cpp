@@ -31,6 +31,13 @@ auto Application::run() -> void
     {
         renderer.clear();
 
+        auto time = _time_timer.elapsed_s();
+        auto delta_time = _delta_time_timer.elapsed_s();
+        _delta_time_timer.reset();
+
+        engine.set_time(time);
+        engine.set_delta_time(delta_time);
+
         on_update();
         engine.on_update();
 

@@ -1,5 +1,8 @@
 #include "Zenith/Platform/OpenGl/Shader.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+
 #include "Zenith/Logging/Logger.hpp"
 
 namespace zth {
@@ -206,6 +209,11 @@ auto Shader::set_unif(GLint location, glm::vec3 val) const -> void
 auto Shader::set_unif(GLint location, glm::vec4 val) const -> void
 {
     glUniform4f(location, val.x, val.y, val.z, val.w);
+}
+
+auto Shader::set_unif(GLint location, const glm::mat4& val) const -> void
+{
+    glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
 }
 
 } // namespace zth

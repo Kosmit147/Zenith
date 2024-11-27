@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/fwd.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -65,6 +66,7 @@ private:
     auto set_unif(GLint location, glm::vec2 val) const -> void;
     auto set_unif(GLint location, glm::vec3 val) const -> void;
     auto set_unif(GLint location, glm::vec4 val) const -> void;
+    auto set_unif(GLint location, const glm::mat4& val) const -> void;
 };
 
 [[nodiscard]] constexpr auto to_gl_enum(ShaderType shader_type) -> GLenum

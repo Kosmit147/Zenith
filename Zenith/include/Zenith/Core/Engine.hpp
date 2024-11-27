@@ -18,6 +18,15 @@ public:
 
     auto on_update() -> void;
 
+    auto set_time(double val) { _time = val; }
+    auto set_delta_time(double val) { _delta_time = val; }
+    [[nodiscard]] auto time() const { return _time; }
+    [[nodiscard]] auto delta_time() const { return _delta_time; }
+
+private:
+    double _delta_time = 0.0;
+    double _time = 0.0;
+
 private:
     explicit Engine(const WindowSpec& window_spec);
 };

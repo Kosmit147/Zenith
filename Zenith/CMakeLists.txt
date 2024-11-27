@@ -4,6 +4,7 @@ project(Zenith LANGUAGES CXX)
 add_library(
 	Zenith STATIC
 	"src/Core/Application.cpp"
+	"src/Core/Camera.cpp"
 	"src/Core/Engine.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"

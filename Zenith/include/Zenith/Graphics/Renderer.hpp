@@ -15,7 +15,7 @@ public:
     ~Renderer() = default;
 
     auto set_clear_color(glm::vec4 color) const -> void { glClearColor(color.r, color.g, color.b, color.a); }
-    auto clear() const -> void { glClear(GL_COLOR_BUFFER_BIT); }
+    auto clear() const -> void { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 };
 
 } // namespace zth

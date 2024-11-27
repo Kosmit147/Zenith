@@ -21,7 +21,10 @@ private:
     zth::IndexBuffer<GLushort> _ib;
     zth::Shader _shader;
     zth::Texture2D _texture;
+    zth::Camera _camera;
 
 private:
     auto on_update() -> void override;
+
+    auto update_camera() -> void;
 };

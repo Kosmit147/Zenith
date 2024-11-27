@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/vec2.hpp>
 #include <GLFW/glfw3.h>
 
 #include <string>
@@ -11,6 +12,12 @@
 
 namespace zth {
 
+struct WindowSize
+{
+    u32 width;
+    u32 height;
+};
+
 struct WindowSpec
 {
     u32 width = 800;
@@ -18,6 +25,7 @@ struct WindowSpec
     std::string title = "Title";
     GlVersion gl_version = { 3, 3 };
     GlProfile gl_profile = GlProfile::Compatibility;
+    bool fullscreen = false;
     bool vsync = true;
 };
 
@@ -28,21 +36,22 @@ public:
     using KeyCallback = void (*)(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     explicit Window(const WindowSpec& spec = {});
-
     ZTH_NO_COPY_NO_MOVE(Window)
-
     ~Window();
 
-    [[nodiscard]] auto should_close() const -> bool { return glfwWindowShouldClose(_window); }
+    [[nodiscard]] auto should_close() const -> bool;
 
-    auto set_active() const -> void { glfwMakeContextCurrent(_window); }
-    auto swap_buffers() const -> void { glfwSwapBuffers(_window); }
-    auto poll_events() const -> void { glfwPollEvents(); }
-    auto set_vsync(bool value) const -> void { glfwSwapInterval(value); }
+    auto set_active() const -> void;
+    auto set_vsync(bool value) const -> void;
+    auto swap_buffers() const -> void;
+    auto poll_events() const -> void;
+
+    [[nodiscard]] auto size() const -> WindowSize;
+    [[nodiscard]] auto mouse_pos() const -> glm::vec2;
 
 private:
     GLFWwindow* _window = nullptr;
-    static inline u32 _window_count = 0;
+    static inline bool _window_exists = false;
 
 private:
     auto set_glfw_resize_callback(ResizeCallback callback) const -> void;
