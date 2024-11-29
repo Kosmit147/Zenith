@@ -3,10 +3,11 @@
 #include <glad/glad.h>
 
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/VertexLayout.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
+
+class VertexLayout;
 
 class VertexArray
 {
@@ -32,28 +33,16 @@ public:
 
     template<typename IndexType> auto bind_index_buffer(IndexBuffer<IndexType>&& index_buffer) = delete;
 
-    auto bind_layout(const VertexLayout& layout) const -> void
-    {
-        GLuint index = 0;
-        GLuint offset = 0;
-
-        for (auto& elem : layout)
-        {
-            auto [count, type, size] = get_vertex_layout_element_info(elem);
-
-            glEnableVertexArrayAttrib(_id, index);
-            glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
-            glVertexArrayAttribBinding(_id, index, 0);
-
-            index++;
-            offset += size;
-        }
-    }
+    auto bind_layout(const VertexLayout& layout) const -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
     GLuint _id = GL_NONE;
+
+    // TODO:
+    // GlBuffer& vertex_buffer;
+    // GlBuffer& index_buffer;
 
 private:
     auto create() -> void { glCreateVertexArrays(1, &_id); }

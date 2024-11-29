@@ -22,7 +22,7 @@ enum class GlProfile : u8
     Core,
 };
 
-[[nodiscard]] constexpr auto to_gl_enum(GlProfile profile) -> GLenum
+[[nodiscard]] constexpr auto to_glfw_enum(GlProfile profile) -> int
 {
     switch (profile)
     {

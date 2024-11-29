@@ -1,21 +1,22 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/vec4.hpp>
 
-#include "Zenith/Utility/Utility.hpp"
-
 namespace zth {
+
+class Event;
 
 class Renderer
 {
 public:
-    Renderer() = default;
-    ZTH_NO_COPY_NO_MOVE(Renderer)
-    ~Renderer() = default;
+    Renderer() = delete;
 
-    auto set_clear_color(glm::vec4 color) const -> void { glClearColor(color.r, color.g, color.b, color.a); }
-    auto clear() const -> void { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
+    static auto init() -> void;
+    static auto on_window_event(const Event& event) -> void;
+    static auto shut_down() -> void;
+
+    static auto set_clear_color(glm::vec4 color) -> void ;
+    static auto clear() -> void ;
 };
 
 } // namespace zth

@@ -10,13 +10,17 @@ namespace {
 
 const zth::ApplicationSpec app_spec = {
     .window_spec = {
-        .width = 2560,
-        .height = 1600,
+        .size = { .width = 800, .height = 600 },
         .title = "Sandbox",
         .gl_version = { 4, 6 },
         .gl_profile = zth::GlProfile::Core,
-        .fullscreen = true,
-        .vsync = true,
+        .fullscreen = false,
+        .vsync = false,
+        .resizable = true,
+        .maximized = true,
+        .cursor_enabled = false,
+        .transparent_framebuffer = true,
+        .forced_aspect_ratio = std::nullopt,
     },
     .logger_spec = {
         .client_logger_label = "SANDBOX",
@@ -31,9 +35,9 @@ const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
 const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
 
 constexpr std::array vertices = {
-    Vertex{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
-    Vertex{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.5f, 1.0f } },
-    Vertex{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f } },
+    Vertex{ .color = { 1.0f, 0.0f, 0.0f, 1.0f }, .tex_coords = { 0.0f, 0.0f } },
+    Vertex{ .color = { 0.0f, 1.0f, 0.0f, 1.0f }, .tex_coords = { 0.5f, 1.0f } },
+    Vertex{ .color = { 0.0f, 0.0f, 1.0f, 1.0f }, .tex_coords = { 1.0f, 0.0f } },
 };
 
 constexpr std::array<GLushort, 3> indices = { 0, 1, 2 };
@@ -41,9 +45,9 @@ constexpr std::array<GLushort, 3> indices = { 0, 1, 2 };
 constexpr auto camera_position = glm::vec3(0.0f, 0.0f, 3.0f);
 constexpr auto camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 
-// TODO: fix hardcoded aspect ratio
 const auto aspect_ratio =
-    static_cast<float>(app_spec.window_spec.width) / static_cast<float>(app_spec.window_spec.height);
+    static_cast<float>(app_spec.window_spec.size.width) / static_cast<float>(app_spec.window_spec.size.height);
+
 constexpr auto fov = glm::radians(45.0f);
 
 constexpr auto min_camera_pitch = glm::radians(-89.0f);
@@ -67,8 +71,7 @@ Sandbox::Sandbox()
 
 auto Sandbox::on_update() -> void
 {
-    auto& engine = zth::Engine::get();
-    auto time = static_cast<float>(engine.time());
+    auto time = zth::Time::time<float>();
 
     update_camera();
 
@@ -85,11 +88,72 @@ auto Sandbox::on_update() -> void
     _shader.set_unif("view", view);
     _shader.set_unif("projection", projection);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);
+
+    if (zth::Input::is_key_pressed(zth::Key::Escape))
+        zth::Window::close();
+}
+
+auto Sandbox::on_event(const zth::Event& event) -> void
+{
+    switch (event.type())
+    {
+        using enum zth::EventType;
+    case WindowResized:
+    {
+        auto window_resized_event = event.window_resized_event();
+        auto [width, height] = window_resized_event.new_size;
+        ZTH_INFO("Window resized. New size: {}, {}.", width, height);
+        on_window_resized_event(window_resized_event);
+        break;
+    }
+    case KeyPressed:
+    {
+        auto [key] = event.key_pressed_event();
+        ZTH_INFO("{} key pressed.", zth::to_string(key));
+        break;
+    }
+    case KeyReleased:
+    {
+        auto [key] = event.key_released_event();
+        ZTH_INFO("{} key released.", zth::to_string(key));
+        break;
+    }
+    case MouseButtonPressed:
+    {
+        auto [button] = event.mouse_button_pressed_event();
+        ZTH_INFO("{} mouse button pressed.", zth::to_string(button));
+        break;
+    }
+    case MouseButtonReleased:
+    {
+        auto [button] = event.mouse_button_released_event();
+        ZTH_INFO("{} mouse button released.", zth::to_string(button));
+        break;
+    }
+    case MouseMoved:
+    {
+        auto [new_pos] = event.mouse_moved_event();
+        ZTH_INFO("Mouse moved. New pos: {}, {}.", new_pos.x, new_pos.y);
+        break;
+    }
+    case MouseWheelScrolled:
+    {
+        auto [delta] = event.mouse_wheel_scrolled_event();
+        ZTH_INFO("Mouse scrolled. Delta: {}, {}.", delta.x, delta.y);
+        break;
+    }
+    }
+}
+
+auto Sandbox::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
+{
+    auto [width, height] = event.new_size;
+    _camera.aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 }
 
 auto Sandbox::update_camera() -> void
 {
-    auto delta_time = static_cast<float>(zth::Engine::get().delta_time());
+    auto delta_time = zth::Time::delta_time<float>();
 
     if (zth::Input::is_key_pressed(zth::Key::W))
         _camera.position += _camera.front() * camera_movement_speed * delta_time;
@@ -103,7 +167,7 @@ auto Sandbox::update_camera() -> void
     if (zth::Input::is_key_pressed(zth::Key::D))
         _camera.position += _camera.right() * camera_movement_speed * delta_time;
 
-    auto mouse_delta = zth::Input::get_mouse_pos_delta();
+    auto mouse_delta = zth::Input::mouse_pos_delta();
     mouse_delta *= camera_sensitivity;
 
     auto new_yaw = _camera.yaw() + mouse_delta.x;

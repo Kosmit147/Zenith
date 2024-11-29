@@ -5,16 +5,21 @@ add_library(
 	Zenith STATIC
 	"src/Core/Application.cpp"
 	"src/Core/Camera.cpp"
-	"src/Core/Engine.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
+	"src/Core/SystemManager.cpp"
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/OpenGl/Shader.cpp"
 	"src/Platform/OpenGl/Texture2D.cpp"
+	"src/Platform/OpenGl/VertexArray.cpp"
+	"src/Platform/Event.cpp"
+	"src/Platform/EventQueue.cpp"
 	"src/Platform/Input.cpp"
 	"src/Platform/Key.cpp"
+	"src/Platform/Mouse.cpp"
 	"src/Platform/Window.cpp"
+	"src/Time/Time.cpp"
 )
 
 target_include_directories(Zenith PUBLIC "include")
