@@ -1,39 +1,40 @@
 #include "Zenith/Platform/Window.hpp"
 
 #include "Zenith/Core/Exception.hpp"
+#include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Logging/Logger.hpp"
-#include "Zenith/Platform/Input.hpp"
+#include "Zenith/Platform/EventQueue.hpp"
 
 namespace zth {
 
 namespace {
+
+GLFWwindow* window = nullptr;
+
+[[nodiscard]] auto to_glfw_enum(bool value) -> int
+{
+    return value ? GLFW_TRUE : GLFW_FALSE;
+}
 
 [[nodiscard]] auto init_glad() -> bool
 {
     return gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 }
 
-[[nodiscard]] auto create_glfw_window(u32 width, u32 height, const char* title, bool fullscreen) -> GLFWwindow*
+[[nodiscard]] auto create_glfw_window(WindowSize size, const char* title, bool fullscreen) -> GLFWwindow*
 {
     GLFWmonitor* monitor = nullptr;
 
     if (fullscreen)
         monitor = glfwGetPrimaryMonitor();
 
-    return glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title, monitor, nullptr);
+    return glfwCreateWindow(static_cast<int>(size.width), static_cast<int>(size.height), title, monitor, nullptr);
 }
 
 } // namespace
 
-Window::Window(const WindowSpec& spec)
+auto Window::init(const WindowSpec& spec) -> void
 {
-    if (_window_exists)
-    {
-        auto error_message = "Tried to create a new window, but a window already exists.";
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception(error_message);
-    }
-
     if (!glfwInit())
     {
         auto error_message = "Failed to initialize GLFW.";
@@ -43,15 +44,18 @@ Window::Window(const WindowSpec& spec)
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, static_cast<int>(spec.gl_version.minor));
-    glfwWindowHint(GLFW_OPENGL_PROFILE, static_cast<int>(to_gl_enum(spec.gl_profile)));
+    glfwWindowHint(GLFW_OPENGL_PROFILE, to_glfw_enum(spec.gl_profile));
+    glfwWindowHint(GLFW_RESIZABLE, to_glfw_enum(spec.resizable));
+    glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
 
 #ifdef _DEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 
-    _window = create_glfw_window(spec.width, spec.height, spec.title.data(), spec.fullscreen);
+    window = create_glfw_window(spec.size, spec.title.data(), spec.fullscreen);
 
-    if (!_window)
+    if (!window)
     {
         auto error_message = "Failed to create a window.";
         ZTH_CORE_CRITICAL(error_message);
@@ -64,11 +68,54 @@ Window::Window(const WindowSpec& spec)
     set_active();
     set_vsync(spec.vsync);
 
+    set_glfw_resize_callback([](GLFWwindow*, int new_width, int new_height) {
+        auto new_size = WindowSize{ static_cast<u32>(new_width), static_cast<u32>(new_height) };
+        EventQueue::push(WindowResizedEvent{ new_size });
+    });
+
+    set_glfw_key_callback([](GLFWwindow*, int key, int, int action, int) {
+        if (action == GLFW_PRESS)
+            EventQueue::push(KeyPressedEvent{ glfw_key_to_key(key) });
+        else if (action == GLFW_RELEASE)
+            EventQueue::push(KeyReleasedEvent{ glfw_key_to_key(key) });
+    });
+
+    set_glfw_mouse_button_callback([](GLFWwindow*, int button, int action, int) {
+        if (action == GLFW_PRESS)
+            EventQueue::push(MouseButtonPressedEvent{ glfw_mouse_button_to_mouse_button(button) });
+        else if (action == GLFW_RELEASE)
+            EventQueue::push(MouseButtonReleasedEvent{ glfw_mouse_button_to_mouse_button(button) });
+    });
+
+    set_glfw_mouse_pos_callback([](GLFWwindow*, double xpos, double ypos) {
+        auto new_pos = glm::vec2{ static_cast<float>(xpos), static_cast<float>(ypos) };
+        EventQueue::push(MouseMovedEvent{ new_pos });
+    });
+
+    set_glfw_scroll_callback([](GLFWwindow*, double xoffset, double yoffset) {
+        auto delta = glm::vec2{ static_cast<float>(xoffset), static_cast<float>(yoffset) };
+        EventQueue::push(MouseWheelScrolledEvent{ delta });
+    });
+
+    if (!spec.cursor_enabled)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
+
+    if (spec.forced_aspect_ratio)
+    {
+        auto [num, den] = spec.forced_aspect_ratio.value();
+        glfwSetWindowAspectRatio(window, static_cast<int>(num), static_cast<int>(den));
+    }
+
     if (!init_glad())
     {
         auto error_message = "Failed to initialize glad.";
         ZTH_CORE_CRITICAL(error_message);
-        glfwDestroyWindow(_window);
+        glfwDestroyWindow(window);
         glfwTerminate();
         throw Exception(error_message);
     }
@@ -138,88 +185,87 @@ Window::Window(const WindowSpec& spec)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
 
-    glViewport(0, 0, static_cast<GLsizei>(spec.width), static_cast<GLsizei>(spec.height));
-
-    set_glfw_resize_callback([]([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) {
-        glViewport(0, 0, new_width, new_height);
-    });
-
-    set_glfw_key_callback([]([[maybe_unused]] GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action,
-                             [[maybe_unused]] int mods) {
-        auto pressed = false;
-
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
-            pressed = true;
-        else if (action == GLFW_RELEASE)
-            pressed = false;
-
-        Input::set_key_pressed(glfw_key_to_key(key), pressed);
-    });
-
-    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    // a solution for sudden movements caused by the first read of mouse position
-    Input::set_mouse_pos(mouse_pos());
-    Input::set_mouse_pos(mouse_pos());
-
-    _window_exists = true;
+    EventQueue::push(WindowResizedEvent{ size() });
 }
 
-Window::~Window()
+auto Window::shut_down() -> void
 {
-    glfwDestroyWindow(_window);
+    glfwDestroyWindow(window);
     glfwTerminate();
-    _window_exists = false;
 }
 
-auto Window::should_close() const -> bool
+auto Window::should_close() -> bool
 {
-    return glfwWindowShouldClose(_window);
+    return glfwWindowShouldClose(window);
 }
 
-auto Window::set_active() const -> void
+auto Window::time() -> double
 {
-    glfwMakeContextCurrent(_window);
+    return glfwGetTime();
 }
 
-auto Window::set_vsync(bool value) const -> void
+auto Window::set_active() -> void
+{
+    glfwMakeContextCurrent(window);
+}
+
+auto Window::set_vsync(bool value) -> void
 {
     glfwSwapInterval(value);
 }
 
-auto Window::swap_buffers() const -> void
+auto Window::swap_buffers() -> void
 {
-    glfwSwapBuffers(_window);
+    glfwSwapBuffers(window);
 }
 
-auto Window::poll_events() const -> void
+auto Window::poll_events() -> void
 {
     glfwPollEvents();
-    Input::set_mouse_pos(mouse_pos());
 }
 
-auto Window::size() const -> WindowSize
+auto Window::close() -> void
+{
+    glfwSetWindowShouldClose(window, true);
+}
+
+auto Window::size() -> WindowSize
 {
     int width, height;
-    glfwGetWindowSize(_window, &width, &height);
+    glfwGetWindowSize(window, &width, &height);
     return { .width = static_cast<u32>(width), .height = static_cast<u32>(height) };
 }
 
-auto Window::mouse_pos() const -> glm::vec2
+auto Window::mouse_pos() -> glm::vec2
 {
     double x_pos, y_pos;
-    glfwGetCursorPos(_window, &x_pos, &y_pos);
+    glfwGetCursorPos(window, &x_pos, &y_pos);
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
-auto Window::set_glfw_resize_callback(ResizeCallback callback) const -> void
+auto Window::set_glfw_resize_callback(ResizeCallback callback) -> void
 {
-    glfwSetFramebufferSizeCallback(_window, callback);
+    glfwSetFramebufferSizeCallback(window, callback);
 }
 
-auto Window::set_glfw_key_callback(KeyCallback callback) const -> void
+auto Window::set_glfw_key_callback(KeyCallback callback) -> void
 {
-    glfwSetKeyCallback(_window, callback);
+    glfwSetKeyCallback(window, callback);
+}
+
+auto Window::set_glfw_mouse_button_callback(MouseButtonCallback callback) -> void
+{
+    glfwSetMouseButtonCallback(window, callback);
+}
+
+auto Window::set_glfw_mouse_pos_callback(MousePosCallback callback) -> void
+{
+    glfwSetCursorPosCallback(window, callback);
+}
+
+auto Window::set_glfw_scroll_callback(ScrollCallback callback) -> void
+{
+    glfwSetScrollCallback(window, callback);
 }
 
 } // namespace zth

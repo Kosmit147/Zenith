@@ -1,49 +1,49 @@
 #include "Zenith/Core/Application.hpp"
 
-#include "Zenith/Core/Engine.hpp"
-#include "Zenith/Platform/Input.hpp"
+#include "Zenith/Core/SystemManager.hpp"
+#include "Zenith/Graphics/Renderer.hpp"
+#include "Zenith/Platform/EventQueue.hpp"
 
 namespace zth {
 
 Application::Application(const ApplicationSpec& spec)
 {
-    Logger::init(spec.logger_spec);
-    Engine::init(spec.window_spec);
-    Input::init();
+    SystemManager::init_systems(spec);
 }
 
 Application::~Application()
 {
-    Input::shut_down();
-    Engine::shut_down();
-    Logger::shut_down();
+    SystemManager::shut_down_systems();
 }
 
 auto Application::run() -> void
 {
-    auto& engine = Engine::get();
-    auto& window = engine.window;
-    auto& renderer = engine.renderer;
+    Window::set_active();
 
-    window.set_active();
-
-    while (!window.should_close())
+    while (!Window::should_close())
     {
-        renderer.clear();
+        Renderer::clear();
 
-        auto time = _time_timer.elapsed_s();
-        auto delta_time = _delta_time_timer.elapsed_s();
-        _delta_time_timer.reset();
+        while (auto event = EventQueue::pop())
+            handle_event(event.value());
 
-        engine.set_time(time);
-        engine.set_delta_time(delta_time);
+        handle_update();
 
-        on_update();
-        engine.on_update();
-
-        window.swap_buffers();
-        window.poll_events();
+        Window::swap_buffers();
+        Window::poll_events();
     }
+}
+
+auto Application::handle_event(const Event& event) -> void
+{
+    SystemManager::on_event(event);
+    on_event(event);
+}
+
+auto Application::handle_update() -> void
+{
+    SystemManager::on_update();
+    on_update();
 }
 
 } // namespace zth

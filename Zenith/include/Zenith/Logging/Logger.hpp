@@ -16,6 +16,8 @@ struct LoggerSpec
 class Logger
 {
 public:
+    Logger() = delete;
+
     static auto init(const LoggerSpec& logger_spec) -> void;
     static auto shut_down() -> void;
 
