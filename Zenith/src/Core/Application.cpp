@@ -9,10 +9,12 @@ namespace zth {
 Application::Application(const ApplicationSpec& spec)
 {
     SystemManager::init_systems(spec);
+    ZTH_CORE_INFO("Application initialized.");
 }
 
 Application::~Application()
 {
+    ZTH_CORE_INFO("Shutting down application.");
     SystemManager::shut_down_systems();
 }
 

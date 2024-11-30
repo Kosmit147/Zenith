@@ -1,6 +1,7 @@
 #include "Zenith/Core/SystemManager.hpp"
 
 #include "Zenith/Core/Application.hpp"
+#include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Renderer.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
@@ -10,21 +11,45 @@
 // list of which systems depend on which other systems
 // we need to make sure that they're initialized in the right order
 //
-// Time -> {}
 // Logger -> {}
-// Window -> {}
-// Input -> { Window }
-// Renderer -> {}
+// Time -> { Logger }
+// Window -> { Logger }
+// Input -> { Logger, Window }
+// Renderer -> { Logger, Window }
 
 namespace zth {
 
+namespace {
+
+constexpr usize system_count = 5;
+
+}
+
 auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
 {
-    Time::init();
-    Logger::init(spec.logger_spec);
-    Window::init(spec.window_spec);
-    Input::init();
-    Renderer::init();
+    _system_shutdown_funcs.reserve(system_count);
+
+    auto add_system = [&]<typename InitLambda, typename ShutdownLambda>(InitLambda init_func,
+                                                                        ShutdownLambda shutdown_func) {
+        init_func();
+        _system_shutdown_funcs.push_back(shutdown_func);
+    };
+
+    try
+    {
+        add_system([&] { Logger::init(spec.logger_spec); }, [] { Logger::shut_down(); });
+        add_system([&] { Time::init(); }, [] { Time::shut_down(); });
+        add_system([&] { Window::init(spec.window_spec); }, [] { Window::shut_down(); });
+        add_system([&] { Input::init(); }, [] { Input::shut_down(); });
+        add_system([&] { Renderer::init(); }, [] { Renderer::shut_down(); });
+
+        ZTH_CORE_INFO("[System Manager] All systems initialized.");
+    }
+    catch (...)
+    {
+        shut_down_systems();
+        throw;
+    }
 }
 
 auto SystemManager::on_event(const Event& event) -> void
@@ -49,11 +74,10 @@ auto SystemManager::on_update() -> void
 
 auto SystemManager::shut_down_systems() -> void
 {
-    Renderer::shut_down();
-    Input::shut_down();
-    Window::shut_down();
-    Logger::shut_down();
-    Time::shut_down();
+    ZTH_CORE_INFO("[SystemManager] Shutting down all systems.");
+
+    for (auto shutdown_func : _system_shutdown_funcs | std::views::reverse)
+        shutdown_func();
 }
 
 } // namespace zth

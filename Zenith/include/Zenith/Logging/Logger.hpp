@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <memory>
 #include <string>
 
 namespace zth {
@@ -21,8 +22,12 @@ public:
     static auto init(const LoggerSpec& logger_spec) -> void;
     static auto shut_down() -> void;
 
-    [[nodiscard]] static auto get_core_logger() -> spdlog::logger&;
-    [[nodiscard]] static auto get_client_logger() -> spdlog::logger&;
+    [[nodiscard]] static auto core_logger() -> spdlog::logger&;
+    [[nodiscard]] static auto client_logger() -> spdlog::logger&;
+
+private:
+    static inline std::shared_ptr<spdlog::logger> _core_logger;
+    static inline std::shared_ptr<spdlog::logger> _client_logger;
 };
 
 } // namespace zth
@@ -30,8 +35,8 @@ public:
 // macros for Zenith
 #ifdef _DEBUG
 
-#define ZTH_CORE_TRACE(...) ::zth::Logger::get_core_logger().trace(__VA_ARGS__)
-#define ZTH_CORE_DEBUG(...) ::zth::Logger::get_core_logger().debug(__VA_ARGS__)
+#define ZTH_CORE_TRACE(...) ::zth::Logger::core_logger().trace(__VA_ARGS__)
+#define ZTH_CORE_DEBUG(...) ::zth::Logger::core_logger().debug(__VA_ARGS__)
 
 #else
 
@@ -40,16 +45,16 @@ public:
 
 #endif
 
-#define ZTH_CORE_INFO(...) ::zth::Logger::get_core_logger().info(__VA_ARGS__)
-#define ZTH_CORE_WARN(...) ::zth::Logger::get_core_logger().warn(__VA_ARGS__)
-#define ZTH_CORE_ERROR(...) ::zth::Logger::get_core_logger().error(__VA_ARGS__)
-#define ZTH_CORE_CRITICAL(...) ::zth::Logger::get_core_logger().critical(__VA_ARGS__)
+#define ZTH_CORE_INFO(...) ::zth::Logger::core_logger().info(__VA_ARGS__)
+#define ZTH_CORE_WARN(...) ::zth::Logger::core_logger().warn(__VA_ARGS__)
+#define ZTH_CORE_ERROR(...) ::zth::Logger::core_logger().error(__VA_ARGS__)
+#define ZTH_CORE_CRITICAL(...) ::zth::Logger::core_logger().critical(__VA_ARGS__)
 
 // macros for clients
 #ifdef _DEBUG
 
-#define ZTH_TRACE(...) ::zth::Logger::get_client_logger().trace(__VA_ARGS__)
-#define ZTH_DEBUG(...) ::zth::Logger::get_client_logger().debug(__VA_ARGS__)
+#define ZTH_TRACE(...) ::zth::Logger::client_logger().trace(__VA_ARGS__)
+#define ZTH_DEBUG(...) ::zth::Logger::client_logger().debug(__VA_ARGS__)
 
 #else
 
@@ -58,7 +63,7 @@ public:
 
 #endif
 
-#define ZTH_INFO(...) ::zth::Logger::get_client_logger().info(__VA_ARGS__)
-#define ZTH_WARN(...) ::zth::Logger::get_client_logger().warn(__VA_ARGS__)
-#define ZTH_ERROR(...) ::zth::Logger::get_client_logger().error(__VA_ARGS__)
-#define ZTH_CRITICAL(...) ::zth::Logger::get_client_logger().critical(__VA_ARGS__)
+#define ZTH_INFO(...) ::zth::Logger::client_logger().info(__VA_ARGS__)
+#define ZTH_WARN(...) ::zth::Logger::client_logger().warn(__VA_ARGS__)
+#define ZTH_ERROR(...) ::zth::Logger::client_logger().error(__VA_ARGS__)
+#define ZTH_CRITICAL(...) ::zth::Logger::client_logger().critical(__VA_ARGS__)

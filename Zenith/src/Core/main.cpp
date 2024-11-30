@@ -27,11 +27,11 @@ auto main() -> int
     }
     catch (const Exception& e)
     {
-        ZTH_CORE_CRITICAL("{}\n{}", e.what(), e.stacktrace());
+        std::println(std::cerr, "{}\n{}", e.what(), e.stacktrace());
     }
     catch (const std::exception& e)
     {
-        ZTH_CORE_CRITICAL(e.what());
+        std::println(std::cerr, "{}", e.what());
     }
 
     // this must be called before main finishes if using asynchronous loggers
