@@ -1,6 +1,7 @@
 #include "Zenith/Platform/Input.hpp"
 
 #include "Zenith/Core/Assert.hpp"
+#include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/Window.hpp"
 
@@ -17,6 +18,8 @@ auto Input::init() -> void
     // a solution for sudden movements caused by the first read of mouse position
     _mouse_pos = Window::mouse_pos();
     _prev_mouse_pos = Window::mouse_pos();
+
+    ZTH_CORE_INFO("Input system initialized.");
 }
 
 auto Input::on_update() -> void
@@ -81,7 +84,10 @@ auto Input::on_input_event(const Event& event) -> void
     }
 }
 
-auto Input::shut_down() -> void {}
+auto Input::shut_down() -> void
+{
+    ZTH_CORE_INFO("Input system shut down.");
+}
 
 auto Input::is_key_pressed(Key key) -> bool
 {

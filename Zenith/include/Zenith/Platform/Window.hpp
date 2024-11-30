@@ -1,14 +1,14 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/vec2.hpp>
-#include <GLFW/glfw3.h>
 
 #include <optional>
 #include <string>
 
 #include "Zenith/Platform/OpenGl/GlContext.hpp"
 #include "Zenith/Platform/WindowProps.hpp"
+
+struct GLFWwindow;
 
 namespace zth {
 
@@ -54,11 +54,28 @@ public:
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
 
 private:
+    static inline GLFWwindow* _window = nullptr;
+
+private:
+    [[nodiscard]] static auto create_glfw_window(WindowSize size, const char* title, bool fullscreen) -> GLFWwindow*;
+    static auto set_glfw_window_hints(const WindowSpec& spec) -> void;
+    static auto set_glfw_input_callbacks() -> void;
+    static auto set_glfw_cursor_enabled(bool enabled) -> void;
+    static auto glfw_enable_cursor() -> void;
+    static auto glfw_disable_cursor() -> void;
+    static auto glfw_force_aspect_ratio(WindowAspectRatio aspect_ratio) -> void;
+
     static auto set_glfw_resize_callback(ResizeCallback callback) -> void;
     static auto set_glfw_key_callback(KeyCallback callback) -> void;
     static auto set_glfw_mouse_button_callback(MouseButtonCallback callback) -> void;
     static auto set_glfw_mouse_pos_callback(MousePosCallback callback) -> void;
     static auto set_glfw_scroll_callback(ScrollCallback callback) -> void;
+
+    static auto glfw_resize_callback(GLFWwindow* window, int new_width, int new_height) -> void;
+    static auto glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) -> void;
+    static auto glfw_mouse_button_callback(GLFWwindow* window, int button, int action, int mods) -> void;
+    static auto glfw_mouse_pos_callback(GLFWwindow* window, double xpos, double ypos) -> void;
+    static auto glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) -> void;
 };
 
 } // namespace zth
