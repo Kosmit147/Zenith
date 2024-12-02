@@ -66,7 +66,6 @@ Sandbox::Sandbox()
     _va.bind();
     _va.bind_vertex_buffer(_vb);
     _va.bind_index_buffer(_ib);
-    _va.bind_layout(zth::VertexLayout::from_vertex<Vertex>());
 }
 
 auto Sandbox::on_update() -> void

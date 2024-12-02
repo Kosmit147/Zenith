@@ -25,8 +25,6 @@ public:
     auto bind_index_buffer(const IndexBuffer& index_buffer) -> void;
     auto bind_index_buffer(IndexBuffer&& index_buffer) = delete;
 
-    auto bind_layout(const VertexLayout& layout) const -> void;
-
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto count() const -> GLsizei;
     [[nodiscard]] auto index_type() const -> GLenum;
@@ -43,6 +41,8 @@ private:
 private:
     auto create() -> void { glCreateVertexArrays(1, &_id); }
     auto destroy() const -> void { glDeleteVertexArrays(1, &_id); }
+
+    auto bind_layout(const VertexLayout& layout) const -> void;
 };
 
 } // namespace zth
