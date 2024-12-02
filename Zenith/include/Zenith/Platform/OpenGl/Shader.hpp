@@ -5,6 +5,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <spdlog/spdlog.h>
 
 #include <optional>
 #include <string>
@@ -100,3 +101,11 @@ private:
 }
 
 } // namespace zth
+
+template<> struct fmt::formatter<zth::ShaderType> : formatter<std::string>
+{
+    static auto format(zth::ShaderType shader_type, format_context& ctx) -> decltype(ctx.out())
+    {
+        return format_to(ctx.out(), "{}", zth::to_string(shader_type));
+    }
+};

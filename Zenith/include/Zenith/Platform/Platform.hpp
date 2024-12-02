@@ -8,4 +8,3 @@
 #include "Mouse.hpp"
 #include "OpenGl/OpenGl.hpp"
 #include "Window.hpp"
-#include "WindowProps.hpp"

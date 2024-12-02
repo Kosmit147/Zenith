@@ -35,3 +35,5 @@
 #include <ranges>
 
 #include <format>
+
+#include <spdlog/spdlog.h>

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 #include <GLFW/glfw3.h>
 
 #include <array>
+#include <string>
 
 #include "Zenith/Core/Typedefs.hpp"
 
@@ -260,3 +262,11 @@ constexpr std::array key_enumerations = {
 [[nodiscard]] auto to_string(Key key) -> const char*;
 
 } // namespace zth
+
+template<> struct fmt::formatter<zth::Key> : formatter<std::string>
+{
+    static auto format(zth::Key key, format_context& ctx) -> decltype(ctx.out())
+    {
+        return format_to(ctx.out(), "{}", zth::to_string(key));
+    }
+};
