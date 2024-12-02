@@ -13,7 +13,7 @@ auto Time::init() -> void
 auto Time::on_update() -> void
 {
     auto new_time = Window::time();
-    _delta_time = new_time - _time;
+    _delta_time = std::min(new_time - _time, delta_time_limit);
     _time = new_time;
 }
 
