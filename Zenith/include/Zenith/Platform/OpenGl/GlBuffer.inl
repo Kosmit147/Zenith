@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Zenith/Platform/OpenGl/GlUtils.hpp"
+
 namespace zth {
 
 template<typename T> GlBuffer::GlBuffer(std::span<const T> data, BufferUsage usage) : GlBuffer()
@@ -22,7 +24,8 @@ GlBuffer::GlBuffer(const std::vector<T>& data, BufferUsage usage) : GlBuffer(std
 
 template<typename T> auto GlBuffer::buffer_data(std::span<const T> data, BufferUsage usage) -> void
 {
-    glNamedBufferData(_id, data.size_bytes(), data.data(), to_gl_enum(usage));
+    _size = static_cast<GLsizei>(data.size_bytes());
+    glNamedBufferData(_id, _size, data.data(), to_gl_enum(usage));
 }
 
 template<typename T, usize DataSize>
@@ -42,98 +45,92 @@ template<typename T> auto GlBuffer::buffer_data(const std::vector<T>& data, Buff
     buffer_data(std::span{ data }, usage);
 }
 
-template<typename VertexType>
-VertexBuffer<VertexType>::VertexBuffer(std::span<const VertexType> vertices, BufferUsage usage)
-    : GlBuffer(vertices, usage)
+template<typename T>
+VertexBuffer::VertexBuffer(std::span<const T> data, BufferUsage usage) : GlBuffer(data, usage), _stride(sizeof(T))
 {}
 
-template<typename VertexType>
-template<usize DataSize>
-VertexBuffer<VertexType>::VertexBuffer(std::span<const VertexType, DataSize> vertices, BufferUsage usage)
-    : GlBuffer(vertices, usage)
+template<typename T, usize DataSize>
+VertexBuffer::VertexBuffer(std::span<const T, DataSize> data, BufferUsage usage)
+    : GlBuffer(data, usage), _stride(sizeof(T))
 {}
 
-template<typename VertexType>
-template<usize DataSize>
-VertexBuffer<VertexType>::VertexBuffer(const std::array<VertexType, DataSize>& vertices, BufferUsage usage)
-    : GlBuffer(vertices, usage)
+template<typename T, usize DataSize>
+VertexBuffer::VertexBuffer(const std::array<T, DataSize>& data, BufferUsage usage)
+    : GlBuffer(data, usage), _stride(sizeof(T))
 {}
 
-template<typename VertexType>
-VertexBuffer<VertexType>::VertexBuffer(const std::vector<VertexType>& vertices, BufferUsage usage)
-    : GlBuffer(vertices, usage)
+template<typename T>
+VertexBuffer::VertexBuffer(const std::vector<T>& data, BufferUsage usage) : GlBuffer(data, usage), _stride(sizeof(T))
 {}
 
-template<typename VertexType>
-auto VertexBuffer<VertexType>::buffer_data(std::span<const VertexType> vertices, BufferUsage usage) -> void
+template<typename T> auto VertexBuffer::buffer_data(std::span<const T> data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(vertices, usage);
+    _stride = sizeof(T);
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename VertexType>
-template<usize DataSize>
-auto VertexBuffer<VertexType>::buffer_data(std::span<const VertexType, DataSize> vertices, BufferUsage usage) -> void
+template<typename T, usize DataSize>
+auto VertexBuffer::buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(vertices, usage);
+    _stride = sizeof(T);
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename VertexType>
-template<usize DataSize>
-auto VertexBuffer<VertexType>::buffer_data(const std::array<VertexType, DataSize>& vertices, BufferUsage usage) -> void
+template<typename T, usize DataSize>
+auto VertexBuffer::buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(vertices, usage);
+    _stride = sizeof(T);
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename VertexType>
-auto VertexBuffer<VertexType>::buffer_data(const std::vector<VertexType>& vertices, BufferUsage usage) -> void
+template<typename T> auto VertexBuffer::buffer_data(const std::vector<T>& data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(vertices, usage);
+    _stride = sizeof(T);
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename IndexType>
-IndexBuffer<IndexType>::IndexBuffer(std::span<const IndexType> indices, BufferUsage usage) : GlBuffer(indices, usage)
+template<typename T>
+IndexBuffer::IndexBuffer(std::span<const T> data, BufferUsage usage) : GlBuffer(data, usage), _type(to_gl_enum<T>())
 {}
 
-template<typename IndexType>
-template<usize DataSize>
-IndexBuffer<IndexType>::IndexBuffer(std::span<const IndexType, DataSize> indices, BufferUsage usage)
-    : GlBuffer(indices, usage)
+template<typename T, usize DataSize>
+IndexBuffer::IndexBuffer(std::span<const T, DataSize> data, BufferUsage usage)
+    : GlBuffer(data, usage), _type(to_gl_enum<T>())
 {}
 
-template<typename IndexType>
-template<usize DataSize>
-IndexBuffer<IndexType>::IndexBuffer(const std::array<IndexType, DataSize>& indices, BufferUsage usage)
-    : GlBuffer(indices, usage)
+template<typename T, usize DataSize>
+IndexBuffer::IndexBuffer(const std::array<T, DataSize>& data, BufferUsage usage)
+    : GlBuffer(data, usage), _type(to_gl_enum<T>())
 {}
 
-template<typename IndexType>
-IndexBuffer<IndexType>::IndexBuffer(const std::vector<IndexType>& indices, BufferUsage usage) : GlBuffer(indices, usage)
+template<typename T>
+IndexBuffer::IndexBuffer(const std::vector<T>& data, BufferUsage usage) : GlBuffer(data, usage), _type(to_gl_enum<T>())
 {}
 
-template<typename IndexType>
-auto IndexBuffer<IndexType>::buffer_data(std::span<const IndexType> indices, BufferUsage usage) -> void
+template<typename T> auto IndexBuffer::buffer_data(std::span<const T> data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(indices, usage);
+    _type = to_gl_enum<T>();
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename IndexType>
-template<usize DataSize>
-auto IndexBuffer<IndexType>::buffer_data(std::span<const IndexType, DataSize> indices, BufferUsage usage) -> void
+template<typename T, usize DataSize>
+auto IndexBuffer::buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(indices, usage);
+    _type = to_gl_enum<T>();
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename IndexType>
-template<usize DataSize>
-auto IndexBuffer<IndexType>::buffer_data(const std::array<IndexType, DataSize>& indices, BufferUsage usage) -> void
+template<typename T, usize DataSize>
+auto IndexBuffer::buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(indices, usage);
+    _type = to_gl_enum<T>();
+    GlBuffer::buffer_data(data, usage);
 }
 
-template<typename IndexType>
-auto IndexBuffer<IndexType>::buffer_data(const std::vector<IndexType>& indices, BufferUsage usage) -> void
+template<typename T> auto IndexBuffer::buffer_data(const std::vector<T>& data, BufferUsage usage) -> void
 {
-    GlBuffer::buffer_data(indices, usage);
+    _type = to_gl_enum<T>();
+    GlBuffer::buffer_data(data, usage);
 }
 
 } // namespace zth

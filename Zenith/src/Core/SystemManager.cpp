@@ -19,29 +19,20 @@
 
 namespace zth {
 
-namespace {
-
-constexpr usize system_count = 5;
-
-}
-
 auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
 {
-    _system_shutdown_funcs.reserve(system_count);
-
-    auto add_system = [&]<typename InitLambda, typename ShutdownLambda>(InitLambda init_func,
-                                                                        ShutdownLambda shutdown_func) {
+    auto add_system = [&]<typename InitLambda>(InitLambda init_func, SystemShutdownFunc shutdown_func) {
         init_func();
         _system_shutdown_funcs.push_back(shutdown_func);
     };
 
     try
     {
-        add_system([&] { Logger::init(spec.logger_spec); }, [] { Logger::shut_down(); });
-        add_system([&] { Time::init(); }, [] { Time::shut_down(); });
-        add_system([&] { Window::init(spec.window_spec); }, [] { Window::shut_down(); });
-        add_system([&] { Input::init(); }, [] { Input::shut_down(); });
-        add_system([&] { Renderer::init(); }, [] { Renderer::shut_down(); });
+        add_system([&] { Logger::init(spec.logger_spec); }, Logger::shut_down);
+        add_system([&] { Time::init(); }, Time::shut_down);
+        add_system([&] { Window::init(spec.window_spec); }, Window::shut_down);
+        add_system([&] { Input::init(); }, Input::shut_down);
+        add_system([&] { Renderer::init(); }, Renderer::shut_down);
 
         ZTH_CORE_INFO("[System Manager] All systems initialized.");
     }
