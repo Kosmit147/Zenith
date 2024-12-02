@@ -126,7 +126,7 @@ struct TextureParams
     return res;
 }
 
-[[nodiscard]] constexpr auto to_gl_int(SizedTextureFormat tex_format) -> GLint
+[[nodiscard]] constexpr auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum
 {
     switch (tex_format)
     {
