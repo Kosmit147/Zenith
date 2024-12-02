@@ -10,6 +10,7 @@ auto VertexArray::bind_vertex_buffer(const VertexBuffer& vertex_buffer) -> void
 {
     _vertex_buffer = &vertex_buffer;
     glVertexArrayVertexBuffer(_id, 0, _vertex_buffer->native_handle(), 0, _vertex_buffer->stride());
+    bind_layout(_vertex_buffer->layout());
 }
 
 auto VertexArray::bind_index_buffer(const IndexBuffer& index_buffer) -> void
