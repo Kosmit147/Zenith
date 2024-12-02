@@ -98,45 +98,44 @@ auto Sandbox::on_event(const zth::Event& event) -> void
     case WindowResized:
     {
         auto window_resized_event = event.window_resized_event();
-        auto [width, height] = window_resized_event.new_size;
-        ZTH_INFO("Window resized. New size: {}, {}.", width, height);
+        ZTH_INFO("Window resized. New size: {}.", window_resized_event.new_size);
         on_window_resized_event(window_resized_event);
         break;
     }
     case KeyPressed:
     {
         auto [key] = event.key_pressed_event();
-        ZTH_INFO("{} key pressed.", zth::to_string(key));
+        ZTH_INFO("{} key pressed.", key);
         break;
     }
     case KeyReleased:
     {
         auto [key] = event.key_released_event();
-        ZTH_INFO("{} key released.", zth::to_string(key));
+        ZTH_INFO("{} key released.", key);
         break;
     }
     case MouseButtonPressed:
     {
         auto [button] = event.mouse_button_pressed_event();
-        ZTH_INFO("{} mouse button pressed.", zth::to_string(button));
+        ZTH_INFO("{} mouse button pressed.", button);
         break;
     }
     case MouseButtonReleased:
     {
         auto [button] = event.mouse_button_released_event();
-        ZTH_INFO("{} mouse button released.", zth::to_string(button));
+        ZTH_INFO("{} mouse button released.", button);
         break;
     }
     case MouseMoved:
     {
         auto [new_pos] = event.mouse_moved_event();
-        ZTH_INFO("Mouse moved. New pos: {}, {}.", new_pos.x, new_pos.y);
+        ZTH_INFO("Mouse moved. New pos: {}.", new_pos);
         break;
     }
     case MouseWheelScrolled:
     {
         auto [delta] = event.mouse_wheel_scrolled_event();
-        ZTH_INFO("Mouse scrolled. Delta: {}, {}.", delta.x, delta.y);
+        ZTH_INFO("Mouse scrolled. Delta: {}.", delta);
         break;
     }
     }

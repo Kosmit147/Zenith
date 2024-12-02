@@ -4,13 +4,13 @@
 
 #include "Zenith/Platform/Key.hpp"
 #include "Zenith/Platform/Mouse.hpp"
-#include "Zenith/Platform/WindowProps.hpp"
+#include "Zenith/Utility/UtilityTypes.hpp"
 
 namespace zth {
 
 struct WindowResizedEvent
 {
-    WindowSize new_size;
+    Size new_size;
 };
 
 struct KeyPressedEvent

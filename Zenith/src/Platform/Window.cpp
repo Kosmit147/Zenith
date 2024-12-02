@@ -127,7 +127,7 @@ auto Window::close() -> void
     glfwSetWindowShouldClose(_window, true);
 }
 
-auto Window::size() -> WindowSize
+auto Window::size() -> Size
 {
     int width, height;
     glfwGetWindowSize(_window, &width, &height);
@@ -141,7 +141,7 @@ auto Window::mouse_pos() -> glm::vec2
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
-auto Window::create_glfw_window(WindowSize size, const char* title, bool fullscreen) -> GLFWwindow*
+auto Window::create_glfw_window(Size size, const char* title, bool fullscreen) -> GLFWwindow*
 {
     GLFWmonitor* monitor = nullptr;
 
@@ -231,7 +231,7 @@ auto Window::set_glfw_scroll_callback(ScrollCallback callback) -> void
 
 auto Window::glfw_resize_callback([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) -> void
 {
-    auto new_size = WindowSize{ static_cast<u32>(new_width), static_cast<u32>(new_height) };
+    auto new_size = Size{ static_cast<u32>(new_width), static_cast<u32>(new_height) };
     EventQueue::push(WindowResizedEvent{ new_size });
 }
 

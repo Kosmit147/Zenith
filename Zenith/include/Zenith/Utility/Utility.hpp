@@ -2,6 +2,7 @@
 
 #include "Overload.hpp"
 #include "StructArity.hpp"
+#include "UtilityTypes.hpp"
 
 #define ZTH_NO_COPY(type)                                                                                              \
     type(const type&) = delete;                                                                                        \

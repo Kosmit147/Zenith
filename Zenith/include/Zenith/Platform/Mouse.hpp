@@ -1,9 +1,11 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 #include <GLFW/glfw3.h>
 
 #include <array>
+#include <string>
 
 #include "Zenith/Core/Typedefs.hpp"
 
@@ -26,3 +28,11 @@ constexpr std::array mouse_button_enumerations = {
 [[nodiscard]] auto to_string(MouseButton key) -> const char*;
 
 } // namespace zth
+
+template<> struct fmt::formatter<zth::MouseButton> : formatter<std::string>
+{
+    static auto format(zth::MouseButton mouse_button, format_context& ctx) -> decltype(ctx.out())
+    {
+        return format_to(ctx.out(), "{}", zth::to_string(mouse_button));
+    }
+};

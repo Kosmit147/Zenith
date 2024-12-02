@@ -26,7 +26,7 @@ auto compile_shader(GLuint id, ShaderType type) -> bool
         // glGetShaderInfoLog returns a null-terminated string
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
 
-        ZTH_CORE_ERROR("Failed to compile {} shader: {}", to_string(type), info_log.data());
+        ZTH_CORE_ERROR("Failed to compile {} shader: {}", type, info_log.data());
         ZTH_DEBUG_BREAK;
         return false;
     }
