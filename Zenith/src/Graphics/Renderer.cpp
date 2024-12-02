@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "Zenith/Core/Assert.hpp"
+#include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
@@ -20,6 +21,8 @@ auto Renderer::init() -> void
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
+
+    set_clear_color(colors::transparent);
 
     ZTH_CORE_INFO("Renderer initialized.");
 }
@@ -49,6 +52,18 @@ auto Renderer::set_clear_color(glm::vec4 color) -> void
 auto Renderer::clear() -> void
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+auto Renderer::draw(const VertexBuffer& vertex_buffer) -> void
+{
+    vertex_buffer.bind();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer.size());
+}
+
+auto Renderer::draw(const VertexArray& vertex_array) -> void
+{
+    vertex_array.bind();
+    glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
 }
 
 auto Renderer::log_gl_version() -> void

@@ -4,10 +4,10 @@ project(Zenith LANGUAGES CXX)
 add_library(
 	Zenith STATIC
 	"src/Core/Application.cpp"
-	"src/Core/Camera.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
 	"src/Core/SystemManager.cpp"
+	"src/Graphics/Camera.cpp"
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/OpenGl/GlDebug.cpp"

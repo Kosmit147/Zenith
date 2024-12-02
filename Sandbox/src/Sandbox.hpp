@@ -17,11 +17,11 @@ public:
 
 private:
     zth::VertexArray _va;
-    zth::VertexBuffer<Vertex> _vb;
-    zth::IndexBuffer<GLushort> _ib;
+    zth::VertexBuffer _vb;
+    zth::IndexBuffer _ib;
     zth::Shader _shader;
     zth::Texture2D _texture;
-    zth::Camera _camera;
+    zth::PerspectiveCamera _camera;
 
 private:
     auto on_update() -> void override;

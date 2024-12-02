@@ -75,19 +75,16 @@ auto Sandbox::on_update() -> void
 
     update_camera();
 
-    constexpr auto model = glm::mat4(1.0f);
-    const auto view = _camera.view();
-    const auto projection = _camera.projection();
+    constexpr auto transform = glm::mat4(1.0f);
+    const auto view_projection = _camera.view_projection();
 
-    _va.bind();
     _texture.bind();
     _shader.bind();
     _shader.set_unif("time", time);
     _shader.set_unif("tex", 0);
-    _shader.set_unif("model", model);
-    _shader.set_unif("view", view);
-    _shader.set_unif("projection", projection);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, nullptr);
+    _shader.set_unif("transform", transform);
+    _shader.set_unif("view_projection", view_projection);
+    zth::Renderer::draw(_va);
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();
@@ -148,24 +145,28 @@ auto Sandbox::on_event(const zth::Event& event) -> void
 auto Sandbox::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
 {
     auto [width, height] = event.new_size;
-    _camera.aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+    _camera.set_aspect_ratio(static_cast<float>(width) / static_cast<float>(height));
 }
 
 auto Sandbox::update_camera() -> void
 {
     auto delta_time = zth::Time::delta_time<float>();
 
+    auto new_camera_pos = _camera.position();
+
     if (zth::Input::is_key_pressed(zth::Key::W))
-        _camera.position += _camera.front() * camera_movement_speed * delta_time;
+        new_camera_pos += _camera.front() * camera_movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::S))
-        _camera.position -= _camera.front() * camera_movement_speed * delta_time;
+        new_camera_pos -= _camera.front() * camera_movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::A))
-        _camera.position -= _camera.right() * camera_movement_speed * delta_time;
+        new_camera_pos -= _camera.right() * camera_movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::D))
-        _camera.position += _camera.right() * camera_movement_speed * delta_time;
+        new_camera_pos += _camera.right() * camera_movement_speed * delta_time;
+
+    _camera.set_position(new_camera_pos);
 
     auto mouse_delta = zth::Input::mouse_pos_delta();
     mouse_delta *= camera_sensitivity;
