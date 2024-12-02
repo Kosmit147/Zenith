@@ -18,6 +18,18 @@ auto VertexArray::bind_index_buffer(const IndexBuffer& index_buffer) -> void
     glVertexArrayElementBuffer(_id, _index_buffer->native_handle());
 }
 
+auto VertexArray::count() const -> GLsizei
+{
+    ZTH_ASSERT(_index_buffer != nullptr);
+    return _index_buffer->size();
+}
+
+auto VertexArray::index_type() const -> GLenum
+{
+    ZTH_ASSERT(_index_buffer != nullptr);
+    return _index_buffer->index_type();
+}
+
 auto VertexArray::bind_layout(const VertexLayout& layout) const -> void
 {
     GLuint index = 0;
@@ -34,18 +46,6 @@ auto VertexArray::bind_layout(const VertexLayout& layout) const -> void
         index++;
         offset += size;
     }
-}
-
-auto VertexArray::count() const -> GLsizei
-{
-    ZTH_ASSERT(_index_buffer != nullptr);
-    return _index_buffer->size();
-}
-
-auto VertexArray::index_type() const -> GLenum
-{
-    ZTH_ASSERT(_index_buffer != nullptr);
-    return _index_buffer->type();
 }
 
 } // namespace zth

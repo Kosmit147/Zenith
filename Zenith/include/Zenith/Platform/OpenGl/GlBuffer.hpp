@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Zenith/Platform/OpenGl/BufferUsage.hpp"
+#include "Zenith/Platform/OpenGl/VertexLayout.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
@@ -72,9 +73,11 @@ public:
     auto bind() const -> void override { glBindBuffer(GL_ARRAY_BUFFER, native_handle()); }
     auto unbind() const -> void override { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
+    [[nodiscard]] auto layout() const -> auto& { return _layout; }
     [[nodiscard]] auto stride() const { return _stride; }
 
 private:
+    VertexLayout _layout;
     GLsizei _stride;
 };
 
@@ -98,10 +101,10 @@ public:
     auto bind() const -> void override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, native_handle()); }
     auto unbind() const -> void override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
 
-    [[nodiscard]] auto type() const -> GLenum { return _type; }
+    [[nodiscard]] auto index_type() const -> GLenum { return _index_type; }
 
 private:
-    GLenum _type;
+    GLenum _index_type;
 };
 
 } // namespace zth
