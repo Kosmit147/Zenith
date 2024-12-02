@@ -27,9 +27,9 @@ Texture2D::Texture2D(std::span<const u8> data, const TextureParams& params)
     glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, to_gl_int(params.min_filter));
     glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, to_gl_int(params.mag_filter));
 
-    glTextureStorage2D(_id, 1, to_gl_int(params.internal_format), width, height);
+    glTextureStorage2D(_id, 1, to_gl_enum(params.internal_format), width, height);
 
-    auto format = texture_format_from_channels(channels);
+    auto format = texture_format_from_channels(static_cast<u32>(channels));
     glTextureSubImage2D(_id, 0, 0, 0, width, height, to_gl_enum(format), GL_UNSIGNED_BYTE, image);
     glGenerateTextureMipmap(_id);
 

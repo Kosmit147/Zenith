@@ -7,6 +7,7 @@ namespace zth {
 template<typename T> [[nodiscard]] constexpr auto to_gl_enum() -> GLenum
 {
     static_assert(false, "not implemented");
+    return GL_NONE;
 }
 
 template<> [[nodiscard]] constexpr auto to_gl_enum<GLubyte>() -> GLenum

@@ -21,7 +21,7 @@ auto compile_shader(GLuint id, ShaderType type) -> bool
         GLint max_length = 0;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        std::vector<GLchar> info_log(max_length);
+        std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
 
         // glGetShaderInfoLog returns a null-terminated string
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
@@ -66,7 +66,7 @@ auto link_shader_program(GLuint id) -> bool
         GLint max_length = 0;
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        std::vector<GLchar> info_log(max_length);
+        std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
 
         // glGetProgramInfoLog returns a null-terminated string
         glGetProgramInfoLog(id, max_length, &max_length, info_log.data());
@@ -154,7 +154,7 @@ auto Shader::retrieve_unif_info() -> void
     GLint max_unif_name_len = 0;
     glGetProgramiv(_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_unif_name_len);
 
-    auto uniform_name = std::make_unique<char[]>(max_unif_name_len);
+    auto uniform_name = std::make_unique<char[]>(static_cast<std::size_t>(max_unif_name_len));
 
     for (GLint i = 0; i < uniform_count; i++)
     {
@@ -169,7 +169,7 @@ auto Shader::retrieve_unif_info() -> void
             .size = unif_size,
         };
 
-        _uniform_map.emplace(std::string(uniform_name.get(), unif_name_length), uniform_info);
+        _uniform_map.emplace(std::string(uniform_name.get(), static_cast<std::size_t>(unif_name_length)), uniform_info);
     }
 }
 

@@ -11,6 +11,7 @@ namespace zth {
 template<typename T> constexpr auto to_vertex_layout_elem() -> VertexLayoutElement
 {
     static_assert(false, "not implemented");
+    return static_cast<VertexLayoutElement>(NULL);
 }
 
 template<> constexpr auto to_vertex_layout_elem<const GLfloat>() -> VertexLayoutElement
