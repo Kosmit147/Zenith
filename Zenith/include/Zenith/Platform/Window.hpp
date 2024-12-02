@@ -42,6 +42,8 @@ public:
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto should_close() -> bool;
+
+    // returns the time since window was created, in seconds
     [[nodiscard]] static auto time() -> double;
 
     static auto set_active() -> void;
