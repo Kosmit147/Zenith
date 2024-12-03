@@ -7,7 +7,7 @@ class Drawable
 public:
     virtual ~Drawable() = default;
 
-    virtual auto draw() -> void = 0;
+    virtual auto draw() const -> void = 0;
 };
 
 } // namespace zth

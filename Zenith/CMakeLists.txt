@@ -7,6 +7,7 @@ add_library(
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
 	"src/Core/SystemManager.cpp"
+	"src/Core/Transformable.cpp"
 	"src/Graphics/Camera.cpp"
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"

@@ -1,7 +1,7 @@
 #version 460 core
 
-in vec4 Color;
 in vec2 TexCoords;
+in vec4 Color;
 
 uniform sampler2D tex;
 
