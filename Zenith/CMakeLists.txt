@@ -10,6 +10,7 @@ add_library(
 	"src/Graphics/Camera.cpp"
 	"src/Graphics/Renderer.cpp"
 	"src/Logging/Logger.cpp"
+	"src/Platform/OpenGl/GlBuffer.cpp"
 	"src/Platform/OpenGl/GlDebug.cpp"
 	"src/Platform/OpenGl/Shader.cpp"
 	"src/Platform/OpenGl/Texture2D.cpp"

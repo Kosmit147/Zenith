@@ -33,6 +33,7 @@ public:
     template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexLayout;
 
     auto push(VertexLayoutElement elem) -> void { _elements.push_back(elem); }
+    auto clear() -> void { _elements.clear(); }
 
     [[nodiscard]] auto begin() const { return _elements.begin(); }
     [[nodiscard]] auto end() const { return _elements.end(); }
