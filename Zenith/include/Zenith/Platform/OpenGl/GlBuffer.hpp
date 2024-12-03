@@ -2,9 +2,7 @@
 
 #include <glad/glad.h>
 
-#include <array>
-#include <span>
-#include <vector>
+#include <ranges>
 
 #include "Zenith/Platform/OpenGl/BufferUsage.hpp"
 #include "Zenith/Platform/OpenGl/VertexLayout.hpp"
@@ -15,63 +13,48 @@ namespace zth {
 class GlBuffer
 {
 public:
-    explicit GlBuffer() { create(); }
-
-    template<typename T> explicit GlBuffer(std::span<const T> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit GlBuffer(std::span<const T, DataSize> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit GlBuffer(const std::array<T, DataSize>& data, BufferUsage usage);
-    template<typename T> explicit GlBuffer(const std::vector<T>& data, BufferUsage usage);
+    explicit GlBuffer();
+    explicit GlBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
     ZTH_NO_COPY_NO_MOVE(GlBuffer)
-    virtual ~GlBuffer() { destroy(); }
+    virtual ~GlBuffer();
 
-    template<typename T> auto buffer_data(std::span<const T> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize> auto buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize>
-    auto buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void;
-    template<typename T> auto buffer_data(const std::vector<T>& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
 
     virtual auto bind() const -> void = 0;
     virtual auto unbind() const -> void = 0;
 
-    auto free() -> void
-    {
-        destroy();
-        _id = 0;
-        _size = 0;
-    }
+    virtual auto free() -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto size() const { return _size; }
+    [[nodiscard]] auto size_bytes() const { return _size_bytes; }
 
 private:
     GLuint _id = GL_NONE;
     GLsizei _size = 0;
+    GLsizei _size_bytes = 0;
 
 private:
-    auto create() -> void { glCreateBuffers(1, &_id); }
-    auto destroy() const -> void { glDeleteBuffers(1, &_id); }
+    auto create() -> void;
+    auto destroy() const -> void;
 };
 
 class VertexBuffer : public GlBuffer
 {
 public:
-    template<typename T> explicit VertexBuffer(std::span<const T> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit VertexBuffer(std::span<const T, DataSize> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit VertexBuffer(const std::array<T, DataSize>& data, BufferUsage usage);
-    template<typename T> explicit VertexBuffer(const std::vector<T>& data, BufferUsage usage);
+    explicit VertexBuffer() = default;
+    explicit VertexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
     ZTH_NO_COPY_NO_MOVE(VertexBuffer)
     ~VertexBuffer() override = default;
 
-    template<typename T> auto buffer_data(std::span<const T> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize> auto buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize>
-    auto buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void;
-    template<typename T> auto buffer_data(const std::vector<T>& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
 
-    auto bind() const -> void override { glBindBuffer(GL_ARRAY_BUFFER, native_handle()); }
-    auto unbind() const -> void override { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+    auto bind() const -> void override;
+    auto unbind() const -> void override;
+
+    auto free() -> void override;
 
     [[nodiscard]] auto layout() const -> auto& { return _layout; }
     [[nodiscard]] auto stride() const { return _stride; }
@@ -84,22 +67,18 @@ private:
 class IndexBuffer : public GlBuffer
 {
 public:
-    template<typename T> explicit IndexBuffer(std::span<const T> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit IndexBuffer(std::span<const T, DataSize> data, BufferUsage usage);
-    template<typename T, usize DataSize> explicit IndexBuffer(const std::array<T, DataSize>& data, BufferUsage usage);
-    template<typename T> explicit IndexBuffer(const std::vector<T>& data, BufferUsage usage);
+    explicit IndexBuffer() = default;
+    explicit IndexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
     ZTH_NO_COPY_NO_MOVE(IndexBuffer)
     ~IndexBuffer() override = default;
 
-    template<typename T> auto buffer_data(std::span<const T> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize> auto buffer_data(std::span<const T, DataSize> data, BufferUsage usage) -> void;
-    template<typename T, usize DataSize>
-    auto buffer_data(const std::array<T, DataSize>& data, BufferUsage usage) -> void;
-    template<typename T> auto buffer_data(const std::vector<T>& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
 
-    auto bind() const -> void override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, native_handle()); }
-    auto unbind() const -> void override { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+    auto bind() const -> void override;
+    auto unbind() const -> void override;
+
+    auto free() -> void override;
 
     [[nodiscard]] auto index_type() const -> GLenum { return _index_type; }
 
