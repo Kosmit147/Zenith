@@ -6,7 +6,15 @@
 
 namespace zth {
 
-class PerspectiveCamera
+class Camera
+{
+public:
+    virtual ~Camera() = default;
+
+    [[nodiscard]] virtual auto view_projection() const -> const glm::mat4& = 0;
+};
+
+class PerspectiveCamera : public Camera
 {
 public:
     explicit PerspectiveCamera(glm::vec3 position, glm::vec3 front, float aspect_ratio,
@@ -36,7 +44,7 @@ public:
     [[nodiscard]] auto yaw() const { return _yaw; }
     [[nodiscard]] auto pitch() const { return _pitch; }
 
-    [[nodiscard]] auto view_projection() const -> auto& { return _view_projection; }
+    [[nodiscard]] auto view_projection() const -> const glm::mat4& override { return _view_projection; }
 
 private:
     glm::vec3 _position;

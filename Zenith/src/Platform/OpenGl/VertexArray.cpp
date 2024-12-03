@@ -6,6 +6,32 @@
 
 namespace zth {
 
+VertexArray::VertexArray()
+{
+    create();
+}
+
+VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer) : VertexArray()
+{
+    bind_vertex_buffer(vertex_buffer);
+    bind_index_buffer(index_buffer);
+}
+
+VertexArray::~VertexArray()
+{
+    destroy();
+}
+
+auto VertexArray::bind() const -> void
+{
+    glBindVertexArray(_id);
+}
+
+auto VertexArray::unbind() const -> void
+{
+    glBindVertexArray(0);
+}
+
 auto VertexArray::bind_vertex_buffer(const VertexBuffer& vertex_buffer) -> void
 {
     _vertex_buffer = &vertex_buffer;
@@ -29,6 +55,16 @@ auto VertexArray::index_type() const -> GLenum
 {
     ZTH_ASSERT(_index_buffer != nullptr);
     return _index_buffer->index_type();
+}
+
+auto VertexArray::create() -> void
+{
+    glCreateVertexArrays(1, &_id);
+}
+
+auto VertexArray::destroy() const -> void
+{
+    glDeleteVertexArrays(1, &_id);
 }
 
 auto VertexArray::bind_layout(const VertexLayout& layout) const -> void

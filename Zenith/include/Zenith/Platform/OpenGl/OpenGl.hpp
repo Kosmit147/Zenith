@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fwd.hpp"
+
 #include "BufferUsage.hpp"
 #include "GlBuffer.hpp"
 #include "GlContext.hpp"

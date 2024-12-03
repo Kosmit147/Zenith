@@ -1,13 +1,23 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 #include <glm/vec4.hpp>
 
-#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/VertexArray.hpp"
+#include <memory>
+
+#include "Zenith/Graphics/fwd.hpp"
+#include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
 
 class Event;
+
+struct RenderStates
+{
+    const glm::mat4* transform = nullptr;
+    const Shader* shader = nullptr;
+    const Texture2D* texture = nullptr;
+};
 
 class Renderer
 {
@@ -21,11 +31,19 @@ public:
     static auto set_clear_color(glm::vec4 color) -> void;
     static auto clear() -> void;
 
-    static auto draw(const VertexBuffer& vertex_buffer) -> void;
-    static auto draw(const VertexArray& vertex_array) -> void;
+    static auto set_camera(std::shared_ptr<Camera> camera) -> void;
+
+    static auto draw(const Mesh& mesh, const RenderStates& render_states) -> void;
+    static auto draw(const VertexArray& vertex_array, const RenderStates& render_states) -> void;
+    static auto draw(const VertexBuffer& vertex_buffer, const RenderStates& render_states) -> void;
+
+private:
+    static inline std::shared_ptr<Camera> _camera = nullptr;
 
 private:
     static auto log_gl_version() -> void;
+
+    static auto bind_render_states(const RenderStates& render_states) -> void;
 };
 
 } // namespace zth

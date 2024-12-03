@@ -3,10 +3,16 @@
 #include <glad/glad.h>
 
 #include "Zenith/Core/Assert.hpp"
+#include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/Colors.hpp"
+#include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
+#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
+#include "Zenith/Platform/OpenGl/Shader.hpp"
+#include "Zenith/Platform/OpenGl/Texture2D.hpp"
+#include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 namespace zth {
 
@@ -54,16 +60,28 @@ auto Renderer::clear() -> void
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-auto Renderer::draw(const VertexBuffer& vertex_buffer) -> void
+auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
 {
-    vertex_buffer.bind();
-    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer.size());
+    _camera = std::move(camera);
 }
 
-auto Renderer::draw(const VertexArray& vertex_array) -> void
+auto Renderer::draw(const Mesh& mesh, const RenderStates& render_states) -> void
 {
+    draw(mesh.vertex_array(), render_states);
+}
+
+auto Renderer::draw(const VertexArray& vertex_array, const RenderStates& render_states) -> void
+{
+    bind_render_states(render_states);
     vertex_array.bind();
     glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
+}
+
+auto Renderer::draw(const VertexBuffer& vertex_buffer, const RenderStates& render_states) -> void
+{
+    bind_render_states(render_states);
+    vertex_buffer.bind();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer.size());
 }
 
 auto Renderer::log_gl_version() -> void
@@ -79,6 +97,35 @@ auto Renderer::log_gl_version() -> void
                   "\tVersion: {}\n"
                   "\tGLSL Version: {}",
                   vendor, renderer, version, glsl_version);
+}
+
+auto Renderer::bind_render_states(const RenderStates& render_states) -> void
+{
+    auto& [transform, shader, texture] = render_states;
+
+    if (shader)
+    {
+        shader->bind();
+
+        ZTH_ASSERT(_camera != nullptr);
+        shader->set_unif("view_projection", _camera->view_projection());
+    }
+    else
+    {
+        // TODO: bind default shader?
+        shader->unbind();
+    }
+
+    if (transform)
+        shader->set_unif("transform", *transform);
+
+    if (texture)
+        texture->bind();
+    else
+        texture->unbind();
+
+    if (shader && texture)
+        shader->set_unif("tex", 0);
 }
 
 } // namespace zth

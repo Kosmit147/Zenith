@@ -1,5 +1,6 @@
 #include "Zenith/Graphics/Camera.hpp"
 
+#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace zth {
@@ -25,7 +26,7 @@ PerspectiveCamera::PerspectiveCamera(glm::vec3 position, float yaw, float pitch,
 
 auto PerspectiveCamera::update_view_projection() -> void
 {
-    auto view = lookAt(_position, _position + _front, _up);
+    auto view = glm::lookAt(_position, _position + _front, _up);
     auto projection = glm::perspective(_fov, _aspect_ratio, 0.1f, 100.0f);
     _view_projection = projection * view;
 }
