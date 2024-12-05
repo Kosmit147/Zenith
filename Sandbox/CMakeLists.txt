@@ -6,8 +6,6 @@ add_executable(
 	"src/Sandbox.cpp"
 )
 
-b_embed(Sandbox "src/shaders/test.vert")
-b_embed(Sandbox "src/shaders/test.frag")
 b_embed(Sandbox "assets/container.jpg")
 b_embed(Sandbox "assets/emoji.png")
 b_embed(Sandbox "assets/wall.jpg")

@@ -6,6 +6,9 @@
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
+#include "Zenith/Graphics/Meshes.hpp"
+#include "Zenith/Graphics/Shaders.hpp"
+#include "Zenith/Graphics/Shapes/Shapes.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
@@ -30,6 +33,9 @@ auto Renderer::init() -> void
 
     set_clear_color(colors::transparent);
 
+    shaders::load_shaders();
+    meshes::load_meshes();
+
     ZTH_CORE_INFO("Renderer initialized.");
 }
 
@@ -47,6 +53,9 @@ auto Renderer::on_window_event(const Event& event) -> void
 
 auto Renderer::shut_down() -> void
 {
+    meshes::unload_meshes();
+    shaders::unload_shaders();
+
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
@@ -63,6 +72,11 @@ auto Renderer::clear() -> void
 auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
 {
     _camera = std::move(camera);
+}
+
+auto Renderer::draw(const Shape& shape, const RenderStates& render_states) -> void
+{
+    draw(shape.mesh(), render_states);
 }
 
 auto Renderer::draw(const Mesh& mesh, const RenderStates& render_states) -> void
@@ -101,31 +115,20 @@ auto Renderer::log_gl_version() -> void
 
 auto Renderer::bind_render_states(const RenderStates& render_states) -> void
 {
-    auto& [transform, shader, texture] = render_states;
+    auto& [transform, passed_in_shader, texture] = render_states;
+    auto shader = passed_in_shader ? passed_in_shader : shaders::fallback_shader;
 
-    if (shader)
-    {
-        shader->bind();
+    shader->bind();
 
-        ZTH_ASSERT(_camera != nullptr);
-        shader->set_unif("view_projection", _camera->view_projection());
-    }
-    else
-    {
-        // TODO: bind default shader?
-        shader->unbind();
-    }
-
-    if (transform)
-        shader->set_unif("transform", *transform);
+    ZTH_ASSERT(_camera != nullptr);
+    shader->set_unif("viewProjection", _camera->view_projection());
+    shader->set_unif("transform", transform ? *transform : glm::mat4{ 1.0f });
 
     if (texture)
+    {
         texture->bind();
-    else
-        texture->unbind();
-
-    if (shader && texture)
         shader->set_unif("tex", 0);
+    }
 }
 
 } // namespace zth

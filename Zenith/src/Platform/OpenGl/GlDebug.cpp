@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
 
@@ -45,6 +46,7 @@ auto gl_debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unus
     case GL_DEBUG_SEVERITY_MEDIUM:
     case GL_DEBUG_SEVERITY_HIGH:
         ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
+        ZTH_DEBUG_BREAK;
         break;
     default:
         break;

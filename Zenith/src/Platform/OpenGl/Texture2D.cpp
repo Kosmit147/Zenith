@@ -1,40 +1,42 @@
 #include "Zenith/Platform/OpenGl/Texture2D.hpp"
 
-#include <stb_image/stb_image.h>
-
-#include "Zenith/Logging/Logger.hpp"
-
 namespace zth {
 
-Texture2D::Texture2D(std::span<const u8> data, const TextureParams& params)
+Texture2D::Texture2D(Texture2D&& other) noexcept : _id(other._id)
 {
-    stbi_set_flip_vertically_on_load(true);
+    other._id = GL_NONE;
+}
 
-    create();
+auto Texture2D::operator=(Texture2D&& other) noexcept -> Texture2D&
+{
+    _id = other._id;
+    other._id = GL_NONE;
+    return *this;
+}
 
-    int width, height, channels;
-    auto image = stbi_load_from_memory(data.data(), static_cast<int>(data.size_bytes()), &width, &height, &channels, 0);
+Texture2D::~Texture2D()
+{
+    destroy();
+}
 
-    if (!image)
-    {
-        ZTH_CORE_ERROR("Failed to load texture from memory!");
-        ZTH_DEBUG_BREAK;
-        return;
-    }
+auto Texture2D::bind(u32 slot) const -> void
+{
+    glBindTextureUnit(slot, _id);
+}
 
-    glTextureParameteri(_id, GL_TEXTURE_WRAP_S, to_gl_int(params.horizontal_wrap));
-    glTextureParameteri(_id, GL_TEXTURE_WRAP_T, to_gl_int(params.vertical_wrap));
-    glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, to_gl_int(params.min_filter));
-    glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, to_gl_int(params.mag_filter));
+auto Texture2D::unbind(u32 slot) -> void
+{
+    glBindTextureUnit(slot, 0);
+}
 
-    glTextureStorage2D(_id, 1, to_gl_enum(params.internal_format), width, height);
+auto Texture2D::create() -> void
+{
+    glCreateTextures(GL_TEXTURE_2D, 1, &_id);
+}
 
-    auto format = texture_format_from_channels(static_cast<u32>(channels));
-    glTextureSubImage2D(_id, 0, 0, 0, width, height, to_gl_enum(format), GL_UNSIGNED_BYTE, image);
-    glGenerateTextureMipmap(_id);
-
-    stbi_image_free(image);
-    stbi_set_flip_vertically_on_load(false);
+auto Texture2D::destroy() const -> void
+{
+    glDeleteTextures(1, &_id);
 }
 
 } // namespace zth

@@ -4,6 +4,7 @@
 
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
+#include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
 
@@ -15,6 +16,13 @@ public:
         : _vertex_buffer(vertex_data, vertex_buffer_usage), _index_buffer(index_data, index_buffer_usage),
           _vertex_array(_vertex_buffer, _index_buffer)
     {}
+
+    ZTH_NO_COPY(Mesh)
+
+    Mesh(Mesh&& other) noexcept;
+    auto operator=(Mesh&& other) noexcept -> Mesh&;
+
+    ~Mesh() = default;
 
     [[nodiscard]] auto vertex_array() const -> auto& { return _vertex_array; }
     [[nodiscard]] auto vertex_buffer() const -> auto& { return _vertex_buffer; }

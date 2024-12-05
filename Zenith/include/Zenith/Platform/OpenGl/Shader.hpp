@@ -40,7 +40,7 @@ public:
     ~Shader();
 
     auto bind() const -> void { glUseProgram(_id); }
-    auto unbind() const -> void { glUseProgram(0); }
+    static auto unbind() -> void { glUseProgram(0); }
 
     template<typename T> auto set_unif(const std::string& name, const T& val) const -> void
     {
@@ -62,12 +62,12 @@ private:
     auto retrieve_unif_info() -> void;
     [[nodiscard]] auto get_unif_info(const std::string& name) const -> std::optional<UniformInfo>;
 
-    auto set_unif(GLint location, GLint val) const -> void;
-    auto set_unif(GLint location, GLfloat val) const -> void;
-    auto set_unif(GLint location, glm::vec2 val) const -> void;
-    auto set_unif(GLint location, glm::vec3 val) const -> void;
-    auto set_unif(GLint location, glm::vec4 val) const -> void;
-    auto set_unif(GLint location, const glm::mat4& val) const -> void;
+    static auto set_unif(GLint location, GLint val) -> void;
+    static auto set_unif(GLint location, GLfloat val) -> void;
+    static auto set_unif(GLint location, glm::vec2 val) -> void;
+    static auto set_unif(GLint location, glm::vec3 val) -> void;
+    static auto set_unif(GLint location, glm::vec4 val) -> void;
+    static auto set_unif(GLint location, const glm::mat4& val) -> void;
 };
 
 [[nodiscard]] constexpr auto to_gl_enum(ShaderType shader_type) -> GLenum

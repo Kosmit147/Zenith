@@ -16,7 +16,11 @@ public:
     explicit GlBuffer();
     explicit GlBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
-    ZTH_NO_COPY_NO_MOVE(GlBuffer)
+    ZTH_NO_COPY(GlBuffer)
+
+    GlBuffer(GlBuffer&& other) noexcept;
+    auto operator=(GlBuffer&& other) noexcept -> GlBuffer&;
+
     virtual ~GlBuffer();
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
@@ -46,7 +50,11 @@ public:
     explicit VertexBuffer() = default;
     explicit VertexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
-    ZTH_NO_COPY_NO_MOVE(VertexBuffer)
+    ZTH_NO_COPY(VertexBuffer)
+
+    VertexBuffer(VertexBuffer&& other) noexcept;
+    auto operator=(VertexBuffer&& other) noexcept -> VertexBuffer&;
+
     ~VertexBuffer() override = default;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
@@ -70,7 +78,11 @@ public:
     explicit IndexBuffer() = default;
     explicit IndexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
 
-    ZTH_NO_COPY_NO_MOVE(IndexBuffer)
+    ZTH_NO_COPY(IndexBuffer)
+
+    IndexBuffer(IndexBuffer&& other) noexcept;
+    auto operator=(IndexBuffer&& other) noexcept -> IndexBuffer&;
+
     ~IndexBuffer() override = default;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
