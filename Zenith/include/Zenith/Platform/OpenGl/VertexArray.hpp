@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include "Zenith/Platform/OpenGl/fwd.hpp"
-#include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
 
@@ -12,11 +11,18 @@ class VertexArray
 public:
     explicit VertexArray();
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer);
-    ZTH_NO_COPY_NO_MOVE(VertexArray)
+    explicit VertexArray(VertexBuffer&& vertex_buffer, IndexBuffer&& index_buffer) = delete;
+
+    VertexArray(const VertexArray& other);
+    auto operator=(const VertexArray& other) -> VertexArray&;
+
+    VertexArray(VertexArray&& other) noexcept;
+    auto operator=(VertexArray&& other) noexcept -> VertexArray&;
+
     ~VertexArray();
 
     auto bind() const -> void;
-    auto unbind() const -> void;
+    static auto unbind() -> void;
 
     auto bind_vertex_buffer(const VertexBuffer& vertex_buffer) -> void;
     auto bind_vertex_buffer(VertexBuffer&& vertex_buffer) = delete;

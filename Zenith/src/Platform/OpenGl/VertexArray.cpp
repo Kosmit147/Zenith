@@ -17,6 +17,49 @@ VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& i
     bind_index_buffer(index_buffer);
 }
 
+VertexArray::VertexArray(const VertexArray& other) : VertexArray()
+{
+    bind_vertex_buffer(other.vertex_buffer());
+    bind_index_buffer(other.index_buffer());
+}
+
+auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
+{
+    if (this == &other)
+        return *this;
+
+    destroy();
+    create();
+
+    bind_vertex_buffer(other.vertex_buffer());
+    bind_index_buffer(other.index_buffer());
+
+    return *this;
+}
+
+VertexArray::VertexArray(VertexArray&& other) noexcept
+    : _id(other._id), _vertex_buffer(other._vertex_buffer), _index_buffer(other._index_buffer)
+{
+    other._id = GL_NONE;
+    other._vertex_buffer = nullptr;
+    other._index_buffer = nullptr;
+}
+
+auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
+{
+    destroy();
+
+    _id = other._id;
+    _vertex_buffer = other._vertex_buffer;
+    _index_buffer = other._index_buffer;
+
+    other._id = GL_NONE;
+    other._vertex_buffer = nullptr;
+    other._index_buffer = nullptr;
+
+    return *this;
+}
+
 VertexArray::~VertexArray()
 {
     destroy();
@@ -27,7 +70,7 @@ auto VertexArray::bind() const -> void
     glBindVertexArray(_id);
 }
 
-auto VertexArray::unbind() const -> void
+auto VertexArray::unbind() -> void
 {
     glBindVertexArray(0);
 }

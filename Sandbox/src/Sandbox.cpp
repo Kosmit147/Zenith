@@ -1,9 +1,9 @@
 #include "Sandbox.hpp"
 
-#include <algorithm>
-#include <array>
-
 #include <battery/embed.hpp>
+#include <glm/glm.hpp>
+
+#include <algorithm>
 
 ZTH_IMPLEMENT_APP(Sandbox)
 
@@ -16,11 +16,11 @@ const zth::ApplicationSpec app_spec = {
         .gl_version = { 4, 6 },
         .gl_profile = zth::GlProfile::Core,
         .fullscreen = false,
-        .vsync = false,
+        .vsync = true,
         .resizable = true,
         .maximized = true,
         .cursor_enabled = false,
-        .transparent_framebuffer = true,
+        .transparent_framebuffer = false,
         .forced_aspect_ratio = std::nullopt,
     },
     .logger_spec = {
@@ -29,60 +29,11 @@ const zth::ApplicationSpec app_spec = {
     }
 };
 
-const auto vertex_shader_source = b::embed<"src/shaders/test.vert">().str();
-const auto fragment_shader_source = b::embed<"src/shaders/test.frag">().str();
 const auto container_texture = b::embed<"assets/container.jpg">().vec();
 const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
 const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
 
-// clang-format off
-constexpr std::array vertices = {
-    // 0
-    Vertex{ .position = { -1.0f, -1.0f, 1.0f }, .tex_coords = { 0.0f, 1.0f }, .color = { 1.0f, 0.0f, 0.0f, 1.0f } },
-    // 1
-    Vertex{ .position = { -1.0f, -1.0f, -1.0f }, .tex_coords = { 1.0f, 1.0f }, .color = { 0.0f, 1.0f, 0.0f, 1.0f } },
-    // 2
-    Vertex{ .position = { 1.0f, -1.0f, -1.0f }, .tex_coords = { 1.0f, 0.0f }, .color = { 0.0f, 0.0f, 1.0f, 1.0f } },
-    // 3
-    Vertex{ .position = { 1.0f, -1.0f, 1.0f }, .tex_coords = { 0.0f, 0.0f }, .color = { 0.0f, 0.0f, 1.0f, 1.0f } },
-    // 4
-    Vertex{ .position = { -1.0f, 1.0f, 1.0f }, .tex_coords = { 1.0f, 0.0f }, .color = { 1.0f, 0.0f, 0.0f, 1.0f } },
-    // 5
-    Vertex{ .position = { -1.0f, 1.0f, -1.0f }, .tex_coords = { 0.0f, 0.0f }, .color = { 0.0f, 1.0f, 0.0f, 1.0f } },
-    // 6
-    Vertex{ .position = { 1.0f, 1.0f, -1.0f }, .tex_coords = { 0.0f, 1.0f }, .color = { 0.0f, 0.0f, 1.0f, 1.0f } },
-    // 7
-    Vertex{ .position = { 1.0f, 1.0f, 1.0f }, .tex_coords = { 1.0f, 1.0f }, .color = { 0.0f, 0.0f, 1.0f, 1.0f } },
-};
-
-constexpr std::array<GLushort, 36> indices = {
-    // bottom wall
-    0, 1, 2,
-    2, 3, 0,
-
-    // top wall
-    4, 5, 6,
-    6, 7, 4,
-
-    // right wall
-    3, 7, 6,
-    6, 2, 3,
-
-    // front wall
-    0, 4, 7,
-    7, 3, 0,
-
-    // left wall
-    1, 0, 4,
-    4, 5, 1,
-
-    // back wall
-    1, 2, 6,
-    6, 5, 1,
-};
-// clang-format on
-
-constexpr auto camera_position = glm::vec3(0.0f, 0.0f, 3.0f);
+constexpr auto camera_position = glm::vec3(0.0f, 0.0f, 5.0f);
 constexpr auto camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 
 const auto aspect_ratio =
@@ -94,13 +45,13 @@ constexpr auto min_camera_pitch = glm::radians(-89.0f);
 constexpr auto max_camera_pitch = glm::radians(89.0f);
 
 constexpr auto camera_movement_speed = 1.5f;
+constexpr auto camera_sprint_speed_multiplier = 3.0f;
 constexpr auto camera_sensitivity = 0.001f;
 
 } // namespace
 
 Sandbox::Sandbox()
-    : Application(app_spec), _mesh(vertices, zth::BufferUsage::static_draw, indices, zth::BufferUsage::static_draw),
-      _shader(vertex_shader_source, fragment_shader_source), _texture(wall_texture),
+    : Application(app_spec), _texture(wall_texture),
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov))
 {
     zth::Renderer::set_camera(_camera);
@@ -110,9 +61,11 @@ auto Sandbox::on_update() -> void
 {
     update_camera();
 
-    constexpr auto transform = glm::mat4(1.0f);
+    _cube.rotate(0.0005f, glm::vec3{ 0.0f, 1.0f, 0.0f });
+    _cube.rotate(0.0005f, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 
-    zth::Renderer::draw(_mesh, { &transform, &_shader, &_texture });
+    // TODO: handle drawing cubes better
+    zth::Renderer::draw(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_texture });
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();
@@ -179,19 +132,24 @@ auto Sandbox::update_camera() const -> void
 {
     auto delta_time = zth::Time::delta_time<float>();
 
+    auto movement_speed = camera_movement_speed;
+
+    if (zth::Input::is_key_pressed(zth::Key::LeftShift))
+        movement_speed *= camera_sprint_speed_multiplier;
+
     auto new_camera_pos = _camera->position();
 
     if (zth::Input::is_key_pressed(zth::Key::W))
-        new_camera_pos += _camera->front() * camera_movement_speed * delta_time;
+        new_camera_pos += _camera->front() * movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::S))
-        new_camera_pos -= _camera->front() * camera_movement_speed * delta_time;
+        new_camera_pos -= _camera->front() * movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::A))
-        new_camera_pos -= _camera->right() * camera_movement_speed * delta_time;
+        new_camera_pos -= _camera->right() * movement_speed * delta_time;
 
     if (zth::Input::is_key_pressed(zth::Key::D))
-        new_camera_pos += _camera->right() * camera_movement_speed * delta_time;
+        new_camera_pos += _camera->right() * movement_speed * delta_time;
 
     _camera->set_position(new_camera_pos);
 

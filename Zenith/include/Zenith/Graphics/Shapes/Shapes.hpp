@@ -1,4 +1,4 @@
 #pragma once
 
-#include "Cube.hpp"
+#include "CubeShape.hpp"
 #include "Shape.hpp"

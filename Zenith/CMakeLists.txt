@@ -8,8 +8,12 @@ add_library(
 	"src/Core/main.cpp"
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
+	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Camera.cpp"
+	"src/Graphics/Mesh.cpp"
+	"src/Graphics/Meshes.cpp"
 	"src/Graphics/Renderer.cpp"
+	"src/Graphics/Shaders.cpp"
 	"src/Logging/Logger.cpp"
 	"src/Platform/OpenGl/GlBuffer.cpp"
 	"src/Platform/OpenGl/GlDebug.cpp"
@@ -25,11 +29,18 @@ add_library(
 	"src/Time/Time.cpp"
 )
 
+b_embed(Zenith "src/Graphics/Shaders/fallback.vert")
+b_embed(Zenith "src/Graphics/Shaders/fallback.frag")
+b_embed(Zenith "src/Graphics/Shaders/texture.vert")
+b_embed(Zenith "src/Graphics/Shaders/texture.frag")
+
 target_include_directories(Zenith PUBLIC "include")
 target_compile_features(Zenith PRIVATE cxx_std_23)
 target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(Zenith PRIVATE "src/pch.hpp")
 set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+
+target_compile_definitions(Zenith PRIVATE GLM_ENABLE_EXPERIMENTAL)
 
 target_link_libraries(Zenith PUBLIC glad)
 target_link_libraries(Zenith PUBLIC glfw)

@@ -33,6 +33,7 @@ public:
 
     static auto set_camera(std::shared_ptr<Camera> camera) -> void;
 
+    static auto draw(const Shape& shape, const RenderStates& render_states) -> void;
     static auto draw(const Mesh& mesh, const RenderStates& render_states) -> void;
     static auto draw(const VertexArray& vertex_array, const RenderStates& render_states) -> void;
     static auto draw(const VertexBuffer& vertex_buffer, const RenderStates& render_states) -> void;

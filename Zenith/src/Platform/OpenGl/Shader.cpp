@@ -186,32 +186,32 @@ auto Shader::get_unif_info(const std::string& name) const -> std::optional<Unifo
     }
 }
 
-auto Shader::set_unif(GLint location, GLint val) const -> void
+auto Shader::set_unif(GLint location, GLint val) -> void
 {
     glUniform1i(location, val);
 }
 
-auto Shader::set_unif(GLint location, GLfloat val) const -> void
+auto Shader::set_unif(GLint location, GLfloat val) -> void
 {
     glUniform1f(location, val);
 }
 
-auto Shader::set_unif(GLint location, glm::vec2 val) const -> void
+auto Shader::set_unif(GLint location, glm::vec2 val) -> void
 {
     glUniform2f(location, val.x, val.y);
 }
 
-auto Shader::set_unif(GLint location, glm::vec3 val) const -> void
+auto Shader::set_unif(GLint location, glm::vec3 val) -> void
 {
     glUniform3f(location, val.x, val.y, val.z);
 }
 
-auto Shader::set_unif(GLint location, glm::vec4 val) const -> void
+auto Shader::set_unif(GLint location, glm::vec4 val) -> void
 {
     glUniform4f(location, val.x, val.y, val.z, val.w);
 }
 
-auto Shader::set_unif(GLint location, const glm::mat4& val) const -> void
+auto Shader::set_unif(GLint location, const glm::mat4& val) -> void
 {
     glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
 }
