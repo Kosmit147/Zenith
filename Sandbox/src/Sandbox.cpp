@@ -59,10 +59,12 @@ Sandbox::Sandbox()
 
 auto Sandbox::on_update() -> void
 {
+    const auto time = zth::Time::time<float>();
+
     update_camera();
 
-    _cube.rotate(0.0005f, glm::vec3{ 0.0f, 1.0f, 0.0f });
-    _cube.rotate(0.0005f, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
+    _cube.rotate(0.0005f * time, glm::vec3{ 0.0f, 1.0f, 0.0f });
+    _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 
     // TODO: handle drawing cubes better
     zth::Renderer::draw(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_texture });
