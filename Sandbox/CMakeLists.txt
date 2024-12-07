@@ -4,6 +4,7 @@ project(Sandbox LANGUAGES CXX)
 add_executable(
 	Sandbox
 	"src/Sandbox.cpp"
+	"src/Scene.cpp"
 )
 
 b_embed(Sandbox "assets/container.jpg")

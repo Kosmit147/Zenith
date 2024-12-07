@@ -32,7 +32,7 @@ auto Application::run() -> void
         handle_update();
 
         Renderer::render();
-        on_render();
+        handle_render();
 
         Window::swap_buffers();
         Window::poll_events();
@@ -49,6 +49,12 @@ auto Application::handle_update() -> void
 {
     SystemManager::on_update();
     on_update();
+}
+
+auto Application::handle_render() -> void
+{
+    SystemManager::on_render();
+    on_render();
 }
 
 } // namespace zth

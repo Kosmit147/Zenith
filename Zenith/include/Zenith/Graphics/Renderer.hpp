@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 
+#include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
@@ -45,7 +46,8 @@ public:
     static auto render() -> void;
 
 private:
-    static inline std::shared_ptr<Camera> _camera = nullptr;
+    static inline std::shared_ptr<Camera> _camera =
+        std::make_shared<PerspectiveCamera>(glm::vec3(1.0f), glm::vec3(1.0f), 1.0f);
     static inline std::vector<DrawCommand> _draw_commands;
 
 private:
