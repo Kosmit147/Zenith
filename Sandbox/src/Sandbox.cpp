@@ -67,7 +67,7 @@ auto Sandbox::on_update() -> void
     _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 
     // TODO: handle drawing cubes better
-    zth::Renderer::draw(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_texture });
+    zth::Renderer::submit(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_texture });
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();

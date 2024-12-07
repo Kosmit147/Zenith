@@ -2,11 +2,12 @@
 
 #include <glad/glad.h>
 
+#include "Zenith/Graphics/Drawable.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
 
-class VertexArray
+class VertexArray : public Drawable
 {
 public:
     explicit VertexArray();
@@ -19,7 +20,9 @@ public:
     VertexArray(VertexArray&& other) noexcept;
     auto operator=(VertexArray&& other) noexcept -> VertexArray&;
 
-    ~VertexArray();
+    ~VertexArray() override;
+
+    auto draw() const -> void override;
 
     auto bind() const -> void;
     static auto unbind() -> void;

@@ -35,6 +35,7 @@ public:
 private:
     virtual auto on_event([[maybe_unused]] const Event& event) -> void {}
     virtual auto on_update() -> void {}
+    virtual auto on_render() -> void {}
 
     auto handle_event(const Event& event) -> void;
     auto handle_update() -> void;

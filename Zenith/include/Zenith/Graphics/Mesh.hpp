@@ -2,13 +2,14 @@
 
 #include <ranges>
 
+#include "Zenith/Graphics/Drawable.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
 
-class Mesh
+class Mesh : public Drawable
 {
 public:
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
@@ -20,7 +21,9 @@ public:
     Mesh(Mesh&& other) noexcept;
     auto operator=(Mesh&& other) noexcept -> Mesh&;
 
-    ~Mesh() = default;
+    ~Mesh() override = default;
+
+    auto draw() const -> void override;
 
     [[nodiscard]] auto vertex_array() const -> auto& { return _vertex_array; }
     [[nodiscard]] auto vertex_buffer() const -> auto& { return _vertex_buffer; }

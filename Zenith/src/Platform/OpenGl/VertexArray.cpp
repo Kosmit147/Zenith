@@ -1,6 +1,7 @@
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 #include "Zenith/Core/Assert.hpp"
+#include "Zenith/Graphics/Renderer.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexLayout.hpp"
 
@@ -63,6 +64,11 @@ auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
 VertexArray::~VertexArray()
 {
     destroy();
+}
+
+auto VertexArray::draw() const -> void
+{
+    Renderer::draw(*this);
 }
 
 auto VertexArray::bind() const -> void
