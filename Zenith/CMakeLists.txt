@@ -6,6 +6,7 @@ add_library(
 	"src/Core/Application.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
+	"src/Core/SceneManager.cpp"
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
 	"src/Graphics/Shapes/CubeShape.cpp"

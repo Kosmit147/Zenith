@@ -39,6 +39,7 @@ private:
 
     auto handle_event(const Event& event) -> void;
     auto handle_update() -> void;
+    auto handle_render() -> void;
 };
 
 } // namespace zth
