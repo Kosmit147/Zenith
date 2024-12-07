@@ -4,41 +4,41 @@
 
 namespace zth {
 
-GlBuffer::GlBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage) : GlBuffer()
+GlBuffer::GlBuffer(std::ranges::contiguous_range auto&& data) : GlBuffer()
 {
-    buffer_data(data, usage);
+    buffer_data(data);
 }
 
-auto GlBuffer::buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+auto GlBuffer::buffer_data(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _size = static_cast<GLsizei>(data.size());
     _size_bytes = _size * sizeof(T);
-    glNamedBufferData(_id, _size_bytes, data.data(), to_gl_enum(usage));
+    glNamedBufferStorage(_id, _size_bytes, data.data(), GL_DYNAMIC_STORAGE_BIT);
 }
 
-VertexBuffer::VertexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage)
-    : GlBuffer(data, usage), _layout(VertexLayout::from_vertex<std::ranges::range_value_t<decltype(data)>>()),
+VertexBuffer::VertexBuffer(std::ranges::contiguous_range auto&& data)
+    : GlBuffer(data), _layout(VertexLayout::from_vertex<std::ranges::range_value_t<decltype(data)>>()),
       _stride(sizeof(std::ranges::range_value_t<decltype(data)>))
 {}
 
-auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _layout = VertexLayout::from_vertex<T>();
     _stride = sizeof(T);
-    GlBuffer::buffer_data(data, usage);
+    GlBuffer::buffer_data(data);
 }
 
-IndexBuffer::IndexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage)
-    : GlBuffer(data, usage), _index_type(to_gl_enum<std::ranges::range_value_t<decltype(data)>>())
+IndexBuffer::IndexBuffer(std::ranges::contiguous_range auto&& data)
+    : GlBuffer(data), _index_type(to_gl_enum<std::ranges::range_value_t<decltype(data)>>())
 {}
 
-auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _index_type = to_gl_enum<T>();
-    GlBuffer::buffer_data(data, usage);
+    GlBuffer::buffer_data(data);
 }
 
 } // namespace zth

@@ -4,7 +4,6 @@
 
 #include <ranges>
 
-#include "Zenith/Platform/OpenGl/BufferUsage.hpp"
 #include "Zenith/Platform/OpenGl/VertexLayout.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
@@ -14,7 +13,7 @@ class GlBuffer
 {
 public:
     explicit GlBuffer();
-    explicit GlBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
+    explicit GlBuffer(std::ranges::contiguous_range auto&& data);
 
     ZTH_NO_COPY(GlBuffer)
 
@@ -23,7 +22,7 @@ public:
 
     virtual ~GlBuffer();
 
-    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data) -> void;
 
     virtual auto bind() const -> void = 0;
     virtual auto unbind() const -> void = 0;
@@ -48,7 +47,7 @@ class VertexBuffer : public GlBuffer
 {
 public:
     explicit VertexBuffer() = default;
-    explicit VertexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
+    explicit VertexBuffer(std::ranges::contiguous_range auto&& data);
 
     ZTH_NO_COPY(VertexBuffer)
 
@@ -57,7 +56,7 @@ public:
 
     ~VertexBuffer() override = default;
 
-    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data) -> void;
 
     auto bind() const -> void override;
     auto unbind() const -> void override;
@@ -76,7 +75,7 @@ class IndexBuffer : public GlBuffer
 {
 public:
     explicit IndexBuffer() = default;
-    explicit IndexBuffer(std::ranges::contiguous_range auto&& data, BufferUsage usage);
+    explicit IndexBuffer(std::ranges::contiguous_range auto&& data);
 
     ZTH_NO_COPY(IndexBuffer)
 
@@ -85,7 +84,7 @@ public:
 
     ~IndexBuffer() override = default;
 
-    auto buffer_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data) -> void;
 
     auto bind() const -> void override;
     auto unbind() const -> void override;

@@ -26,7 +26,7 @@ auto Texture2D::bind(u32 slot) const -> void
 
 auto Texture2D::unbind(u32 slot) -> void
 {
-    glBindTextureUnit(slot, 0);
+    glBindTextureUnit(slot, GL_NONE);
 }
 
 auto Texture2D::create() -> void

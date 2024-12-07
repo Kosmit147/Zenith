@@ -78,7 +78,7 @@ auto VertexBuffer::bind() const -> void
 
 auto VertexBuffer::unbind() const -> void
 {
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 }
 
 void VertexBuffer::free()
@@ -111,7 +111,7 @@ auto IndexBuffer::bind() const -> void
 
 auto IndexBuffer::unbind() const -> void
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
 }
 
 void IndexBuffer::free()
