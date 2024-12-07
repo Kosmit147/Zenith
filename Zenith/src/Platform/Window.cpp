@@ -42,6 +42,23 @@ namespace {
 
 auto Window::init(const WindowSpec& spec) -> void
 {
+    if (spec.gl_version != GlVersion{ 4, 6 })
+    {
+        auto error_message = fmt::format(
+            "Zenith supports only OpenGL 4.6. Tried to create an OpenGL context with version {}.", spec.gl_version);
+        ZTH_CORE_CRITICAL(error_message);
+        throw Exception(error_message);
+    }
+
+    if (spec.gl_profile != GlProfile::Core)
+    {
+        auto error_message =
+            fmt::format("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",
+                        spec.gl_profile);
+        ZTH_CORE_CRITICAL(error_message);
+        throw Exception(error_message);
+    }
+
     if (!glfwInit())
     {
         auto error_message = "Failed to initialize GLFW.";

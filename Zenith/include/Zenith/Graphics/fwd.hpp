@@ -12,9 +12,10 @@ class PerspectiveCamera;
 
 class Drawable;
 
+class Material;
+
 class Mesh;
 
-struct RenderStates;
 struct DrawCommand;
 class Renderer;
 

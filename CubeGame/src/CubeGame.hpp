@@ -14,6 +14,7 @@ public:
 private:
     zth::CubeShape _cube;
     zth::Texture2D _cobble_texture;
+    zth::Material _cobble_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;
 
 private:
