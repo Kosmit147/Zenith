@@ -49,6 +49,7 @@ const zth::TextureParams cobble_texture_params = {
 
 CubeGame::CubeGame()
     : Application(app_spec), _cobble_texture(cobble_texture_data, cobble_texture_params),
+      _cobble_material(zth::shaders::texture_shader, &_cobble_texture),
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov))
 {
     zth::Renderer::set_camera(_camera);
@@ -64,7 +65,7 @@ auto CubeGame::on_update() -> void
     _cube.rotate(rotation_speed, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
     _cube.rotate(rotation_speed, glm::normalize(glm::vec3{ 0.9f, 0.4f, 0.4f }));
 
-    zth::Renderer::submit(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_cobble_texture });
+    zth::Renderer::submit(_cube, _cobble_material);
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();

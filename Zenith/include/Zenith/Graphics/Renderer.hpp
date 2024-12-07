@@ -13,17 +13,11 @@ namespace zth {
 
 class Event;
 
-struct RenderStates
-{
-    const glm::mat4* transform = nullptr;
-    const Shader* shader = nullptr;
-    const Texture2D* texture = nullptr;
-};
-
 struct DrawCommand
 {
     const Drawable* drawable;
-    RenderStates render_states;
+    const glm::mat4* transform;
+    const Material* material;
 };
 
 class Renderer
@@ -40,7 +34,8 @@ public:
 
     static auto set_camera(std::shared_ptr<Camera> camera) -> void;
 
-    static auto submit(const Drawable& drawable, const RenderStates& render_states) -> void;
+    static auto submit(const Shape3D& shape, const Material& material) -> void;
+    static auto submit(const Drawable& drawable, const glm::mat4& transform, const Material& material) -> void;
 
     // TODO: these shouldn't be public
     static auto draw(const CubeShape& cube) -> void;
@@ -56,7 +51,6 @@ private:
 private:
     static auto log_gl_version() -> void;
 
-    static auto bind_render_states(const RenderStates& render_states) -> void;
     static auto execute(const DrawCommand& draw_command) -> void;
 };
 

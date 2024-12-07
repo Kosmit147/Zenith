@@ -6,6 +6,7 @@
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Graphics/Drawable.hpp"
+#include "Zenith/Graphics/Material.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
 #include "Zenith/Graphics/Shaders.hpp"
@@ -14,7 +15,6 @@
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
 #include "Zenith/Platform/OpenGl/Shader.hpp"
-#include "Zenith/Platform/OpenGl/Texture2D.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 namespace zth {
@@ -74,9 +74,14 @@ auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
     _camera = std::move(camera);
 }
 
-auto Renderer::submit(const Drawable& drawable, const RenderStates& render_states) -> void
+auto Renderer::submit(const Shape3D& shape, const Material& material) -> void
 {
-    _draw_commands.emplace_back(&drawable, render_states);
+    _draw_commands.emplace_back(&shape, &shape.transform(), &material);
+}
+
+auto Renderer::submit(const Drawable& drawable, const glm::mat4& transform, const Material& material) -> void
+{
+    _draw_commands.emplace_back(&drawable, &transform, &material);
 }
 
 auto Renderer::draw(const CubeShape& cube) -> void
@@ -121,27 +126,17 @@ auto Renderer::log_gl_version() -> void
                   vendor, renderer, version, glsl_version);
 }
 
-auto Renderer::bind_render_states(const RenderStates& render_states) -> void
+auto Renderer::execute(const DrawCommand& draw_command) -> void
 {
-    auto& [transform, passed_in_shader, texture] = render_states;
-    auto shader = passed_in_shader ? passed_in_shader : shaders::fallback_shader;
+    const auto& [drawable, transform, material] = draw_command;
+    const auto& shader = material->shader();
 
-    shader->bind();
+    material->bind();
 
     ZTH_ASSERT(_camera != nullptr);
     shader->set_unif("viewProjection", _camera->view_projection());
     shader->set_unif("transform", transform ? *transform : glm::mat4{ 1.0f });
 
-    if (texture)
-    {
-        texture->bind();
-        shader->set_unif("tex", 0);
-    }
-}
-
-auto Renderer::execute(const DrawCommand& draw_command) -> void
-{
-    bind_render_states(draw_command.render_states);
     draw_command.drawable->draw();
 }
 

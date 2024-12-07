@@ -51,7 +51,7 @@ constexpr auto camera_sensitivity = 0.001f;
 } // namespace
 
 Sandbox::Sandbox()
-    : Application(app_spec), _texture(wall_texture),
+    : Application(app_spec), _cube_texture(wall_texture), _cube_material(zth::shaders::texture_shader, &_cube_texture),
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov))
 {
     zth::Renderer::set_camera(_camera);
@@ -66,8 +66,7 @@ auto Sandbox::on_update() -> void
     _cube.rotate(0.0005f * time, glm::vec3{ 0.0f, 1.0f, 0.0f });
     _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 
-    // TODO: handle drawing cubes better
-    zth::Renderer::submit(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_texture });
+    zth::Renderer::submit(_cube, _cube_material);
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();
