@@ -2,6 +2,8 @@
 
 #include <battery/embed.hpp>
 
+#include "Zenith/Logging/Logger.hpp"
+
 namespace zth::shaders {
 
 namespace {
@@ -23,6 +25,8 @@ auto load_shaders() -> void
 
     fallback_shader_local.emplace(fallback_shader_vertex_source, fallback_shader_fragment_source);
     fallback_shader = &fallback_shader_local.value();
+
+    ZTH_CORE_INFO("Shaders loaded.");
 }
 
 auto unload_shaders() -> void
@@ -32,6 +36,8 @@ auto unload_shaders() -> void
 
     fallback_shader_local.reset();
     fallback_shader = nullptr;
+
+    ZTH_CORE_INFO("Shaders unloaded.");
 }
 
 } // namespace zth::shaders

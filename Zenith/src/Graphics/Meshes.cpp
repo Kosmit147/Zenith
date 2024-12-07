@@ -4,6 +4,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include "Zenith/Logging/Logger.hpp"
+
 namespace zth::meshes {
 
 namespace {
@@ -69,12 +71,16 @@ auto load_meshes() -> void
 {
     cube_mesh_local.emplace(cube_vertices, BufferUsage::static_draw, cube_indices, BufferUsage::static_draw);
     cube_mesh = &cube_mesh_local.value();
+
+    ZTH_CORE_INFO("Meshes loaded.");
 }
 
 auto unload_meshes() -> void
 {
     cube_mesh_local.reset();
     cube_mesh = nullptr;
+
+    ZTH_CORE_INFO("Meshes unloaded.");
 }
 
 } // namespace zth::meshes
