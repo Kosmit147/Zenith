@@ -22,8 +22,8 @@ struct WindowSpec
 {
     Size size = { .width = 800, .height = 600 };
     std::string title = "Title";
-    GlVersion gl_version = { 3, 3 };
-    GlProfile gl_profile = GlProfile::Compatibility;
+    GlVersion gl_version = { 4, 6 };
+    GlProfile gl_profile = GlProfile::Core;
     bool fullscreen = false;
     bool vsync = true;
     bool resizable = true;
