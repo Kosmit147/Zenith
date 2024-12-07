@@ -11,10 +11,8 @@ namespace zth {
 class Mesh
 {
 public:
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, BufferUsage vertex_buffer_usage,
-                  std::ranges::contiguous_range auto&& index_data, BufferUsage index_buffer_usage)
-        : _vertex_buffer(vertex_data, vertex_buffer_usage), _index_buffer(index_data, index_buffer_usage),
-          _vertex_array(_vertex_buffer, _index_buffer)
+    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
+        : _vertex_buffer(vertex_data), _index_buffer(index_data), _vertex_array(_vertex_buffer, _index_buffer)
     {}
 
     ZTH_NO_COPY(Mesh)

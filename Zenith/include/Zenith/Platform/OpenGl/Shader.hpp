@@ -40,7 +40,7 @@ public:
     ~Shader();
 
     auto bind() const -> void { glUseProgram(_id); }
-    static auto unbind() -> void { glUseProgram(0); }
+    static auto unbind() -> void { glUseProgram(GL_NONE); }
 
     template<typename T> auto set_unif(const std::string& name, const T& val) const -> void
     {

@@ -72,7 +72,7 @@ auto VertexArray::bind() const -> void
 
 auto VertexArray::unbind() -> void
 {
-    glBindVertexArray(0);
+    glBindVertexArray(GL_NONE);
 }
 
 auto VertexArray::bind_vertex_buffer(const VertexBuffer& vertex_buffer) -> void
