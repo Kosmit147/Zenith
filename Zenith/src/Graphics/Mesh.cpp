@@ -1,5 +1,7 @@
 #include "Zenith/Graphics/Mesh.hpp"
 
+#include "Zenith/Graphics/Renderer.hpp"
+
 namespace zth {
 
 Mesh::Mesh(Mesh&& other) noexcept
@@ -20,6 +22,11 @@ auto Mesh::operator=(Mesh&& other) noexcept -> Mesh&
     _vertex_array.bind_index_buffer(_index_buffer);
 
     return *this;
+}
+
+auto Mesh::draw() const -> void
+{
+    Renderer::draw(*this);
 }
 
 } // namespace zth

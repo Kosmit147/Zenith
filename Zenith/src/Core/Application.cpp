@@ -31,6 +31,9 @@ auto Application::run() -> void
 
         handle_update();
 
+        Renderer::render();
+        on_render();
+
         Window::swap_buffers();
         Window::poll_events();
     }

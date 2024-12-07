@@ -15,6 +15,7 @@ class Drawable;
 class Mesh;
 
 struct RenderStates;
+struct DrawCommand;
 class Renderer;
 
 } // namespace zth

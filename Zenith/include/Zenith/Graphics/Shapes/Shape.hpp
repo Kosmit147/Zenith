@@ -1,16 +1,18 @@
 #pragma once
 
 #include "Zenith/Core/Transformable.hpp"
+#include "Zenith/Graphics/Drawable.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 
 namespace zth {
 
-class Shape
+class Shape : public Drawable
 {
 public:
     explicit Shape() = default;
-    virtual ~Shape() = default;
+    ~Shape() override = default;
 
+    // TODO: is this needed?
     [[nodiscard]] virtual auto mesh() const -> const Mesh& = 0;
 };
 

@@ -5,13 +5,13 @@
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/Colors.hpp"
+#include "Zenith/Graphics/Drawable.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
 #include "Zenith/Graphics/Shaders.hpp"
 #include "Zenith/Graphics/Shapes/Shapes.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
-#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
 #include "Zenith/Platform/OpenGl/Shader.hpp"
 #include "Zenith/Platform/OpenGl/Texture2D.hpp"
@@ -74,28 +74,36 @@ auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
     _camera = std::move(camera);
 }
 
-auto Renderer::draw(const Shape& shape, const RenderStates& render_states) -> void
+auto Renderer::submit(const Drawable& drawable, const RenderStates& render_states) -> void
 {
-    draw(shape.mesh(), render_states);
+    _draw_commands.emplace_back(&drawable, render_states);
 }
 
-auto Renderer::draw(const Mesh& mesh, const RenderStates& render_states) -> void
+auto Renderer::draw(const CubeShape& cube) -> void
 {
-    draw(mesh.vertex_array(), render_states);
+    auto& mesh = cube.mesh();
+    draw(mesh.vertex_array());
 }
 
-auto Renderer::draw(const VertexArray& vertex_array, const RenderStates& render_states) -> void
+auto Renderer::draw(const Mesh& mesh) -> void
 {
-    bind_render_states(render_states);
+    draw(mesh.vertex_array());
+}
+
+auto Renderer::draw(const VertexArray& vertex_array) -> void
+{
     vertex_array.bind();
     glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
 }
 
-auto Renderer::draw(const VertexBuffer& vertex_buffer, const RenderStates& render_states) -> void
+auto Renderer::render() -> void
 {
-    bind_render_states(render_states);
-    vertex_buffer.bind();
-    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer.size());
+    // TODO: batching
+
+    for (const auto& draw_command : _draw_commands)
+        execute(draw_command);
+
+    _draw_commands.clear();
 }
 
 auto Renderer::log_gl_version() -> void
@@ -129,6 +137,12 @@ auto Renderer::bind_render_states(const RenderStates& render_states) -> void
         texture->bind();
         shader->set_unif("tex", 0);
     }
+}
+
+auto Renderer::execute(const DrawCommand& draw_command) -> void
+{
+    bind_render_states(draw_command.render_states);
+    draw_command.drawable->draw();
 }
 
 } // namespace zth

@@ -10,6 +10,7 @@ public:
     explicit CubeShape() = default;
 
     [[nodiscard]] auto mesh() const -> const Mesh& override;
+    auto draw() const -> void override;
 };
 
 } // namespace zth

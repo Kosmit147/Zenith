@@ -64,7 +64,7 @@ auto CubeGame::on_update() -> void
     _cube.rotate(rotation_speed, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
     _cube.rotate(rotation_speed, glm::normalize(glm::vec3{ 0.9f, 0.4f, 0.4f }));
 
-    zth::Renderer::draw(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_cobble_texture });
+    zth::Renderer::submit(_cube, { &_cube.transform(), zth::shaders::texture_shader, &_cobble_texture });
 
     if (zth::Input::is_key_pressed(zth::Key::Escape))
         zth::Window::close();
