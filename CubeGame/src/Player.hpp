@@ -2,6 +2,8 @@
 
 #include <Zenith/Zenith.hpp>
 
+#include <memory>
+
 class Player : public zth::Updatable, public zth::EventListener
 {
 public:
