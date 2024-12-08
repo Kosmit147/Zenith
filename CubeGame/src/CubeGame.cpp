@@ -8,7 +8,7 @@ namespace {
 
 const zth::ApplicationSpec app_spec = {
     .window_spec = {
-        .size = { .width = 800, .height = 600 },
+        .size = { 800, 600 },
         .title = "Cube Game",
         .vsync = true,
         .maximized = true,

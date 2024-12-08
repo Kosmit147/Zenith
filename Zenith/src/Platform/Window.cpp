@@ -144,11 +144,11 @@ auto Window::close() -> void
     glfwSetWindowShouldClose(_window, true);
 }
 
-auto Window::size() -> Size
+auto Window::size() -> glm::uvec2
 {
     int width, height;
     glfwGetWindowSize(_window, &width, &height);
-    return { .width = static_cast<u32>(width), .height = static_cast<u32>(height) };
+    return glm::uvec2{ static_cast<unsigned int>(width), static_cast<unsigned int>(height) };
 }
 
 auto Window::mouse_pos() -> glm::vec2
@@ -158,14 +158,14 @@ auto Window::mouse_pos() -> glm::vec2
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
-auto Window::create_glfw_window(Size size, const char* title, bool fullscreen) -> GLFWwindow*
+auto Window::create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*
 {
     GLFWmonitor* monitor = nullptr;
 
     if (fullscreen)
         monitor = glfwGetPrimaryMonitor();
 
-    return glfwCreateWindow(static_cast<int>(size.width), static_cast<int>(size.height), title, monitor, nullptr);
+    return glfwCreateWindow(static_cast<int>(size.x), static_cast<int>(size.y), title, monitor, nullptr);
 }
 
 auto Window::set_glfw_window_hints(const WindowSpec& spec) -> void
@@ -248,7 +248,7 @@ auto Window::set_glfw_scroll_callback(ScrollCallback callback) -> void
 
 auto Window::glfw_resize_callback([[maybe_unused]] GLFWwindow* window, int new_width, int new_height) -> void
 {
-    auto new_size = Size{ static_cast<u32>(new_width), static_cast<u32>(new_height) };
+    auto new_size = glm::uvec2{ static_cast<unsigned int>(new_width), static_cast<unsigned int>(new_height) };
     EventQueue::push(WindowResizedEvent{ new_size });
 }
 

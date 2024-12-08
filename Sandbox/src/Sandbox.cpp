@@ -8,7 +8,7 @@ namespace {
 
 const zth::ApplicationSpec app_spec = {
     .window_spec = {
-        .size = { .width = 800, .height = 600 },
+        .size = { 800, 600 },
         .title = "Sandbox",
         .gl_version = { 4, 6 },
         .gl_profile = zth::GlProfile::Core,

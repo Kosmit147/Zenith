@@ -58,8 +58,8 @@ auto Scene::on_event(const zth::Event& event) -> void
 
 auto Scene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
-    auto [width, height] = event.new_size;
-    _camera->set_aspect_ratio(static_cast<float>(width) / static_cast<float>(height));
+    auto new_size = event.new_size;
+    _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
 }
 
 auto Scene::update_camera() const -> void
