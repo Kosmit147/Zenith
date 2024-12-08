@@ -1,4 +1,4 @@
-#include "Zenith/Platform/OpenGl/Texture2D.hpp"
+#include "Zenith/Platform/OpenGl/Texture.hpp"
 
 namespace zth {
 
@@ -24,7 +24,7 @@ auto Texture2D::bind(u32 slot) const -> void
     glBindTextureUnit(slot, _id);
 }
 
-auto Texture2D::unbind(u32 slot) -> void
+auto Texture2D::unbind(u32 slot) const -> void
 {
     glBindTextureUnit(slot, GL_NONE);
 }

@@ -8,7 +8,7 @@
 #include "GlDebug.hpp"
 #include "GlUtils.hpp"
 #include "Shader.hpp"
-#include "Texture2D.hpp"
+#include "Texture.hpp"
 #include "TextureParams.hpp"
 #include "VertexArray.hpp"
 #include "VertexLayout.hpp"
