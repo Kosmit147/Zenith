@@ -2,6 +2,8 @@
 
 #include "Scene.hpp"
 
+#include <memory>
+
 ZTH_IMPLEMENT_APP(CubeGame)
 
 namespace {
@@ -10,7 +12,8 @@ const zth::ApplicationSpec app_spec = {
     .window_spec = {
         .size = { 800, 600 },
         .title = "Cube Game",
-        .vsync = true,
+        .fullscreen = false,
+        .vsync = false,
         .maximized = true,
         .cursor_enabled = false,
     },

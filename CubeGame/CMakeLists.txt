@@ -3,6 +3,7 @@ project(CubeGame LANGUAGES CXX)
 
 add_executable(
 	CubeGame
+	"src/Block.cpp"
 	"src/CubeGame.cpp"
 	"src/Player.cpp"
 	"src/Scene.cpp"

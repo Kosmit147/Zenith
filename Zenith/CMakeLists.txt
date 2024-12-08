@@ -10,6 +10,7 @@ add_library(
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
 	"src/Graphics/Shapes/CubeShape.cpp"
+	"src/Graphics/Shapes/Shape.cpp"
 	"src/Graphics/Camera.cpp"
 	"src/Graphics/Material.cpp"
 	"src/Graphics/Mesh.cpp"

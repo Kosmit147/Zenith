@@ -2,6 +2,8 @@
 
 #include <Zenith/Zenith.hpp>
 
+#include <vector>
+
 #include "Block.hpp"
 #include "Player.hpp"
 
@@ -16,7 +18,7 @@ private:
     zth::Texture2D _block_texture;
     zth::Material _block_material;
 
-    Block _block;
+    std::vector<Block> _blocks;
     Player _player;
 
 private:
