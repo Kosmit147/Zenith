@@ -2,7 +2,7 @@
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Shaders.hpp"
-#include "Zenith/Platform/OpenGl/Texture2D.hpp"
+#include "Zenith/Platform/OpenGl/Texture.hpp"
 
 namespace zth {
 

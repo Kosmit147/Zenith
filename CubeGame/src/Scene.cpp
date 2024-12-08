@@ -20,6 +20,8 @@ Scene::Scene()
 
 auto Scene::on_load() -> void
 {
+    auto light_blue = glm::vec4(0.643f, 0.816f, 0.91f, 1.0f);
+    zth::Renderer::set_clear_color(light_blue);
     zth::Renderer::set_camera(_player.camera());
 }
 

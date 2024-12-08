@@ -21,7 +21,7 @@ add_library(
 	"src/Platform/OpenGl/GlContext.cpp"
 	"src/Platform/OpenGl/GlDebug.cpp"
 	"src/Platform/OpenGl/Shader.cpp"
-	"src/Platform/OpenGl/Texture2D.cpp"
+	"src/Platform/OpenGl/Texture.cpp"
 	"src/Platform/OpenGl/VertexArray.cpp"
 	"src/Platform/Event.cpp"
 	"src/Platform/EventQueue.cpp"
