@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Zenith/Platform/OpenGl/GlContext.hpp"
-#include "Zenith/Utility/UtilityTypes.hpp"
 
 struct GLFWwindow;
 
@@ -20,7 +19,7 @@ struct WindowAspectRatio
 
 struct WindowSpec
 {
-    Size size = { .width = 800, .height = 600 };
+    glm::uvec2 size = { 800, 600 };
     std::string title = "Title";
     GlVersion gl_version = { 4, 6 };
     GlProfile gl_profile = GlProfile::Core;
@@ -58,14 +57,14 @@ public:
     static auto poll_events() -> void;
     static auto close() -> void;
 
-    [[nodiscard]] static auto size() -> Size;
+    [[nodiscard]] static auto size() -> glm::uvec2;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
 
 private:
     static inline GLFWwindow* _window = nullptr;
 
 private:
-    [[nodiscard]] static auto create_glfw_window(Size size, const char* title, bool fullscreen) -> GLFWwindow*;
+    [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;
     static auto set_glfw_window_hints(const WindowSpec& spec) -> void;
     static auto set_glfw_input_callbacks() -> void;
     static auto set_glfw_cursor_enabled(bool enabled) -> void;

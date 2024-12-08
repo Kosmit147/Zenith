@@ -46,8 +46,7 @@ auto Renderer::on_window_event(const Event& event) -> void
     if (event.type() == EventType::WindowResized)
     {
         auto [new_size] = event.window_resized_event();
-        auto [width, height] = new_size;
-        glViewport(0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height));
+        glViewport(0, 0, static_cast<GLsizei>(new_size.x), static_cast<GLsizei>(new_size.y));
     }
 }
 
