@@ -13,53 +13,73 @@ namespace {
 struct CubeVertex
 {
     glm::vec3 local_position;
+    glm::vec3 normal;
     glm::vec2 tex_coords;
 };
 
 constexpr std::array cube_vertices = {
-    // 0
-    CubeVertex{ .local_position = { -1.0f, -1.0f, 1.0f }, .tex_coords = { 0.0f, 1.0f } },
-    // 1
-    CubeVertex{ .local_position = { -1.0f, -1.0f, -1.0f }, .tex_coords = { 1.0f, 1.0f } },
-    // 2
-    CubeVertex{ .local_position = { 1.0f, -1.0f, -1.0f }, .tex_coords = { 1.0f, 0.0f } },
-    // 3
-    CubeVertex{ .local_position = { 1.0f, -1.0f, 1.0f }, .tex_coords = { 0.0f, 0.0f } },
-    // 4
-    CubeVertex{ .local_position = { -1.0f, 1.0f, 1.0f }, .tex_coords = { 1.0f, 0.0f } },
-    // 5
-    CubeVertex{ .local_position = { -1.0f, 1.0f, -1.0f }, .tex_coords = { 0.0f, 0.0f } },
-    // 6
-    CubeVertex{ .local_position = { 1.0f, 1.0f, -1.0f }, .tex_coords = { 0.0f, 1.0f } },
-    // 7
-    CubeVertex{ .local_position = { 1.0f, 1.0f, 1.0f }, .tex_coords = { 1.0f, 1.0f } },
+    // front wall
+    CubeVertex{ .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 0.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 1.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, 0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 1.0f, 1.0f } },
+    CubeVertex{ .local_position = { -0.5f, 0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 0.0f, 1.0f } },
+
+    // back wall
+    CubeVertex{ .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 0.0f, 0.0f } },
+    CubeVertex{ .local_position = { -0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 0.0f, 1.0f } },
+    CubeVertex{ .local_position = { 0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 1.0f, 1.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 1.0f, 0.0f } },
+                                                                     
+    // left wall
+    CubeVertex{ .local_position = { -0.5f, 0.5f, 0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
+    CubeVertex{ .local_position = { -0.5f, 0.5f, -0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
+    CubeVertex{ .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
+    CubeVertex{ .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
+                                                                    
+    // right wall
+    CubeVertex{ .local_position = { 0.5f, 0.5f, 0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, 0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, -0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
+    CubeVertex{ .local_position = { 0.5f, 0.5f, -0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
+                                                                     
+    // bottom wall
+    CubeVertex{ .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
+    CubeVertex{ .local_position = { 0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
+    CubeVertex{ .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
+                                                                     
+    // top wall
+    CubeVertex{ .local_position = { -0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
+    CubeVertex{ .local_position = { -0.5f, 0.5f, 0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, 0.5f, 0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
+    CubeVertex{ .local_position = { 0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
 };
 
 // clang-format off
 constexpr std::array<GLushort, 36> cube_indices = {
-    // bottom wall
-    0, 1, 2,
-    2, 3, 0,
-
-    // top wall
-    4, 5, 6,
-    6, 7, 4,
-
-    // right wall
-    3, 7, 6,
-    6, 2, 3,
-
     // front wall
-    0, 4, 7,
-    7, 3, 0,
-
-    // left wall
-    1, 0, 4,
-    4, 5, 1,
+    0, 1, 2,
+    0, 2, 3,
 
     // back wall
-    1, 2, 6,
-    6, 5, 1,
+    4, 5, 6,
+    4, 6, 7,
+
+    // left wall
+    8, 9, 10,
+    8, 10, 11,
+
+    // right wall
+    12, 13, 14,
+    12, 14, 15,
+
+    // bottom wall
+    16, 17, 18,
+    16, 18, 19,
+
+    // top wall
+    20, 21, 22,
+    20, 22, 23,
 };
 // clang-format on
 
