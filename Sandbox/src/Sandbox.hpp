@@ -11,5 +11,4 @@ public:
 
 private:
     auto on_update() -> void override;
-    auto on_event(const zth::Event& event) -> void override;
 };

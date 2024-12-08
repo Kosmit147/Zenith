@@ -27,4 +27,5 @@ add_subdirectory("dependencies/stb_image")
 
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")
+add_subdirectory("Testbed")
 add_subdirectory("CubeGame")
