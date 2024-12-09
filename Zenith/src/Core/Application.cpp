@@ -24,13 +24,12 @@ auto Application::run() -> void
 
     while (!Window::should_close())
     {
-        Renderer::clear();
-
         while (auto event = EventQueue::pop())
             handle_event(event.value());
 
         handle_update();
 
+        Renderer::clear();
         Renderer::render();
         handle_render();
 

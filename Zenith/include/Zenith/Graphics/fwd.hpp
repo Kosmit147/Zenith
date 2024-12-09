@@ -12,6 +12,8 @@ class PerspectiveCamera;
 
 class Drawable;
 
+class ImGuiRenderer;
+
 class Material;
 
 class Mesh;

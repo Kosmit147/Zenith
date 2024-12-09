@@ -64,6 +64,9 @@ auto Scene::on_window_resized_event(const zth::WindowResizedEvent& event) const 
 
 auto Scene::update_camera() const -> void
 {
+    if (zth::Window::cursor_enabled())
+        return;
+
     auto delta_time = zth::Time::delta_time<float>();
 
     auto movement_speed = camera_movement_speed;

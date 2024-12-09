@@ -57,8 +57,14 @@ public:
     static auto poll_events() -> void;
     static auto close() -> void;
 
+    static auto set_cursor_enabled(bool enabled) -> void;
+    static auto enable_cursor() -> void;
+    static auto disable_cursor() -> void;
+
+    [[nodiscard]] static auto native_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
+    [[nodiscard]] static auto cursor_enabled() -> bool;
 
 private:
     static inline GLFWwindow* _window = nullptr;
@@ -67,9 +73,6 @@ private:
     [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;
     static auto set_glfw_window_hints(const WindowSpec& spec) -> void;
     static auto set_glfw_input_callbacks() -> void;
-    static auto set_glfw_cursor_enabled(bool enabled) -> void;
-    static auto glfw_enable_cursor() -> void;
-    static auto glfw_disable_cursor() -> void;
     static auto glfw_force_aspect_ratio(WindowAspectRatio aspect_ratio) -> void;
 
     static auto set_glfw_resize_callback(ResizeCallback callback) -> void;

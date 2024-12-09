@@ -79,9 +79,9 @@ auto Window::init(const WindowSpec& spec) -> void
 
     set_active();
     set_vsync(spec.vsync);
+    set_cursor_enabled(spec.cursor_enabled);
 
     set_glfw_input_callbacks();
-    set_glfw_cursor_enabled(spec.cursor_enabled);
 
     if (spec.forced_aspect_ratio)
         glfw_force_aspect_ratio(spec.forced_aspect_ratio.value());
@@ -144,6 +144,35 @@ auto Window::close() -> void
     glfwSetWindowShouldClose(_window, true);
 }
 
+auto Window::set_cursor_enabled(bool enabled) -> void
+{
+    if (enabled)
+        enable_cursor();
+    else
+        disable_cursor();
+}
+
+auto Window::enable_cursor() -> void
+{
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+}
+
+auto Window::disable_cursor() -> void
+{
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    if (glfwRawMouseMotionSupported())
+        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+}
+
+auto Window::native_handle() -> GLFWwindow*
+{
+    return _window;
+}
+
 auto Window::size() -> glm::uvec2
 {
     int width, height;
@@ -156,6 +185,19 @@ auto Window::mouse_pos() -> glm::vec2
     double x_pos, y_pos;
     glfwGetCursorPos(_window, &x_pos, &y_pos);
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
+}
+
+auto Window::cursor_enabled() -> bool
+{
+    auto mode = glfwGetInputMode(_window, GLFW_CURSOR);
+
+    if (mode == GLFW_CURSOR_NORMAL)
+        return true;
+    else if (mode == GLFW_CURSOR_DISABLED)
+        return false;
+
+    ZTH_ASSERT(false);
+    return false;
 }
 
 auto Window::create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*
@@ -189,30 +231,6 @@ auto Window::set_glfw_input_callbacks() -> void
     set_glfw_mouse_button_callback(glfw_mouse_button_callback);
     set_glfw_mouse_pos_callback(glfw_mouse_pos_callback);
     set_glfw_scroll_callback(glfw_scroll_callback);
-}
-
-auto Window::set_glfw_cursor_enabled(bool enabled) -> void
-{
-    if (enabled)
-        glfw_enable_cursor();
-    else
-        glfw_disable_cursor();
-}
-
-auto Window::glfw_enable_cursor() -> void
-{
-    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-    if (glfwRawMouseMotionSupported())
-        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
-}
-
-auto Window::glfw_disable_cursor() -> void
-{
-    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    if (glfwRawMouseMotionSupported())
-        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 
 auto Window::glfw_force_aspect_ratio(WindowAspectRatio aspect_ratio) -> void

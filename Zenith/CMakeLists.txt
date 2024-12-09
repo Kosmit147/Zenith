@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.28)
 project(Zenith LANGUAGES CXX)
 
+set(imgui_sources
+    "../dependencies/imgui/imgui.cpp"
+	"../dependencies/imgui/imgui_demo.cpp"
+	"../dependencies/imgui/imgui_draw.cpp"
+	"../dependencies/imgui/imgui_tables.cpp"
+	"../dependencies/imgui/imgui_widgets.cpp"
+	"../dependencies/imgui/backends/imgui_impl_glfw.cpp"
+	"../dependencies/imgui/backends/imgui_impl_opengl3.cpp"
+)
+
 add_library(
 	Zenith STATIC
 	"src/Core/Application.cpp"
@@ -12,6 +22,7 @@ add_library(
 	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Shapes/Shape.cpp"
 	"src/Graphics/Camera.cpp"
+	"src/Graphics/ImGuiRenderer.cpp"
 	"src/Graphics/Material.cpp"
 	"src/Graphics/Mesh.cpp"
 	"src/Graphics/Meshes.cpp"
@@ -31,6 +42,8 @@ add_library(
 	"src/Platform/Mouse.cpp"
 	"src/Platform/Window.cpp"
 	"src/Time/Time.cpp"
+
+	${imgui_sources}
 )
 
 b_embed(Zenith "src/Graphics/Shaders/fallback.vert")
@@ -38,13 +51,17 @@ b_embed(Zenith "src/Graphics/Shaders/fallback.frag")
 b_embed(Zenith "src/Graphics/Shaders/texture.vert")
 b_embed(Zenith "src/Graphics/Shaders/texture.frag")
 
+target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui")
+target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui/backends")
 target_include_directories(Zenith PUBLIC "include")
 target_compile_features(Zenith PRIVATE cxx_std_23)
 target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(Zenith PRIVATE "src/pch.hpp")
 set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-target_compile_definitions(Zenith PRIVATE GLM_ENABLE_EXPERIMENTAL)
+# GLM_ENABLE_EXPERIMENTAL is needed for matrix decomposition
+# _CRT_SECURE_NO_WARNINGS is needed for imgui implementation files
+target_compile_definitions(Zenith PRIVATE GLM_ENABLE_EXPERIMENTAL _CRT_SECURE_NO_WARNINGS)
 
 target_link_libraries(Zenith PUBLIC glad)
 target_link_libraries(Zenith PUBLIC glfw)
