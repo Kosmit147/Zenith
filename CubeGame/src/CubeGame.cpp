@@ -30,8 +30,16 @@ CubeGame::CubeGame() : Application(app_spec)
     zth::SceneManager::load_scene(std::make_unique<Scene>());
 }
 
-auto CubeGame::on_update() -> void
+auto CubeGame::on_update() -> void {}
+
+auto CubeGame::on_event(const zth::Event& event) -> void
 {
-    if (zth::Input::is_key_pressed(zth::Key::Escape))
+    if (event.type() == zth::EventType::KeyPressed)
+        on_key_pressed_event(event.key_pressed_event());
+}
+
+auto CubeGame::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    if (event.key == zth::Key::Escape)
         zth::Window::close();
 }
