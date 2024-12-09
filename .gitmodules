@@ -18,3 +18,7 @@
 [submodule "dependencies/stb_image"]
 	path = dependencies/stb_image
 	url = https://github.com/Kosmit147/stb_image.git
+[submodule "dependencies/imgui"]
+	path = dependencies/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = master
