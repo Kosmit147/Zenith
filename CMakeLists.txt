@@ -19,9 +19,9 @@ endif()
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
 add_subdirectory("dependencies/glad")
-add_subdirectory("dependencies/GLFW")
+add_subdirectory("dependencies/glfw")
 add_subdirectory("dependencies/spdlog")
-add_subdirectory("dependencies/GLM")
+add_subdirectory("dependencies/glm")
 add_subdirectory("dependencies/embed")
 add_subdirectory("dependencies/stb_image")
 

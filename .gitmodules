@@ -1,5 +1,5 @@
 [submodule "dependencies/GLFW"]
-	path = dependencies/GLFW
+	path = dependencies/glfw
 	url = https://github.com/glfw/glfw.git
 [submodule "dependencies/glad"]
 	path = dependencies/glad
@@ -9,7 +9,7 @@
 	url = https://github.com/gabime/spdlog.git
 	branch = v1.x
 [submodule "dependencies/GLM"]
-	path = dependencies/GLM
+	path = dependencies/glm
 	url = https://github.com/g-truc/glm.git
 	branch = master
 [submodule "dependencies/embed"]
