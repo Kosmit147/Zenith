@@ -4,7 +4,7 @@ project(Testbed LANGUAGES CXX)
 add_executable(
 	Testbed
 	"src/Testbed.cpp"
-	"src/Scene.cpp"
+	"src/TransformTest.cpp"
 )
 
 b_embed(Testbed "assets/container.jpg")

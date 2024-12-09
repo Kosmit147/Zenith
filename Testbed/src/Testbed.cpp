@@ -1,6 +1,8 @@
 #include "Testbed.hpp"
 
-#include "Scene.hpp"
+#include <imgui.h>
+
+#include "TransformTest.hpp"
 
 ZTH_IMPLEMENT_APP(Testbed)
 
@@ -24,7 +26,8 @@ const zth::ApplicationSpec app_spec = {
 
 Testbed::Testbed() : Application(app_spec)
 {
-    zth::SceneManager::load_scene(std::make_unique<Scene>());
+    zth::SceneManager::load_scene(std::make_unique<TransformTest>());
+    ImGui::GetIO().FontGlobalScale = 1.5f;
 }
 
 auto Testbed::on_update() -> void {}
@@ -82,6 +85,17 @@ auto Testbed::on_event(const zth::Event& event) -> void
 
 auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
-    if (event.key == zth::Key::Escape)
+    static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
+
+    switch (event.key)
+    {
+        using enum zth::Key;
+    case Escape:
         zth::Window::close();
+        break;
+    case LeftControl:
+        cursor_enabled = !cursor_enabled;
+        zth::Window::set_cursor_enabled(cursor_enabled);
+        break;
+    }
 }

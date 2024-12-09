@@ -1,6 +1,7 @@
-#include "Scene.hpp"
+#include "TransformTest.hpp"
 
 #include <battery/embed.hpp>
+#include <imgui.h>
 
 #include <algorithm>
 
@@ -25,29 +26,34 @@ constexpr auto camera_sensitivity = 0.001f;
 
 } // namespace
 
-Scene::Scene()
+TransformTest::TransformTest()
     : _cube_texture(container_texture), _cube_material(zth::shaders::texture_shader, &_cube_texture),
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov))
 {}
 
-auto Scene::on_load() -> void
+auto TransformTest::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
 }
 
-auto Scene::on_update() -> void
+auto TransformTest::on_update() -> void
 {
-    const auto time = zth::Time::time<float>();
-
+    render_ui();
     update_camera();
 
-    _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ 0.0f, 1.0f, 0.0f }));
-    _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
+    _rotation_axis = glm::normalize(_rotation_axis);
+
+    if (_uniform_scale)
+        _scale = glm::vec3{ _scale.x };
+
+    _cube.set_translation(_translation);
+    _cube.set_rotation(_rotation_angle, _rotation_axis);
+    _cube.set_scale(_scale);
 
     zth::Renderer::submit(_cube, _cube_material);
 }
 
-auto Scene::on_event(const zth::Event& event) -> void
+auto TransformTest::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::WindowResized)
     {
@@ -56,14 +62,17 @@ auto Scene::on_event(const zth::Event& event) -> void
     }
 }
 
-auto Scene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto TransformTest::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
     auto new_size = event.new_size;
     _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
 }
 
-auto Scene::update_camera() const -> void
+auto TransformTest::update_camera() const -> void
 {
+    if (zth::Window::cursor_enabled())
+        return;
+
     auto delta_time = zth::Time::delta_time<float>();
 
     auto movement_speed = camera_movement_speed;
@@ -94,4 +103,24 @@ auto Scene::update_camera() const -> void
     auto new_pitch = std::clamp(_camera->pitch() - mouse_delta.y, min_camera_pitch, max_camera_pitch);
 
     _camera->set_yaw_and_pitch(new_yaw, new_pitch);
+}
+
+auto TransformTest::render_ui() -> void
+{
+    ImGui::Begin("Transform");
+
+    constexpr auto drag_speed = 0.01f;
+
+    ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&_translation), drag_speed);
+    ImGui::DragFloat("Rotation Angle", &_rotation_angle, drag_speed);
+    ImGui::DragFloat3("Rotation Axis", reinterpret_cast<float*>(&_rotation_axis), drag_speed);
+
+    if (_uniform_scale)
+        ImGui::DragFloat("Scale", reinterpret_cast<float*>(&_scale), drag_speed);
+    else
+        ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&_scale), drag_speed);
+
+    ImGui::Checkbox("Uniform Scale", &_uniform_scale);
+
+    ImGui::End();
 }

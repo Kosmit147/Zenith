@@ -67,9 +67,11 @@ auto SystemManager::on_event(const Event& event) -> void
 
 auto SystemManager::on_update() -> void
 {
+    // Start ImGui's next frame before updating other systems
+    ImGuiRenderer::on_update();
+
     Time::on_update();
     Input::on_update();
-    ImGuiRenderer::on_update();
     SceneManager::on_update();
 }
 

@@ -25,7 +25,6 @@ auto ImGuiRenderer::on_update() -> void
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    ImGui::ShowDemoWindow();
 }
 
 auto ImGuiRenderer::on_render() -> void
