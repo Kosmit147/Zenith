@@ -27,11 +27,7 @@ Testbed::Testbed() : Application(app_spec)
     zth::SceneManager::load_scene(std::make_unique<Scene>());
 }
 
-auto Testbed::on_update() -> void
-{
-    if (zth::Input::is_key_pressed(zth::Key::Escape))
-        zth::Window::close();
-}
+auto Testbed::on_update() -> void {}
 
 auto Testbed::on_event(const zth::Event& event) -> void
 {
@@ -46,8 +42,9 @@ auto Testbed::on_event(const zth::Event& event) -> void
     }
     case KeyPressed:
     {
-        auto [key] = event.key_pressed_event();
-        ZTH_INFO("{} key pressed.", key);
+        auto key_pressed_event = event.key_pressed_event();
+        ZTH_INFO("{} key pressed.", key_pressed_event.key);
+        on_key_pressed_event(key_pressed_event);
         break;
     }
     case KeyReleased:
@@ -81,4 +78,10 @@ auto Testbed::on_event(const zth::Event& event) -> void
         break;
     }
     }
+}
+
+auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    if (event.key == zth::Key::Escape)
+        zth::Window::close();
 }
