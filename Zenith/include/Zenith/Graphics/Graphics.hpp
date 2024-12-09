@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "Colors.hpp"
 #include "Drawable.hpp"
+#include "ImGuiRenderer.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
 #include "Meshes.hpp"

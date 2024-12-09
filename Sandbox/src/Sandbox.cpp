@@ -43,6 +43,17 @@ auto Sandbox::on_event(const zth::Event& event) -> void
 
 auto Sandbox::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
-    if (event.key == zth::Key::Escape)
+    static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
+
+    switch (event.key)
+    {
+        using enum zth::Key;
+    case Escape:
         zth::Window::close();
+        break;
+    case LeftControl:
+        cursor_enabled = !cursor_enabled;
+        zth::Window::set_cursor_enabled(cursor_enabled);
+        break;
+    }
 }

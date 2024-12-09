@@ -4,6 +4,7 @@
 #include "Zenith/Core/SceneManager.hpp"
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Renderer.hpp"
+#include "Zenith/Graphics/ImGuiRenderer.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/Input.hpp"
@@ -17,6 +18,7 @@
 // Window -> { Logger }
 // Input -> { Logger, Window }
 // Renderer -> { Logger, Window }
+// ImGuiRenderer -> { Logger, Renderer, Window } 
 // SceneManager -> { Logger }
 
 namespace zth {
@@ -35,6 +37,7 @@ auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
         add_system([&] { Window::init(spec.window_spec); }, Window::shut_down);
         add_system([&] { Input::init(); }, Input::shut_down);
         add_system([&] { Renderer::init(); }, Renderer::shut_down);
+        add_system([&] { ImGuiRenderer::init(); }, ImGuiRenderer::shut_down);
         add_system([&] { SceneManager::init(); }, SceneManager::shut_down);
 
         ZTH_CORE_INFO("[System Manager] All systems initialized.");
@@ -66,11 +69,13 @@ auto SystemManager::on_update() -> void
 {
     Time::on_update();
     Input::on_update();
+    ImGuiRenderer::on_update();
     SceneManager::on_update();
 }
 
 auto SystemManager::on_render() -> void
 {
+    ImGuiRenderer::on_render();
     SceneManager::on_render();
 }
 
