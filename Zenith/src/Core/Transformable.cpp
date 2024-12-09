@@ -31,6 +31,30 @@ auto Transformable3D::scale(glm::vec3 factor) -> Transformable3D&
     return *this;
 }
 
+auto Transformable3D::set_translation(glm::vec3 translation) -> void
+{
+    _translation = translation;
+    update_transform();
+}
+
+auto Transformable3D::set_rotation(float angle, glm::vec3 axis) -> void
+{
+    _rotation = glm::rotate(glm::identity<glm::quat>(), angle, axis);
+    update_transform();
+}
+
+auto Transformable3D::set_rotation(glm::quat rotation) -> void
+{
+    _rotation = glm::normalize(rotation);
+    update_transform();
+}
+
+auto Transformable3D::set_scale(glm::vec3 scale) -> void
+{
+    _scale = scale;
+    update_transform();
+}
+
 auto Transformable3D::set_transform(const glm::mat4& transform) -> void
 {
     glm::vec3 unused_skew;
