@@ -46,6 +46,8 @@ add_library(
 	${imgui_sources}
 )
 
+b_embed(Zenith "include/Zenith/Graphics/ShaderDefines.h")
+
 b_embed(Zenith "src/Graphics/Shaders/fallback.vert")
 b_embed(Zenith "src/Graphics/Shaders/fallback.frag")
 b_embed(Zenith "src/Graphics/Shaders/texture.vert")
