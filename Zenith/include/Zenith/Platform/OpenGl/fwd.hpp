@@ -11,11 +11,12 @@ struct BufferUsage;
 class GlBuffer;
 class VertexBuffer;
 class IndexBuffer;
+class UniformBuffer;
 
 struct GlVersion;
 enum class GlProfile : u8;
 
-enum class ShaderType : u8;
+enum class ShaderType : u16;
 struct UniformInfo;
 class Shader;
 

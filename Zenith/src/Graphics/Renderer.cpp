@@ -1,6 +1,7 @@
 #include "Zenith/Graphics/Renderer.hpp"
 
 #include <glad/glad.h>
+#include <glm/mat4x4.hpp>
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Camera.hpp"
@@ -9,6 +10,7 @@
 #include "Zenith/Graphics/Material.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
+#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/Shaders.hpp"
 #include "Zenith/Graphics/Shapes/Shapes.hpp"
 #include "Zenith/Logging/Logger.hpp"
@@ -18,6 +20,11 @@
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 namespace zth {
+
+struct CameraMatrices
+{
+    glm::mat4 view_projection;
+};
 
 auto Renderer::init() -> void
 {
@@ -36,6 +43,9 @@ auto Renderer::init() -> void
 
     shaders::load_shaders();
     meshes::load_meshes();
+
+    _camera_matrices_buffer.emplace(static_cast<GLsizei>(sizeof(CameraMatrices)));
+    _camera_matrices_buffer->set_binding_index(ZTH_CAMERA_MATRICES_UBO_BINDING_INDEX);
 
     ZTH_CORE_INFO("Renderer initialized.");
 }
@@ -105,6 +115,8 @@ auto Renderer::render() -> void
 {
     // TODO: batching
 
+    upload_camera_matrices();
+
     for (const auto& draw_command : _draw_commands)
         execute(draw_command);
 
@@ -132,12 +144,19 @@ auto Renderer::execute(const DrawCommand& draw_command) -> void
     const auto& shader = material->shader();
 
     material->bind();
-
-    ZTH_ASSERT(_camera != nullptr);
-    shader->set_unif("viewProjection", _camera->view_projection());
     shader->set_unif("transform", transform ? *transform : glm::mat4{ 1.0f });
-
     draw_command.drawable->draw();
+}
+
+auto Renderer::upload_camera_matrices() -> void
+{
+    ZTH_ASSERT(_camera != nullptr);
+
+    CameraMatrices camera_matrices = {
+        .view_projection = _camera->view_projection(),
+    };
+
+    _camera_matrices_buffer->buffer_sub_data(&camera_matrices, 0, sizeof(camera_matrices));
 }
 
 } // namespace zth

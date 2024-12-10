@@ -4,10 +4,12 @@
 #include <glm/vec4.hpp>
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/fwd.hpp"
+#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
@@ -49,11 +51,14 @@ private:
     static inline std::shared_ptr<Camera> _camera =
         std::make_shared<PerspectiveCamera>(glm::vec3(1.0f), glm::vec3(1.0f), 1.0f);
     static inline std::vector<DrawCommand> _draw_commands;
+    static inline std::optional<UniformBuffer> _camera_matrices_buffer;
 
 private:
     static auto log_gl_version() -> void;
 
     static auto execute(const DrawCommand& draw_command) -> void;
+
+    static auto upload_camera_matrices() -> void;
 };
 
 } // namespace zth

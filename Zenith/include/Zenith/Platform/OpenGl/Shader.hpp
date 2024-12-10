@@ -20,10 +20,10 @@
 
 namespace zth {
 
-enum class ShaderType : u8
+enum class ShaderType : u16
 {
-    Vertex,
-    Fragment
+    Vertex = GL_VERTEX_SHADER,
+    Fragment = GL_FRAGMENT_SHADER,
 };
 
 struct UniformInfo
