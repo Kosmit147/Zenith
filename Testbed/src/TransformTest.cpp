@@ -50,7 +50,7 @@ auto TransformTest::on_update() -> void
     _cube.set_rotation(_rotation_angle, _rotation_axis);
     _cube.set_scale(_scale);
 
-    zth::Renderer::submit(_cube, _cube_material);
+    zth::Renderer::draw(_cube, _cube_material);
 }
 
 auto TransformTest::on_event(const zth::Event& event) -> void

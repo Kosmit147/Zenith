@@ -44,7 +44,7 @@ auto Scene::on_update() -> void
     _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ 0.0f, 1.0f, 0.0f }));
     _cube.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 
-    zth::Renderer::submit(_cube, _cube_material);
+    zth::Renderer::draw(_cube, _cube_material);
 }
 
 auto Scene::on_event(const zth::Event& event) -> void

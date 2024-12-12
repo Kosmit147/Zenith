@@ -25,7 +25,7 @@ auto Application::run() -> void
     while (!Window::should_close())
     {
         while (auto event = EventQueue::pop())
-            handle_event(event.value());
+            handle_event(*event);
 
         handle_update();
 

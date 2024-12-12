@@ -40,7 +40,7 @@ auto Scene::on_update() -> void
     _player.on_update();
 
     for (const auto& block : _blocks)
-        zth::Renderer::submit(block, _block_material);
+        zth::Renderer::draw(block, _block_material);
 }
 
 auto Scene::on_event(const zth::Event& event) -> void

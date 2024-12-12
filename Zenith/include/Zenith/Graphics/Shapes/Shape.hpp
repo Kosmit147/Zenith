@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Zenith/Core/Transformable.hpp"
-#include "Zenith/Graphics/Drawable.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Utility/Utility.hpp"
 
 namespace zth {
 
-class Shape : public Drawable
+class Shape
 {
 public:
     explicit Shape() = default;
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Shape)
-    ~Shape() override = default;
+    ~Shape() = default;
 
     // TODO: is this needed?
     [[nodiscard]] virtual auto mesh() const -> const Mesh& = 0;
