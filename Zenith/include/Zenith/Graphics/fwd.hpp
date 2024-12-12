@@ -10,7 +10,7 @@ class Shape3D;
 class Camera;
 class PerspectiveCamera;
 
-class Drawable;
+struct DrawCommand;
 
 class ImGuiRenderer;
 
@@ -18,7 +18,8 @@ class Material;
 
 class Mesh;
 
-struct DrawCommand;
+struct RenderBatch;
+struct TransformBufferVertex;
 class Renderer;
 
 } // namespace zth

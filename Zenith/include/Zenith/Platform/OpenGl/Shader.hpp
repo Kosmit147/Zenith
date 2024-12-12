@@ -44,10 +44,8 @@ public:
 
     template<typename T> auto set_unif(const std::string& name, const T& val) const -> void
     {
-        auto info = get_unif_info(name);
-
-        if (info)
-            set_unif(info.value().location, val);
+        if (auto info = get_unif_info(name))
+            set_unif(info->location, val);
         else
             ZTH_CORE_WARN("Uniform with name {} not present in shader with id {}.", name, _id);
     }

@@ -41,9 +41,9 @@ auto gl_debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unus
         ZTH_CORE_INFO("[OpenGL] {}: {}", type_str, message);
         break;
     case GL_DEBUG_SEVERITY_LOW:
+    case GL_DEBUG_SEVERITY_MEDIUM:
         ZTH_CORE_WARN("[OpenGL] {}: {}", type_str, message);
         break;
-    case GL_DEBUG_SEVERITY_MEDIUM:
     case GL_DEBUG_SEVERITY_HIGH:
         ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
         ZTH_DEBUG_BREAK;

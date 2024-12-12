@@ -12,6 +12,7 @@ class GlBuffer;
 class VertexBuffer;
 class IndexBuffer;
 class UniformBuffer;
+class InstanceBuffer;
 
 struct GlVersion;
 enum class GlProfile : u8;

@@ -37,12 +37,10 @@ GlBuffer::~GlBuffer()
     destroy();
 }
 
-auto GlBuffer::free() -> void
+auto GlBuffer::buffer_sub_data(const void* data, GLintptr offset, GLsizeiptr size_bytes) const -> void
 {
-    destroy();
-
-    _id = 0;
-    _size_bytes = 0;
+    ZTH_ASSERT(size_bytes + offset <= this->size_bytes());
+    glNamedBufferSubData(native_handle(), offset, size_bytes, data);
 }
 
 auto GlBuffer::create() -> void
@@ -55,10 +53,11 @@ auto GlBuffer::destroy() const -> void
     glDeleteBuffers(1, &_id);
 }
 
+VertexBuffer::VertexBuffer(GLsizei size) : GlBuffer(size) {}
+
 VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
-    : GlBuffer(std::move(other)), _layout(std::move(other._layout)), _size(other._size), _stride(other._stride)
+    : GlBuffer(std::move(other)), _layout(std::move(other._layout)), _stride(other._stride)
 {
-    other._size = 0;
     other._stride = 0;
 }
 
@@ -67,10 +66,8 @@ auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
     GlBuffer::operator=(std::move(other));
 
     _layout = std::move(other._layout);
-    _size = other._size;
     _stride = other._stride;
 
-    other._size = 0;
     other._stride = 0;
 
     return *this;
@@ -81,18 +78,27 @@ auto VertexBuffer::bind() const -> void
     glBindBuffer(GL_ARRAY_BUFFER, native_handle());
 }
 
-auto VertexBuffer::unbind() const -> void
+auto VertexBuffer::unbind() -> void
 {
     glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 }
 
-void VertexBuffer::free()
+auto VertexBuffer::set_layout(const VertexLayout& layout) -> void
 {
-    GlBuffer::free();
-    _layout.clear();
-    _size = 0;
-    _stride = 0;
+    _layout = layout;
 }
+
+auto VertexBuffer::set_layout(VertexLayout&& layout) -> void
+{
+    _layout = std::move(layout);
+}
+
+auto VertexBuffer::set_stride(GLsizei stride) -> void
+{
+    _stride = stride;
+}
+
+IndexBuffer::IndexBuffer(GLsizei size) : GlBuffer(size) {}
 
 IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
     : GlBuffer(std::move(other)), _index_type(other._index_type), _size(other._size)
@@ -104,7 +110,7 @@ IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
 auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
 {
     GlBuffer::operator=(std::move(other));
-    
+
     _index_type = other._index_type;
     _size = other._size;
 
@@ -119,22 +125,9 @@ auto IndexBuffer::bind() const -> void
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, native_handle());
 }
 
-auto IndexBuffer::unbind() const -> void
+auto IndexBuffer::unbind() -> void
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
-}
-
-void IndexBuffer::free()
-{
-    GlBuffer::free();
-    _index_type = GL_NONE;
-    _size = 0;
-}
-
-auto UniformBuffer::buffer_sub_data(const void* data, GLintptr offset, GLsizeiptr size_bytes) const -> void
-{
-    ZTH_ASSERT(size_bytes + offset <= this->size_bytes());
-    glNamedBufferSubData(native_handle(), offset, size_bytes, data);
 }
 
 auto UniformBuffer::bind() const -> void
@@ -142,7 +135,7 @@ auto UniformBuffer::bind() const -> void
     glBindBuffer(GL_UNIFORM_BUFFER, native_handle());
 }
 
-auto UniformBuffer::unbind() const -> void
+auto UniformBuffer::unbind() -> void
 {
     glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 }

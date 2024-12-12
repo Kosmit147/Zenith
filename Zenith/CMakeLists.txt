@@ -22,6 +22,7 @@ add_library(
 	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Shapes/Shape.cpp"
 	"src/Graphics/Camera.cpp"
+	"src/Graphics/DrawCommand.cpp"
 	"src/Graphics/ImGuiRenderer.cpp"
 	"src/Graphics/Material.cpp"
 	"src/Graphics/Mesh.cpp"
