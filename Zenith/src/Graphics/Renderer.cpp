@@ -71,6 +71,10 @@ auto Renderer::shut_down() -> void
     meshes::unload_meshes();
     shaders::unload_shaders();
 
+    _tmp_va.reset();
+    _transforms_buffer.reset();
+    _camera_matrices_buffer.reset();
+
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
