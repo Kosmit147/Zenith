@@ -173,10 +173,14 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 
     transforms.clear();
 
+    auto get_row = [](const glm::mat4& mat, glm::length_t row_idx) {
+        return glm::vec4{ mat[0][row_idx], mat[1][row_idx], mat[2][row_idx], mat[3][row_idx] };
+    };
+
     for (auto& transform_ptr : batch.transforms)
     {
         auto& transform = *transform_ptr;
-        transforms.emplace_back(transform[0], transform[1], transform[2], transform[3]);
+        transforms.emplace_back(get_row(transform, 0), get_row(transform, 1), get_row(transform, 2));
     }
 
     transforms_buffer.buffer_data(transforms);

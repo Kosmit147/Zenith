@@ -33,10 +33,9 @@ struct CameraMatrices
 
 struct TransformBufferVertex
 {
-    glm::vec4 transform_col_0;
-    glm::vec4 transform_col_1;
-    glm::vec4 transform_col_2;
-    glm::vec4 transform_col_3;
+    glm::vec4 transform_row_0;
+    glm::vec4 transform_row_1;
+    glm::vec4 transform_row_2;
 };
 
 class Renderer
