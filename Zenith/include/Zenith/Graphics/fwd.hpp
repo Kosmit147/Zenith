@@ -19,6 +19,7 @@ class Material;
 class Mesh;
 
 struct RenderBatch;
+struct CameraMatrices;
 struct TransformBufferVertex;
 class Renderer;
 

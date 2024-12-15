@@ -65,8 +65,8 @@ private:
     auto destroy() const -> void;
 
     auto bind_layouts() const -> void;
-    auto bind_vertex_buffer_layout(const VertexLayout& layout) const -> void;
-    auto bind_instance_buffer_layout(const VertexLayout& layout) const -> void;
+    auto bind_vertex_buffer_layout(const VertexBufferLayout& layout) const -> void;
+    auto bind_instance_buffer_layout(const VertexBufferLayout& layout) const -> void;
 };
 
 } // namespace zth

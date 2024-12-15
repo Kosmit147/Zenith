@@ -4,15 +4,16 @@
 
 namespace zth {
 
-enum class AccessFrequency : u8;
-enum class AccessType : u8;
-struct BufferUsage;
-
+enum class GlBufferState : u8;
 class GlBuffer;
 class VertexBuffer;
 class IndexBuffer;
 class UniformBuffer;
 class InstanceBuffer;
+
+enum class GlBufferAccessFrequency : u8;
+enum class GlBufferAccessType : u8;
+struct GlBufferUsage;
 
 struct GlVersion;
 enum class GlProfile : u8;
@@ -34,8 +35,8 @@ class Texture2D;
 
 class VertexArray;
 
-enum class VertexLayoutElement : u8;
-struct VertexLayoutElementInfo;
-class VertexLayout;
+enum class VertexBufferLayoutElement : u8;
+struct VertexBufferLayoutElementInfo;
+class VertexBufferLayout;
 
 } // namespace zth

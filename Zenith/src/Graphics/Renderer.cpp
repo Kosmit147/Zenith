@@ -1,7 +1,6 @@
 #include "Zenith/Graphics/Renderer.hpp"
 
 #include <glad/glad.h>
-#include <glm/mat4x4.hpp>
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Colors.hpp"
@@ -19,10 +18,11 @@
 
 namespace zth {
 
-struct CameraMatrices
-{
-    glm::mat4 view_projection;
-};
+namespace {
+
+std::unique_ptr<Renderer> renderer;
+
+} // namespace
 
 auto Renderer::init() -> void
 {
@@ -42,15 +42,12 @@ auto Renderer::init() -> void
     shaders::load_shaders();
     meshes::load_meshes();
 
-    _camera_matrices_buffer.emplace(static_cast<GLsizei>(sizeof(CameraMatrices)));
-    _camera_matrices_buffer->set_binding_index(ZTH_CAMERA_MATRICES_UBO_BINDING_INDEX);
+    renderer.reset(new Renderer);
 
-    // TODO: fix hardcoded transforms buffer size
-    _transforms_buffer.emplace(static_cast<GLsizei>(sizeof(glm::mat4) * 32000));
-    _transforms_buffer->set_layout(VertexLayout::from_vertex<TransformBufferVertex>());
-    _transforms_buffer->set_stride(sizeof(TransformBufferVertex));
+    renderer->_camera_matrices_buffer.set_binding_index(ZTH_CAMERA_MATRICES_UBO_BINDING_INDEX);
 
-    _tmp_va.emplace();
+    renderer->_transforms_buffer.set_layout(VertexBufferLayout::from_vertex<TransformBufferVertex>());
+    renderer->_transforms_buffer.set_stride(sizeof(TransformBufferVertex));
 
     ZTH_CORE_INFO("Renderer initialized.");
 }
@@ -71,9 +68,7 @@ auto Renderer::shut_down() -> void
     meshes::unload_meshes();
     shaders::unload_shaders();
 
-    _tmp_va.reset();
-    _transforms_buffer.reset();
-    _camera_matrices_buffer.reset();
+    renderer.reset();
 
     ZTH_CORE_INFO("Renderer shut down.");
 }
@@ -90,7 +85,7 @@ auto Renderer::clear() -> void
 
 auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
 {
-    _camera = std::move(camera);
+    renderer->_camera = std::move(camera);
 }
 
 auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
@@ -105,7 +100,7 @@ auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material
 
 auto Renderer::draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
-    _draw_commands.emplace_back(&vertex_array, &material, &transform);
+    renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
 
 auto Renderer::render() -> void
@@ -113,11 +108,11 @@ auto Renderer::render() -> void
     upload_camera_matrices();
     batch_draw_commands();
 
-    for (const auto& batch : _batches)
+    for (const auto& batch : renderer->_batches)
         render_batch(batch);
 
-    _draw_commands.clear();
-    _batches.clear();
+    renderer->_draw_commands.clear();
+    renderer->_batches.clear();
 }
 
 auto Renderer::draw_indexed(const VertexArray& vertex_array, const Material& material) -> void
@@ -137,18 +132,21 @@ auto Renderer::draw_instanced(const VertexArray& vertex_array, const Material& m
 
 auto Renderer::batch_draw_commands() -> void
 {
-    std::ranges::sort(_draw_commands);
-    std::vector<const glm::mat4*> transforms;
-    transforms.reserve(100);
+    auto& draw_commands = renderer->_draw_commands;
+    auto& batches = renderer->_batches;
 
-    for (usize i = 0; i < _draw_commands.size(); i++)
+    std::ranges::sort(draw_commands);
+    static std::vector<const glm::mat4*> transforms;
+    transforms.clear();
+
+    for (usize i = 0; i < draw_commands.size(); i++)
     {
-        const VertexArray* current_vertex_array = _draw_commands[i].vertex_array;
-        const Material* current_material = _draw_commands[i].material;
+        const VertexArray* current_vertex_array = draw_commands[i].vertex_array;
+        const Material* current_material = draw_commands[i].material;
 
-        while (i < _draw_commands.size() && _draw_commands[i].material == current_material)
+        while (i < draw_commands.size() && draw_commands[i].material == current_material)
         {
-            transforms.push_back(_draw_commands[i].transform);
+            transforms.push_back(draw_commands[i].transform);
             i++;
         }
 
@@ -159,59 +157,64 @@ auto Renderer::batch_draw_commands() -> void
         };
 
         std::ranges::move(transforms, std::back_inserter(batch.transforms));
-        _batches.push_back(std::move(batch));
+        batches.push_back(std::move(batch));
         transforms.clear();
     }
 }
 
 auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
+    auto& transforms = renderer->_transforms;
+    auto& transforms_buffer = renderer->_transforms_buffer;
+    auto& tmp_va = renderer->_tmp_va;
+
     ZTH_ASSERT(batch.vertex_array->vertex_buffer() != nullptr);
     ZTH_ASSERT(batch.vertex_array->index_buffer() != nullptr);
 
-    _transforms.clear();
+    transforms.clear();
 
     for (auto& transform_ptr : batch.transforms)
     {
         auto& transform = *transform_ptr;
-        _transforms.emplace_back(transform[0], transform[1], transform[2], transform[3]);
+        transforms.emplace_back(transform[0], transform[1], transform[2], transform[3]);
     }
 
-    _transforms_buffer->buffer_sub_data(_transforms);
+    transforms_buffer.buffer_data(transforms);
 
-    _tmp_va->bind_vertex_buffer(*batch.vertex_array->vertex_buffer());
-    _tmp_va->bind_index_buffer(*batch.vertex_array->index_buffer());
-    _tmp_va->bind_instance_buffer(*_transforms_buffer);
+    // TODO: get rid of this
+    tmp_va.bind_vertex_buffer(*batch.vertex_array->vertex_buffer());
+    tmp_va.bind_index_buffer(*batch.vertex_array->index_buffer());
+    tmp_va.bind_instance_buffer(transforms_buffer);
 
-    draw_instanced(*_tmp_va, *batch.material, _transforms.size());
+    draw_instanced(tmp_va, *batch.material, transforms.size());
 
-    _tmp_va->unbind_all_buffers();
+    tmp_va.unbind_all_buffers();
 }
 
 auto Renderer::upload_camera_matrices() -> void
 {
-    ZTH_ASSERT(_camera != nullptr);
+    ZTH_ASSERT(renderer->_camera != nullptr);
 
     CameraMatrices camera_matrices = {
-        .view_projection = _camera->view_projection(),
+        .view_projection = renderer->_camera->view_projection(),
     };
 
-    _camera_matrices_buffer->buffer_sub_data(camera_matrices);
+    renderer->_camera_matrices_buffer.buffer_data(camera_matrices);
 }
 
 auto Renderer::log_gl_version() -> void
 {
-    auto vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-    auto renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-    auto version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-    auto glsl_version = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+    auto vendor_str = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    auto renderer_str = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    auto version_str = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    auto glsl_version_str = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     ZTH_CORE_INFO("[Renderer] OpenGL context info:\n"
                   "\tVendor: {}\n"
                   "\tRenderer: {}\n"
                   "\tVersion: {}\n"
                   "\tGLSL Version: {}",
-                  vendor, renderer, version, glsl_version);
+                  vendor_str, renderer_str, version_str, glsl_version_str);
 }
 
 } // namespace zth

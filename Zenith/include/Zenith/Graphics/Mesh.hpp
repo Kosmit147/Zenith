@@ -12,7 +12,8 @@ class Mesh
 {
 public:
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
-        : _vertex_buffer(vertex_data), _index_buffer(index_data), _vertex_array(_vertex_buffer, _index_buffer)
+        : _vertex_buffer(VertexBuffer::create_static(vertex_data)),
+          _index_buffer(IndexBuffer::create_static(index_data)), _vertex_array(_vertex_buffer, _index_buffer)
     {}
 
     ZTH_NO_COPY(Mesh)
