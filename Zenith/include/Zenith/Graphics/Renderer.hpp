@@ -1,10 +1,10 @@
 #pragma once
 
 #include <glm/fwd.hpp>
+#include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
 #include <memory>
-#include <optional>
 #include <vector>
 
 #include "Zenith/Core/Typedefs.hpp"
@@ -26,6 +26,11 @@ struct RenderBatch
     std::vector<const glm::mat4*> transforms;
 };
 
+struct CameraMatrices
+{
+    glm::mat4 view_projection;
+};
+
 struct TransformBufferVertex
 {
     glm::vec4 transform_col_0;
@@ -37,8 +42,6 @@ struct TransformBufferVertex
 class Renderer
 {
 public:
-    Renderer() = delete;
-
     static auto init() -> void;
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
@@ -58,20 +61,21 @@ public:
     static auto draw_instanced(const VertexArray& vertex_array, const Material& material, usize instances) -> void;
 
 private:
-    static inline std::shared_ptr<Camera> _camera =
-        std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
+    std::shared_ptr<Camera> _camera = std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
 
-    static inline std::optional<UniformBuffer> _camera_matrices_buffer;
+    UniformBuffer _camera_matrices_buffer = UniformBuffer::create_static(sizeof(CameraMatrices));
 
-    static inline std::vector<TransformBufferVertex> _transforms;
-    static inline std::optional<InstanceBuffer> _transforms_buffer;
+    std::vector<TransformBufferVertex> _transforms;
+    InstanceBuffer _transforms_buffer = InstanceBuffer::create_dynamic();
 
-    static inline std::optional<VertexArray> _tmp_va;
+    VertexArray _tmp_va; // TODO: get rid of this
 
-    static inline std::vector<DrawCommand> _draw_commands;
-    static inline std::vector<RenderBatch> _batches;
+    std::vector<DrawCommand> _draw_commands;
+    std::vector<RenderBatch> _batches;
 
 private:
+    explicit Renderer() = default;
+
     static auto batch_draw_commands() -> void;
     static auto render_batch(const RenderBatch& batch) -> void;
 

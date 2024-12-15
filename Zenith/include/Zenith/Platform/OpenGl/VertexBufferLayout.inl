@@ -8,33 +8,33 @@
 
 namespace zth {
 
-template<typename T> constexpr auto to_vertex_layout_elem() -> VertexLayoutElement
+template<typename T> constexpr auto to_vertex_layout_elem() -> VertexBufferLayoutElement
 {
     static_assert(false, "not implemented");
-    return static_cast<VertexLayoutElement>(NULL);
+    return static_cast<VertexBufferLayoutElement>(NULL);
 }
 
-template<> constexpr auto to_vertex_layout_elem<const GLfloat>() -> VertexLayoutElement
+template<> constexpr auto to_vertex_layout_elem<const GLfloat>() -> VertexBufferLayoutElement
 {
-    return VertexLayoutElement::Float;
+    return VertexBufferLayoutElement::Float;
 }
 
-template<> constexpr auto to_vertex_layout_elem<const glm::vec2>() -> VertexLayoutElement
+template<> constexpr auto to_vertex_layout_elem<const glm::vec2>() -> VertexBufferLayoutElement
 {
-    return VertexLayoutElement::Vec2;
+    return VertexBufferLayoutElement::Vec2;
 }
 
-template<> constexpr auto to_vertex_layout_elem<const glm::vec3>() -> VertexLayoutElement
+template<> constexpr auto to_vertex_layout_elem<const glm::vec3>() -> VertexBufferLayoutElement
 {
-    return VertexLayoutElement::Vec3;
+    return VertexBufferLayoutElement::Vec3;
 }
 
-template<> constexpr auto to_vertex_layout_elem<const glm::vec4>() -> VertexLayoutElement
+template<> constexpr auto to_vertex_layout_elem<const glm::vec4>() -> VertexBufferLayoutElement
 {
-    return VertexLayoutElement::Vec4;
+    return VertexBufferLayoutElement::Vec4;
 }
 
-template<typename VertexType> constexpr auto VertexLayout::from_vertex() -> VertexLayout
+template<typename VertexType> constexpr auto VertexBufferLayout::from_vertex() -> VertexBufferLayout
 {
     constexpr auto dummy_vertex = VertexType{};
     constexpr auto arity = get_struct_arity<VertexType>();

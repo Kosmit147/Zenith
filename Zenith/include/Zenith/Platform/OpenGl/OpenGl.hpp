@@ -2,8 +2,8 @@
 
 #include "fwd.hpp"
 
-#include "BufferUsage.hpp"
 #include "GlBuffer.hpp"
+#include "GlBufferUsage.hpp"
 #include "GlContext.hpp"
 #include "GlDebug.hpp"
 #include "GlUtils.hpp"
@@ -11,4 +11,4 @@
 #include "Texture.hpp"
 #include "TextureParams.hpp"
 #include "VertexArray.hpp"
-#include "VertexLayout.hpp"
+#include "VertexBufferLayout.hpp"

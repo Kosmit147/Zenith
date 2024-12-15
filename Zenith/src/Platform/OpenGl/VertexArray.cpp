@@ -1,7 +1,7 @@
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/VertexLayout.hpp"
+#include "Zenith/Platform/OpenGl/VertexBufferLayout.hpp"
 
 namespace zth {
 
@@ -190,7 +190,7 @@ auto VertexArray::bind_layouts() const -> void
         bind_instance_buffer_layout(_instance_buffer->layout());
 }
 
-auto VertexArray::bind_vertex_buffer_layout(const VertexLayout& layout) const -> void
+auto VertexArray::bind_vertex_buffer_layout(const VertexBufferLayout& layout) const -> void
 {
     GLuint index = 0;
     GLuint offset = 0;
@@ -208,7 +208,7 @@ auto VertexArray::bind_vertex_buffer_layout(const VertexLayout& layout) const ->
     }
 }
 
-auto VertexArray::bind_instance_buffer_layout(const VertexLayout& layout) const -> void
+auto VertexArray::bind_instance_buffer_layout(const VertexBufferLayout& layout) const -> void
 {
     GLuint index = 0;
     GLuint offset = 0;

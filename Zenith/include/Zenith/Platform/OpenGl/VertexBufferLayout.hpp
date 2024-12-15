@@ -10,7 +10,7 @@
 
 namespace zth {
 
-enum class VertexLayoutElement : u8
+enum class VertexBufferLayoutElement : u8
 {
     Float,
     Vec2,
@@ -18,21 +18,21 @@ enum class VertexLayoutElement : u8
     Vec4,
 };
 
-struct VertexLayoutElementInfo
+struct VertexBufferLayoutElementInfo
 {
     GLint count;
     GLenum type;
     GLuint size_bytes;
 };
 
-class VertexLayout
+class VertexBufferLayout
 {
 public:
-    constexpr VertexLayout() = default;
-    constexpr VertexLayout(std::initializer_list<VertexLayoutElement> elems) : _elements(elems) {}
-    template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexLayout;
+    constexpr VertexBufferLayout() = default;
+    constexpr VertexBufferLayout(std::initializer_list<VertexBufferLayoutElement> elems) : _elements(elems) {}
+    template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexBufferLayout;
 
-    auto push(VertexLayoutElement elem) -> void { _elements.push_back(elem); }
+    auto push(VertexBufferLayoutElement elem) -> void { _elements.push_back(elem); }
     auto clear() -> void { _elements.clear(); }
 
     [[nodiscard]] auto size() const { return _elements.size(); }
@@ -44,14 +44,15 @@ public:
     [[nodiscard]] auto end() { return _elements.end(); }
 
 private:
-    std::vector<VertexLayoutElement> _elements;
+    std::vector<VertexBufferLayoutElement> _elements;
 };
 
-[[nodiscard]] constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo
+[[nodiscard]] constexpr auto
+get_vertex_layout_element_info(VertexBufferLayoutElement elem) -> VertexBufferLayoutElementInfo
 {
     switch (elem)
     {
-        using enum VertexLayoutElement;
+        using enum VertexBufferLayoutElement;
     case Float:
         return { .count = 1, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) };
     case Vec2:
@@ -68,4 +69,4 @@ private:
 
 } // namespace zth
 
-#include "VertexLayout.inl"
+#include "VertexBufferLayout.inl"
