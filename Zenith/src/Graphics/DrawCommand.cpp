@@ -13,6 +13,8 @@ auto DrawCommand::operator<(const DrawCommand& other) const -> bool
     // sort by vertex array first
     if (vertex_array < other.vertex_array)
         return true;
+    else if (vertex_array > other.vertex_array)
+        return false;
 
     // sort by material second
     if (material < other.material)
@@ -26,6 +28,8 @@ auto DrawCommand::operator>(const DrawCommand& other) const -> bool
     // sort by vertex array first
     if (vertex_array > other.vertex_array)
         return true;
+    else if (vertex_array < other.vertex_array)
+        return false;
 
     // sort by material second
     if (material > other.material)
