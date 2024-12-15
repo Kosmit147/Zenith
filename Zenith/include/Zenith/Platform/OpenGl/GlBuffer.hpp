@@ -68,7 +68,7 @@ private:
     auto create() -> void;
     auto destroy() -> void;
 
-    auto reserve_at_least(GLsizei min_size_bytes) -> void;
+    auto resize_to_at_least(GLsizei min_size_bytes) -> void;
 };
 
 class VertexBuffer : public GlBuffer

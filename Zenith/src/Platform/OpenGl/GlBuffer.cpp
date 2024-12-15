@@ -102,13 +102,13 @@ auto GlBuffer::buffer_data(const void* data, usize offset, usize data_size_bytes
 
     if (_state == GlBufferState::InitializedStatic)
     {
-        ZTH_ASSERT(static_cast<GLsizei>(data_size_bytes + offset) <= _size_bytes);
+        ZTH_ASSERT(static_cast<GLsizei>(offset + data_size_bytes) <= _size_bytes);
         glNamedBufferSubData(_id, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(data_size_bytes), data);
     }
     else if (_state == GlBufferState::InitializedDynamic)
     {
-        if (static_cast<GLsizei>(data_size_bytes + offset) > _size_bytes)
-            reserve_at_least(static_cast<GLsizei>(data_size_bytes + offset));
+        if (static_cast<GLsizei>(offset + data_size_bytes) > _size_bytes)
+            resize_to_at_least(static_cast<GLsizei>(offset + data_size_bytes));
 
         glNamedBufferSubData(_id, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(data_size_bytes), data);
     }
@@ -128,7 +128,7 @@ auto GlBuffer::destroy() -> void
     glDeleteBuffers(1, &_id);
 }
 
-auto GlBuffer::reserve_at_least(GLsizei min_size_bytes) -> void
+auto GlBuffer::resize_to_at_least(GLsizei min_size_bytes) -> void
 {
     ZTH_ASSERT(_state == GlBufferState::InitializedDynamic);
 
@@ -154,6 +154,7 @@ auto GlBuffer::reserve_at_least(GLsizei min_size_bytes) -> void
     }
     else
     {
+        ZTH_ASSERT(_usage.has_value());
         glNamedBufferData(_id, new_size, nullptr, to_gl_enum(*_usage));
     }
 
