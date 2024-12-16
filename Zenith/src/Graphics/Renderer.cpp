@@ -216,10 +216,11 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 auto Renderer::upload_camera_ubo() -> void
 {
     ZTH_ASSERT(renderer->_camera != nullptr);
+    const auto& camera = renderer->_camera;
 
     CameraUboData camera_ubo_data = {
-        .view_projection = renderer->_camera->view_projection(),
-        .camera_position = renderer->_camera->position(),
+        .view_projection = camera->view_projection(),
+        .camera_position = camera->position(),
     };
 
     renderer->_camera_ubo.buffer_data(camera_ubo_data);
@@ -227,11 +228,15 @@ auto Renderer::upload_camera_ubo() -> void
 
 auto Renderer::upload_light_ubo() -> void
 {
-    ZTH_ASSERT(renderer->_camera != nullptr);
+    ZTH_ASSERT(renderer->_light != nullptr);
+    const auto& light = renderer->_light;
 
     LightUboData light_ubo_data = {
-        .light_position = renderer->_light->translation(),
-        .light_color = renderer->_light->color,
+        .light_position = light->translation(),
+        .light_color = light->color,
+        .light_ambient = light->ambient,
+        .light_diffuse = light->diffuse,
+        .light_specular = light->specular,
     };
 
     renderer->_light_ubo.buffer_data(light_ubo_data);
@@ -256,9 +261,9 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
     MaterialUboData material_ubo_data = {
         .albedo = material.albedo,
         .has_texture = material.texture ? true : false,
-        .ambient = material.ambient,
-        .diffuse = material.diffuse,
-        .specular = material.specular,
+        .material_ambient = material.ambient,
+        .material_diffuse = material.diffuse,
+        .material_specular = material.specular,
         .shininess = material.shininess,
     };
 

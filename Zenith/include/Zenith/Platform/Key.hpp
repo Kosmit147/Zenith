@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <array>
+#include <optional>
 #include <string>
 
 #include "Zenith/Core/Typedefs.hpp"
@@ -258,7 +259,7 @@ constexpr std::array key_enumerations = {
     Key::Menu,
 };
 
-[[nodiscard]] auto glfw_key_to_key(int key) -> Key;
+[[nodiscard]] auto glfw_key_to_key(int key) -> std::optional<Key>;
 [[nodiscard]] auto to_string(Key key) -> const char*;
 
 } // namespace zth

@@ -14,6 +14,10 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
 {
     vec3 lightPosition;
 	vec3 lightColor;
+
+    vec3 lightAmbient;
+    vec3 lightDiffuse;
+    vec3 lightSpecular;
 };
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
@@ -21,9 +25,9 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 	vec3 albedo;
     bool has_texture;
 
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    vec3 materialAmbient;
+    vec3 materialDiffuse;
+    vec3 materialSpecular;
     float shininess;
 };
 
@@ -38,14 +42,14 @@ void main()
     if (has_texture)
         objectColor *= texture(tex, UV);
 
-    vec3 ambientFactor = ambient;
+    vec3 ambientFactor = lightAmbient * materialAmbient;
 
     vec3 lightDirection = normalize(lightPosition - Position);
-    vec3 diffuseFactor = diffuse * max(dot(lightDirection, Normal), 0.0);
+    vec3 diffuseFactor = lightDiffuse * materialDiffuse * max(dot(lightDirection, Normal), 0.0);
 
     vec3 viewDirection = normalize(cameraPosition - Position);
     vec3 reflection = reflect(-lightDirection, Normal);
-    vec3 specularFactor = specular * pow(max(dot(reflection, viewDirection), 0.0), shininess);
+    vec3 specularFactor = lightSpecular * materialSpecular * pow(max(dot(reflection, viewDirection), 0.0), shininess);
 
     outColor = vec4((ambientFactor + diffuseFactor + specularFactor) * objectColor.rgb, objectColor.a);
 }

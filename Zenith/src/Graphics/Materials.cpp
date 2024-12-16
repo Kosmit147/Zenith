@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 
+#include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Shaders.hpp"
 
 namespace zth::materials {
@@ -182,6 +183,16 @@ auto init_materials() -> void
 {
     for (auto* material : materials)
         material->shader = shaders::standard;
+
+    for (usize i = 1; i < materials.size(); i++)
+    {
+        // temp fix for wrong material values
+        // current values assume light ambient, diffuse and specular values of 1.0
+        // TODO: fix the values
+
+        materials[i]->ambient *= 5.0f;
+        materials[i]->diffuse *= 2.0f;
+    }
 }
 
 } // namespace zth::materials
