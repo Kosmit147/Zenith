@@ -165,11 +165,6 @@ public:
     static auto create_static(usize size) -> UniformBuffer;
     static auto create_static(std::ranges::contiguous_range auto&& data) -> UniformBuffer;
 
-    static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> UniformBuffer;
-    static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> UniformBuffer;
-    static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                               GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> UniformBuffer;
-
     ZTH_NO_COPY(UniformBuffer)
     ZTH_DEFAULT_MOVE(UniformBuffer)
 
@@ -177,11 +172,6 @@ public:
 
     auto init_static(usize size) -> void;
     auto init_static(std::ranges::contiguous_range auto&& data) -> void;
-
-    auto init_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(std::ranges::contiguous_range auto&& data,
-                      GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
     auto buffer_data(auto&& object, usize offset = 0) -> void;

@@ -147,21 +147,9 @@ auto UniformBuffer::create_static(std::ranges::contiguous_range auto&& data) -> 
     return buffer;
 }
 
-auto UniformBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> UniformBuffer
-{
-    UniformBuffer buffer;
-    buffer.init_dynamic(data, usage);
-    return buffer;
-}
-
 auto UniformBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
 {
     GlBuffer::init_static(data);
-}
-
-auto UniformBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> void
-{
-    GlBuffer::init_dynamic(data, usage);
 }
 
 auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
