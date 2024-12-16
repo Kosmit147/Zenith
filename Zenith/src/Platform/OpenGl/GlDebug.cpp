@@ -60,6 +60,14 @@ auto enable_gl_debug() -> void
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(gl_debug_callback, nullptr);
+
+    constexpr std::array<GLuint, 1> disabled_messages_api_other = {
+        131185, // buffer detailed info from NVIDIA
+    };
+
+    glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_OTHER, GL_DONT_CARE,
+                          static_cast<GLsizei>(disabled_messages_api_other.size()), disabled_messages_api_other.data(),
+                          GL_FALSE);
 }
 
 } // namespace zth

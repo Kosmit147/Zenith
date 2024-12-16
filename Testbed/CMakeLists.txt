@@ -7,6 +7,7 @@ add_executable(
 	"src/TransformTest.cpp"
 )
 
+b_embed(Testbed "assets/cobble.png")
 b_embed(Testbed "assets/container.jpg")
 b_embed(Testbed "assets/emoji.png")
 b_embed(Testbed "assets/wall.jpg")

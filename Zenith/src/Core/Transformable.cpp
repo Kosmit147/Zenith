@@ -5,6 +5,11 @@
 
 namespace zth {
 
+Transformable3D::Transformable3D(glm::vec3 translation)
+{
+    set_translation(translation);
+}
+
 Transformable3D::Transformable3D(const glm::mat4& transform)
 {
     set_transform(transform);
@@ -20,6 +25,13 @@ auto Transformable3D::translate(glm::vec3 translation) -> Transformable3D&
 auto Transformable3D::rotate(float angle, glm::vec3 axis) -> Transformable3D&
 {
     _rotation = glm::normalize(glm::rotate(_rotation, angle, axis));
+    update_transform();
+    return *this;
+}
+
+auto Transformable3D::scale(float factor) -> Transformable3D&
+{
+    _scale *= factor;
     update_transform();
     return *this;
 }
@@ -46,6 +58,12 @@ auto Transformable3D::set_rotation(float angle, glm::vec3 axis) -> void
 auto Transformable3D::set_rotation(glm::quat rotation) -> void
 {
     _rotation = glm::normalize(rotation);
+    update_transform();
+}
+
+auto Transformable3D::set_scale(float scale) -> void
+{
+    _scale = glm::vec3{ scale };
     update_transform();
 }
 

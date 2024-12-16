@@ -1,25 +1,23 @@
 #pragma once
 
+#include <glm/vec3.hpp>
+
+#include "Zenith/Graphics/Shaders.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
 
-class Material
+struct Material
 {
-public:
-    explicit Material(const Shader* shader = nullptr, const Texture2D* texture = nullptr);
+    const Shader* shader = shaders::standard;
 
-    auto bind() const -> void;
+    glm::vec3 albedo = glm::vec3{ 1.0f };
+    const Texture2D* texture = nullptr;
 
-    auto set_shader(const Shader* shader) -> void;
-    auto set_texture(const Texture2D* texture) -> void;
-
-    [[nodiscard]] auto shader() const { return _shader; }
-    [[nodiscard]] auto texture() const { return _texture; }
-
-private:
-    const Shader* _shader = nullptr;
-    const Texture2D* _texture = nullptr;
+    glm::vec3 ambient = glm::vec3{ 0.05f };
+    glm::vec3 diffuse = glm::vec3{ 0.7f };
+    glm::vec3 specular = glm::vec3{ 0.4f };
+    float shininess = 32.0f;
 };
 
 } // namespace zth

@@ -13,11 +13,14 @@ const zth::TextureParams cobble_texture_params = {
     .mag_filter = zth::TextureMagFilter::nearest,
 };
 
+constexpr auto light_position = glm::vec3{ 0.0f, 10.0f, 0.0f };
+constexpr auto light_color = glm::vec3{ 1.0f };
+
 } // namespace
 
 Scene::Scene()
-    : _block_texture(cobble_texture_data, cobble_texture_params),
-      _block_material(zth::shaders::texture_shader, &_block_texture)
+    : _block_texture(cobble_texture_data, cobble_texture_params), _block_material{ .texture = &_block_texture },
+      _light(std::make_unique<zth::PointLight>(light_position, light_color))
 {
     constexpr auto xs = std::views::iota(-20, 20);
     constexpr auto ys = std::views::iota(-20, 0);
@@ -30,9 +33,10 @@ Scene::Scene()
 
 auto Scene::on_load() -> void
 {
-    auto light_blue = glm::vec4(0.643f, 0.816f, 0.91f, 1.0f);
+    auto light_blue = glm::vec4{ 0.643f, 0.816f, 0.91f, 1.0f };
     zth::Renderer::set_clear_color(light_blue);
     zth::Renderer::set_camera(_player.camera());
+    zth::Renderer::set_light(_light);
 }
 
 auto Scene::on_update() -> void
