@@ -1,8 +1,8 @@
 #include "Zenith/Core/Transformable.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-#include <glm/matrix.hpp>
 
 namespace zth {
 
@@ -99,7 +99,7 @@ auto Transformable3D::update_transform() -> void
 auto Transformable3D::update_normal_matrix() -> void
 {
     // the transpose of the inverse of the upper-left 3x3 part of the transform matrix
-    _normal_matrix = glm::transpose(glm::inverse(glm::mat3{ _transform }));
+    _normal_matrix = glm::inverseTranspose(glm::mat3{ _transform });
 }
 
 } // namespace zth
