@@ -90,7 +90,7 @@ std::optional<Mesh> cube_mesh_local;
 auto load_meshes() -> void
 {
     cube_mesh_local.emplace(cube_vertices, cube_indices);
-    cube_mesh = &cube_mesh_local.value();
+    cube_mesh = &*cube_mesh_local;
 
     ZTH_CORE_INFO("Meshes loaded.");
 }

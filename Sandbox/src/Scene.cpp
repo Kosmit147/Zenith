@@ -23,16 +23,21 @@ constexpr auto camera_movement_speed = 1.5f;
 constexpr auto camera_sprint_speed_multiplier = 3.0f;
 constexpr auto camera_sensitivity = 0.001f;
 
+constexpr auto light_position = glm::vec3{ 0.0f, 5.0f, 5.0f };
+constexpr auto light_color = glm::vec3{ 1.0f };
+
 } // namespace
 
 Scene::Scene()
-    : _cube_texture(wall_texture), _cube_material(zth::shaders::texture_shader, &_cube_texture),
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov))
+    : _cube_texture(wall_texture), _cube_material{ .texture = &_cube_texture },
+      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
+      _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {}
 
 auto Scene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
+    zth::Renderer::set_light(_light);
 }
 
 auto Scene::on_update() -> void

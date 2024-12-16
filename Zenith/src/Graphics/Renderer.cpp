@@ -5,6 +5,7 @@
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Graphics/Material.hpp"
+#include "Zenith/Graphics/Materials.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
 #include "Zenith/Graphics/ShaderDefines.h"
@@ -14,6 +15,7 @@
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
 #include "Zenith/Platform/OpenGl/Shader.hpp"
+#include "Zenith/Platform/OpenGl/Texture.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
 namespace zth {
@@ -41,10 +43,13 @@ auto Renderer::init() -> void
 
     shaders::load_shaders();
     meshes::load_meshes();
+    materials::init_materials();
 
     renderer.reset(new Renderer);
 
-    renderer->_camera_matrices_buffer.set_binding_index(ZTH_CAMERA_MATRICES_UBO_BINDING_INDEX);
+    renderer->_camera_ubo.set_binding_index(ZTH_CAMERA_UBO_BINDING_INDEX);
+    renderer->_light_ubo.set_binding_index(ZTH_LIGHT_UBO_BINDING_INDEX);
+    renderer->_material_ubo.set_binding_index(ZTH_MATERIAL_UBO_BINDING_INDEX);
 
     renderer->_transforms_buffer.set_layout(VertexBufferLayout::from_vertex<TransformBufferVertex>());
     renderer->_transforms_buffer.set_stride(sizeof(TransformBufferVertex));
@@ -83,9 +88,14 @@ auto Renderer::clear() -> void
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-auto Renderer::set_camera(std::shared_ptr<Camera> camera) -> void
+auto Renderer::set_camera(std::shared_ptr<PerspectiveCamera> camera) -> void
 {
     renderer->_camera = std::move(camera);
+}
+
+auto Renderer::set_light(std::shared_ptr<Light> light) -> void
+{
+    renderer->_light = std::move(light);
 }
 
 auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
@@ -105,7 +115,8 @@ auto Renderer::draw(const VertexArray& vertex_array, const glm::mat4& transform,
 
 auto Renderer::render() -> void
 {
-    upload_camera_matrices();
+    upload_camera_ubo();
+    upload_light_ubo();
     batch_draw_commands();
 
     for (const auto& batch : renderer->_batches)
@@ -118,14 +129,16 @@ auto Renderer::render() -> void
 auto Renderer::draw_indexed(const VertexArray& vertex_array, const Material& material) -> void
 {
     vertex_array.bind();
-    material.bind();
+    bind_material(material);
+
     glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
 }
 
 auto Renderer::draw_instanced(const VertexArray& vertex_array, const Material& material, usize instances) -> void
 {
     vertex_array.bind();
-    material.bind();
+    bind_material(material);
+
     glDrawElementsInstanced(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr,
                             static_cast<GLsizei>(instances));
 }
@@ -143,10 +156,11 @@ auto Renderer::batch_draw_commands() -> void
     {
         const VertexArray* current_vertex_array = draw_commands[i].vertex_array;
         const Material* current_material = draw_commands[i].material;
+        transforms.push_back(draw_commands[i].transform);
 
-        while (i < draw_commands.size() && draw_commands[i].material == current_material)
+        while (i + 1 < draw_commands.size() && draw_commands[i + 1].material == current_material)
         {
-            transforms.push_back(draw_commands[i].transform);
+            transforms.push_back(draw_commands[i + 1].transform);
             i++;
         }
 
@@ -195,15 +209,56 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
     tmp_va.unbind_all_buffers();
 }
 
-auto Renderer::upload_camera_matrices() -> void
+auto Renderer::upload_camera_ubo() -> void
 {
     ZTH_ASSERT(renderer->_camera != nullptr);
 
-    CameraMatrices camera_matrices = {
+    CameraUboData camera_ubo_data = {
         .view_projection = renderer->_camera->view_projection(),
+        .camera_position = renderer->_camera->position(),
     };
 
-    renderer->_camera_matrices_buffer.buffer_data(camera_matrices);
+    renderer->_camera_ubo.buffer_data(camera_ubo_data);
+}
+
+auto Renderer::upload_light_ubo() -> void
+{
+    ZTH_ASSERT(renderer->_camera != nullptr);
+
+    LightUboData light_ubo_data = {
+        .light_position = renderer->_light->translation(),
+        .light_color = renderer->_light->color,
+    };
+
+    renderer->_light_ubo.buffer_data(light_ubo_data);
+}
+
+auto Renderer::bind_material(const Material& material) -> void
+{
+    ZTH_ASSERT(material.shader != nullptr);
+    material.shader->bind();
+    upload_material_ubo(material);
+
+    if (material.texture)
+    {
+        u32 tex_slot = 0;
+        material.texture->bind(tex_slot);
+        material.shader->set_unif("tex", static_cast<GLint>(tex_slot));
+    }
+}
+
+auto Renderer::upload_material_ubo(const Material& material) -> void
+{
+    MaterialUboData material_ubo_data = {
+        .albedo = material.albedo,
+        .has_texture = material.texture ? true : false,
+        .ambient = material.ambient,
+        .diffuse = material.diffuse,
+        .specular = material.specular,
+        .shininess = material.shininess,
+    };
+
+    renderer->_material_ubo.buffer_data(material_ubo_data);
 }
 
 auto Renderer::log_gl_version() -> void

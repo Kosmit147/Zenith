@@ -2,6 +2,8 @@
 
 #include <Zenith/Zenith.hpp>
 
+#include <memory>
+
 class Scene : public zth::Scene
 {
 public:
@@ -14,6 +16,7 @@ private:
     zth::Texture2D _cube_texture;
     zth::Material _cube_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;
+    std::shared_ptr<zth::PointLight> _light;
 
 private:
     auto on_load() -> void override;

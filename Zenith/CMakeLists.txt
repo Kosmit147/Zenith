@@ -24,7 +24,8 @@ add_library(
 	"src/Graphics/Camera.cpp"
 	"src/Graphics/DrawCommand.cpp"
 	"src/Graphics/ImGuiRenderer.cpp"
-	"src/Graphics/Material.cpp"
+	"src/Graphics/Light.cpp"
+	"src/Graphics/Materials.cpp"
 	"src/Graphics/Mesh.cpp"
 	"src/Graphics/Meshes.cpp"
 	"src/Graphics/Renderer.cpp"
@@ -49,10 +50,10 @@ add_library(
 
 b_embed(Zenith "include/Zenith/Graphics/ShaderDefines.h")
 
-b_embed(Zenith "src/Graphics/Shaders/fallback.vert")
-b_embed(Zenith "src/Graphics/Shaders/fallback.frag")
-b_embed(Zenith "src/Graphics/Shaders/texture.vert")
-b_embed(Zenith "src/Graphics/Shaders/texture.frag")
+b_embed(Zenith "src/Graphics/Shaders/flat_color.vert")
+b_embed(Zenith "src/Graphics/Shaders/flat_color.frag")
+b_embed(Zenith "src/Graphics/Shaders/standard.vert")
+b_embed(Zenith "src/Graphics/Shaders/standard.frag")
 
 target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui")
 target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui/backends")

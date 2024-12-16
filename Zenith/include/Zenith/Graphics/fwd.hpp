@@ -14,12 +14,17 @@ struct DrawCommand;
 
 class ImGuiRenderer;
 
-class Material;
+class Light;
+class PointLight;
+
+struct Material;
 
 class Mesh;
 
 struct RenderBatch;
-struct CameraMatrices;
+struct CameraUboData;
+struct LightUboData;
+struct MaterialUboData;
 struct TransformBufferVertex;
 class Renderer;
 

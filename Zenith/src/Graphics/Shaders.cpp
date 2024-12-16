@@ -8,34 +8,34 @@ namespace zth::shaders {
 
 namespace {
 
-const auto fallback_shader_vertex_source = b::embed<"src/Graphics/Shaders/fallback.vert">().str();
-const auto fallback_shader_fragment_source = b::embed<"src/Graphics/Shaders/fallback.frag">().str();
-const auto texture_shader_vertex_source = b::embed<"src/Graphics/Shaders/texture.vert">().str();
-const auto texture_shader_fragment_source = b::embed<"src/Graphics/Shaders/texture.frag">().str();
+const auto flat_color_vertex_source = b::embed<"src/Graphics/Shaders/flat_color.vert">().str();
+const auto flat_color_fragment_source = b::embed<"src/Graphics/Shaders/flat_color.frag">().str();
+const auto standard_vertex_source = b::embed<"src/Graphics/Shaders/standard.vert">().str();
+const auto standard_fragment_source = b::embed<"src/Graphics/Shaders/standard.frag">().str();
 
-std::optional<Shader> fallback_shader_local;
-std::optional<Shader> texture_shader_local;
+std::optional<Shader> flat_color_local;
+std::optional<Shader> standard_local;
 
 } // namespace
 
 auto load_shaders() -> void
 {
-    texture_shader_local.emplace(texture_shader_vertex_source, texture_shader_fragment_source);
-    texture_shader = &texture_shader_local.value();
+    flat_color_local.emplace(flat_color_vertex_source, flat_color_fragment_source);
+    flat_color = &*flat_color_local;
 
-    fallback_shader_local.emplace(fallback_shader_vertex_source, fallback_shader_fragment_source);
-    fallback_shader = &fallback_shader_local.value();
+    standard_local.emplace(standard_vertex_source, standard_fragment_source);
+    standard = &*standard_local;
 
     ZTH_CORE_INFO("Shaders loaded.");
 }
 
 auto unload_shaders() -> void
 {
-    texture_shader_local.reset();
-    texture_shader = nullptr;
+    flat_color_local.reset();
+    flat_color = nullptr;
 
-    fallback_shader_local.reset();
-    fallback_shader = nullptr;
+    standard_local.reset();
+    standard = nullptr;
 
     ZTH_CORE_INFO("Shaders unloaded.");
 }
