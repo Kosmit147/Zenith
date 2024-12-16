@@ -11,7 +11,7 @@ class Shape
 public:
     explicit Shape() = default;
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Shape)
-    ~Shape() = default;
+    virtual ~Shape() = default;
 
     // TODO: is this needed?
     [[nodiscard]] virtual auto mesh() const -> const Mesh& = 0;

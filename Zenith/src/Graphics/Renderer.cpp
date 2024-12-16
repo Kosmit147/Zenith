@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "Zenith/Core/Assert.hpp"
+#include "Zenith/Core/Transformable.hpp"
 #include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Graphics/Material.hpp"
 #include "Zenith/Graphics/Materials.hpp"
@@ -51,8 +52,8 @@ auto Renderer::init() -> void
     renderer->_light_ubo.set_binding_index(ZTH_LIGHT_UBO_BINDING_INDEX);
     renderer->_material_ubo.set_binding_index(ZTH_MATERIAL_UBO_BINDING_INDEX);
 
-    renderer->_transforms_buffer.set_layout(VertexBufferLayout::from_vertex<TransformBufferVertex>());
-    renderer->_transforms_buffer.set_stride(sizeof(TransformBufferVertex));
+    renderer->_instance_buffer.set_layout(VertexBufferLayout::from_vertex<InstanceBufferElement>());
+    renderer->_instance_buffer.set_stride(sizeof(InstanceBufferElement));
 
     ZTH_CORE_INFO("Renderer initialized.");
 }
@@ -88,27 +89,27 @@ auto Renderer::clear() -> void
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-auto Renderer::set_camera(std::shared_ptr<PerspectiveCamera> camera) -> void
+auto Renderer::set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void
 {
     renderer->_camera = std::move(camera);
 }
 
-auto Renderer::set_light(std::shared_ptr<Light> light) -> void
+auto Renderer::set_light(std::shared_ptr<const Light> light) -> void
 {
     renderer->_light = std::move(light);
 }
 
 auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
 {
-    draw(cube.mesh(), cube.transform(), material);
+    draw(cube.mesh(), cube, material);
 }
 
-auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
+auto Renderer::draw(const Mesh& mesh, const Transformable3D& transform, const Material& material) -> void
 {
     draw(mesh.vertex_array(), transform, material);
 }
 
-auto Renderer::draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
+auto Renderer::draw(const VertexArray& vertex_array, const Transformable3D& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
@@ -149,7 +150,7 @@ auto Renderer::batch_draw_commands() -> void
     auto& batches = renderer->_batches;
 
     std::ranges::sort(draw_commands);
-    static std::vector<const glm::mat4*> transforms;
+    static std::vector<const Transformable3D*> transforms;
     transforms.clear();
 
     for (usize i = 0; i < draw_commands.size(); i++)
@@ -178,33 +179,36 @@ auto Renderer::batch_draw_commands() -> void
 
 auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
-    auto& transforms = renderer->_transforms;
-    auto& transforms_buffer = renderer->_transforms_buffer;
+    auto& instance_data = renderer->_instance_data;
+    auto& instance_buffer = renderer->_instance_buffer;
     auto& tmp_va = renderer->_tmp_va;
 
     ZTH_ASSERT(batch.vertex_array->vertex_buffer() != nullptr);
     ZTH_ASSERT(batch.vertex_array->index_buffer() != nullptr);
 
-    transforms.clear();
+    instance_data.clear();
 
-    auto get_row = [](const glm::mat4& mat, glm::length_t row_idx) {
+    auto get_mat_row = [](const glm::mat4& mat, glm::length_t row_idx) {
         return glm::vec4{ mat[0][row_idx], mat[1][row_idx], mat[2][row_idx], mat[3][row_idx] };
     };
 
-    for (auto& transform_ptr : batch.transforms)
+    for (auto& transformable_ptr : batch.transforms)
     {
-        auto& transform = *transform_ptr;
-        transforms.emplace_back(get_row(transform, 0), get_row(transform, 1), get_row(transform, 2));
+        const auto& transformable = *transformable_ptr;
+        auto& transform = transformable.transform();
+        auto& normal_matrix = transformable.normal_matrix();
+        instance_data.emplace_back(get_mat_row(transform, 0), get_mat_row(transform, 1), get_mat_row(transform, 2),
+                                   normal_matrix[0], normal_matrix[1], normal_matrix[2]);
     }
 
-    transforms_buffer.buffer_data(transforms);
+    instance_buffer.buffer_data(instance_data);
 
     // TODO: get rid of this
     tmp_va.bind_vertex_buffer(*batch.vertex_array->vertex_buffer());
     tmp_va.bind_index_buffer(*batch.vertex_array->index_buffer());
-    tmp_va.bind_instance_buffer(transforms_buffer);
+    tmp_va.bind_instance_buffer(instance_buffer);
 
-    draw_instanced(tmp_va, *batch.material, transforms.size());
+    draw_instanced(tmp_va, *batch.material, instance_data.size());
 
     tmp_va.unbind_all_buffers();
 }

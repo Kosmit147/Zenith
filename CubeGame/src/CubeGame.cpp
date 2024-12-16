@@ -13,7 +13,7 @@ const zth::ApplicationSpec app_spec = {
         .size = { 800, 600 },
         .title = "Cube Game",
         .fullscreen = false,
-        .vsync = false,
+        .vsync = true,
         .maximized = true,
         .cursor_enabled = false,
     },
