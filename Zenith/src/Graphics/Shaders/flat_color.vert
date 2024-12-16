@@ -8,6 +8,10 @@ layout (location = 3) in vec4 inTransformRow0;
 layout (location = 4) in vec4 inTransformRow1;
 layout (location = 5) in vec4 inTransformRow2;
 
+layout (location = 6) in vec3 inNormalMatCol0;
+layout (location = 7) in vec3 inNormalMatCol1;
+layout (location = 8) in vec3 inNormalMatCol2;
+
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {
 	mat4 viewProjection;

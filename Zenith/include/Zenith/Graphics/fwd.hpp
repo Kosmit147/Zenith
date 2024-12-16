@@ -25,7 +25,7 @@ struct RenderBatch;
 struct CameraUboData;
 struct LightUboData;
 struct MaterialUboData;
-struct TransformBufferVertex;
+struct InstanceBufferElement;
 class Renderer;
 
 } // namespace zth

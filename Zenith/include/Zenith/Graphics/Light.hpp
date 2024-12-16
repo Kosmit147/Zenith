@@ -27,4 +27,14 @@ public:
     explicit PointLight(glm::vec3 position, glm::vec3 color);
 };
 
+class DirectionalLight : public Light
+{
+    // TODO
+};
+
+class SpotLight : public Light
+{
+    // TODO
+};
+
 } // namespace zth
