@@ -319,33 +319,9 @@ auto UniformBuffer::create_static(usize size) -> UniformBuffer
     return buffer;
 }
 
-auto UniformBuffer::create_dynamic(GlBufferUsage usage) -> UniformBuffer
-{
-    UniformBuffer buffer;
-    buffer.init_dynamic(usage);
-    return buffer;
-}
-
-auto UniformBuffer::create_dynamic(usize size, GlBufferUsage usage) -> UniformBuffer
-{
-    UniformBuffer buffer;
-    buffer.init_dynamic(size, usage);
-    return buffer;
-}
-
 auto UniformBuffer::init_static(usize size) -> void
 {
     GlBuffer::init_static(size);
-}
-
-auto UniformBuffer::init_dynamic(GlBufferUsage usage) -> void
-{
-    GlBuffer::init_dynamic(usage);
-}
-
-auto UniformBuffer::init_dynamic(usize size, GlBufferUsage usage) -> void
-{
-    GlBuffer::init_dynamic(size, usage);
 }
 
 auto UniformBuffer::buffer_data(const void* data, usize offset, usize size_bytes) -> void
