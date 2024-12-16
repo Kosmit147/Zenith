@@ -14,7 +14,7 @@ struct Material
     glm::vec3 albedo = glm::vec3{ 1.0f };
     const Texture2D* texture = nullptr;
 
-    glm::vec3 ambient = glm::vec3{ 0.05f };
+    glm::vec3 ambient = glm::vec3{ 0.1f };
     glm::vec3 diffuse = glm::vec3{ 0.7f };
     glm::vec3 specular = glm::vec3{ 0.4f };
     float shininess = 32.0f;

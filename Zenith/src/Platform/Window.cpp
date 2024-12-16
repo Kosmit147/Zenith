@@ -273,10 +273,13 @@ auto Window::glfw_resize_callback([[maybe_unused]] GLFWwindow* window, int new_w
 auto Window::glfw_key_callback([[maybe_unused]] GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action,
                                [[maybe_unused]] int mods) -> void
 {
-    if (action == GLFW_PRESS)
-        EventQueue::push(KeyPressedEvent{ glfw_key_to_key(key) });
-    else if (action == GLFW_RELEASE)
-        EventQueue::push(KeyReleasedEvent{ glfw_key_to_key(key) });
+    if (auto translated_key = glfw_key_to_key(key))
+    {
+        if (action == GLFW_PRESS)
+            EventQueue::push(KeyPressedEvent{ *translated_key });
+        else if (action == GLFW_RELEASE)
+            EventQueue::push(KeyReleasedEvent{ *translated_key });
+    }
 }
 
 auto Window::glfw_mouse_button_callback([[maybe_unused]] GLFWwindow* window, int button, int action,

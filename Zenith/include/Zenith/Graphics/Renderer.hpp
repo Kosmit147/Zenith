@@ -41,6 +41,13 @@ struct LightUboData
     glm::vec3 light_position;
     GLubyte pad1[4]{};
     glm::vec3 light_color;
+    GLubyte pad2[4]{};
+
+    glm::vec3 light_ambient;
+    GLubyte pad3[4]{};
+    glm::vec3 light_diffuse;
+    GLubyte pad4[4]{};
+    glm::vec3 light_specular;
 };
 
 struct MaterialUboData
@@ -49,11 +56,11 @@ struct MaterialUboData
     GLboolean has_texture;
     GLubyte pad1[3]{};
 
-    glm::vec3 ambient;
+    glm::vec3 material_ambient;
     GLubyte pad2[4]{};
-    glm::vec3 diffuse;
+    glm::vec3 material_diffuse;
     GLubyte pad3[4]{};
-    glm::vec3 specular;
+    glm::vec3 material_specular;
     GLfloat shininess;
 };
 

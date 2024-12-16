@@ -12,6 +12,10 @@ class Light : public Transformable3D
 public:
     glm::vec3 color = glm::vec3{ 1.0f };
 
+    glm::vec3 ambient = glm::vec3{ 0.2f };
+    glm::vec3 diffuse = glm::vec3{ 0.5f };
+    glm::vec3 specular = glm::vec3{ 1.0f };
+
 public:
     Light() = delete;
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Light)

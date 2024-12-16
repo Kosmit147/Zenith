@@ -183,7 +183,10 @@ auto TransformTest::render_ui() -> void
 
     ImGui::Begin("Light");
 
-    ImGui::ColorPicker3("Light Color", reinterpret_cast<float*>(&_light->color));
+    ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light->color));
+    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light->ambient), drag_speed * 0.1f);
+    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light->diffuse), drag_speed);
+    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light->specular), drag_speed);
 
     ImGui::End();
 

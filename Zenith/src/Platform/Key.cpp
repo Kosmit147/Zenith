@@ -4,7 +4,7 @@
 
 namespace zth {
 
-auto glfw_key_to_key(int key) -> Key
+auto glfw_key_to_key(int key) -> std::optional<Key>
 {
     switch (key)
     {
@@ -253,8 +253,7 @@ auto glfw_key_to_key(int key) -> Key
         break;
     }
 
-    ZTH_ASSERT(false);
-    std::unreachable();
+    return std::nullopt;
 }
 
 auto to_string(Key key) -> const char*
