@@ -13,6 +13,7 @@
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/DrawCommand.hpp"
 #include "Zenith/Graphics/Light.hpp"
+#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
@@ -102,9 +103,9 @@ private:
         std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
     std::shared_ptr<const Light> _light = std::make_shared<PointLight>(glm::vec3{ 0.0f }, glm::vec3{ 1.0f });
 
-    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData));
-    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData));
-    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData));
+    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), ZTH_CAMERA_UBO_BINDING_INDEX);
+    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);
+    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), ZTH_MATERIAL_UBO_BINDING_INDEX);
 
     std::vector<InstanceBufferElement> _instance_data;
     InstanceBuffer _instance_buffer = InstanceBuffer::create_dynamic();

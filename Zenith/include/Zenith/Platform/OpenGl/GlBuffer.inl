@@ -147,9 +147,22 @@ auto UniformBuffer::create_static(std::ranges::contiguous_range auto&& data) -> 
     return buffer;
 }
 
+auto UniformBuffer::create_static(std::ranges::contiguous_range auto&& data, u32 binding_index) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static(data, binding_index);
+    return buffer;
+}
+
 auto UniformBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
 {
     GlBuffer::init_static(data);
+}
+
+auto UniformBuffer::init_static(std::ranges::contiguous_range auto&& data, u32 binding_index) -> void
+{
+    GlBuffer::init_static(data);
+    set_binding_index(binding_index);
 }
 
 auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void

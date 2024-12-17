@@ -9,7 +9,6 @@
 #include "Zenith/Graphics/Materials.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
-#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/Shaders.hpp"
 #include "Zenith/Graphics/Shapes/Shapes.hpp"
 #include "Zenith/Logging/Logger.hpp"
@@ -43,15 +42,11 @@ auto Renderer::init() -> void
 
     set_clear_color(colors::transparent);
 
+    renderer.reset(new Renderer);
+
     shaders::load_shaders();
     meshes::load_meshes();
     materials::init_materials();
-
-    renderer.reset(new Renderer);
-
-    renderer->_camera_ubo.set_binding_index(ZTH_CAMERA_UBO_BINDING_INDEX);
-    renderer->_light_ubo.set_binding_index(ZTH_LIGHT_UBO_BINDING_INDEX);
-    renderer->_material_ubo.set_binding_index(ZTH_MATERIAL_UBO_BINDING_INDEX);
 
     renderer->_instance_buffer.set_layout(VertexBufferLayout::from_vertex<InstanceBufferElement>());
     renderer->_instance_buffer.set_stride(sizeof(InstanceBufferElement));
