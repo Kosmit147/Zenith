@@ -42,7 +42,7 @@ TransformTest::TransformTest()
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {
-    _light_cube.translate(_light->translation()).scale(0.1f);
+    _light_marker.translate(_light->translation()).scale(0.1f);
 }
 
 auto TransformTest::on_load() -> void
@@ -103,7 +103,7 @@ auto TransformTest::on_update() -> void
     }
 
     zth::Renderer::draw(_cube, _cube_material);
-    zth::Renderer::draw(_light_cube, _light_cube_material);
+    zth::Renderer::draw(_light_marker, _light_cube_material);
 }
 
 auto TransformTest::on_event(const zth::Event& event) -> void
