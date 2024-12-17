@@ -104,6 +104,11 @@ auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
     draw(cube.mesh(), cube, material);
 }
 
+auto Renderer::draw(const SphereShape& sphere, const Material& material) -> void
+{
+    draw(sphere.mesh(), sphere, material);
+}
+
 auto Renderer::draw(const Mesh& mesh, const Transformable3D& transform, const Material& material) -> void
 {
     draw(mesh.vertex_array(), transform, material);

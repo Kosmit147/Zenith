@@ -6,6 +6,7 @@ class CubeShape;
 class Shape;
 class Shape2D;
 class Shape3D;
+class SphereShape;
 
 class Camera;
 class PerspectiveCamera;
