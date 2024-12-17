@@ -21,6 +21,7 @@ add_library(
 	"src/Core/Transformable.cpp"
 	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Shapes/Shape.cpp"
+	"src/Graphics/Shapes/SphereShape.cpp"
 	"src/Graphics/Camera.cpp"
 	"src/Graphics/DrawCommand.cpp"
 	"src/Graphics/ImGuiRenderer.cpp"

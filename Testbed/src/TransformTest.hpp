@@ -11,7 +11,7 @@ public:
 
 private:
     zth::CubeShape _cube;
-    zth::CubeShape _light_cube;
+    zth::SphereShape _light_marker;
 
     zth::Texture2D _container_texture;
     zth::Texture2D _emoji_texture;

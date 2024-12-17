@@ -88,6 +88,7 @@ public:
     static auto set_light(std::shared_ptr<const Light> light) -> void;
 
     static auto draw(const CubeShape& cube, const Material& material) -> void;
+    static auto draw(const SphereShape& sphere, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
     static auto draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
 
