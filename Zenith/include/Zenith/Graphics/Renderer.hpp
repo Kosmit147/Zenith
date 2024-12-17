@@ -21,13 +21,12 @@
 namespace zth {
 
 class Event;
-class Transformable3D;
 
 struct RenderBatch
 {
     const VertexArray* vertex_array;
     const Material* material;
-    std::vector<const Transformable3D*> transforms;
+    std::vector<const glm::mat4*> transforms;
 };
 
 struct CameraUboData
@@ -89,9 +88,8 @@ public:
     static auto set_light(std::shared_ptr<const Light> light) -> void;
 
     static auto draw(const CubeShape& cube, const Material& material) -> void;
-    static auto draw(const Mesh& mesh, const Transformable3D& transform, const Material& material) -> void;
-    static auto draw(const VertexArray& vertex_array, const Transformable3D& transform,
-                     const Material& material) -> void;
+    static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
+    static auto draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
 
     static auto render() -> void;
 

@@ -147,7 +147,10 @@ auto VertexArray::unbind_instance_buffer() -> void
 auto VertexArray::unbind_all_buffers() -> void
 {
     glVertexArrayVertexBuffer(_id, vertex_buffer_binding_index, GL_NONE, 0, 0);
-    glVertexArrayElementBuffer(_id, GL_NONE);
+
+    // Doesn't work on intel drivers. Ridiculous.
+    // glVertexArrayElementBuffer(_id, GL_NONE);
+
     glVertexArrayVertexBuffer(_id, instance_buffer_binding_index, GL_NONE, 0, 0);
 
     _vertex_buffer = nullptr;
