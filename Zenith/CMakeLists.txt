@@ -32,6 +32,7 @@ add_library(
 	"src/Graphics/Renderer.cpp"
 	"src/Graphics/Shaders.cpp"
 	"src/Logging/Logger.cpp"
+	"src/Math/Matrix.cpp"
 	"src/Platform/OpenGl/GlBuffer.cpp"
 	"src/Platform/OpenGl/GlContext.cpp"
 	"src/Platform/OpenGl/GlDebug.cpp"

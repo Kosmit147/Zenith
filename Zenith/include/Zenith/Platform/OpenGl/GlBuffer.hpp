@@ -163,7 +163,9 @@ public:
     explicit UniformBuffer() = default;
 
     static auto create_static(usize size) -> UniformBuffer;
+    static auto create_static(usize size, u32 binding_index) -> UniformBuffer;
     static auto create_static(std::ranges::contiguous_range auto&& data) -> UniformBuffer;
+    static auto create_static(std::ranges::contiguous_range auto&& data, u32 binding_index) -> UniformBuffer;
 
     ZTH_NO_COPY(UniformBuffer)
     ZTH_DEFAULT_MOVE(UniformBuffer)
@@ -171,7 +173,9 @@ public:
     ~UniformBuffer() = default;
 
     auto init_static(usize size) -> void;
+    auto init_static(usize size, u32 binding_index) -> void;
     auto init_static(std::ranges::contiguous_range auto&& data) -> void;
+    auto init_static(std::ranges::contiguous_range auto&& data, u32 binding_index) -> void;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
     auto buffer_data(auto&& object, usize offset = 0) -> void;
@@ -180,7 +184,7 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
-    auto set_binding_index(GLuint index) const -> void;
+    auto set_binding_index(u32 index) const -> void;
 };
 
 class InstanceBuffer : public VertexBuffer

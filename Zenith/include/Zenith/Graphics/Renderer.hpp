@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
+#include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -13,6 +14,7 @@
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/DrawCommand.hpp"
 #include "Zenith/Graphics/Light.hpp"
+#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
@@ -21,13 +23,12 @@
 namespace zth {
 
 class Event;
-class Transformable3D;
 
 struct RenderBatch
 {
     const VertexArray* vertex_array;
     const Material* material;
-    std::vector<const Transformable3D*> transforms;
+    std::vector<const glm::mat4*> transforms;
 };
 
 struct CameraUboData
@@ -66,13 +67,12 @@ struct MaterialUboData
 
 struct InstanceBufferElement
 {
-    glm::vec4 transform_row_0;
-    glm::vec4 transform_row_1;
-    glm::vec4 transform_row_2;
+    glm::vec3 transform_col_0;
+    glm::vec3 transform_col_1;
+    glm::vec3 transform_col_2;
+    glm::vec3 transform_col_3;
 
-    glm::vec3 normal_mat_col_0;
-    glm::vec3 normal_mat_col_1;
-    glm::vec3 normal_mat_col_2;
+    glm::mat3 normal_mat;
 };
 
 class Renderer
@@ -90,9 +90,8 @@ public:
 
     static auto draw(const CubeShape& cube, const Material& material) -> void;
     static auto draw(const SphereShape& sphere, const Material& material) -> void;
-    static auto draw(const Mesh& mesh, const Transformable3D& transform, const Material& material) -> void;
-    static auto draw(const VertexArray& vertex_array, const Transformable3D& transform,
-                     const Material& material) -> void;
+    static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
+    static auto draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
 
     static auto render() -> void;
 
@@ -104,9 +103,9 @@ private:
         std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
     std::shared_ptr<const Light> _light = std::make_shared<PointLight>(glm::vec3{ 0.0f }, glm::vec3{ 1.0f });
 
-    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData));
-    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData));
-    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData));
+    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), ZTH_CAMERA_UBO_BINDING_INDEX);
+    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);
+    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), ZTH_MATERIAL_UBO_BINDING_INDEX);
 
     std::vector<InstanceBufferElement> _instance_data;
     InstanceBuffer _instance_buffer = InstanceBuffer::create_dynamic();

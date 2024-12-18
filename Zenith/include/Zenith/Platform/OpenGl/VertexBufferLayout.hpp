@@ -13,9 +13,13 @@ namespace zth {
 enum class VertexBufferLayoutElement : u8
 {
     Float,
+
     Vec2,
     Vec3,
     Vec4,
+
+    Mat3,
+    Mat4,
 };
 
 struct VertexBufferLayoutElementInfo
@@ -23,6 +27,7 @@ struct VertexBufferLayoutElementInfo
     GLint count;
     GLenum type;
     GLuint size_bytes;
+    GLuint slots_occupied = 1;
 };
 
 class VertexBufferLayout
@@ -61,6 +66,10 @@ get_vertex_layout_element_info(VertexBufferLayoutElement elem) -> VertexBufferLa
         return { .count = 3, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 3 };
     case Vec4:
         return { .count = 4, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 4 };
+    case Mat3:
+        return { .count = 3, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 3, .slots_occupied = 3 };
+    case Mat4:
+        return { .count = 4, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 4, .slots_occupied = 4 };
     }
 
     ZTH_ASSERT(false);

@@ -12,5 +12,6 @@
 #include "Mesh.hpp"
 #include "Meshes.hpp"
 #include "Renderer.hpp"
+#include "Renderer2D.hpp"
 #include "Shaders.hpp"
 #include "Shapes/Shapes.hpp"

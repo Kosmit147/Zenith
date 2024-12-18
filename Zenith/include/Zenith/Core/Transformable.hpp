@@ -43,9 +43,7 @@ public:
     auto set_scale(glm::vec3 scale) -> void;
 
     auto set_transform(const glm::mat4& transform) -> void;
-
     [[nodiscard]] auto transform() const -> auto& { return _transform; }
-    [[nodiscard]] auto normal_matrix() const -> auto& { return _normal_matrix; }
 
     [[nodiscard]] auto translation() const { return _translation; }
     [[nodiscard]] auto rotation() const { return _rotation; }
@@ -56,12 +54,11 @@ private:
     glm::quat _rotation{ glm::identity<glm::quat>() };
     glm::vec3 _scale{ 1.0f };
 
+    // TODO: use mat4x3 if that's possible
     glm::mat4 _transform{ 1.0f };
-    glm::mat3 _normal_matrix{ 1.0f };
 
 private:
     auto update_transform() -> void;
-    auto update_normal_matrix() -> void;
 };
 
 } // namespace zth

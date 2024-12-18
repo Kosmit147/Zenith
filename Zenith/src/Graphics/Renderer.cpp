@@ -3,16 +3,15 @@
 #include <glad/glad.h>
 
 #include "Zenith/Core/Assert.hpp"
-#include "Zenith/Core/Transformable.hpp"
 #include "Zenith/Graphics/Colors.hpp"
 #include "Zenith/Graphics/Material.hpp"
 #include "Zenith/Graphics/Materials.hpp"
 #include "Zenith/Graphics/Mesh.hpp"
 #include "Zenith/Graphics/Meshes.hpp"
-#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/Shaders.hpp"
 #include "Zenith/Graphics/Shapes/Shapes.hpp"
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Math/Matrix.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/OpenGl/GlDebug.hpp"
 #include "Zenith/Platform/OpenGl/Shader.hpp"
@@ -42,15 +41,11 @@ auto Renderer::init() -> void
 
     set_clear_color(colors::transparent);
 
+    renderer.reset(new Renderer);
+
     shaders::load_shaders();
     meshes::load_meshes();
     materials::init_materials();
-
-    renderer.reset(new Renderer);
-
-    renderer->_camera_ubo.set_binding_index(ZTH_CAMERA_UBO_BINDING_INDEX);
-    renderer->_light_ubo.set_binding_index(ZTH_LIGHT_UBO_BINDING_INDEX);
-    renderer->_material_ubo.set_binding_index(ZTH_MATERIAL_UBO_BINDING_INDEX);
 
     renderer->_instance_buffer.set_layout(VertexBufferLayout::from_vertex<InstanceBufferElement>());
     renderer->_instance_buffer.set_stride(sizeof(InstanceBufferElement));
@@ -101,20 +96,20 @@ auto Renderer::set_light(std::shared_ptr<const Light> light) -> void
 
 auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
 {
-    draw(cube.mesh(), cube, material);
+    draw(cube.mesh(), cube.transform(), material);
 }
 
 auto Renderer::draw(const SphereShape& sphere, const Material& material) -> void
 {
-    draw(sphere.mesh(), sphere, material);
+    draw(sphere.mesh(), sphere.transform(), material);
 }
 
-auto Renderer::draw(const Mesh& mesh, const Transformable3D& transform, const Material& material) -> void
+auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
 {
     draw(mesh.vertex_array(), transform, material);
 }
 
-auto Renderer::draw(const VertexArray& vertex_array, const Transformable3D& transform, const Material& material) -> void
+auto Renderer::draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
@@ -155,7 +150,7 @@ auto Renderer::batch_draw_commands() -> void
     auto& batches = renderer->_batches;
 
     std::ranges::sort(draw_commands);
-    static std::vector<const Transformable3D*> transforms;
+    static std::vector<const glm::mat4*> transforms;
     transforms.clear();
 
     for (usize i = 0; i < draw_commands.size(); i++)
@@ -193,17 +188,11 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 
     instance_data.clear();
 
-    auto get_mat_row = [](const glm::mat4& mat, glm::length_t row_idx) {
-        return glm::vec4{ mat[0][row_idx], mat[1][row_idx], mat[2][row_idx], mat[3][row_idx] };
-    };
-
-    for (auto& transformable_ptr : batch.transforms)
+    for (auto& transform_ptr : batch.transforms)
     {
-        const auto& transformable = *transformable_ptr;
-        auto& transform = transformable.transform();
-        auto& normal_matrix = transformable.normal_matrix();
-        instance_data.emplace_back(get_mat_row(transform, 0), get_mat_row(transform, 1), get_mat_row(transform, 2),
-                                   normal_matrix[0], normal_matrix[1], normal_matrix[2]);
+        const auto& transform = *transform_ptr;
+        auto normal_matrix = math::get_normal_matrix(transform);
+        instance_data.emplace_back(transform[0], transform[1], transform[2], transform[3], normal_matrix);
     }
 
     instance_buffer.buffer_data(instance_data);

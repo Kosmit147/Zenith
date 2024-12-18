@@ -319,9 +319,22 @@ auto UniformBuffer::create_static(usize size) -> UniformBuffer
     return buffer;
 }
 
+auto UniformBuffer::create_static(usize size, u32 binding_index) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static(size, binding_index);
+    return buffer;
+}
+
 auto UniformBuffer::init_static(usize size) -> void
 {
     GlBuffer::init_static(size);
+}
+
+auto UniformBuffer::init_static(usize size, u32 binding_index) -> void
+{
+    GlBuffer::init_static(size);
+    set_binding_index(binding_index);
 }
 
 auto UniformBuffer::buffer_data(const void* data, usize offset, usize size_bytes) -> void
@@ -339,9 +352,9 @@ auto UniformBuffer::unbind() -> void
     glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 }
 
-auto UniformBuffer::set_binding_index(GLuint index) const -> void
+auto UniformBuffer::set_binding_index(u32 index) const -> void
 {
-    glBindBufferBase(GL_UNIFORM_BUFFER, index, native_handle());
+    glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(index), native_handle());
 }
 
 // --------------------------- InstanceBuffer ---------------------------

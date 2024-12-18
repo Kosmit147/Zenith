@@ -29,4 +29,6 @@ struct MaterialUboData;
 struct InstanceBufferElement;
 class Renderer;
 
+class Renderer2D;
+
 } // namespace zth

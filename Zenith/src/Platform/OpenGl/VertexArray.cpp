@@ -1,5 +1,6 @@
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
 
+#include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexBufferLayout.hpp"
 
@@ -197,14 +198,17 @@ auto VertexArray::bind_vertex_buffer_layout(const VertexBufferLayout& layout) co
 
     for (auto& elem : layout)
     {
-        auto [count, type, size] = get_vertex_layout_element_info(elem);
+        auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 
-        glEnableVertexArrayAttrib(_id, index);
-        glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
-        glVertexArrayAttribBinding(_id, index, vertex_buffer_binding_index);
+        for (usize i = 0; i < slots_occupied; i++)
+        {
+            glEnableVertexArrayAttrib(_id, index);
+            glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
+            glVertexArrayAttribBinding(_id, index, vertex_buffer_binding_index);
 
-        index++;
-        offset += size;
+            index++;
+            offset += size;
+        }
     }
 }
 
@@ -218,15 +222,18 @@ auto VertexArray::bind_instance_buffer_layout(const VertexBufferLayout& layout) 
 
     for (auto& elem : layout)
     {
-        auto [count, type, size] = get_vertex_layout_element_info(elem);
+        auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 
-        glEnableVertexArrayAttrib(_id, index);
-        glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
-        glVertexArrayAttribBinding(_id, index, instance_buffer_binding_index);
-        glVertexArrayBindingDivisor(_id, instance_buffer_binding_index, 1);
+        for (usize i = 0; i < slots_occupied; i++)
+        {
+            glEnableVertexArrayAttrib(_id, index);
+            glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
+            glVertexArrayAttribBinding(_id, index, instance_buffer_binding_index);
+            glVertexArrayBindingDivisor(_id, instance_buffer_binding_index, 1);
 
-        index++;
-        offset += size;
+            index++;
+            offset += size;
+        }
     }
 }
 
