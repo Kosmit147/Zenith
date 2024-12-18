@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
+#include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -71,10 +72,7 @@ struct InstanceBufferElement
     glm::vec3 transform_col_2;
     glm::vec3 transform_col_3;
 
-    // TODO: can we just use glm::mat3 here?
-    glm::vec3 normal_mat_col_0;
-    glm::vec3 normal_mat_col_1;
-    glm::vec3 normal_mat_col_2;
+    glm::mat3 normal_mat;
 };
 
 class Renderer
