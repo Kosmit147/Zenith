@@ -194,7 +194,7 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
     for (auto& transform_ptr : batch.transforms)
     {
         const auto& transform = *transform_ptr;
-        auto normal_matrix = get_normal_matrix(transform);
+        auto normal_matrix = math::get_normal_matrix(transform);
         instance_data.emplace_back(glm::row(transform, 0), glm::row(transform, 1), glm::row(transform, 2),
                                    normal_matrix[0], normal_matrix[1], normal_matrix[2]);
     }
