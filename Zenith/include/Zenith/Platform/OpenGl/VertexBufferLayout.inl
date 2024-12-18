@@ -79,6 +79,40 @@ template<typename VertexType> constexpr auto VertexBufferLayout::from_vertex() -
                  to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
                  to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>() };
     }
+    else if constexpr (arity == 7)
+    {
+        [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7] = dummy_vertex;
+        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
+                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
+                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
+                 to_vertex_layout_elem<decltype(e7)>() };
+    }
+    else if constexpr (arity == 8)
+    {
+        [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8] = dummy_vertex;
+        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
+                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
+                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
+                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>() };
+    }
+    else if constexpr (arity == 9)
+    {
+        [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8, e9] = dummy_vertex;
+        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
+                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
+                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
+                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>(),
+                 to_vertex_layout_elem<decltype(e9)>() };
+    }
+    else if constexpr (arity == 10)
+    {
+        [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10] = dummy_vertex;
+        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
+                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
+                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
+                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>(),
+                 to_vertex_layout_elem<decltype(e9)>(), to_vertex_layout_elem<decltype(e10)>() };
+    }
     else
     {
         static_assert(false, "not implemented");

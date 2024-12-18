@@ -66,10 +66,12 @@ struct MaterialUboData
 
 struct InstanceBufferElement
 {
-    glm::vec4 transform_row_0;
-    glm::vec4 transform_row_1;
-    glm::vec4 transform_row_2;
+    glm::vec3 transform_col_0;
+    glm::vec3 transform_col_1;
+    glm::vec3 transform_col_2;
+    glm::vec3 transform_col_3;
 
+    // TODO: can we just use glm::mat3 here?
     glm::vec3 normal_mat_col_0;
     glm::vec3 normal_mat_col_1;
     glm::vec3 normal_mat_col_2;

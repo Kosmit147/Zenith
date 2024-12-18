@@ -1,7 +1,6 @@
 #include "Zenith/Graphics/Renderer.hpp"
 
 #include <glad/glad.h>
-#include <glm/gtc/matrix_access.hpp>
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Colors.hpp"
@@ -189,14 +188,12 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 
     instance_data.clear();
 
-    // TODO: send 4 vec3s as transform cols to the shader instead of rows???
-
     for (auto& transform_ptr : batch.transforms)
     {
         const auto& transform = *transform_ptr;
         auto normal_matrix = math::get_normal_matrix(transform);
-        instance_data.emplace_back(glm::row(transform, 0), glm::row(transform, 1), glm::row(transform, 2),
-                                   normal_matrix[0], normal_matrix[1], normal_matrix[2]);
+        instance_data.emplace_back(transform[0], transform[1], transform[2], transform[3], normal_matrix[0],
+                                   normal_matrix[1], normal_matrix[2]);
     }
 
     instance_buffer.buffer_data(instance_data);
