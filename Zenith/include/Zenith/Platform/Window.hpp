@@ -61,7 +61,7 @@ public:
     static auto enable_cursor() -> void;
     static auto disable_cursor() -> void;
 
-    [[nodiscard]] static auto native_handle() -> GLFWwindow*;
+    [[nodiscard]] static auto glfw_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
     [[nodiscard]] static auto cursor_enabled() -> bool;
