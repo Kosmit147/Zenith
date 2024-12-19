@@ -8,14 +8,14 @@
 
 namespace zth::meshes {
 
-namespace {
-
 struct StandardVertex
 {
     glm::vec3 local_position;
     glm::vec3 normal;
     glm::vec2 tex_coords;
 };
+
+namespace {
 
 const std::array cube_vertices = {
     // front wall
@@ -1952,31 +1952,32 @@ const std::array<GLushort, 3072> sphere_indices = {
     525, 526, 558, 525, 559, 558, 526, 527, 559, 526, 560, 559, 527
 };
 
-std::optional<Mesh> cube_mesh_local;
-std::optional<Mesh> sphere_mesh_local;
+std::unique_ptr<MeshList> mesh_list;
 
 } // namespace
 
+MeshList::MeshList() : cube_mesh(cube_vertices, cube_indices), sphere_mesh(sphere_vertices, sphere_indices) {}
+
 auto load_meshes() -> void
 {
-    cube_mesh_local.emplace(cube_vertices, cube_indices);
-    cube_mesh = &*cube_mesh_local;
-
-    sphere_mesh_local.emplace(sphere_vertices, sphere_indices);
-    sphere_mesh = &*sphere_mesh_local;
-
+    mesh_list = std::make_unique<MeshList>();
     ZTH_CORE_INFO("Meshes loaded.");
 }
 
 auto unload_meshes() -> void
 {
-    cube_mesh_local.reset();
-    cube_mesh = nullptr;
-
-    sphere_mesh_local.reset();
-    sphere_mesh = nullptr;
-
+    mesh_list.reset();
     ZTH_CORE_INFO("Meshes unloaded.");
 }
+
+#define ZTH_MESH_GETTER(mesh_name)                                                                                     \
+    auto mesh_name() -> const Mesh&                                                                                    \
+    {                                                                                                                  \
+        ZTH_ASSERT(mesh_list != nullptr);                                                                              \
+        return mesh_list->mesh_name;                                                                                   \
+    }
+
+ZTH_MESH_GETTER(cube_mesh);
+ZTH_MESH_GETTER(sphere_mesh);
 
 } // namespace zth::meshes

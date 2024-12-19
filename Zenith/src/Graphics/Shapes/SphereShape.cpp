@@ -6,7 +6,7 @@ namespace zth {
 
 auto SphereShape::mesh() const -> const Mesh&
 {
-    return *meshes::sphere_mesh;
+    return meshes::sphere_mesh();
 }
 
 } // namespace zth

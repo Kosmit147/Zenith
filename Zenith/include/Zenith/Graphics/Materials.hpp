@@ -1,44 +1,84 @@
 #pragma once
 
-#include <array>
-
+#include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Material.hpp"
+#include "Zenith/Utility/Utility.hpp"
 
 namespace zth::materials {
 
-auto init_materials() -> void;
+struct MaterialList
+{
+    // add ONLY materials here
 
-// TODO: these should be const
-extern Material plain;
-extern Material emerald;
-extern Material jade;
-extern Material obsidian;
-extern Material pearl;
-extern Material ruby;
-extern Material turquoise;
-extern Material brass;
-extern Material bronze;
-extern Material chrome;
-extern Material copper;
-extern Material gold;
-extern Material silver;
-extern Material black_plastic;
-extern Material cyan_plastic;
-extern Material green_plastic;
-extern Material red_plastic;
-extern Material white_plastic;
-extern Material yellow_plastic;
-extern Material black_rubber;
-extern Material cyan_rubber;
-extern Material green_rubber;
-extern Material red_rubber;
-extern Material white_rubber;
-extern Material yellow_rubber;
+    Material plain;
+    Material emerald;
+    Material jade;
+    Material obsidian;
+    Material pearl;
+    Material ruby;
+    Material turquoise;
+    Material brass;
+    Material bronze;
+    Material chrome;
+    Material copper;
+    Material gold;
+    Material silver;
+    Material black_plastic;
+    Material cyan_plastic;
+    Material green_plastic;
+    Material red_plastic;
+    Material white_plastic;
+    Material yellow_plastic;
+    Material black_rubber;
+    Material cyan_rubber;
+    Material green_rubber;
+    Material red_rubber;
+    Material white_rubber;
+    Material yellow_rubber;
 
-constexpr std::array materials{ &plain,         &emerald,      &jade,          &obsidian,       &pearl,
-                                &ruby,          &turquoise,    &brass,         &bronze,         &chrome,
-                                &copper,        &gold,         &silver,        &black_plastic,  &cyan_plastic,
-                                &green_plastic, &red_plastic,  &white_plastic, &yellow_plastic, &black_rubber,
-                                &cyan_rubber,   &green_rubber, &red_rubber,    &white_rubber,   &yellow_rubber };
+    const Material* const materials_start = &plain;
+    const Material* const materials_end = &yellow_rubber + 1;
+
+    explicit MaterialList();
+    ZTH_NO_COPY_NO_MOVE(MaterialList)
+    ~MaterialList() = default;
+
+    [[nodiscard]] auto operator[](usize index) const -> const Material&;
+    [[nodiscard]] auto size() const -> usize;
+
+    [[nodiscard]] auto begin() const { return materials_start; }
+    [[nodiscard]] auto end() const { return materials_end; }
+};
+
+auto load_materials() -> void;
+auto unload_materials() -> void;
+
+[[nodiscard]] auto materials() -> const MaterialList&;
+
+[[nodiscard]] auto plain() -> const Material&;
+[[nodiscard]] auto emerald() -> const Material&;
+[[nodiscard]] auto jade() -> const Material&;
+[[nodiscard]] auto obsidian() -> const Material&;
+[[nodiscard]] auto pearl() -> const Material&;
+[[nodiscard]] auto ruby() -> const Material&;
+[[nodiscard]] auto turquoise() -> const Material&;
+[[nodiscard]] auto brass() -> const Material&;
+[[nodiscard]] auto bronze() -> const Material&;
+[[nodiscard]] auto chrome() -> const Material&;
+[[nodiscard]] auto copper() -> const Material&;
+[[nodiscard]] auto gold() -> const Material&;
+[[nodiscard]] auto silver() -> const Material&;
+[[nodiscard]] auto black_plastic() -> const Material&;
+[[nodiscard]] auto cyan_plastic() -> const Material&;
+[[nodiscard]] auto green_plastic() -> const Material&;
+[[nodiscard]] auto red_plastic() -> const Material&;
+[[nodiscard]] auto white_plastic() -> const Material&;
+[[nodiscard]] auto yellow_plastic() -> const Material&;
+[[nodiscard]] auto black_rubber() -> const Material&;
+[[nodiscard]] auto cyan_rubber() -> const Material&;
+[[nodiscard]] auto green_rubber() -> const Material&;
+[[nodiscard]] auto red_rubber() -> const Material&;
+[[nodiscard]] auto white_rubber() -> const Material&;
+[[nodiscard]] auto yellow_rubber() -> const Material&;
 
 } // namespace zth::materials

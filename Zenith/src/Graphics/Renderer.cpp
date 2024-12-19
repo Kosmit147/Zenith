@@ -45,7 +45,7 @@ auto Renderer::init() -> void
 
     shaders::load_shaders();
     meshes::load_meshes();
-    materials::init_materials();
+    materials::load_materials();
 
     renderer->_instance_buffer.set_layout(VertexBufferLayout::from_vertex<InstanceBufferElement>());
     renderer->_instance_buffer.set_stride(sizeof(InstanceBufferElement));
@@ -66,6 +66,7 @@ auto Renderer::on_window_event(const Event& event) -> void
 
 auto Renderer::shut_down() -> void
 {
+    materials::unload_materials();
     meshes::unload_meshes();
     shaders::unload_shaders();
 

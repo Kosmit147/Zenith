@@ -9,7 +9,7 @@ namespace zth {
 
 struct Material
 {
-    const Shader* shader = shaders::standard;
+    const Shader* shader = &shaders::standard();
 
     glm::vec3 albedo = glm::vec3{ 1.0f };
     const Texture2D* texture = nullptr;
