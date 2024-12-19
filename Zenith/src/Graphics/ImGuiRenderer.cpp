@@ -14,7 +14,7 @@ auto ImGuiRenderer::init() -> void
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
-    ImGui_ImplGlfw_InitForOpenGL(Window::native_handle(), true);
+    ImGui_ImplGlfw_InitForOpenGL(Window::glfw_handle(), true);
     ImGui_ImplOpenGL3_Init();
 
     ZTH_CORE_INFO("ImGui Renderer initialized.");

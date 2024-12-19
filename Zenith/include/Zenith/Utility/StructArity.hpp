@@ -14,7 +14,7 @@ template<usize N> struct Anything
 template<typename T, usize... Ints>
 concept ConstructibleFromNInitializers = requires { T{ Anything<Ints>{}... }; };
 
-template<typename T, usize N> constexpr auto is_constructible_from_n_initializers() -> bool
+template<typename T, usize N> [[nodiscard]] constexpr auto is_constructible_from_n_initializers() -> bool
 {
     constexpr auto unpack = [&]<usize... Ints>(std::index_sequence<Ints...>) {
         return ConstructibleFromNInitializers<T, Ints...>;
@@ -24,7 +24,7 @@ template<typename T, usize N> constexpr auto is_constructible_from_n_initializer
 }
 
 // returns the number of fields in a struct
-template<typename T, usize N = 0u> constexpr auto get_struct_arity() -> usize
+template<typename T, usize N = 0u> [[nodiscard]] constexpr auto get_struct_arity() -> usize
 {
     constexpr auto constructible = is_constructible_from_n_initializers<T, N>();
 

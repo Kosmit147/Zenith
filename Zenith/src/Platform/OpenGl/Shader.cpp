@@ -12,7 +12,7 @@ namespace {
 
 const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">().str();
 
-auto preprocess_shader(std::string_view source) -> std::string
+[[nodiscard]] auto preprocess_shader(std::string_view source) -> std::string
 {
     std::string result;
 
@@ -52,7 +52,7 @@ auto preprocess_shader(std::string_view source) -> std::string
     return result;
 }
 
-auto compile_shader(GLuint id, ShaderType type) -> bool
+[[nodiscard]] auto compile_shader(GLuint id, ShaderType type) -> bool
 {
     glCompileShader(id);
 
@@ -78,7 +78,7 @@ auto compile_shader(GLuint id, ShaderType type) -> bool
 }
 
 // returns 0 if failed to create a shader
-auto create_shader(std::string_view source, ShaderType type) -> GLuint
+[[nodiscard]] auto create_shader(std::string_view source, ShaderType type) -> GLuint
 {
     auto shader = glCreateShader(to_gl_enum(type));
 
@@ -98,7 +98,7 @@ auto create_shader(std::string_view source, ShaderType type) -> GLuint
     }
 }
 
-auto link_shader_program(GLuint id) -> bool
+[[nodiscard]] auto link_shader_program(GLuint id) -> bool
 {
     glLinkProgram(id);
 
@@ -124,7 +124,7 @@ auto link_shader_program(GLuint id) -> bool
 }
 
 // returns 0 if failed to create a shader program
-auto create_shader_program(GLuint vertex_shader, GLuint fragment_shader) -> GLuint
+[[nodiscard]] auto create_shader_program(GLuint vertex_shader, GLuint fragment_shader) -> GLuint
 {
     auto program = glCreateProgram();
 

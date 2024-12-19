@@ -12,7 +12,7 @@ struct GlVersion
     u32 major;
     u32 minor;
 
-    auto operator<=>(const GlVersion&) const = default;
+    [[nodiscard]] auto operator<=>(const GlVersion&) const = default;
 };
 
 enum class GlProfile : u8

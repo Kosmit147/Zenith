@@ -35,13 +35,13 @@ public:
 protected:
     // these protected functions should be implemented in derived classes
 
-    static auto create_static(usize size) -> GlBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data) -> GlBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> GlBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> GlBuffer;
 
-    static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
-    static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
-    static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                               GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
+    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
+    [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
 
     GlBuffer(GlBuffer&& other) noexcept;
     auto operator=(GlBuffer&& other) noexcept -> GlBuffer&;
@@ -76,13 +76,14 @@ class VertexBuffer : public GlBuffer
 public:
     explicit VertexBuffer() = default;
 
-    static auto create_static(usize size) -> VertexBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data) -> VertexBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> VertexBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> VertexBuffer;
 
-    static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
-    static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
-    static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                               GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
+    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
+    [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
 
     ZTH_NO_COPY(VertexBuffer)
 
@@ -121,13 +122,14 @@ class IndexBuffer : public GlBuffer
 public:
     explicit IndexBuffer() = default;
 
-    static auto create_static(usize size) -> IndexBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> IndexBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
 
-    static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
-    static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
-    static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                               GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
+    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
+    [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
 
     ZTH_NO_COPY(IndexBuffer)
 
@@ -162,10 +164,11 @@ class UniformBuffer : public GlBuffer
 public:
     explicit UniformBuffer() = default;
 
-    static auto create_static(usize size) -> UniformBuffer;
-    static auto create_static(usize size, u32 binding_index) -> UniformBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data) -> UniformBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data, u32 binding_index) -> UniformBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> UniformBuffer;
+    [[nodiscard]] static auto create_static(usize size, u32 binding_index) -> UniformBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> UniformBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data,
+                                            u32 binding_index) -> UniformBuffer;
 
     ZTH_NO_COPY(UniformBuffer)
     ZTH_DEFAULT_MOVE(UniformBuffer)
@@ -192,13 +195,14 @@ class InstanceBuffer : public VertexBuffer
 public:
     explicit InstanceBuffer() = default;
 
-    static auto create_static(usize size) -> InstanceBuffer;
-    static auto create_static(std::ranges::contiguous_range auto&& data) -> InstanceBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> InstanceBuffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> InstanceBuffer;
 
-    static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
-    static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
-    static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                               GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+    [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
+                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
 
     ZTH_NO_COPY(InstanceBuffer)
     ZTH_DEFAULT_MOVE(InstanceBuffer)
