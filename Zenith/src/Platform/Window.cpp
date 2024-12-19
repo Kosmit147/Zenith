@@ -168,7 +168,7 @@ auto Window::disable_cursor() -> void
         glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 }
 
-auto Window::native_handle() -> GLFWwindow*
+auto Window::glfw_handle() -> GLFWwindow*
 {
     return _window;
 }
