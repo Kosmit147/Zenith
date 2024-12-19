@@ -6,7 +6,7 @@ namespace zth {
 
 auto CubeShape::mesh() const -> const Mesh&
 {
-    return *meshes::cube_mesh;
+    return meshes::cube_mesh();
 }
 
 } // namespace zth

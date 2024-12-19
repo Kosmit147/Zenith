@@ -38,7 +38,7 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 TransformTest::TransformTest()
     : _container_texture(container_texture), _emoji_texture(emoji_texture), _wall_texture(wall_texture),
       _cobble_texture(cobble_texture, cobble_texture_params),
-      _light_cube_material{ .shader = zth::shaders::flat_color, .albedo = light_color },
+      _light_cube_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {
@@ -69,8 +69,9 @@ auto TransformTest::on_update() -> void
 
     if (_material_was_changed)
     {
-        ZTH_ASSERT(_material_selected_index < zth::materials::materials.size());
-        _cube_material = *zth::materials::materials[_material_selected_index];
+        auto& materials = zth::materials::materials();
+        ZTH_ASSERT(_material_selected_index < materials.size());
+        _cube_material = materials[_material_selected_index];
         _material_was_changed = false;
         _tex_selected_index = 4;
     }
@@ -202,7 +203,7 @@ auto TransformTest::render_ui() -> void
         "cyan_rubber",   "green_rubber", "red_rubber",    "white_rubber",   "yellow_rubber",
     };
 
-    static_assert(material_names.size() == zth::materials::materials.size());
+    ZTH_ASSERT(material_names.size() == zth::materials::materials().size());
 
     if (ImGui::BeginCombo("Preset", material_names[_material_selected_index]))
     {

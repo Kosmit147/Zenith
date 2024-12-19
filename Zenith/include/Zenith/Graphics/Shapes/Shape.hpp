@@ -13,7 +13,6 @@ public:
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Shape)
     virtual ~Shape() = default;
 
-    // TODO: is this needed?
     [[nodiscard]] virtual auto mesh() const -> const Mesh& = 0;
 };
 
