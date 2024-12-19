@@ -23,7 +23,7 @@ Scene::Scene()
       _light(std::make_unique<zth::PointLight>(light_position, light_color))
 {
     constexpr auto xs = std::views::iota(-20, 20);
-    constexpr auto ys = std::views::iota(-1, 0);
+    constexpr auto ys = std::views::iota(-20, 0);
     constexpr auto zs = std::views::iota(-20, 20);
     constexpr auto coords = std::views::cartesian_product(xs, ys, zs);
 

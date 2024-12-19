@@ -28,7 +28,7 @@ std::unique_ptr<Renderer> renderer;
 
 auto Renderer::init() -> void
 {
-#ifdef _DEBUG
+#ifndef ZTH_DIST_BUILD
     enable_gl_debug();
 #endif
 

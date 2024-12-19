@@ -219,7 +219,7 @@ auto Window::set_glfw_window_hints(const WindowSpec& spec) -> void
     glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
 
-#ifdef _DEBUG
+#ifndef ZTH_DIST_BUILD
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 }
