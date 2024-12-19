@@ -14,11 +14,11 @@ struct DrawCommand
     const glm::mat4* transform;
 
     // comparison operators are used to sort draw commands into batches
-    auto operator==(const DrawCommand& other) const -> bool;
-    auto operator<(const DrawCommand& other) const -> bool;
-    auto operator>(const DrawCommand& other) const -> bool;
-    auto operator<=(const DrawCommand& other) const -> bool;
-    auto operator>=(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator==(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator<(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator>(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator<=(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator>=(const DrawCommand& other) const -> bool;
 };
 
 } // namespace zth
