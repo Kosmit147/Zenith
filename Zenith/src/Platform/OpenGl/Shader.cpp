@@ -176,7 +176,7 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
         return;
     }
 
-#ifndef _DEBUG
+#ifdef ZTH_DIST_BUILD
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 #endif

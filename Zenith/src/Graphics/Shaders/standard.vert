@@ -29,7 +29,7 @@ void main()
         vec4(inTransformCol1, 0.0),
         vec4(inTransformCol2, 0.0),
         vec4(inTransformCol3, 1.0)
-	);
+    );
 
     vec4 worldPosition = transform * vec4(inLocalPosition, 1.0);
 

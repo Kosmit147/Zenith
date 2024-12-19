@@ -47,7 +47,7 @@
 
 #endif
 
-#ifndef _DEBUG
+#ifdef ZTH_DIST_BUILD
 
 #undef ZTH_DEBUG_BREAK
 #define ZTH_DEBUG_BREAK

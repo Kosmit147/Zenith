@@ -54,7 +54,6 @@ private:
     glm::quat _rotation{ glm::identity<glm::quat>() };
     glm::vec3 _scale{ 1.0f };
 
-    // TODO: use mat4x3 if that's possible
     glm::mat4 _transform{ 1.0f };
 
 private:
