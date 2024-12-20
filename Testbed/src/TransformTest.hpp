@@ -35,6 +35,8 @@ private:
     std::size_t _tex_selected_index = 4;
     bool _tex_was_changed = true;
 
+    const float _ui_slider_drag_speed = 0.01f;
+
 private:
     auto on_load() -> void override;
     auto on_update() -> void override;
@@ -43,5 +45,9 @@ private:
     auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
 
     auto update_camera() const -> void;
-    auto render_ui() -> void;
+
+    auto draw_ui() -> void;
+    auto draw_transform_ui() -> void;
+    auto draw_light_ui() -> void;
+    auto draw_material_ui() -> void;
 };
