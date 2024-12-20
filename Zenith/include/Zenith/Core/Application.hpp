@@ -2,7 +2,7 @@
 
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Window.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 #define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
     namespace zth {                                                                                                    \

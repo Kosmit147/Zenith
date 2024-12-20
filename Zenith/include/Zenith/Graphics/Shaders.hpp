@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zenith/Platform/OpenGl/Shader.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth::shaders {
 

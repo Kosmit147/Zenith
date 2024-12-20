@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Zenith/Graphics/Mesh.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth::meshes {
 

@@ -2,7 +2,7 @@
 
 #include "Zenith/Core/Transformable.hpp"
 #include "Zenith/Graphics/fwd.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

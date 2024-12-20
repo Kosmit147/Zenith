@@ -1,6 +1,6 @@
 #include "Zenith/Core/Exception.hpp"
 
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

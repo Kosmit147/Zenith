@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 
 #include "Zenith/Core/Transformable.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

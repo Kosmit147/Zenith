@@ -8,7 +8,7 @@
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Platform/OpenGl/GlBufferUsage.hpp"
 #include "Zenith/Platform/OpenGl/VertexBufferLayout.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 
