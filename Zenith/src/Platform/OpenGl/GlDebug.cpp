@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 #include "Zenith/Logging/Logger.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

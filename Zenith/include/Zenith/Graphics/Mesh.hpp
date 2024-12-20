@@ -4,7 +4,7 @@
 
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
 #include "Zenith/Platform/OpenGl/VertexArray.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

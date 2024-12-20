@@ -2,7 +2,7 @@
 
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Material.hpp"
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth::materials {
 

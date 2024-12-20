@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
 

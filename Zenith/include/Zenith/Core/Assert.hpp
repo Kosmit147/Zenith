@@ -4,7 +4,7 @@
 #include <iostream>
 #include <source_location>
 
-#include "Zenith/Utility/Utility.hpp"
+#include "Zenith/Utility/Macros.hpp"
 
 #ifndef ZTH_DIST_BUILD
 
