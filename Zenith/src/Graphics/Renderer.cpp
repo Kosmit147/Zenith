@@ -87,11 +87,13 @@ auto Renderer::clear() -> void
 
 auto Renderer::set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void
 {
+    ZTH_ASSERT(camera != nullptr);
     renderer->_camera = std::move(camera);
 }
 
 auto Renderer::set_light(std::shared_ptr<const Light> light) -> void
 {
+    ZTH_ASSERT(light != nullptr);
     renderer->_light = std::move(light);
 }
 

@@ -16,6 +16,7 @@ private:
     zth::Texture2D _cube_texture;
     zth::Material _cube_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;
+    zth::FpsCameraController _camera_controller;
     std::shared_ptr<zth::PointLight> _light;
 
 private:
@@ -24,6 +25,4 @@ private:
     auto on_event(const zth::Event& event) -> void override;
 
     auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
-
-    auto update_camera() const -> void;
 };
