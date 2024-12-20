@@ -53,7 +53,7 @@ auto TransformTest::on_load() -> void
 
 auto TransformTest::on_update() -> void
 {
-    render_ui();
+    draw_ui();
     update_camera();
 
     _rotation_axis = glm::normalize(_rotation_axis);
@@ -159,40 +159,45 @@ auto TransformTest::update_camera() const -> void
     _camera->set_yaw_and_pitch(new_yaw, new_pitch);
 }
 
-auto TransformTest::render_ui() -> void
+auto TransformTest::draw_ui() -> void
 {
-    constexpr auto drag_speed = 0.01f;
+    draw_transform_ui();
+    draw_light_ui();
+    draw_material_ui();
+}
 
-    // --- Transform ---
-
+auto TransformTest::draw_transform_ui() -> void
+{
     ImGui::Begin("Transform");
 
-    ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&_translation), drag_speed);
-    ImGui::DragFloat("Rotation Angle", &_rotation_angle, drag_speed);
-    ImGui::DragFloat3("Rotation Axis", reinterpret_cast<float*>(&_rotation_axis), drag_speed);
+    ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&_translation), _ui_slider_drag_speed);
+    ImGui::DragFloat("Rotation Angle", &_rotation_angle, _ui_slider_drag_speed);
+    ImGui::DragFloat3("Rotation Axis", reinterpret_cast<float*>(&_rotation_axis), _ui_slider_drag_speed);
 
     if (_uniform_scale)
-        ImGui::DragFloat("Scale", reinterpret_cast<float*>(&_scale), drag_speed);
+        ImGui::DragFloat("Scale", reinterpret_cast<float*>(&_scale), _ui_slider_drag_speed);
     else
-        ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&_scale), drag_speed);
+        ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&_scale), _ui_slider_drag_speed);
 
     ImGui::Checkbox("Uniform Scale", &_uniform_scale);
 
     ImGui::End();
+}
 
-    // --- Light ---
-
+auto TransformTest::draw_light_ui() -> void
+{
     ImGui::Begin("Light");
 
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light->color));
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light->ambient), drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light->diffuse), drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light->specular), drag_speed);
+    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light->ambient), _ui_slider_drag_speed * 0.1f);
+    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light->diffuse), _ui_slider_drag_speed);
+    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light->specular), _ui_slider_drag_speed);
 
     ImGui::End();
+}
 
-    // --- Material ---
-
+auto TransformTest::draw_material_ui() -> void
+{
     ImGui::Begin("Material");
 
     constexpr std::array material_names = {
@@ -251,10 +256,10 @@ auto TransformTest::render_ui() -> void
         ImGui::EndCombo();
     }
 
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_cube_material.ambient), drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_cube_material.diffuse), drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_cube_material.specular), drag_speed);
-    ImGui::DragFloat("Shininess", &_cube_material.shininess, drag_speed * 20.0f);
+    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_cube_material.ambient), _ui_slider_drag_speed * 0.1f);
+    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_cube_material.diffuse), _ui_slider_drag_speed);
+    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_cube_material.specular), _ui_slider_drag_speed);
+    ImGui::DragFloat("Shininess", &_cube_material.shininess, _ui_slider_drag_speed * 20.0f);
 
     ImGui::End();
 }
