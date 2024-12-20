@@ -1,6 +1,5 @@
 #include <spdlog/spdlog.h>
 
-#include <iostream>
 #include <print>
 
 #include "Zenith/Core/Application.hpp"

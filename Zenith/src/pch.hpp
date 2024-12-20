@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
@@ -35,5 +34,6 @@
 #include <ranges>
 
 #include <format>
+#include <iostream>
 
 #include <spdlog/spdlog.h>
