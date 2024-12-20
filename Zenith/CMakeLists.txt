@@ -14,6 +14,7 @@ set(imgui_sources
 add_library(
 	Zenith STATIC
 	"src/Core/Application.cpp"
+	"src/Core/CameraController.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/main.cpp"
 	"src/Core/SceneManager.cpp"

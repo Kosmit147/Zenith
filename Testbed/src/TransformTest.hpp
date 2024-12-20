@@ -22,6 +22,7 @@ private:
     zth::Material _light_cube_material;
 
     std::shared_ptr<zth::PerspectiveCamera> _camera;
+    zth::FpsCameraController _camera_controller;
     std::shared_ptr<zth::PointLight> _light;
 
     glm::vec3 _translation = glm::vec3{ 0.0f };
@@ -43,8 +44,6 @@ private:
     auto on_event(const zth::Event& event) -> void override;
 
     auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
-
-    auto update_camera() const -> void;
 
     auto draw_ui() -> void;
     auto draw_transform_ui() -> void;
