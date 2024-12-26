@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(Zenith LANGUAGES CXX)
+project(Zenith VERSION 0.0.1 LANGUAGES CXX)
 
 set(imgui_sources
     "../dependencies/imgui/imgui.cpp"
@@ -12,11 +12,10 @@ set(imgui_sources
 )
 
 add_library(
-	Zenith STATIC
+	ZenithNoMain STATIC
 	"src/Core/Application.cpp"
 	"src/Core/CameraController.cpp"
 	"src/Core/Exception.cpp"
-	"src/Core/main.cpp"
 	"src/Core/SceneManager.cpp"
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
@@ -51,27 +50,38 @@ add_library(
 	${imgui_sources}
 )
 
-b_embed(Zenith "include/Zenith/Graphics/ShaderDefines.h")
+b_embed(ZenithNoMain "include/Zenith/Graphics/ShaderDefines.h")
 
-b_embed(Zenith "src/Graphics/Shaders/flat_color.vert")
-b_embed(Zenith "src/Graphics/Shaders/flat_color.frag")
-b_embed(Zenith "src/Graphics/Shaders/standard.vert")
-b_embed(Zenith "src/Graphics/Shaders/standard.frag")
+b_embed(ZenithNoMain "src/Graphics/Shaders/flat_color.vert")
+b_embed(ZenithNoMain "src/Graphics/Shaders/flat_color.frag")
+b_embed(ZenithNoMain "src/Graphics/Shaders/standard.vert")
+b_embed(ZenithNoMain "src/Graphics/Shaders/standard.frag")
 
-target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui")
-target_include_directories(Zenith SYSTEM PUBLIC "../dependencies/imgui/backends")
-target_include_directories(Zenith PUBLIC "include")
-target_compile_features(Zenith PRIVATE cxx_std_23)
-target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
-target_precompile_headers(Zenith PRIVATE "src/pch.hpp")
-set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+target_include_directories(ZenithNoMain SYSTEM PUBLIC "../dependencies/imgui")
+target_include_directories(ZenithNoMain SYSTEM PUBLIC "../dependencies/imgui/backends")
+target_include_directories(ZenithNoMain PUBLIC "include")
+target_compile_features(ZenithNoMain PRIVATE cxx_std_23)
+target_compile_options(ZenithNoMain PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(ZenithNoMain PRIVATE "src/pch.hpp")
+set_property(TARGET ZenithNoMain PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 # GLM_ENABLE_EXPERIMENTAL is needed for matrix decomposition
 # _CRT_SECURE_NO_WARNINGS is needed for imgui implementation files
-target_compile_definitions(Zenith PRIVATE GLM_ENABLE_EXPERIMENTAL _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(ZenithNoMain PRIVATE GLM_ENABLE_EXPERIMENTAL _CRT_SECURE_NO_WARNINGS)
 
-target_link_libraries(Zenith PUBLIC glad)
-target_link_libraries(Zenith PUBLIC glfw)
-target_link_libraries(Zenith PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
-target_link_libraries(Zenith PUBLIC glm)
-target_link_libraries(Zenith PUBLIC stb_image)
+target_link_libraries(ZenithNoMain PUBLIC glad)
+target_link_libraries(ZenithNoMain PUBLIC glfw)
+target_link_libraries(ZenithNoMain PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(ZenithNoMain PUBLIC glm)
+target_link_libraries(ZenithNoMain PUBLIC stb_image)
+
+add_library(
+	Zenith STATIC
+	"src/Core/main.cpp"
+)
+
+target_compile_features(Zenith PRIVATE cxx_std_23)
+target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
+set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+
+target_link_libraries(Zenith PUBLIC ZenithNoMain)

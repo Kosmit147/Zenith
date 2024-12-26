@@ -29,14 +29,18 @@ endif()
 
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
+add_subdirectory("dependencies/Catch2")
+add_subdirectory("dependencies/embed")
 add_subdirectory("dependencies/glad")
 add_subdirectory("dependencies/glfw")
-add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/glm")
-add_subdirectory("dependencies/embed")
+add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/stb_image")
 
 add_subdirectory("Zenith")
 add_subdirectory("Sandbox")
 add_subdirectory("Testbed")
 add_subdirectory("CubeGame")
+add_subdirectory("UnitTester")
+
+enable_testing()

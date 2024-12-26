@@ -1,20 +1,17 @@
 #include <spdlog/spdlog.h>
 
+#include <exception>
+#include <iostream>
+#include <memory>
 #include <print>
 
 #include "Zenith/Core/Application.hpp"
 #include "Zenith/Core/Exception.hpp"
 
-namespace zth {
-
-[[nodiscard]] extern auto create_application() -> Application*;
-
-}
-
-using namespace zth;
-
 auto main() -> int
 {
+    using namespace zth;
+
     try
     {
         std::unique_ptr<Application> app(create_application());
