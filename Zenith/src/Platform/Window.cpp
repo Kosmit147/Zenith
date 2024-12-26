@@ -47,7 +47,7 @@ auto Window::init(const WindowSpec& spec) -> void
         auto error_message = fmt::format(
             "Zenith supports only OpenGL 4.6. Tried to create an OpenGL context with version {}.", spec.gl_version);
         ZTH_CORE_CRITICAL(error_message);
-        throw Exception(error_message);
+        throw Exception{ error_message };
     }
 
     if (spec.gl_profile != GlProfile::Core)
@@ -56,14 +56,14 @@ auto Window::init(const WindowSpec& spec) -> void
             fmt::format("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",
                         spec.gl_profile);
         ZTH_CORE_CRITICAL(error_message);
-        throw Exception(error_message);
+        throw Exception{ error_message };
     }
 
     if (!glfwInit())
     {
         auto error_message = "Failed to initialize GLFW.";
         ZTH_CORE_CRITICAL(error_message);
-        throw Exception(error_message);
+        throw Exception{ error_message };
     }
 
     set_glfw_window_hints(spec);
@@ -74,7 +74,7 @@ auto Window::init(const WindowSpec& spec) -> void
         auto error_message = "Failed to create a window.";
         ZTH_CORE_CRITICAL(error_message);
         glfwTerminate();
-        throw Exception(error_message);
+        throw Exception{ error_message };
     }
 
     set_active();
@@ -92,7 +92,7 @@ auto Window::init(const WindowSpec& spec) -> void
         ZTH_CORE_CRITICAL(error_message);
         glfwDestroyWindow(_window);
         glfwTerminate();
-        throw Exception(error_message);
+        throw Exception{ error_message };
     }
 
     // make sure that the renderer sets glViewport after initialization
