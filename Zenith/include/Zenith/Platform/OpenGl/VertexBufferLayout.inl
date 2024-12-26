@@ -1,10 +1,10 @@
 #pragma once
 
+#include <glm/mat3x3.hpp>
+#include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/mat4x4.hpp>
 
 #include "Zenith/Utility/StructArity.hpp"
 
@@ -44,6 +44,20 @@ template<> constexpr auto to_vertex_layout_elem<const glm::mat3>() -> VertexBuff
 template<> constexpr auto to_vertex_layout_elem<const glm::mat4>() -> VertexBufferLayoutElement
 {
     return VertexBufferLayoutElement::Mat4;
+}
+
+constexpr VertexBufferLayout::VertexBufferLayout(std::initializer_list<VertexBufferLayoutElement> elems)
+    : _elements(elems)
+{}
+
+constexpr auto VertexBufferLayout::push(VertexBufferLayoutElement elem) -> void
+{
+    _elements.push_back(elem);
+}
+
+constexpr auto VertexBufferLayout::clear() -> void
+{
+    _elements.clear();
 }
 
 template<typename VertexType> constexpr auto VertexBufferLayout::from_vertex() -> VertexBufferLayout

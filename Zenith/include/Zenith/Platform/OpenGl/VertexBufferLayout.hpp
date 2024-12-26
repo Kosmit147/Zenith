@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 
+#include <initializer_list>
 #include <utility>
 #include <vector>
 
@@ -34,19 +35,19 @@ class VertexBufferLayout
 {
 public:
     constexpr VertexBufferLayout() = default;
-    constexpr VertexBufferLayout(std::initializer_list<VertexBufferLayoutElement> elems) : _elements(elems) {}
+    constexpr VertexBufferLayout(std::initializer_list<VertexBufferLayoutElement> elems);
     template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexBufferLayout;
 
-    auto push(VertexBufferLayoutElement elem) -> void { _elements.push_back(elem); }
-    auto clear() -> void { _elements.clear(); }
+    constexpr auto push(VertexBufferLayoutElement elem) -> void;
+    constexpr auto clear() -> void;
 
-    [[nodiscard]] auto size() const { return _elements.size(); }
+    [[nodiscard]] constexpr auto size() const { return _elements.size(); }
 
-    [[nodiscard]] auto begin() const { return _elements.begin(); }
-    [[nodiscard]] auto end() const { return _elements.end(); }
+    [[nodiscard]] constexpr auto begin() const { return _elements.begin(); }
+    [[nodiscard]] constexpr auto end() const { return _elements.end(); }
 
-    [[nodiscard]] auto begin() { return _elements.begin(); }
-    [[nodiscard]] auto end() { return _elements.end(); }
+    [[nodiscard]] constexpr auto begin() { return _elements.begin(); }
+    [[nodiscard]] constexpr auto end() { return _elements.end(); }
 
 private:
     std::vector<VertexBufferLayoutElement> _elements;

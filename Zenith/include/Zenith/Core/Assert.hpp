@@ -10,9 +10,9 @@
 
 #define ZTH_ASSERT(expr)                                                                                               \
     {                                                                                                                  \
-        if ((expr))                                                                                                    \
+        if ((expr)) [[likely]]                                                                                         \
         {}                                                                                                             \
-        else                                                                                                           \
+        else [[unlikely]]                                                                                              \
         {                                                                                                              \
             std::source_location location = std::source_location::current();                                           \
             std::cerr << location.file_name() << '(' << location.line() << ':' << location.column() << ") `"           \
