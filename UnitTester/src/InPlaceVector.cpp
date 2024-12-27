@@ -13,7 +13,7 @@
 using Catch::Matchers::AllMatch;
 using Catch::Matchers::RangeEquals;
 
-TEST_CASE("can construct", "[InPlaceVector]")
+TEST_CASE("InPlaceVector can be constructed", "[InPlaceVector]")
 {
     SECTION("default constructor works")
     {
@@ -64,7 +64,7 @@ TEST_CASE("can construct", "[InPlaceVector]")
     }
 }
 
-TEST_CASE("can copy and move", "[InPlaceVector]")
+TEST_CASE("InPlaceVector can be copied and moved", "[InPlaceVector]")
 {
     zth::InPlaceVector<int, 3> source = { 1, 2, 3 };
 
@@ -115,7 +115,7 @@ TEST_CASE("can copy and move", "[InPlaceVector]")
     }
 }
 
-TEST_CASE("can access elements", "[InPlaceVector]")
+TEST_CASE("can access elements inside an InPlaceVector", "[InPlaceVector]")
 {
     const zth::InPlaceVector<int, 5> vec = { 1, 2, 3, 4, 5 };
 
@@ -144,7 +144,7 @@ TEST_CASE("can access elements", "[InPlaceVector]")
     REQUIRE(data_ptr[i++] == 5);
 }
 
-TEST_CASE("can iterate over elements", "[InPlaceVector]")
+TEST_CASE("can iterate over elements of an InPlaceVector", "[InPlaceVector]")
 {
     zth::InPlaceVector<double, 4> elems = { 0.0, 1.0, 2.0, 3.0 };
     std::array expected = { 0.0, 1.0, 2.0, 3.0 };
@@ -158,7 +158,7 @@ TEST_CASE("can iterate over elements", "[InPlaceVector]")
     }
 }
 
-TEST_CASE("can modify", "[InPlaceVector]")
+TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
 {
     zth::InPlaceVector<int, 100> vec = { 1, 2, 3 };
 
@@ -245,7 +245,7 @@ TEST_CASE("can modify", "[InPlaceVector]")
     }
 }
 
-TEST_CASE("objects get properly constructed and destructed", "[InPlaceVector]")
+TEST_CASE("objects get properly constructed and destructed inside an InPlaceVector", "[InPlaceVector]")
 {
     LifetimeHelper::reset();
 
