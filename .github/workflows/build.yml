@@ -37,4 +37,4 @@ jobs:
 
     - name: Test
       if: ${{ matrix.config.build_type == 'Debug' }}
-      run: ctest --config ${{ matrix.config.build_type }}
+      run: ctest --build-config ${{ matrix.config.build_type }}
