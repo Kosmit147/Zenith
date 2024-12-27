@@ -46,7 +46,7 @@ public:
     {
         if (auto info = get_unif_info(name))
             set_unif(info->location, val);
-        else
+        else [[unlikely]]
             ZTH_CORE_WARN("Uniform with name {} not present in shader with id {}.", name, _id);
     }
 

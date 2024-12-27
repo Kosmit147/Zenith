@@ -15,7 +15,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
 	target_link_libraries(CubeGame PRIVATE -lstdc++exp)
 endif()
 
-target_link_libraries(CubeGame PRIVATE Zenith)
 target_compile_features(CubeGame PRIVATE cxx_std_23)
 target_compile_options(CubeGame PRIVATE ${ZTH_COMPILE_WARNINGS})
 set_property(TARGET CubeGame PROPERTY COMPILE_WARNING_AS_ERROR On)
+
+target_link_libraries(CubeGame PRIVATE Zenith)

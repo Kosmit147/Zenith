@@ -19,9 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { name: Debug Build, build_type: Debug, flags: -DZTH_DIST_BUILD=FALSE }
-          - { name: Release Build, build_type: RelWithDebInfo, flags: -DZTH_DIST_BUILD=FALSE }
-          - { name: Dist Build, build_type: Release, flags: -DZTH_DIST_BUILD=TRUE }
+          - { name: Debug, build_type: Debug, flags: -DZTH_DIST_BUILD=FALSE }
+          - { name: Release, build_type: RelWithDebInfo, flags: -DZTH_DIST_BUILD=FALSE }
+          - { name: Dist, build_type: Release, flags: -DZTH_DIST_BUILD=TRUE }
 
     steps:
     - name: Checkout
@@ -34,3 +34,7 @@ jobs:
 
     - name: Build
       run: cmake --build build --config ${{ matrix.config.build_type }}
+
+    - name: Test
+      if: ${{ matrix.config.build_type == 'Debug' }}
+      run: ctest --test-dir build --build-config ${{ matrix.config.build_type }}

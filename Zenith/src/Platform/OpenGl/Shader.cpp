@@ -226,7 +226,7 @@ auto Shader::get_unif_info(const std::string& name) const -> std::optional<Unifo
         auto& unif_info = res->second;
         return unif_info;
     }
-    else
+    else [[unlikely]]
     {
         return {};
     }
