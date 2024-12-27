@@ -36,5 +36,5 @@ jobs:
       run: cmake --build build --config ${{ matrix.config.build_type }}
 
     - name: Test
-      if: matrix.config.build_type == "Debug"
+      if: ${{ matrix.config.build_type == 'Debug' }}
       run: ctest --config ${{ matrix.config.build_type }}
