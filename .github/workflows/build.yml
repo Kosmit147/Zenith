@@ -12,7 +12,7 @@ defaults:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: ${{ matrix.preset.name }}
     runs-on: windows-latest
 
     strategy:
@@ -30,7 +30,7 @@ jobs:
         submodules: true
 
     - name: Configure
-      run: cmake -B build --preset ${{ matrix.preset.name }}
+      run: cmake -B build --preset ${{ matrix.preset.name }} -G "Visual Studio 17 2022"
 
     - name: Build
       run: cmake --build build --preset ${{ matrix.preset.name }}
