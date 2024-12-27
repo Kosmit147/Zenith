@@ -19,9 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         preset:
-          - { name: x64-debug }
-          - { name: x64-release }
-          - { name: x64-dist }
+          - { name: x64 Debug, configure: x64-debug, build: x64-debug-build, test: x64-debug-test }
+          - { name: x64 Release, configure: x64-release, build: x64-release-build, test: x64-release-test  }
+          - { name: x64 Dist, configure: x64-dist, build: x64-dist-build, test: x64-dist-test  }
 
     steps:
     - name: Checkout
@@ -30,10 +30,10 @@ jobs:
         submodules: true
 
     - name: Configure
-      run: cmake -B build --preset ${{ matrix.preset.name }} -G "Visual Studio 17 2022"
+      run: cmake -B build --preset ${{ matrix.preset.configure }} -G "Visual Studio 17 2022"
 
     - name: Build
-      run: cmake --build build --preset ${{ matrix.preset.name }}
+      run: cmake --build build --preset ${{ matrix.preset.build }}
 
     - name: Test
-      run: ctest --preset ${{ matrix.preset.name }}
+      run: ctest --preset ${{ matrix.preset.test }}
