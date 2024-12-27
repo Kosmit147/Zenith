@@ -6,7 +6,7 @@ include(Catch)
 
 add_executable(
 	UnitTester
-	"src/Test.cpp"
+	"src/InPlaceVector.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")

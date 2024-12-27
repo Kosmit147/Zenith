@@ -16,7 +16,7 @@ Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TexturePar
     int width, height, channels;
     auto image = stbi_load_from_memory(data.data(), static_cast<int>(data_size_bytes), &width, &height, &channels, 0);
 
-    if (!image)
+    if (!image) [[unlikely]]
     {
         ZTH_CORE_ERROR("Failed to load texture from memory!");
         ZTH_DEBUG_BREAK;

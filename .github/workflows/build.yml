@@ -18,10 +18,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - { name: Debug Build, build_type: Debug, flags: -DZTH_DIST_BUILD=OFF }
-          - { name: Release Build, build_type: RelWithDebInfo, flags: -DZTH_DIST_BUILD=OFF }
-          - { name: Dist Build, build_type: Release, flags: -DZTH_DIST_BUILD=ON }
+        preset:
+          - { name: x64-debug }
+          - { name: x64-release }
+          - { name: x64-dist }
 
     steps:
     - name: Checkout
@@ -30,7 +30,10 @@ jobs:
         submodules: true
 
     - name: Configure
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ${{ matrix.config.flags }}
+      run: cmake -B build --preset ${{ matrix.preset.name }}
 
     - name: Build
-      run: cmake --build build --config ${{ matrix.config.build_type }}
+      run: cmake --build build --preset ${{ matrix.preset.name }}
+
+    - name: Test
+      run: ctest --preset ${{ matrix.preset.name }}
