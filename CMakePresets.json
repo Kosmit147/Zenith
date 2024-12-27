@@ -46,39 +46,5 @@
         "ZTH_DIST_BUILD": "ON"
       }
     }
-  ],
-  "buildPresets": [
-    {
-      "name": "x64-debug-build",
-      "displayName": "x64-debug-build",
-      "configurePreset": "x64-debug"
-    },
-    {
-      "name": "x64-release-build",
-      "displayName": "x64-release-build",
-      "configurePreset": "x64-release"
-    },
-    {
-      "name": "x64-dist-build",
-      "displayName": "x64-dist-build",
-      "configurePreset": "x64-dist"
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "x64-debug-test",
-      "displayName": "x64-debug-test",
-      "configurePreset": "x64-debug"
-    },
-    {
-      "name": "x64-release-test",
-      "displayName": "x64-release-test",
-      "configurePreset": "x64-release"
-    },
-    {
-      "name": "x64-dist-test",
-      "displayName": "x64-dist-test",
-      "configurePreset": "x64-dist"
-    }
   ]
 }

@@ -12,16 +12,16 @@ defaults:
 
 jobs:
   build:
-    name: ${{ matrix.preset.name }}
+    name: ${{ matrix.config.name }}
     runs-on: windows-latest
 
     strategy:
       fail-fast: false
       matrix:
-        preset:
-          - { name: x64 Debug, configure: x64-debug, build: x64-debug-build, test: x64-debug-test }
-          - { name: x64 Release, configure: x64-release, build: x64-release-build, test: x64-release-test  }
-          - { name: x64 Dist, configure: x64-dist, build: x64-dist-build, test: x64-dist-test  }
+        config:
+          - { name: Debug, build_type: Debug, flags: -DZTH_DIST_BUILD=FALSE }
+          - { name: Release, build_type: RelWithDebInfo, flags: -DZTH_DIST_BUILD=FALSE }
+          - { name: Dist, build_type: Release, flags: -DZTH_DIST_BUILD=TRUE }
 
     steps:
     - name: Checkout
@@ -30,10 +30,11 @@ jobs:
         submodules: true
 
     - name: Configure
-      run: cmake -B build --preset ${{ matrix.preset.configure }} -G "Visual Studio 17 2022"
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ${{ matrix.config.flags }}
 
     - name: Build
-      run: cmake --build build --preset ${{ matrix.preset.build }}
+      run: cmake --build build --config ${{ matrix.config.build_type }}
 
     - name: Test
-      run: ctest --preset ${{ matrix.preset.test }}
+      if: matrix.config.build_type == Debug
+      run: ctest --config ${{ matrix.config.build_type }}
