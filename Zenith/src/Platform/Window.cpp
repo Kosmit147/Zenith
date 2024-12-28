@@ -8,6 +8,7 @@
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/EventQueue.hpp"
+#include "Zenith/Utility/Cleanup.hpp"
 
 namespace zth {
 
@@ -66,6 +67,8 @@ auto Window::init(const WindowSpec& spec) -> void
         throw Exception{ error_message };
     }
 
+    Cleanup glfw_cleanup{ [] { glfwTerminate(); } };
+
     set_glfw_window_hints(spec);
     _window = create_glfw_window(spec.size, spec.title.data(), spec.fullscreen);
 
@@ -73,9 +76,10 @@ auto Window::init(const WindowSpec& spec) -> void
     {
         auto error_message = "Failed to create a window.";
         ZTH_CORE_CRITICAL(error_message);
-        glfwTerminate();
         throw Exception{ error_message };
     }
+
+    Cleanup window_cleanup{ [&] { glfwDestroyWindow(_window); } };
 
     set_active();
     set_vsync(spec.vsync);
@@ -90,8 +94,6 @@ auto Window::init(const WindowSpec& spec) -> void
     {
         auto error_message = "Failed to initialize glad.";
         ZTH_CORE_CRITICAL(error_message);
-        glfwDestroyWindow(_window);
-        glfwTerminate();
         throw Exception{ error_message };
     }
 
@@ -99,6 +101,9 @@ auto Window::init(const WindowSpec& spec) -> void
     EventQueue::push(WindowResizedEvent{ size() });
 
     ZTH_CORE_INFO("Window initialized.");
+
+    window_cleanup.dismiss();
+    glfw_cleanup.dismiss();
 }
 
 auto Window::shut_down() -> void

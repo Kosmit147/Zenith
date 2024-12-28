@@ -12,7 +12,7 @@ set(imgui_sources
 )
 
 add_library(
-	ZenithNoMain STATIC
+	ZenithCore STATIC
 	"src/Core/Application.cpp"
 	"src/Core/CameraController.cpp"
 	"src/Core/Exception.cpp"
@@ -50,30 +50,30 @@ add_library(
 	${imgui_sources}
 )
 
-b_embed(ZenithNoMain "include/Zenith/Graphics/ShaderDefines.h")
+b_embed(ZenithCore "include/Zenith/Graphics/ShaderDefines.h")
 
-b_embed(ZenithNoMain "src/Graphics/Shaders/flat_color.vert")
-b_embed(ZenithNoMain "src/Graphics/Shaders/flat_color.frag")
-b_embed(ZenithNoMain "src/Graphics/Shaders/standard.vert")
-b_embed(ZenithNoMain "src/Graphics/Shaders/standard.frag")
+b_embed(ZenithCore "src/Graphics/Shaders/flat_color.vert")
+b_embed(ZenithCore "src/Graphics/Shaders/flat_color.frag")
+b_embed(ZenithCore "src/Graphics/Shaders/standard.vert")
+b_embed(ZenithCore "src/Graphics/Shaders/standard.frag")
 
-target_include_directories(ZenithNoMain SYSTEM PUBLIC "../dependencies/imgui")
-target_include_directories(ZenithNoMain SYSTEM PUBLIC "../dependencies/imgui/backends")
-target_include_directories(ZenithNoMain PUBLIC "include")
-target_compile_features(ZenithNoMain PRIVATE cxx_std_23)
-target_compile_options(ZenithNoMain PRIVATE ${ZTH_COMPILE_WARNINGS})
-target_precompile_headers(ZenithNoMain PRIVATE "src/pch.hpp")
-set_property(TARGET ZenithNoMain PROPERTY COMPILE_WARNING_AS_ERROR On)
+target_include_directories(ZenithCore SYSTEM PUBLIC "../dependencies/imgui")
+target_include_directories(ZenithCore SYSTEM PUBLIC "../dependencies/imgui/backends")
+target_include_directories(ZenithCore PUBLIC "include")
+target_compile_features(ZenithCore PRIVATE cxx_std_23)
+target_compile_options(ZenithCore PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(ZenithCore PRIVATE "src/pch.hpp")
+set_property(TARGET ZenithCore PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 # GLM_ENABLE_EXPERIMENTAL is needed for matrix decomposition
 # _CRT_SECURE_NO_WARNINGS is needed for imgui implementation files
-target_compile_definitions(ZenithNoMain PRIVATE GLM_ENABLE_EXPERIMENTAL _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(ZenithCore PRIVATE GLM_ENABLE_EXPERIMENTAL _CRT_SECURE_NO_WARNINGS)
 
-target_link_libraries(ZenithNoMain PUBLIC glad)
-target_link_libraries(ZenithNoMain PUBLIC glfw)
-target_link_libraries(ZenithNoMain PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
-target_link_libraries(ZenithNoMain PUBLIC glm)
-target_link_libraries(ZenithNoMain PUBLIC stb_image)
+target_link_libraries(ZenithCore PUBLIC glad)
+target_link_libraries(ZenithCore PUBLIC glfw)
+target_link_libraries(ZenithCore PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(ZenithCore PUBLIC glm)
+target_link_libraries(ZenithCore PUBLIC stb_image)
 
 add_library(
 	Zenith STATIC
@@ -84,4 +84,4 @@ target_compile_features(Zenith PRIVATE cxx_std_23)
 target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
 set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-target_link_libraries(Zenith PUBLIC ZenithNoMain)
+target_link_libraries(Zenith PUBLIC ZenithCore)

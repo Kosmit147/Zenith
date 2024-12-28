@@ -3,6 +3,7 @@
 #include <stb_image/stb_image.h>
 
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Utility/Cleanup.hpp"
 
 namespace zth {
 
@@ -12,6 +13,7 @@ Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TexturePar
     const auto data_size_bytes = data.size() * sizeof(DataType);
 
     stbi_set_flip_vertically_on_load(true);
+    Cleanup unset_flip_vertically_on_load{ [] { stbi_set_flip_vertically_on_load(false); } };
 
     int width, height, channels;
     auto image = stbi_load_from_memory(data.data(), static_cast<int>(data_size_bytes), &width, &height, &channels, 0);
@@ -22,6 +24,8 @@ Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TexturePar
         ZTH_DEBUG_BREAK;
         return;
     }
+
+    Cleanup image_cleanup{ [&] { stbi_image_free(image); } };
 
     create();
 
@@ -35,9 +39,6 @@ Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TexturePar
     auto format = texture_format_from_channels(static_cast<u32>(channels));
     glTextureSubImage2D(_id, 0, 0, 0, width, height, to_gl_enum(format), GL_UNSIGNED_BYTE, image);
     glGenerateTextureMipmap(_id);
-
-    stbi_image_free(image);
-    stbi_set_flip_vertically_on_load(false);
 }
 
 } // namespace zth

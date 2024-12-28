@@ -3,7 +3,6 @@
 #include <glm/trigonometric.hpp>
 
 #include <memory>
-#include <optional>
 
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Platform/Key.hpp"

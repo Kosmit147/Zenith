@@ -10,13 +10,13 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <unordered_map>
 #include <utility>
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Utility/Macros.hpp"
+#include "Zenith/Utility/StringHashMap.hpp"
 
 namespace zth {
 
@@ -42,7 +42,7 @@ public:
     auto bind() const -> void { glUseProgram(_id); }
     static auto unbind() -> void { glUseProgram(GL_NONE); }
 
-    template<typename T> auto set_unif(const std::string& name, const T& val) const -> void
+    template<typename T> auto set_unif(std::string_view name, const T& val) const -> void
     {
         if (auto info = get_unif_info(name))
             set_unif(info->location, val);
@@ -54,11 +54,11 @@ public:
 
 private:
     GLuint _id = GL_NONE;
-    std::unordered_map<std::string, UniformInfo> _uniform_map;
+    StringHashMap<UniformInfo> _uniform_map;
 
 private:
     auto retrieve_unif_info() -> void;
-    [[nodiscard]] auto get_unif_info(const std::string& name) const -> std::optional<UniformInfo>;
+    [[nodiscard]] auto get_unif_info(std::string_view name) const -> std::optional<UniformInfo>;
 
     static auto set_unif(GLint location, GLint val) -> void;
     static auto set_unif(GLint location, GLfloat val) -> void;
