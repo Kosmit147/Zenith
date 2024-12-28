@@ -16,15 +16,12 @@
 namespace zth {
 
 class Event;
-class Application;
 
 struct ApplicationSpec
 {
     WindowSpec window_spec{};
     LoggerSpec logger_spec{};
 };
-
-[[nodiscard]] auto create_application() -> Application*;
 
 class Application
 {

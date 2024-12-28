@@ -8,13 +8,19 @@
 #include "Zenith/Core/Application.hpp"
 #include "Zenith/Core/Exception.hpp"
 
+namespace zth {
+
+[[nodiscard]] auto create_application() -> Application*;
+
+} // namespace zth
+
 auto main() -> int
 {
     using namespace zth;
 
     try
     {
-        std::unique_ptr<Application> app(create_application());
+        std::unique_ptr<Application> app{ create_application() };
         app->run();
     }
     catch (const spdlog::spdlog_ex& e)

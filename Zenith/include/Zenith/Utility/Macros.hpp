@@ -66,3 +66,11 @@
 #define ZTH_NO_INLINE
 
 #endif
+
+// ZTH_UNIQUE_NAME
+
+#define ZTH_UNIQUE_NAME_INTERNAL2(name, counter) name##counter
+
+#define ZTH_UNIQUE_NAME_INTERNAL(name, counter) ZTH_UNIQUE_NAME_INTERNAL2(name, counter)
+
+#define ZTH_UNIQUE_NAME(name) ZTH_UNIQUE_NAME_INTERNAL(name, __COUNTER__)

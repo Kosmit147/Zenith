@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Utility/Cleanup.hpp"
 
 namespace zth {
 
@@ -80,6 +81,7 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
 [[nodiscard]] auto create_shader(std::string_view source, ShaderType type) -> GLuint
 {
     auto shader = glCreateShader(to_gl_enum(type));
+    Cleanup shader_cleanup{ [&] { glDeleteShader(shader); } };
 
     const std::array sources = { source.data(), "\n\0" };
     glShaderSource(shader, static_cast<GLsizei>(sources.size()), sources.data(), nullptr);
@@ -88,11 +90,11 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
 
     if (success)
     {
+        shader_cleanup.dismiss();
         return shader;
     }
     else
     {
-        glDeleteShader(shader);
         return GL_NONE;
     }
 }
@@ -126,6 +128,7 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
 [[nodiscard]] auto create_shader_program(GLuint vertex_shader, GLuint fragment_shader) -> GLuint
 {
     auto program = glCreateProgram();
+    Cleanup program_cleanup{ [&] { glDeleteProgram(program); } };
 
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
@@ -137,11 +140,11 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
 
     if (success)
     {
+        program_cleanup.dismiss();
         return program;
     }
     else
     {
-        glDeleteProgram(program);
         return GL_NONE;
     }
 }
@@ -154,30 +157,25 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
     auto preprocessed_fragment_source = preprocess_shader(fragment_source);
 
     auto vertex_shader = create_shader(preprocessed_vertex_source, ShaderType::Vertex);
+    Cleanup vertex_shader_cleanup{ [&] { glDeleteShader(vertex_shader); } };
 
     if (!vertex_shader)
         return;
 
     auto fragment_shader = create_shader(preprocessed_fragment_source, ShaderType::Fragment);
+    Cleanup fragment_shader_cleanup{ [&] { glDeleteShader(fragment_shader); } };
 
     if (!fragment_shader)
-    {
-        glDeleteShader(vertex_shader);
         return;
-    }
 
     auto program = create_shader_program(vertex_shader, fragment_shader);
 
     if (!program)
-    {
-        glDeleteShader(vertex_shader);
-        glDeleteShader(fragment_shader);
         return;
-    }
 
-#ifdef ZTH_DIST_BUILD
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
+#ifndef ZTH_DIST_BUILD
+    vertex_shader_cleanup.dismiss();
+    fragment_shader_cleanup.dismiss();
 #endif
 
     _id = program;
@@ -219,7 +217,7 @@ auto Shader::retrieve_unif_info() -> void
     }
 }
 
-auto Shader::get_unif_info(const std::string& name) const -> std::optional<UniformInfo>
+auto Shader::get_unif_info(std::string_view name) const -> std::optional<UniformInfo>
 {
     if (auto res = _uniform_map.find(name); res != _uniform_map.end())
     {

@@ -4,6 +4,8 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include "Zenith/Core/Assert.hpp"
+
 namespace zth {
 
 auto Logger::init(const LoggerSpec& logger_spec) -> void
@@ -36,11 +38,13 @@ auto Logger::shut_down() -> void
 
 auto Logger::core_logger() -> spdlog::logger&
 {
+    ZTH_ASSERT(_core_logger != nullptr);
     return *_core_logger;
 }
 
 auto Logger::client_logger() -> spdlog::logger&
 {
+    ZTH_ASSERT(_client_logger != nullptr);
     return *_client_logger;
 }
 

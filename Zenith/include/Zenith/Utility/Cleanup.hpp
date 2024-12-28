@@ -7,13 +7,13 @@
 
 namespace zth {
 
-template<std::invocable Func> class ScopeGuard
+template<std::invocable Func> class Cleanup
 {
 public:
-    constexpr explicit ScopeGuard(const Func& func) : _func(func) {}
-    constexpr explicit ScopeGuard(Func&& func) : _func(std::move(func)) {}
-    ZTH_NO_COPY_NO_MOVE(ScopeGuard)
-    constexpr ~ScopeGuard() { release(); }
+    constexpr explicit Cleanup(const Func& func) : _func(func) {}
+    constexpr explicit Cleanup(Func&& func) : _func(std::move(func)) {}
+    ZTH_NO_COPY_NO_MOVE(Cleanup)
+    constexpr ~Cleanup() { release(); }
 
     constexpr auto dismiss() noexcept -> void { _dismissed = true; }
 

@@ -6,8 +6,9 @@ include(Catch)
 
 add_executable(
 	UnitTester
+	"src/Cleanup.cpp"
 	"src/InPlaceVector.cpp"
-	"src/ScopeGuard.cpp"
+	"src/StringHasher.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
@@ -19,6 +20,6 @@ target_compile_options(UnitTester PRIVATE ${ZTH_COMPILE_WARNINGS})
 set_property(TARGET UnitTester PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 target_link_libraries(UnitTester PRIVATE Catch2WithMain)
-target_link_libraries(UnitTester PRIVATE ZenithNoMain)
+target_link_libraries(UnitTester PRIVATE ZenithCore)
 
 catch_discover_tests(UnitTester)
