@@ -7,6 +7,7 @@ include(Catch)
 add_executable(
 	UnitTester
 	"src/InPlaceVector.cpp"
+	"src/ScopeGuard.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
