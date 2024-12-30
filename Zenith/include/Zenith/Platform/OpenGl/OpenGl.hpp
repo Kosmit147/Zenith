@@ -11,4 +11,4 @@
 #include "Texture.hpp"
 #include "TextureParams.hpp"
 #include "VertexArray.hpp"
-#include "VertexBufferLayout.hpp"
+#include "VertexLayout.hpp"

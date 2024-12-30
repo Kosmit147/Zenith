@@ -33,10 +33,11 @@ struct TextureParams;
 
 class Texture2D;
 
+struct VertexArrayLayout;
 class VertexArray;
 
-enum class VertexBufferLayoutElement : u8;
-struct VertexBufferLayoutElementInfo;
-class VertexBufferLayout;
+enum class VertexLayoutElement : u8;
+struct VertexLayoutElementInfo;
+class VertexLayout;
 
 } // namespace zth

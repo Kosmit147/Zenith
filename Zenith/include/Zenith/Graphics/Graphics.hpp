@@ -15,3 +15,4 @@
 #include "Renderer2D.hpp"
 #include "Shaders.hpp"
 #include "Shapes/Shapes.hpp"
+#include "Vertex.hpp"

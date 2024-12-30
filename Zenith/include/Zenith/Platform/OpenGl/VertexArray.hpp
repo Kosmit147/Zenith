@@ -2,9 +2,21 @@
 
 #include <glad/glad.h>
 
+#include <ranges>
+
+#include "Zenith/Platform/OpenGl/VertexLayout.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
+
+struct VertexArrayLayout
+{
+    VertexLayout vertex_buffer_layout{};
+    VertexLayout instance_buffer_layout{};
+
+    template<std::ranges::contiguous_range VertexData>
+    [[nodiscard]] constexpr static auto from_vertex_data() -> VertexArrayLayout;
+};
 
 class VertexArray
 {
@@ -14,12 +26,15 @@ public:
 
 public:
     explicit VertexArray();
-    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer);
-    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
-                         const InstanceBuffer& instance_buffer);
+    explicit VertexArray(const VertexArrayLayout& layout);
 
-    explicit VertexArray(VertexBuffer&&, IndexBuffer&&) = delete;
-    explicit VertexArray(VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&) = delete;
+    explicit VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
+                         const IndexBuffer& index_buffer);
+    explicit VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
+                         const IndexBuffer& index_buffer, const InstanceBuffer& instance_buffer);
+
+    explicit VertexArray(const VertexArrayLayout&, VertexBuffer&&, IndexBuffer&&) = delete;
+    explicit VertexArray(const VertexArrayLayout&, VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&) = delete;
 
     VertexArray(const VertexArray& other);
     auto operator=(const VertexArray& other) -> VertexArray&;
@@ -40,6 +55,8 @@ public:
     auto bind_index_buffer(IndexBuffer&&) = delete;
     auto bind_instance_buffer(InstanceBuffer&&) = delete;
 
+    auto bind_layout(const VertexArrayLayout& layout) -> void;
+
     auto unbind_vertex_buffer() -> void;
     auto unbind_index_buffer() -> void;
     auto unbind_instance_buffer() -> void;
@@ -53,6 +70,8 @@ public:
     [[nodiscard]] auto index_buffer() const { return _index_buffer; }
     [[nodiscard]] auto instance_buffer() const { return _instance_buffer; }
 
+    [[nodiscard]] auto layout() const -> auto& { return _layout; }
+
 private:
     GLuint _id = GL_NONE;
 
@@ -60,13 +79,22 @@ private:
     const IndexBuffer* _index_buffer = nullptr;
     const InstanceBuffer* _instance_buffer = nullptr;
 
+    VertexArrayLayout _layout{};
+
 private:
     auto create() -> void;
     auto destroy() const -> void;
 
-    auto bind_layouts() const -> void;
-    auto bind_vertex_buffer_layout(const VertexBufferLayout& layout) const -> void;
-    auto bind_instance_buffer_layout(const VertexBufferLayout& layout) const -> void;
+    auto bind_vertex_buffer_layout() const -> void;
+    auto bind_instance_buffer_layout() const -> void;
 };
+
+template<std::ranges::contiguous_range VertexData>
+[[nodiscard]] constexpr auto VertexArrayLayout::from_vertex_data() -> VertexArrayLayout
+{
+    using VertexType = std::ranges::range_value_t<VertexData>;
+    return VertexArrayLayout{ .vertex_buffer_layout = VertexLayout::from_vertex<VertexType>(),
+                              .instance_buffer_layout = {} };
+}
 
 } // namespace zth

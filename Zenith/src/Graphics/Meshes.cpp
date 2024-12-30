@@ -1,19 +1,9 @@
 #include "Zenith/Graphics/Meshes.hpp"
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-
+#include "Zenith/Graphics/Vertex.hpp"
 #include "Zenith/Logging/Logger.hpp"
 
 namespace zth::meshes {
-
-struct StandardVertex
-{
-    glm::vec3 local_position;
-    glm::vec3 normal;
-    glm::vec2 tex_coords;
-};
 
 namespace {
 
@@ -1956,11 +1946,14 @@ std::unique_ptr<MeshList> mesh_list;
 
 } // namespace
 
-MeshList::MeshList() : cube_mesh(cube_vertices, cube_indices), sphere_mesh(sphere_vertices, sphere_indices) {}
+MeshList::MeshList(const InstanceBuffer& instance_buffer)
+    : cube_mesh(cube_vertices, cube_indices, StandardVertex::instanced_layout, instance_buffer),
+      sphere_mesh(sphere_vertices, sphere_indices, StandardVertex::instanced_layout, instance_buffer)
+{}
 
-auto load_meshes() -> void
+auto load_meshes(const InstanceBuffer& instance_buffer) -> void
 {
-    mesh_list = std::make_unique<MeshList>();
+    mesh_list = std::make_unique<MeshList>(instance_buffer);
     ZTH_CORE_INFO("Meshes loaded.");
 }
 

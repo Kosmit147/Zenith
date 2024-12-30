@@ -77,7 +77,6 @@ auto VertexBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlB
 auto VertexBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    _layout = VertexBufferLayout::from_vertex<T>();
     _stride = sizeof(T);
     GlBuffer::init_static(data);
 }
@@ -85,7 +84,6 @@ auto VertexBuffer::init_static(std::ranges::contiguous_range auto&& data) -> voi
 auto VertexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    _layout = VertexBufferLayout::from_vertex<T>();
     _stride = sizeof(T);
     GlBuffer::init_dynamic(data, usage);
 }
@@ -93,7 +91,6 @@ auto VertexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBuf
 auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    _layout = VertexBufferLayout::from_vertex<T>();
     _stride = sizeof(T);
     GlBuffer::buffer_data(data, offset);
 }

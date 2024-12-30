@@ -39,16 +39,14 @@ auto Renderer::init() -> void
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
+    renderer.reset(new Renderer);
+    renderer->_instance_buffer.set_stride(sizeof(InstanceVertex));
+
     set_clear_color(colors::transparent);
 
-    renderer.reset(new Renderer);
-
     shaders::load_shaders();
-    meshes::load_meshes();
+    meshes::load_meshes(renderer->_instance_buffer);
     materials::load_materials();
-
-    renderer->_instance_buffer.set_layout(VertexBufferLayout::from_vertex<InstanceBufferElement>());
-    renderer->_instance_buffer.set_stride(sizeof(InstanceBufferElement));
 
     ZTH_CORE_INFO("Renderer initialized.");
 }
@@ -184,7 +182,6 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
     auto& instance_data = renderer->_instance_data;
     auto& instance_buffer = renderer->_instance_buffer;
-    auto& tmp_va = renderer->_tmp_va;
 
     ZTH_ASSERT(batch.vertex_array->vertex_buffer() != nullptr);
     ZTH_ASSERT(batch.vertex_array->index_buffer() != nullptr);
@@ -199,15 +196,7 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
     }
 
     instance_buffer.buffer_data(instance_data);
-
-    // TODO: get rid of this
-    tmp_va.bind_vertex_buffer(*batch.vertex_array->vertex_buffer());
-    tmp_va.bind_index_buffer(*batch.vertex_array->index_buffer());
-    tmp_va.bind_instance_buffer(instance_buffer);
-
-    draw_instanced(tmp_va, *batch.material, instance_data.size());
-
-    tmp_va.unbind_all_buffers();
+    draw_instanced(*batch.vertex_array, *batch.material, instance_data.size());
 }
 
 auto Renderer::upload_camera_ubo() -> void

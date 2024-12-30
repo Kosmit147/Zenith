@@ -11,7 +11,7 @@
 
 namespace zth {
 
-enum class VertexBufferLayoutElement : u8
+enum class VertexLayoutElement : u8
 {
     Float,
 
@@ -23,7 +23,7 @@ enum class VertexBufferLayoutElement : u8
     Mat4,
 };
 
-struct VertexBufferLayoutElementInfo
+struct VertexLayoutElementInfo
 {
     GLint count;
     GLenum type;
@@ -31,14 +31,14 @@ struct VertexBufferLayoutElementInfo
     GLuint slots_occupied = 1;
 };
 
-class VertexBufferLayout
+class VertexLayout
 {
 public:
-    constexpr VertexBufferLayout() = default;
-    constexpr VertexBufferLayout(std::initializer_list<VertexBufferLayoutElement> elems);
-    template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexBufferLayout;
+    constexpr VertexLayout() = default;
+    constexpr VertexLayout(std::initializer_list<VertexLayoutElement> elems);
+    template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexLayout;
 
-    constexpr auto push(VertexBufferLayoutElement elem) -> void;
+    constexpr auto push(VertexLayoutElement elem) -> void;
     constexpr auto clear() -> void;
 
     [[nodiscard]] constexpr auto size() const { return _elements.size(); }
@@ -50,15 +50,14 @@ public:
     [[nodiscard]] constexpr auto end() { return _elements.end(); }
 
 private:
-    std::vector<VertexBufferLayoutElement> _elements;
+    std::vector<VertexLayoutElement> _elements;
 };
 
-[[nodiscard]] constexpr auto
-get_vertex_layout_element_info(VertexBufferLayoutElement elem) -> VertexBufferLayoutElementInfo
+[[nodiscard]] constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo
 {
     switch (elem)
     {
-        using enum VertexBufferLayoutElement;
+        using enum VertexLayoutElement;
     case Float:
         return { .count = 1, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) };
     case Vec2:
@@ -79,4 +78,4 @@ get_vertex_layout_element_info(VertexBufferLayoutElement elem) -> VertexBufferLa
 
 } // namespace zth
 
-#include "VertexBufferLayout.inl"
+#include "VertexLayout.inl"
