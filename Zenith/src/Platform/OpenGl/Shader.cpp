@@ -208,12 +208,12 @@ auto Shader::retrieve_unif_info() -> void
 
         glGetActiveUniform(_id, i, max_unif_name_len, &unif_name_length, &unif_size, &unif_type, uniform_name.get());
 
-        auto uniform_info = UniformInfo{
+        UniformInfo uniform_info = {
             .location = glGetUniformLocation(_id, uniform_name.get()),
             .size = unif_size,
         };
 
-        _uniform_map.emplace(std::string(uniform_name.get(), static_cast<std::size_t>(unif_name_length)), uniform_info);
+        _uniform_map.emplace(uniform_name.get(), uniform_info);
     }
 }
 
