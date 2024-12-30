@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <ranges>
 #include <utility>
 
 #include "Zenith/Core/Assert.hpp"
@@ -12,9 +13,8 @@ template<std::movable T, usize Size>
 constexpr InPlaceVector<T, Size>::InPlaceVector(usize count) noexcept(std::is_nothrow_default_constructible_v<T>)
 {
     ZTH_ASSERT(count <= Size);
-
-    for (usize i = 0; i < count; i++)
-        emplace_back();
+    _size = count;
+    std::ranges::uninitialized_default_construct(*this);
 }
 
 template<std::movable T, usize Size>
@@ -22,9 +22,8 @@ constexpr InPlaceVector<T, Size>::InPlaceVector(usize count, const T& value)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
     ZTH_ASSERT(count <= Size);
-
-    for (usize i = 0; i < count; i++)
-        push_back(value);
+    _size = count;
+    std::ranges::uninitialized_fill(*this, value);
 }
 
 template<std::movable T, usize Size>
@@ -32,17 +31,16 @@ constexpr InPlaceVector<T, Size>::InPlaceVector(std::initializer_list<T> values)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
     ZTH_ASSERT(values.size() <= Size);
-
-    for (const auto& value : values)
-        push_back(value);
+    _size = values.size();
+    std::ranges::uninitialized_copy(values, *this);
 }
 
 template<std::movable T, usize Size>
 constexpr InPlaceVector<T, Size>::InPlaceVector(const InPlaceVector& other)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
-    for (const auto& val : other)
-        push_back(val);
+    _size = other.size();
+    std::ranges::uninitialized_copy(other, *this);
 }
 
 template<std::movable T, usize Size>
@@ -54,8 +52,8 @@ constexpr auto InPlaceVector<T, Size>::operator=(const InPlaceVector& other)
 
     clear();
 
-    for (const auto& val : other)
-        push_back(val);
+    _size = other.size();
+    std::ranges::uninitialized_copy(other, *this);
 
     return *this;
 }
@@ -63,8 +61,8 @@ constexpr auto InPlaceVector<T, Size>::operator=(const InPlaceVector& other)
 template<std::movable T, usize Size>
 constexpr InPlaceVector<T, Size>::InPlaceVector(InPlaceVector&& other) noexcept(std::is_nothrow_move_constructible_v<T>)
 {
-    for (auto&& val : other)
-        push_back(std::move(val));
+    _size = other.size();
+    std::ranges::uninitialized_move(other, *this);
 
     other.clear();
 }
@@ -75,8 +73,8 @@ constexpr auto InPlaceVector<T, Size>::operator=(InPlaceVector&& other)
 {
     clear();
 
-    for (auto&& val : other)
-        push_back(std::move(val));
+    _size = other.size();
+    std::ranges::uninitialized_move(other, *this);
 
     other.clear();
 
