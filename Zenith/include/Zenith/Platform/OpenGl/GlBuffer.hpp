@@ -7,7 +7,6 @@
 
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Platform/OpenGl/GlBufferUsage.hpp"
-#include "Zenith/Platform/OpenGl/VertexBufferLayout.hpp"
 #include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
@@ -105,15 +104,11 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
-    auto set_layout(const VertexBufferLayout& layout) -> void;
-    auto set_layout(VertexBufferLayout&& layout) -> void;
     auto set_stride(GLsizei stride) -> void;
 
-    [[nodiscard]] auto layout() const -> auto& { return _layout; }
     [[nodiscard]] auto stride() const { return _stride; }
 
 private:
-    VertexBufferLayout _layout = {};
     GLsizei _stride = 0;
 };
 

@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
-#include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -15,9 +14,9 @@
 #include "Zenith/Graphics/DrawCommand.hpp"
 #include "Zenith/Graphics/Light.hpp"
 #include "Zenith/Graphics/ShaderDefines.h"
+#include "Zenith/Graphics/Vertex.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/VertexArray.hpp"
 #include "Zenith/Platform/OpenGl/fwd.hpp"
 
 namespace zth {
@@ -65,16 +64,6 @@ struct MaterialUboData
     GLfloat shininess;
 };
 
-struct InstanceBufferElement
-{
-    glm::vec3 transform_col_0;
-    glm::vec3 transform_col_1;
-    glm::vec3 transform_col_2;
-    glm::vec3 transform_col_3;
-
-    glm::mat3 normal_mat;
-};
-
 class Renderer
 {
 public:
@@ -107,10 +96,8 @@ private:
     UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);
     UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), ZTH_MATERIAL_UBO_BINDING_INDEX);
 
-    std::vector<InstanceBufferElement> _instance_data;
+    std::vector<InstanceVertex> _instance_data;
     InstanceBuffer _instance_buffer = InstanceBuffer::create_dynamic();
-
-    VertexArray _tmp_va; // TODO: get rid of this
 
     std::vector<DrawCommand> _draw_commands;
     std::vector<RenderBatch> _batches;

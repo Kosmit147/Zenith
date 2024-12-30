@@ -20,15 +20,23 @@ class PointLight;
 
 struct Material;
 
+struct MaterialList;
+
 class Mesh;
+
+struct MeshList;
 
 struct RenderBatch;
 struct CameraUboData;
 struct LightUboData;
 struct MaterialUboData;
-struct InstanceBufferElement;
 class Renderer;
 
 class Renderer2D;
+
+struct ShaderList;
+
+struct InstanceVertex;
+struct StandardVertex;
 
 } // namespace zth

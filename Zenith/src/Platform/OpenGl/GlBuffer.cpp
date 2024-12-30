@@ -184,8 +184,7 @@ auto VertexBuffer::create_dynamic(usize size, GlBufferUsage usage) -> VertexBuff
     return buffer;
 }
 
-VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
-    : GlBuffer(std::move(other)), _layout(std::move(other._layout)), _stride(other._stride)
+VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : GlBuffer(std::move(other)), _stride(other._stride)
 {
     other._stride = 0;
 }
@@ -194,7 +193,6 @@ auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
 {
     GlBuffer::operator=(std::move(other));
 
-    _layout = std::move(other._layout);
     _stride = other._stride;
 
     other._stride = 0;
@@ -225,16 +223,6 @@ auto VertexBuffer::bind() const -> void
 auto VertexBuffer::unbind() -> void
 {
     glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-}
-
-auto VertexBuffer::set_layout(const VertexBufferLayout& layout) -> void
-{
-    _layout = layout;
-}
-
-auto VertexBuffer::set_layout(VertexBufferLayout&& layout) -> void
-{
-    _layout = std::move(layout);
 }
 
 auto VertexBuffer::set_stride(GLsizei stride) -> void
