@@ -19,6 +19,8 @@ private:
     zth::Texture2D _emoji_diffuse_map;
     zth::Texture2D _wall_diffuse_map;
 
+    zth::Texture2D _container2_specular_map;
+
     zth::Material _cube_material;
     zth::Material _light_cube_material;
 
@@ -34,8 +36,12 @@ private:
 
     std::size_t _material_selected_index = 0;
     bool _material_was_changed = true;
+
     std::size_t _diffuse_map_selected_index = 5;
     bool _diffuse_map_was_changed = true;
+
+    std::size_t _specular_map_selected_index = 1;
+    bool _specular_map_was_changed = true;
 
     bool _wireframe_mode_enabled = false;
 

@@ -10,6 +10,7 @@ add_executable(
 b_embed(Testbed "assets/cobble_diffuse.png")
 b_embed(Testbed "assets/container_diffuse.jpg")
 b_embed(Testbed "assets/container2_diffuse.png")
+b_embed(Testbed "assets/container2_specular.png")
 b_embed(Testbed "assets/emoji_diffuse.png")
 b_embed(Testbed "assets/wall_diffuse.jpg")
 

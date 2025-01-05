@@ -1,8 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/fwd.hpp>
-#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -14,6 +12,7 @@
 #include "Zenith/Graphics/DrawCommand.hpp"
 #include "Zenith/Graphics/Light.hpp"
 #include "Zenith/Graphics/ShaderDefines.h"
+#include "Zenith/Graphics/UboData.hpp"
 #include "Zenith/Graphics/Vertex.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
@@ -30,42 +29,12 @@ struct RenderBatch
     std::vector<const glm::mat4*> transforms;
 };
 
-struct CameraUboData
-{
-    glm::mat4 view_projection;
-    glm::vec3 camera_position;
-};
-
-struct LightUboData
-{
-    glm::vec3 light_position;
-    GLubyte pad1[4]{};
-    glm::vec3 light_color;
-    GLubyte pad2[4]{};
-
-    glm::vec3 light_ambient;
-    GLubyte pad3[4]{};
-    glm::vec3 light_diffuse;
-    GLubyte pad4[4]{};
-    glm::vec3 light_specular;
-};
-
-struct MaterialUboData
-{
-    glm::vec3 albedo;
-    GLboolean has_diffuse_map;
-    GLubyte pad1[3]{};
-
-    glm::vec3 material_ambient;
-    GLubyte pad2[4]{};
-    glm::vec3 material_diffuse;
-    GLubyte pad3[4]{};
-    glm::vec3 material_specular;
-    GLfloat shininess;
-};
-
 class Renderer
 {
+public:
+    static constexpr GLint diffuse_map_slot = 0;
+    static constexpr GLint specular_map_slot = 1;
+
 public:
     static auto init() -> void;
     static auto on_window_event(const Event& event) -> void;

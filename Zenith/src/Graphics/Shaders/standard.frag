@@ -23,15 +23,18 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 {
 	vec3 albedo;
-    bool has_diffuse_map;
 
     vec3 materialAmbient;
     vec3 materialDiffuse;
     vec3 materialSpecular;
-    float shininess;
+    float materialShininess;
+
+    bool hasDiffuseMap;
+    bool hasSpecularMap;
 };
 
 uniform sampler2D diffuseMap;
+uniform sampler2D specularMap;
 
 out vec4 outColor;
 
@@ -39,7 +42,7 @@ void main()
 {
     vec4 objectColor = vec4(albedo, 1.0) * vec4(lightColor, 1.0);
 
-    if (has_diffuse_map)
+    if (hasDiffuseMap)
         objectColor *= texture(diffuseMap, UV);
 
     vec3 ambientFactor = lightAmbient * materialAmbient;
@@ -49,7 +52,10 @@ void main()
 
     vec3 viewDirection = normalize(cameraPosition - Position);
     vec3 reflection = reflect(-lightDirection, Normal);
-    vec3 specularFactor = lightSpecular * materialSpecular * pow(max(dot(reflection, viewDirection), 0.0), shininess);
+    vec3 specularFactor = lightSpecular * materialSpecular * pow(max(dot(reflection, viewDirection), 0.0), materialShininess);
+
+    if (hasSpecularMap)
+        specularFactor *= vec3(texture(specularMap, UV));
 
     outColor = vec4((ambientFactor + diffuseFactor + specularFactor) * objectColor.rgb, objectColor.a);
 }

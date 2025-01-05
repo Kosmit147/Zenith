@@ -8,6 +8,7 @@ namespace {
 const auto cobble_diffuse_map = b::embed<"assets/cobble_diffuse.png">().vec();
 const auto container_diffuse_map = b::embed<"assets/container_diffuse.jpg">().vec();
 const auto container2_diffuse_map = b::embed<"assets/container2_diffuse.png">().vec();
+const auto container2_specular_map = b::embed<"assets/container2_specular.png">().vec();
 const auto emoji_diffuse_map = b::embed<"assets/emoji_diffuse.png">().vec();
 const auto wall_diffuse_map = b::embed<"assets/wall_diffuse.jpg">().vec();
 
@@ -30,7 +31,7 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 MainScene::MainScene()
     : _cobble_diffuse_map(cobble_diffuse_map, cobble_diffuse_map_params), _container_diffuse_map(container_diffuse_map),
       _container2_diffuse_map(container2_diffuse_map), _emoji_diffuse_map(emoji_diffuse_map),
-      _wall_diffuse_map(wall_diffuse_map),
+      _wall_diffuse_map(wall_diffuse_map), _container2_specular_map(container2_specular_map),
       _light_cube_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
@@ -69,6 +70,7 @@ auto MainScene::on_update() -> void
         _cube_material = materials[_material_selected_index];
         _material_was_changed = false;
         _diffuse_map_selected_index = 5;
+        _specular_map_selected_index = 1;
     }
 
     if (_diffuse_map_was_changed)
@@ -99,6 +101,24 @@ auto MainScene::on_update() -> void
         }
 
         _diffuse_map_was_changed = false;
+    }
+
+    if (_specular_map_was_changed)
+    {
+        switch (_specular_map_selected_index)
+        {
+        case 0:
+            _cube_material.specular_map = &_container2_specular_map;
+            break;
+        case 1:
+            _cube_material.specular_map = nullptr;
+            break;
+        default:
+            ZTH_ASSERT(false);
+            break;
+        }
+
+        _specular_map_was_changed = false;
     }
 
     zth::Renderer::set_wireframe_mode(_wireframe_mode_enabled);
@@ -229,6 +249,27 @@ auto MainScene::draw_material_ui() -> void
             {
                 _diffuse_map_selected_index = n;
                 _diffuse_map_was_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    constexpr std::array specular_maps_names = { "Container2", "None" };
+
+    if (ImGui::BeginCombo("Specular Map", specular_maps_names[_specular_map_selected_index]))
+    {
+        for (std::size_t n = 0; n < specular_maps_names.size(); n++)
+        {
+            const auto is_selected = _specular_map_selected_index == n;
+
+            if (ImGui::Selectable(specular_maps_names[n], is_selected))
+            {
+                _specular_map_selected_index = n;
+                _specular_map_was_changed = true;
             }
 
             if (is_selected)
