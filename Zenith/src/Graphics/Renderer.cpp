@@ -100,14 +100,9 @@ auto Renderer::set_light(std::shared_ptr<const Light> light) -> void
     renderer->_light = std::move(light);
 }
 
-auto Renderer::draw(const CubeShape& cube, const Material& material) -> void
+auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
 {
-    draw(cube.mesh(), cube.transform(), material);
-}
-
-auto Renderer::draw(const SphereShape& sphere, const Material& material) -> void
-{
-    draw(sphere.mesh(), sphere.transform(), material);
+    draw(shape.mesh(), shape.transform(), material);
 }
 
 auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
