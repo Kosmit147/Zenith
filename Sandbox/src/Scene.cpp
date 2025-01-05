@@ -20,7 +20,7 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 } // namespace
 
 Scene::Scene()
-    : _cube_texture(wall_texture), _cube_material{ .texture = &_cube_texture },
+    : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {}
