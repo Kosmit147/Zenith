@@ -12,7 +12,7 @@ struct Material
     const Shader* shader = &shaders::standard();
 
     glm::vec3 albedo = glm::vec3{ 1.0f };
-    const Texture2D* texture = nullptr;
+    const Texture2D* diffuse_map = nullptr;
 
     glm::vec3 ambient = glm::vec3{ 0.1f };
     glm::vec3 diffuse = glm::vec3{ 0.7f };

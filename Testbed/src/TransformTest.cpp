@@ -5,12 +5,13 @@
 
 namespace {
 
-const auto container_texture = b::embed<"assets/container.jpg">().vec();
-const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
-const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
-const auto cobble_texture = b::embed<"assets/cobble.png">().vec();
+const auto cobble_diffuse_map = b::embed<"assets/cobble_diffuse.png">().vec();
+const auto container_diffuse_map = b::embed<"assets/container_diffuse.jpg">().vec();
+const auto container2_diffuse_map = b::embed<"assets/container2_diffuse.png">().vec();
+const auto emoji_diffuse_map = b::embed<"assets/emoji_diffuse.png">().vec();
+const auto wall_diffuse_map = b::embed<"assets/wall_diffuse.jpg">().vec();
 
-const zth::TextureParams cobble_texture_params = {
+const zth::TextureParams cobble_diffuse_map_params = {
     .min_filter = zth::TextureMinFilter::nearest_mipmap_linear,
     .mag_filter = zth::TextureMagFilter::nearest,
 };
@@ -27,8 +28,9 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 } // namespace
 
 TransformTest::TransformTest()
-    : _container_texture(container_texture), _emoji_texture(emoji_texture), _wall_texture(wall_texture),
-      _cobble_texture(cobble_texture, cobble_texture_params),
+    : _cobble_diffuse_map(cobble_diffuse_map, cobble_diffuse_map_params), _container_diffuse_map(container_diffuse_map),
+      _container2_diffuse_map(container2_diffuse_map), _emoji_diffuse_map(emoji_diffuse_map),
+      _wall_diffuse_map(wall_diffuse_map),
       _light_cube_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
@@ -66,34 +68,37 @@ auto TransformTest::on_update() -> void
         ZTH_ASSERT(_material_selected_index < materials.size());
         _cube_material = materials[_material_selected_index];
         _material_was_changed = false;
-        _tex_selected_index = 4;
+        _diffuse_map_selected_index = 5;
     }
 
-    if (_tex_was_changed)
+    if (_diffuse_map_was_changed)
     {
-        switch (_tex_selected_index)
+        switch (_diffuse_map_selected_index)
         {
         case 0:
-            _cube_material.texture = &_container_texture;
+            _cube_material.diffuse_map = &_cobble_diffuse_map;
             break;
         case 1:
-            _cube_material.texture = &_emoji_texture;
+            _cube_material.diffuse_map = &_container_diffuse_map;
             break;
         case 2:
-            _cube_material.texture = &_wall_texture;
+            _cube_material.diffuse_map = &_container2_diffuse_map;
             break;
         case 3:
-            _cube_material.texture = &_cobble_texture;
+            _cube_material.diffuse_map = &_emoji_diffuse_map;
             break;
         case 4:
-            _cube_material.texture = nullptr;
+            _cube_material.diffuse_map = &_wall_diffuse_map;
+            break;
+        case 5:
+            _cube_material.diffuse_map = nullptr;
             break;
         default:
             ZTH_ASSERT(false);
             break;
         }
 
-        _tex_was_changed = false;
+        _diffuse_map_was_changed = false;
     }
 
     zth::Renderer::set_wireframe_mode(_wireframe_mode_enabled);
@@ -212,18 +217,18 @@ auto TransformTest::draw_material_ui() -> void
 
     ImGui::Spacing();
 
-    constexpr std::array textures = { "Container", "Emoji", "Wall", "Cobble", "None" };
+    constexpr std::array diffuse_maps_names = { "Cobble", "Container", "Container2", "Emoji", "Wall", "None" };
 
-    if (ImGui::BeginCombo("Texture", textures[_tex_selected_index]))
+    if (ImGui::BeginCombo("Diffuse Map", diffuse_maps_names[_diffuse_map_selected_index]))
     {
-        for (std::size_t n = 0; n < textures.size(); n++)
+        for (std::size_t n = 0; n < diffuse_maps_names.size(); n++)
         {
-            const auto is_selected = _tex_selected_index == n;
+            const auto is_selected = _diffuse_map_selected_index == n;
 
-            if (ImGui::Selectable(textures[n], is_selected))
+            if (ImGui::Selectable(diffuse_maps_names[n], is_selected))
             {
-                _tex_selected_index = n;
-                _tex_was_changed = true;
+                _diffuse_map_selected_index = n;
+                _diffuse_map_was_changed = true;
             }
 
             if (is_selected)
