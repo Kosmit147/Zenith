@@ -96,16 +96,30 @@ auto TransformTest::on_update() -> void
         _tex_was_changed = false;
     }
 
+    zth::Renderer::set_wireframe_mode(_wireframe_mode_enabled);
     zth::Renderer::draw(_cube, _cube_material);
     zth::Renderer::draw(_light_marker, _light_cube_material);
 }
 
 auto TransformTest::on_event(const zth::Event& event) -> void
 {
-    if (event.type() == zth::EventType::WindowResized)
+    switch (event.type())
+    {
+        using enum zth::EventType;
+    case WindowResized:
     {
         auto window_resized_event = event.window_resized_event();
         on_window_resized_event(window_resized_event);
+    }
+    break;
+    case KeyPressed:
+    {
+        auto key_pressed_event = event.key_pressed_event();
+        on_key_pressed_event(key_pressed_event);
+    }
+    break;
+    default:
+        break;
     }
 }
 
@@ -115,11 +129,18 @@ auto TransformTest::on_window_resized_event(const zth::WindowResizedEvent& event
     _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
 }
 
+auto TransformTest::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    if (event.key == _toggle_wireframe_mode_key)
+        _wireframe_mode_enabled = !_wireframe_mode_enabled;
+}
+
 auto TransformTest::draw_ui() -> void
 {
     draw_transform_ui();
     draw_light_ui();
     draw_material_ui();
+    draw_debug_tools_ui();
 }
 
 auto TransformTest::draw_transform_ui() -> void
@@ -216,6 +237,16 @@ auto TransformTest::draw_material_ui() -> void
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_cube_material.diffuse), _ui_slider_drag_speed);
     ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_cube_material.specular), _ui_slider_drag_speed);
     ImGui::DragFloat("Shininess", &_cube_material.shininess, _ui_slider_drag_speed * 20.0f);
+
+    ImGui::End();
+}
+
+auto TransformTest::draw_debug_tools_ui() -> void
+{
+    ImGui::Begin("Debug Tools");
+
+    auto label = fmt::format("Wireframe ({})", _toggle_wireframe_mode_key);
+    ImGui::Checkbox(label.c_str(), &_wireframe_mode_enabled);
 
     ImGui::End();
 }

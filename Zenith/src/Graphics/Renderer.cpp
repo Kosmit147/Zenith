@@ -78,6 +78,11 @@ auto Renderer::set_clear_color(glm::vec4 color) -> void
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
+auto Renderer::set_wireframe_mode(bool enabled) -> void
+{
+    glPolygonMode(GL_FRONT_AND_BACK, enabled ? GL_LINE : GL_FILL);
+}
+
 auto Renderer::clear() -> void
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
