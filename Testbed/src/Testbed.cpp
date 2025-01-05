@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "TransformTest.hpp"
+#include "MainScene.hpp"
 
 ZTH_IMPLEMENT_APP(Testbed)
 
@@ -27,7 +27,7 @@ const zth::ApplicationSpec app_spec = {
 
 Testbed::Testbed() : Application(app_spec)
 {
-    zth::SceneManager::load_scene(std::make_unique<TransformTest>());
+    zth::SceneManager::load_scene(std::make_unique<MainScene>());
     ImGui::GetIO().FontGlobalScale = 1.5f;
 }
 

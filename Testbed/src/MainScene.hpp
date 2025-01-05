@@ -2,12 +2,12 @@
 
 #include <Zenith/Zenith.hpp>
 
-class TransformTest : public zth::Scene
+class MainScene : public zth::Scene
 {
 public:
-    explicit TransformTest();
-    ZTH_NO_COPY_NO_MOVE(TransformTest)
-    ~TransformTest() override = default;
+    explicit MainScene();
+    ZTH_NO_COPY_NO_MOVE(MainScene)
+    ~MainScene() override = default;
 
 private:
     zth::CubeShape _cube;

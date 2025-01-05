@@ -1,4 +1,4 @@
-#include "TransformTest.hpp"
+#include "MainScene.hpp"
 
 #include <battery/embed.hpp>
 #include <imgui.h>
@@ -27,7 +27,7 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 
 } // namespace
 
-TransformTest::TransformTest()
+MainScene::MainScene()
     : _cobble_diffuse_map(cobble_diffuse_map, cobble_diffuse_map_params), _container_diffuse_map(container_diffuse_map),
       _container2_diffuse_map(container2_diffuse_map), _emoji_diffuse_map(emoji_diffuse_map),
       _wall_diffuse_map(wall_diffuse_map),
@@ -38,13 +38,13 @@ TransformTest::TransformTest()
     _light_marker.translate(_light->translation()).scale(0.1f);
 }
 
-auto TransformTest::on_load() -> void
+auto MainScene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
     zth::Renderer::set_light(_light);
 }
 
-auto TransformTest::on_update() -> void
+auto MainScene::on_update() -> void
 {
     draw_ui();
 
@@ -106,7 +106,7 @@ auto TransformTest::on_update() -> void
     zth::Renderer::draw(_light_marker, _light_cube_material);
 }
 
-auto TransformTest::on_event(const zth::Event& event) -> void
+auto MainScene::on_event(const zth::Event& event) -> void
 {
     switch (event.type())
     {
@@ -128,19 +128,19 @@ auto TransformTest::on_event(const zth::Event& event) -> void
     }
 }
 
-auto TransformTest::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
     auto new_size = event.new_size;
     _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
 }
 
-auto TransformTest::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+auto MainScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
     if (event.key == _toggle_wireframe_mode_key)
         _wireframe_mode_enabled = !_wireframe_mode_enabled;
 }
 
-auto TransformTest::draw_ui() -> void
+auto MainScene::draw_ui() -> void
 {
     draw_transform_ui();
     draw_light_ui();
@@ -148,7 +148,7 @@ auto TransformTest::draw_ui() -> void
     draw_debug_tools_ui();
 }
 
-auto TransformTest::draw_transform_ui() -> void
+auto MainScene::draw_transform_ui() -> void
 {
     ImGui::Begin("Transform");
 
@@ -166,7 +166,7 @@ auto TransformTest::draw_transform_ui() -> void
     ImGui::End();
 }
 
-auto TransformTest::draw_light_ui() -> void
+auto MainScene::draw_light_ui() -> void
 {
     ImGui::Begin("Light");
 
@@ -178,7 +178,7 @@ auto TransformTest::draw_light_ui() -> void
     ImGui::End();
 }
 
-auto TransformTest::draw_material_ui() -> void
+auto MainScene::draw_material_ui() -> void
 {
     ImGui::Begin("Material");
 
@@ -246,7 +246,7 @@ auto TransformTest::draw_material_ui() -> void
     ImGui::End();
 }
 
-auto TransformTest::draw_debug_tools_ui() -> void
+auto MainScene::draw_debug_tools_ui() -> void
 {
     ImGui::Begin("Debug Tools");
 

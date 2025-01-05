@@ -3,8 +3,8 @@ project(Testbed LANGUAGES CXX)
 
 add_executable(
 	Testbed
+	"src/MainScene.cpp"
 	"src/Testbed.cpp"
-	"src/TransformTest.cpp"
 )
 
 b_embed(Testbed "assets/cobble_diffuse.png")
