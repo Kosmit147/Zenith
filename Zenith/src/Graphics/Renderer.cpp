@@ -234,11 +234,11 @@ auto Renderer::bind_material(const Material& material) -> void
     material.shader->bind();
     upload_material_ubo(material);
 
-    if (material.texture)
+    if (material.diffuse_map)
     {
         u32 tex_slot = 0;
-        material.texture->bind(tex_slot);
-        material.shader->set_unif("tex", static_cast<GLint>(tex_slot));
+        material.diffuse_map->bind(tex_slot);
+        material.shader->set_unif("diffuseMap", static_cast<GLint>(tex_slot));
     }
 }
 
@@ -246,7 +246,7 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
 {
     MaterialUboData material_ubo_data = {
         .albedo = material.albedo,
-        .has_texture = material.texture ? true : false,
+        .has_diffuse_map = material.diffuse_map != nullptr,
         .material_ambient = material.ambient,
         .material_diffuse = material.diffuse,
         .material_specular = material.specular,

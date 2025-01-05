@@ -53,7 +53,7 @@ struct LightUboData
 struct MaterialUboData
 {
     glm::vec3 albedo;
-    GLboolean has_texture;
+    GLboolean has_diffuse_map;
     GLubyte pad1[3]{};
 
     glm::vec3 material_ambient;

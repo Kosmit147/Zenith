@@ -23,7 +23,7 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 {
 	vec3 albedo;
-    bool has_texture;
+    bool has_diffuse_map;
 
     vec3 materialAmbient;
     vec3 materialDiffuse;
@@ -31,7 +31,7 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
     float shininess;
 };
 
-uniform sampler2D tex;
+uniform sampler2D diffuseMap;
 
 out vec4 outColor;
 
@@ -39,8 +39,8 @@ void main()
 {
     vec4 objectColor = vec4(albedo, 1.0) * vec4(lightColor, 1.0);
 
-    if (has_texture)
-        objectColor *= texture(tex, UV);
+    if (has_diffuse_map)
+        objectColor *= texture(diffuseMap, UV);
 
     vec3 ambientFactor = lightAmbient * materialAmbient;
 

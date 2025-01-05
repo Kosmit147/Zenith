@@ -7,10 +7,11 @@ add_executable(
 	"src/TransformTest.cpp"
 )
 
-b_embed(Testbed "assets/cobble.png")
-b_embed(Testbed "assets/container.jpg")
-b_embed(Testbed "assets/emoji.png")
-b_embed(Testbed "assets/wall.jpg")
+b_embed(Testbed "assets/cobble_diffuse.png")
+b_embed(Testbed "assets/container_diffuse.jpg")
+b_embed(Testbed "assets/container2_diffuse.png")
+b_embed(Testbed "assets/emoji_diffuse.png")
+b_embed(Testbed "assets/wall_diffuse.jpg")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
 	target_link_libraries(Testbed PRIVATE -lstdc++exp)
