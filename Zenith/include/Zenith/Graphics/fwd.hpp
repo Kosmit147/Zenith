@@ -21,21 +21,34 @@ class PointLight;
 
 struct Material;
 
+namespace materials {
+
 struct MaterialList;
+
+} // namespace materials
 
 class Mesh;
 
+namespace meshes {
+
 struct MeshList;
 
+} // namespace meshes
+
 struct RenderBatch;
-struct CameraUboData;
-struct LightUboData;
-struct MaterialUboData;
 class Renderer;
 
 class Renderer2D;
 
+namespace shaders {
+
 struct ShaderList;
+
+} // namespace shaders
+
+struct CameraUboData;
+struct LightUboData;
+struct MaterialUboData;
 
 struct InstanceVertex;
 struct StandardVertex;

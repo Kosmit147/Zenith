@@ -1,6 +1,8 @@
 #include "Zenith/Graphics/Renderer.hpp"
 
 #include <glad/glad.h>
+#include <glm/mat3x3.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "Zenith/Core/Assert.hpp"
 #include "Zenith/Graphics/Colors.hpp"
@@ -236,9 +238,14 @@ auto Renderer::bind_material(const Material& material) -> void
 
     if (material.diffuse_map)
     {
-        u32 tex_slot = 0;
-        material.diffuse_map->bind(tex_slot);
-        material.shader->set_unif("diffuseMap", static_cast<GLint>(tex_slot));
+        material.diffuse_map->bind(diffuse_map_slot);
+        material.shader->set_unif("diffuseMap", diffuse_map_slot);
+    }
+
+    if (material.specular_map)
+    {
+        material.specular_map->bind(specular_map_slot);
+        material.shader->set_unif("specularMap", specular_map_slot);
     }
 }
 
@@ -246,11 +253,12 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
 {
     MaterialUboData material_ubo_data = {
         .albedo = material.albedo,
-        .has_diffuse_map = material.diffuse_map != nullptr,
         .material_ambient = material.ambient,
         .material_diffuse = material.diffuse,
         .material_specular = material.specular,
-        .shininess = material.shininess,
+        .material_shininess = material.shininess,
+        .has_diffuse_map = material.diffuse_map != nullptr,
+        .has_specular_map = material.specular_map != nullptr,
     };
 
     renderer->_material_ubo.buffer_data(material_ubo_data);
