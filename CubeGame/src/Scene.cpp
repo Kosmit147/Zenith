@@ -19,8 +19,8 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 } // namespace
 
 Scene::Scene()
-    : _block_texture(cobble_texture_data, cobble_texture_params), _block_material{ .texture = &_block_texture },
-      _light(std::make_unique<zth::PointLight>(light_position, light_color))
+    : _block_texture(cobble_texture_data, cobble_texture_params), _block_material{ .diffuse_map = &_block_texture },
+      _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {
     constexpr auto xs = std::views::iota(-20, 20);
     constexpr auto ys = std::views::iota(-20, 0);
