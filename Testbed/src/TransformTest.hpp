@@ -36,7 +36,10 @@ private:
     std::size_t _tex_selected_index = 4;
     bool _tex_was_changed = true;
 
-    const float _ui_slider_drag_speed = 0.01f;
+    bool _wireframe_mode_enabled = false;
+
+    static constexpr auto _ui_slider_drag_speed = 0.01f;
+    static constexpr auto _toggle_wireframe_mode_key = zth::Key::F1;
 
 private:
     auto on_load() -> void override;
@@ -44,9 +47,11 @@ private:
     auto on_event(const zth::Event& event) -> void override;
 
     auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
+    auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 
     auto draw_ui() -> void;
     auto draw_transform_ui() -> void;
     auto draw_light_ui() -> void;
     auto draw_material_ui() -> void;
+    auto draw_debug_tools_ui() -> void;
 };

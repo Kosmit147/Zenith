@@ -72,6 +72,7 @@ public:
     static auto shut_down() -> void;
 
     static auto set_clear_color(glm::vec4 color) -> void;
+    static auto set_wireframe_mode(bool enabled) -> void;
     static auto clear() -> void;
 
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
