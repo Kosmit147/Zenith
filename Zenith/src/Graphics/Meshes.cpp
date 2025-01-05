@@ -119,6 +119,79 @@ const std::array<GLushort, 36> cube_indices = {
     23,
 };
 
+const std::array pyramid_vertices = {
+    // front wall
+    StandardVertex{ .local_position = { -0.5f, -0.5f, 0.5f },
+                    .normal = { 0.0f, 0.447214f, 0.894427f },
+                    .tex_coords = { 0.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.5f, -0.5f, 0.5f },
+                    .normal = { 0.0f, 0.447214f, 0.894427f },
+                    .tex_coords = { 1.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.0f, 0.5f, 0.0f },
+                    .normal = { 0.0f, 0.447214f, 0.894427f },
+                    .tex_coords = { 0.5f, 1.0f } },
+
+    // right wall
+    StandardVertex{ .local_position = { 0.5f, -0.5f, 0.5f },
+                    .normal = { 0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 0.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.5f, -0.5f, -0.5f },
+                    .normal = { 0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 1.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.0f, 0.5f, 0.0f },
+                    .normal = { 0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 0.5f, 1.0f } },
+
+    // back wall
+    StandardVertex{ .local_position = { 0.5f, -0.5f, -0.5f },
+                    .normal = { 0.0f, 0.447214f, -0.894427f },
+                    .tex_coords = { 0.0f, 0.0f } },
+    StandardVertex{ .local_position = { -0.5f, -0.5f, -0.5f },
+                    .normal = { 0.0f, 0.447214f, -0.894427f },
+                    .tex_coords = { 1.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.0f, 0.5f, 0.0f },
+                    .normal = { 0.0f, 0.447214f, -0.894427f },
+                    .tex_coords = { 0.5f, 1.0f } },
+
+    // left wall
+    StandardVertex{ .local_position = { -0.5f, -0.5f, -0.5f },
+                    .normal = { -0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 0.0f, 0.0f } },
+    StandardVertex{ .local_position = { -0.5f, -0.5f, 0.5f },
+                    .normal = { -0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 1.0f, 0.0f } },
+    StandardVertex{ .local_position = { 0.0f, 0.5f, 0.0f },
+                    .normal = { -0.894427f, 0.447214f, 0.0f },
+                    .tex_coords = { 0.5f, 1.0f } },
+
+    // bottom wall
+    StandardVertex{
+        .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
+    StandardVertex{
+        .local_position = { 0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
+    StandardVertex{
+        .local_position = { 0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
+    StandardVertex{
+        .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
+};
+
+const std::array<GLushort, 18> pyramid_indices = {
+    // front wall
+    0, 1, 2,
+
+    // right wall
+    3, 4, 5,
+
+    // back wall
+    6, 7, 8,
+
+    // left wall
+    9, 10, 11,
+
+    // bottom wall
+    12, 13, 14, 12, 14, 15
+};
+
 const std::array sphere_vertices = {
     StandardVertex{ .local_position = { 0.000000f, 0.500000f, 0.000000f },
                     .normal = { 0.000000f, 1.000000f, 0.000000f },
@@ -1948,6 +2021,7 @@ std::unique_ptr<MeshList> mesh_list;
 
 MeshList::MeshList(const InstanceBuffer& instance_buffer)
     : cube_mesh(cube_vertices, cube_indices, StandardVertex::instanced_layout, instance_buffer),
+      pyramid_mesh(pyramid_vertices, pyramid_indices, StandardVertex::instanced_layout, instance_buffer),
       sphere_mesh(sphere_vertices, sphere_indices, StandardVertex::instanced_layout, instance_buffer)
 {}
 
@@ -1971,6 +2045,7 @@ auto unload_meshes() -> void
     }
 
 ZTH_MESH_GETTER(cube_mesh);
+ZTH_MESH_GETTER(pyramid_mesh);
 ZTH_MESH_GETTER(sphere_mesh);
 
 } // namespace zth::meshes

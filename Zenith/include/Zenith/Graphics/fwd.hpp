@@ -3,6 +3,7 @@
 namespace zth {
 
 class CubeShape;
+class PyramidShape;
 class Shape;
 class Shape2D;
 class Shape3D;
