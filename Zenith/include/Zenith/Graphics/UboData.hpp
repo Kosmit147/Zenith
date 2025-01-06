@@ -49,6 +49,8 @@ struct MaterialUboData
     ZTH_UBO_PAD(3);
     GLboolean has_specular_map;
     ZTH_UBO_PAD(3);
+    GLboolean has_emission_map;
+    ZTH_UBO_PAD(3);
 };
 
 } // namespace zth

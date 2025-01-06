@@ -34,6 +34,7 @@ class Renderer
 public:
     static constexpr GLint diffuse_map_slot = 0;
     static constexpr GLint specular_map_slot = 1;
+    static constexpr GLint emission_map_slot = 2;
 
 public:
     static auto init() -> void;

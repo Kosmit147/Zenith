@@ -12,6 +12,7 @@ b_embed(Testbed "assets/container_diffuse.jpg")
 b_embed(Testbed "assets/container2_diffuse.png")
 b_embed(Testbed "assets/container2_specular.png")
 b_embed(Testbed "assets/emoji_diffuse.png")
+b_embed(Testbed "assets/matrix_emission.jpg")
 b_embed(Testbed "assets/wall_diffuse.jpg")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
