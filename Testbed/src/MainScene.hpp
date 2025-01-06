@@ -2,8 +2,15 @@
 
 #include <Zenith/Zenith.hpp>
 
+#include <map>
+#include <string>
+#include <string_view>
+
 class MainScene : public zth::Scene
 {
+public:
+    static constexpr std::string_view no_map_selected = "None";
+
 public:
     explicit MainScene();
     ZTH_NO_COPY_NO_MOVE(MainScene)
@@ -13,18 +20,12 @@ private:
     zth::CubeShape _cube;
     zth::SphereShape _light_marker;
 
-    zth::Texture2D _cobble_diffuse_map;
-    zth::Texture2D _container_diffuse_map;
-    zth::Texture2D _container2_diffuse_map;
-    zth::Texture2D _emoji_diffuse_map;
-    zth::Texture2D _wall_diffuse_map;
+    std::map<std::string, zth::Texture2D> _diffuse_maps;
+    std::map<std::string, zth::Texture2D> _specular_maps;
+    std::map<std::string, zth::Texture2D> _emission_maps;
 
-    zth::Texture2D _container2_specular_map;
-
-    zth::Texture2D _matrix_emission_map;
-
-    zth::Material _cube_material;
-    zth::Material _light_cube_material;
+    zth::Material _material;
+    zth::Material _light_marker_material;
 
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;
@@ -39,14 +40,9 @@ private:
     std::size_t _material_selected_index = 0;
     bool _material_was_changed = true;
 
-    std::size_t _diffuse_map_selected_index = 5;
-    bool _diffuse_map_was_changed = true;
-
-    std::size_t _specular_map_selected_index = 1;
-    bool _specular_map_was_changed = true;
-
-    std::size_t _emission_map_selected_index = 1;
-    bool _emission_map_was_changed = true;
+    std::string _diffuse_map_selected = no_map_selected.data();
+    std::string _specular_map_selected = no_map_selected.data();
+    std::string _emission_map_selected = no_map_selected.data();
 
     bool _wireframe_mode_enabled = false;
 
