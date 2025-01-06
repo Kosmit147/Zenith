@@ -201,7 +201,7 @@ auto MainScene::draw_material_ui() -> void
     ImGui::Spacing();
 
     auto map_picker = [](std::string_view label, std::string& selected,
-                         const std::map<std::string, zth::Texture2D>& texture_map) {
+                         const zth::StringMap<zth::Texture2D>& texture_map) {
         std::optional<const zth::Texture2D*> pick = std::nullopt;
 
         if (ImGui::BeginCombo(label.data(), selected.c_str()))

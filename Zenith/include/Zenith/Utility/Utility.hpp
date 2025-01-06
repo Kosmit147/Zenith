@@ -4,6 +4,6 @@
 #include "InPlaceVector.hpp"
 #include "Macros.hpp"
 #include "Overload.hpp"
-#include "StringHashMap.hpp"
+#include "StringMap.hpp"
 #include "StringHasher.hpp"
 #include "StructArity.hpp"

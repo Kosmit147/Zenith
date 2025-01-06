@@ -20,9 +20,9 @@ private:
     zth::CubeShape _cube;
     zth::SphereShape _light_marker;
 
-    std::map<std::string, zth::Texture2D> _diffuse_maps;
-    std::map<std::string, zth::Texture2D> _specular_maps;
-    std::map<std::string, zth::Texture2D> _emission_maps;
+    zth::StringMap<zth::Texture2D> _diffuse_maps;
+    zth::StringMap<zth::Texture2D> _specular_maps;
+    zth::StringMap<zth::Texture2D> _emission_maps;
 
     zth::Material _material;
     zth::Material _light_marker_material;

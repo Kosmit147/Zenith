@@ -16,7 +16,7 @@
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Utility/Macros.hpp"
-#include "Zenith/Utility/StringHashMap.hpp"
+#include "Zenith/Utility/StringMap.hpp"
 
 namespace zth {
 
