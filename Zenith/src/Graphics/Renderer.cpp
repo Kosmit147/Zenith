@@ -247,6 +247,12 @@ auto Renderer::bind_material(const Material& material) -> void
         material.specular_map->bind(specular_map_slot);
         material.shader->set_unif("specularMap", specular_map_slot);
     }
+
+    if (material.emission_map)
+    {
+        material.emission_map->bind(emission_map_slot);
+        material.shader->set_unif("emissionMap", emission_map_slot);
+    }
 }
 
 auto Renderer::upload_material_ubo(const Material& material) -> void
@@ -259,6 +265,7 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
         .material_shininess = material.shininess,
         .has_diffuse_map = material.diffuse_map != nullptr,
         .has_specular_map = material.specular_map != nullptr,
+        .has_emission_map = material.emission_map != nullptr,
     };
 
     renderer->_material_ubo.buffer_data(material_ubo_data);

@@ -31,10 +31,12 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 
     bool hasDiffuseMap;
     bool hasSpecularMap;
+    bool hasEmissionMap;
 };
 
 uniform sampler2D diffuseMap;
 uniform sampler2D specularMap;
+uniform sampler2D emissionMap;
 
 out vec4 outColor;
 
@@ -58,4 +60,7 @@ void main()
         specularFactor *= vec3(texture(specularMap, UV));
 
     outColor = vec4((ambientFactor + diffuseFactor + specularFactor) * objectColor.rgb, objectColor.a);
+
+    if (hasEmissionMap)
+        outColor += texture(emissionMap, UV);
 }

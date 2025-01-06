@@ -10,6 +10,7 @@ const auto container_diffuse_map = b::embed<"assets/container_diffuse.jpg">().ve
 const auto container2_diffuse_map = b::embed<"assets/container2_diffuse.png">().vec();
 const auto container2_specular_map = b::embed<"assets/container2_specular.png">().vec();
 const auto emoji_diffuse_map = b::embed<"assets/emoji_diffuse.png">().vec();
+const auto matrix_emission_map = b::embed<"assets/matrix_emission.jpg">().vec();
 const auto wall_diffuse_map = b::embed<"assets/wall_diffuse.jpg">().vec();
 
 const zth::TextureParams cobble_diffuse_map_params = {
@@ -32,6 +33,7 @@ MainScene::MainScene()
     : _cobble_diffuse_map(cobble_diffuse_map, cobble_diffuse_map_params), _container_diffuse_map(container_diffuse_map),
       _container2_diffuse_map(container2_diffuse_map), _emoji_diffuse_map(emoji_diffuse_map),
       _wall_diffuse_map(wall_diffuse_map), _container2_specular_map(container2_specular_map),
+      _matrix_emission_map(matrix_emission_map),
       _light_cube_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
@@ -119,6 +121,24 @@ auto MainScene::on_update() -> void
         }
 
         _specular_map_was_changed = false;
+    }
+
+    if (_emission_map_was_changed)
+    {
+        switch (_emission_map_selected_index)
+        {
+        case 0:
+            _cube_material.emission_map = &_matrix_emission_map;
+            break;
+        case 1:
+            _cube_material.emission_map = nullptr;
+            break;
+        default:
+            ZTH_ASSERT(false);
+            break;
+        }
+
+        _emission_map_was_changed = false;
     }
 
     zth::Renderer::set_wireframe_mode(_wireframe_mode_enabled);
@@ -270,6 +290,27 @@ auto MainScene::draw_material_ui() -> void
             {
                 _specular_map_selected_index = n;
                 _specular_map_was_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    constexpr std::array emission_maps_names = { "Matrix", "None" };
+
+    if (ImGui::BeginCombo("Emission Map", emission_maps_names[_emission_map_selected_index]))
+    {
+        for (std::size_t n = 0; n < emission_maps_names.size(); n++)
+        {
+            const auto is_selected = _emission_map_selected_index == n;
+
+            if (ImGui::Selectable(emission_maps_names[n], is_selected))
+            {
+                _emission_map_selected_index = n;
+                _emission_map_was_changed = true;
             }
 
             if (is_selected)

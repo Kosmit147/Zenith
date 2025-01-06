@@ -21,6 +21,8 @@ private:
 
     zth::Texture2D _container2_specular_map;
 
+    zth::Texture2D _matrix_emission_map;
+
     zth::Material _cube_material;
     zth::Material _light_cube_material;
 
@@ -42,6 +44,9 @@ private:
 
     std::size_t _specular_map_selected_index = 1;
     bool _specular_map_was_changed = true;
+
+    std::size_t _emission_map_selected_index = 1;
+    bool _emission_map_was_changed = true;
 
     bool _wireframe_mode_enabled = false;
 
