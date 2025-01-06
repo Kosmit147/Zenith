@@ -3,6 +3,8 @@
 #include <battery/embed.hpp>
 #include <imgui.h>
 
+#include <optional>
+
 namespace {
 
 const auto cobble_diffuse_map = b::embed<"assets/cobble_diffuse.png">().vec();
@@ -30,15 +32,21 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 } // namespace
 
 MainScene::MainScene()
-    : _cobble_diffuse_map(cobble_diffuse_map, cobble_diffuse_map_params), _container_diffuse_map(container_diffuse_map),
-      _container2_diffuse_map(container2_diffuse_map), _emoji_diffuse_map(emoji_diffuse_map),
-      _wall_diffuse_map(wall_diffuse_map), _container2_specular_map(container2_specular_map),
-      _matrix_emission_map(matrix_emission_map),
-      _light_cube_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
+    : _light_marker_material{ .shader = &zth::shaders::flat_color(), .albedo = light_color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
       _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
 {
     _light_marker.translate(_light->translation()).scale(0.1f);
+
+    _diffuse_maps.emplace("Cobble", zth::Texture2D{ cobble_diffuse_map, cobble_diffuse_map_params });
+    _diffuse_maps.emplace("Container", zth::Texture2D{ container_diffuse_map });
+    _diffuse_maps.emplace("Container2", zth::Texture2D{ container2_diffuse_map });
+    _diffuse_maps.emplace("Emoji", zth::Texture2D{ emoji_diffuse_map });
+    _diffuse_maps.emplace("Wall", zth::Texture2D{ wall_diffuse_map });
+
+    _specular_maps.emplace("Container2", zth::Texture2D{ container2_specular_map });
+
+    _emission_maps.emplace("Matrix", zth::Texture2D{ matrix_emission_map });
 }
 
 auto MainScene::on_load() -> void
@@ -63,87 +71,22 @@ auto MainScene::on_update() -> void
     _cube.set_rotation(_rotation_angle, _rotation_axis);
     _cube.set_scale(_scale);
 
-    _light_cube_material.albedo = _light->color;
+    _light_marker_material.albedo = _light->color;
 
     if (_material_was_changed)
     {
         auto& materials = zth::materials::materials();
         ZTH_ASSERT(_material_selected_index < materials.size());
-        _cube_material = materials[_material_selected_index];
+        _material = materials[_material_selected_index];
         _material_was_changed = false;
-        _diffuse_map_selected_index = 5;
-        _specular_map_selected_index = 1;
-    }
-
-    if (_diffuse_map_was_changed)
-    {
-        switch (_diffuse_map_selected_index)
-        {
-        case 0:
-            _cube_material.diffuse_map = &_cobble_diffuse_map;
-            break;
-        case 1:
-            _cube_material.diffuse_map = &_container_diffuse_map;
-            break;
-        case 2:
-            _cube_material.diffuse_map = &_container2_diffuse_map;
-            break;
-        case 3:
-            _cube_material.diffuse_map = &_emoji_diffuse_map;
-            break;
-        case 4:
-            _cube_material.diffuse_map = &_wall_diffuse_map;
-            break;
-        case 5:
-            _cube_material.diffuse_map = nullptr;
-            break;
-        default:
-            ZTH_ASSERT(false);
-            break;
-        }
-
-        _diffuse_map_was_changed = false;
-    }
-
-    if (_specular_map_was_changed)
-    {
-        switch (_specular_map_selected_index)
-        {
-        case 0:
-            _cube_material.specular_map = &_container2_specular_map;
-            break;
-        case 1:
-            _cube_material.specular_map = nullptr;
-            break;
-        default:
-            ZTH_ASSERT(false);
-            break;
-        }
-
-        _specular_map_was_changed = false;
-    }
-
-    if (_emission_map_was_changed)
-    {
-        switch (_emission_map_selected_index)
-        {
-        case 0:
-            _cube_material.emission_map = &_matrix_emission_map;
-            break;
-        case 1:
-            _cube_material.emission_map = nullptr;
-            break;
-        default:
-            ZTH_ASSERT(false);
-            break;
-        }
-
-        _emission_map_was_changed = false;
+        _diffuse_map_selected = no_map_selected;
+        _specular_map_selected = no_map_selected;
+        _emission_map_selected = no_map_selected;
     }
 
     zth::Renderer::set_wireframe_mode(_wireframe_mode_enabled);
-    zth::Renderer::draw(_cube, _cube_material);
-    zth::Renderer::draw(_light_marker, _light_cube_material);
+    zth::Renderer::draw(_cube, _material);
+    zth::Renderer::draw(_light_marker, _light_marker_material);
 }
 
 auto MainScene::on_event(const zth::Event& event) -> void
@@ -253,77 +196,63 @@ auto MainScene::draw_material_ui() -> void
 
     ImGui::Spacing();
 
-    ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_cube_material.albedo));
+    ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
 
     ImGui::Spacing();
 
-    constexpr std::array diffuse_maps_names = { "Cobble", "Container", "Container2", "Emoji", "Wall", "None" };
+    auto map_picker = [](std::string_view label, std::string& selected,
+                         const std::map<std::string, zth::Texture2D>& texture_map) {
+        std::optional<const zth::Texture2D*> pick = std::nullopt;
 
-    if (ImGui::BeginCombo("Diffuse Map", diffuse_maps_names[_diffuse_map_selected_index]))
-    {
-        for (std::size_t n = 0; n < diffuse_maps_names.size(); n++)
+        if (ImGui::BeginCombo(label.data(), selected.c_str()))
         {
-            const auto is_selected = _diffuse_map_selected_index == n;
-
-            if (ImGui::Selectable(diffuse_maps_names[n], is_selected))
+            for (const auto& [name, texture] : texture_map)
             {
-                _diffuse_map_selected_index = n;
-                _diffuse_map_was_changed = true;
+                const auto is_selected = selected == name;
+
+                if (ImGui::Selectable(name.c_str(), is_selected))
+                {
+                    selected = name;
+                    pick = &texture;
+                }
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
             }
 
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    constexpr std::array specular_maps_names = { "Container2", "None" };
-
-    if (ImGui::BeginCombo("Specular Map", specular_maps_names[_specular_map_selected_index]))
-    {
-        for (std::size_t n = 0; n < specular_maps_names.size(); n++)
-        {
-            const auto is_selected = _specular_map_selected_index == n;
-
-            if (ImGui::Selectable(specular_maps_names[n], is_selected))
             {
-                _specular_map_selected_index = n;
-                _specular_map_was_changed = true;
+                constexpr auto name = no_map_selected.data();
+                const auto is_selected = selected == name;
+
+                if (ImGui::Selectable(name, is_selected))
+                {
+                    selected = name;
+                    pick = nullptr;
+                }
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
             }
 
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
+            ImGui::EndCombo();
         }
 
-        ImGui::EndCombo();
-    }
+        return pick;
+    };
 
-    constexpr std::array emission_maps_names = { "Matrix", "None" };
+    if (auto pick = map_picker("Diffuse Map", _diffuse_map_selected, _diffuse_maps))
+        _material.diffuse_map = *pick;
 
-    if (ImGui::BeginCombo("Emission Map", emission_maps_names[_emission_map_selected_index]))
-    {
-        for (std::size_t n = 0; n < emission_maps_names.size(); n++)
-        {
-            const auto is_selected = _emission_map_selected_index == n;
+    if (auto pick = map_picker("Specular Map", _specular_map_selected, _specular_maps))
+        _material.specular_map = *pick;
 
-            if (ImGui::Selectable(emission_maps_names[n], is_selected))
-            {
-                _emission_map_selected_index = n;
-                _emission_map_was_changed = true;
-            }
+    if (auto pick = map_picker("Emission Map", _emission_map_selected, _emission_maps))
+        _material.emission_map = *pick;
 
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_cube_material.ambient), _ui_slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_cube_material.diffuse), _ui_slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_cube_material.specular), _ui_slider_drag_speed);
-    ImGui::DragFloat("Shininess", &_cube_material.shininess, _ui_slider_drag_speed * 20.0f);
+    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_material.ambient), _ui_slider_drag_speed * 0.1f);
+    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_material.diffuse), _ui_slider_drag_speed);
+    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_material.specular), _ui_slider_drag_speed);
+    ImGui::DragFloat("Shininess", &_material.shininess, _ui_slider_drag_speed * 20.0f);
 
     ImGui::End();
 }
