@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "ContainersScene.hpp"
 #include "MainScene.hpp"
 
 ZTH_IMPLEMENT_APP(Testbed)
@@ -103,10 +104,74 @@ auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
         cursor_enabled = !cursor_enabled;
         zth::Window::set_cursor_enabled(cursor_enabled);
         break;
+    case prev_scene_key:
+        prev_scene();
+        break;
+    case next_scene_key:
+        next_scene();
+        break;
     }
 }
 
 auto Testbed::update_ui() -> void
 {
     _debug_tools_ui.on_update();
+    draw_scene_picker_ui();
+}
+
+auto Testbed::draw_scene_picker_ui() -> void
+{
+    ImGui::Begin("Scene");
+
+    ImGui::Text("%s", scene_names[_scene_idx].data());
+
+    auto prev_scene_label = fmt::format("Prev ({})", prev_scene_key);
+    ImGui::TextUnformatted(prev_scene_label.c_str());
+
+    ImGui::SameLine();
+
+    if (ImGui::ArrowButton("Prev", ImGuiDir_Left))
+        prev_scene();
+
+    ImGui::SameLine();
+
+    if (ImGui::ArrowButton("Next", ImGuiDir_Right))
+        next_scene();
+
+    ImGui::SameLine();
+
+    auto next_scene_label = fmt::format("Next ({})", next_scene_key);
+    ImGui::TextUnformatted(next_scene_label.c_str());
+
+    ImGui::End();
+}
+
+auto Testbed::prev_scene() -> void
+{
+    _scene_idx = (_scene_idx - 1) % scene_count;
+    load_scene(_scene_idx);
+}
+
+auto Testbed::next_scene() -> void
+{
+    _scene_idx = (_scene_idx + 1) % scene_count;
+    load_scene(_scene_idx);
+}
+
+auto Testbed::load_scene(std::size_t scene_idx) -> void
+{
+    static_assert(scene_count == 2);
+
+    switch (scene_idx)
+    {
+    case 0:
+        zth::SceneManager::load_scene(std::make_unique<MainScene>());
+        break;
+    case 1:
+        zth::SceneManager::load_scene(std::make_unique<ContainersScene>());
+        break;
+    default:
+        ZTH_ASSERT(false);
+        break;
+    }
 }
