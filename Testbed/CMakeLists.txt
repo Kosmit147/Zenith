@@ -3,6 +3,7 @@ project(Testbed LANGUAGES CXX)
 
 add_executable(
 	Testbed
+	"src/Embedded.cpp"
 	"src/MainScene.cpp"
 	"src/Testbed.cpp"
 )

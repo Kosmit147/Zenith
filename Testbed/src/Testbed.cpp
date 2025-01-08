@@ -31,7 +31,10 @@ Testbed::Testbed() : Application(app_spec)
     ImGui::GetIO().FontGlobalScale = 1.5f;
 }
 
-auto Testbed::on_update() -> void {}
+auto Testbed::on_update() -> void
+{
+    update_ui();
+}
 
 auto Testbed::on_event(const zth::Event& event) -> void
 {
@@ -86,6 +89,8 @@ auto Testbed::on_event(const zth::Event& event) -> void
 
 auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
+    _debug_tools_ui.on_key_pressed_event(event);
+
     static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
 
     switch (event.key)
@@ -99,4 +104,9 @@ auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
         zth::Window::set_cursor_enabled(cursor_enabled);
         break;
     }
+}
+
+auto Testbed::update_ui() -> void
+{
+    _debug_tools_ui.on_update();
 }

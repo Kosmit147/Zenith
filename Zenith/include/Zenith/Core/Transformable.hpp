@@ -31,29 +31,31 @@ public:
     ~Transformable3D() override = default;
 
     auto translate(glm::vec3 translation) -> Transformable3D&;
-    auto rotate(float angle, glm::vec3 axis) -> Transformable3D&;
+    auto rotate(float angle, glm::vec3 axis) -> Transformable3D&; // axis should be normalized
     auto scale(float factor) -> Transformable3D&;
     auto scale(glm::vec3 factor) -> Transformable3D&;
 
-    auto set_translation(glm::vec3 translation) -> void;
-    auto set_rotation(float angle, glm::vec3 axis) -> void;
-    auto set_rotation(glm::quat rotation) -> void;
-    auto set_scale(float scale) -> void;
-    auto set_scale(glm::vec3 scale) -> void;
+    auto set_translation(glm::vec3 translation) -> Transformable3D&;
+    auto set_rotation(float angle, glm::vec3 axis) -> Transformable3D&; // axis should be normalized
+    auto set_rotation(glm::quat rotation) -> Transformable3D&;
+    auto set_direction(glm::vec3 direction) -> Transformable3D&; // direction should be normalized
+    auto set_scale(float scale) -> Transformable3D&;
+    auto set_scale(glm::vec3 scale) -> Transformable3D&;
 
-    auto set_transform(const glm::mat4& transform) -> void;
+    auto set_transform(const glm::mat4& transform) -> Transformable3D&;
     [[nodiscard]] auto transform() const -> auto& { return _transform; }
 
     [[nodiscard]] auto translation() const { return _translation; }
     [[nodiscard]] auto rotation() const { return _rotation; }
+    [[nodiscard]] auto direction() const -> glm::vec3;
     [[nodiscard]] auto scale() const { return _scale; }
 
 private:
-    glm::vec3 _translation{ 0.0f };
-    glm::quat _rotation{ glm::identity<glm::quat>() };
-    glm::vec3 _scale{ 1.0f };
+    glm::vec3 _translation = glm::vec3{ 0.0f };
+    glm::quat _rotation = glm::identity<glm::quat>();
+    glm::vec3 _scale = glm::vec3{ 1.0f };
 
-    glm::mat4 _transform{ 1.0f };
+    glm::mat4 _transform = glm::mat4{ 1.0f };
 
 private:
     auto update_transform() -> void;

@@ -2,9 +2,9 @@
 
 #include <vector>
 
-namespace zth {
+#include "Zenith/Core/fwd.hpp"
 
-struct ApplicationSpec;
+namespace zth {
 
 class Event;
 

@@ -1,9 +1,18 @@
 #include "Zenith/Core/Transformable.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/geometric.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/trigonometric.hpp>
 
 namespace zth {
+
+namespace {
+
+// reference vector used for operations on quaternions
+constexpr auto forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
+
+} // namespace
 
 Transformable3D::Transformable3D(glm::vec3 translation)
 {
@@ -43,37 +52,50 @@ auto Transformable3D::scale(glm::vec3 factor) -> Transformable3D&
     return *this;
 }
 
-auto Transformable3D::set_translation(glm::vec3 translation) -> void
+auto Transformable3D::set_translation(glm::vec3 translation) -> Transformable3D&
 {
     _translation = translation;
     update_transform();
+    return *this;
 }
 
-auto Transformable3D::set_rotation(float angle, glm::vec3 axis) -> void
+auto Transformable3D::set_rotation(float angle, glm::vec3 axis) -> Transformable3D&
 {
     _rotation = glm::rotate(glm::identity<glm::quat>(), angle, axis);
     update_transform();
+    return *this;
 }
 
-auto Transformable3D::set_rotation(glm::quat rotation) -> void
+auto Transformable3D::set_rotation(glm::quat rotation) -> Transformable3D&
 {
     _rotation = glm::normalize(rotation);
     update_transform();
+    return *this;
 }
 
-auto Transformable3D::set_scale(float scale) -> void
+auto Transformable3D::set_direction(glm::vec3 direction) -> Transformable3D&
+{
+    auto axis = glm::cross(forward, direction);
+    auto angle = glm::acos(glm::dot(forward, direction));
+    set_rotation(angle, axis);
+    return *this;
+}
+
+auto Transformable3D::set_scale(float scale) -> Transformable3D&
 {
     _scale = glm::vec3{ scale };
     update_transform();
+    return *this;
 }
 
-auto Transformable3D::set_scale(glm::vec3 scale) -> void
+auto Transformable3D::set_scale(glm::vec3 scale) -> Transformable3D&
 {
     _scale = scale;
     update_transform();
+    return *this;
 }
 
-auto Transformable3D::set_transform(const glm::mat4& transform) -> void
+auto Transformable3D::set_transform(const glm::mat4& transform) -> Transformable3D&
 {
     glm::vec3 unused_skew;
     glm::vec4 unused_perspective;
@@ -84,6 +106,12 @@ auto Transformable3D::set_transform(const glm::mat4& transform) -> void
     _rotation = glm::conjugate(_rotation);
 
     _transform = transform;
+    return *this;
+}
+
+auto Transformable3D::direction() const -> glm::vec3
+{
+    return _rotation * forward;
 }
 
 auto Transformable3D::update_transform() -> void

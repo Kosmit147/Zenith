@@ -1,6 +1,5 @@
 #include "Zenith/Graphics/Renderer.hpp"
 
-#include <glad/glad.h>
 #include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -96,10 +95,14 @@ auto Renderer::set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> vo
     renderer->_camera = std::move(camera);
 }
 
-auto Renderer::set_light(std::shared_ptr<const Light> light) -> void
+auto Renderer::set_directional_light(std::shared_ptr<const DirectionalLight> directional_light) -> void
 {
-    ZTH_ASSERT(light != nullptr);
-    renderer->_light = std::move(light);
+    renderer->_directional_light = std::move(directional_light);
+}
+
+auto Renderer::set_point_light(std::shared_ptr<const PointLight> point_light) -> void
+{
+    renderer->_point_light = std::move(point_light);
 }
 
 auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
@@ -216,16 +219,35 @@ auto Renderer::upload_camera_ubo() -> void
 
 auto Renderer::upload_light_ubo() -> void
 {
-    ZTH_ASSERT(renderer->_light != nullptr);
-    const auto& light = renderer->_light;
+    LightUboData light_ubo_data{};
 
-    LightUboData light_ubo_data = {
-        .light_position = light->translation(),
-        .light_color = light->color,
-        .light_ambient = light->ambient,
-        .light_diffuse = light->diffuse,
-        .light_specular = light->specular,
-    };
+    if (renderer->_directional_light)
+    {
+        const auto& directional_light = *renderer->_directional_light;
+        light_ubo_data.has_directional_light = true;
+
+        light_ubo_data.directional_light_direction = directional_light.direction();
+        light_ubo_data.directional_light_properties = {
+            .color = directional_light.properties.color,
+            .ambient = directional_light.properties.ambient,
+            .diffuse = directional_light.properties.diffuse,
+            .specular = directional_light.properties.specular,
+        };
+    }
+
+    if (renderer->_point_light)
+    {
+        const auto& point_light = *renderer->_point_light;
+        light_ubo_data.has_point_light = true;
+
+        light_ubo_data.point_light_position = point_light.translation();
+        light_ubo_data.point_light_properties = {
+            .color = point_light.properties.color,
+            .ambient = point_light.properties.ambient,
+            .diffuse = point_light.properties.diffuse,
+            .specular = point_light.properties.specular,
+        };
+    }
 
     renderer->_light_ubo.buffer_data(light_ubo_data);
 }
@@ -258,11 +280,13 @@ auto Renderer::bind_material(const Material& material) -> void
 auto Renderer::upload_material_ubo(const Material& material) -> void
 {
     MaterialUboData material_ubo_data = {
-        .albedo = material.albedo,
-        .material_ambient = material.ambient,
-        .material_diffuse = material.diffuse,
-        .material_specular = material.specular,
-        .material_shininess = material.shininess,
+        .material = {
+            .albedo = material.albedo,
+            .ambient = material.ambient,
+            .diffuse = material.diffuse,
+            .specular = material.specular,
+            .shininess = material.shininess,
+        },
         .has_diffuse_map = material.diffuse_map != nullptr,
         .has_specular_map = material.specular_map != nullptr,
         .has_emission_map = material.emission_map != nullptr,

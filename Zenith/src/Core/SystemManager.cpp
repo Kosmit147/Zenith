@@ -3,8 +3,8 @@
 #include "Zenith/Core/Application.hpp"
 #include "Zenith/Core/SceneManager.hpp"
 #include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Graphics/Renderer.hpp"
 #include "Zenith/Graphics/ImGuiRenderer.hpp"
+#include "Zenith/Graphics/Renderer.hpp"
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/Input.hpp"
@@ -18,7 +18,7 @@
 // Window -> { Logger }
 // Input -> { Logger, Window }
 // Renderer -> { Logger, Window }
-// ImGuiRenderer -> { Logger, Renderer, Window } 
+// ImGuiRenderer -> { Logger, Renderer, Window }
 // SceneManager -> { Logger }
 
 namespace zth {
@@ -67,7 +67,7 @@ auto SystemManager::on_event(const Event& event) -> void
 
 auto SystemManager::on_update() -> void
 {
-    // Start ImGui's next frame before updating other systems
+    // start ImGui's next frame before updating other systems
     ImGuiRenderer::on_update();
 
     Time::on_update();
