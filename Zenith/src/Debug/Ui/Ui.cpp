@@ -30,6 +30,9 @@ auto DebugToolsUi::on_update() -> void
 {
     ImGui::Begin("Debug Tools");
 
+    auto fps = ImGui::GetIO().Framerate;
+    ImGui::Text("FPS: %0.0f", fps);
+
     auto label = fmt::format("Wireframe ({})", toggle_wireframe_mode_key);
 
     if (ImGui::Checkbox(label.c_str(), &_wireframe_mode_enabled))
