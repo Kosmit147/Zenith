@@ -26,3 +26,7 @@
 	path = dependencies/Catch2
 	url = https://github.com/catchorg/Catch2.git
 	branch = devel
+[submodule "dependencies/ImGuizmo"]
+	path = dependencies/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
+	branch = master
