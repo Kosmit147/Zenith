@@ -7,8 +7,6 @@ add_executable(
 	"src/Scene.cpp"
 )
 
-b_embed(Sandbox "assets/container.jpg")
-b_embed(Sandbox "assets/emoji.png")
 b_embed(Sandbox "assets/wall.jpg")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")

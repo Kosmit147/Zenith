@@ -10,8 +10,13 @@ public:
     ~Testbed() override = default;
 
 private:
+    zth::debug::DebugToolsUi _debug_tools_ui;
+
+private:
     auto on_update() -> void override;
     auto on_event(const zth::Event& event) -> void override;
 
-    static auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
+    auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
+
+    auto update_ui() -> void;
 };

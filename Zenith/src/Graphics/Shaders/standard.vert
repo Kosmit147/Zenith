@@ -11,6 +11,8 @@ layout (location = 6) in vec3 inTransformCol3;
 
 layout (location = 7) in mat3 inNormalMat;
 
+//! #define ZTH_CAMERA_UBO_BINDING_INDEX 0
+
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {
 	mat4 viewProjection;

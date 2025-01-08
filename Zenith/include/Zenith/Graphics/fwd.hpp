@@ -16,8 +16,12 @@ struct DrawCommand;
 
 class ImGuiRenderer;
 
+struct LightProperties;
 class Light;
+class DirectionalLight;
 class PointLight;
+class SpotLight;
+class AmbientLight;
 
 struct Material;
 

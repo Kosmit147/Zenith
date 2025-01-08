@@ -7,36 +7,49 @@
 
 namespace zth {
 
-class Light : public Transformable3D
+struct LightProperties
 {
-public:
     glm::vec3 color = glm::vec3{ 1.0f };
-
     glm::vec3 ambient = glm::vec3{ 0.2f };
     glm::vec3 diffuse = glm::vec3{ 0.5f };
     glm::vec3 specular = glm::vec3{ 1.0f };
+};
+
+class Light : public Transformable3D
+{
+public:
+    LightProperties properties{};
 
 public:
-    Light() = delete;
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Light)
     ~Light() override = default;
 
 protected:
-    explicit Light(glm::vec3 position, glm::vec3 color);
+    explicit Light() = default;
+    explicit Light(glm::vec3 color);
+    explicit Light(const LightProperties& properties);
+};
+
+class DirectionalLight : public Light
+{
+public:
+    explicit DirectionalLight(glm::vec3 direction, glm::vec3 color = glm::vec3{ 1.0f });
+    explicit DirectionalLight(glm::vec3 direction, const LightProperties& properties);
 };
 
 class PointLight : public Light
 {
 public:
-    explicit PointLight(glm::vec3 position, glm::vec3 color);
+    explicit PointLight(glm::vec3 position, glm::vec3 color = glm::vec3{ 1.0f });
+    explicit PointLight(glm::vec3 position, const LightProperties& properties);
 };
 
-class DirectionalLight : public Light
+class SpotLight : public Light
 {
     // TODO
 };
 
-class SpotLight : public Light
+class AmbientLight : public Light
 {
     // TODO
 };

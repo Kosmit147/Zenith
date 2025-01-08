@@ -17,7 +17,6 @@ private:
     zth::Material _cube_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;
-    std::shared_ptr<zth::PointLight> _light;
 
 private:
     auto on_load() -> void override;

@@ -4,12 +4,10 @@
 
 namespace {
 
-const auto container_texture = b::embed<"assets/container.jpg">().vec();
-const auto emoji_texture = b::embed<"assets/emoji.png">().vec();
 const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
 
-constexpr auto camera_position = glm::vec3(0.0f, 0.0f, 5.0f);
-constexpr auto camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
+constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
+constexpr auto camera_front = glm::vec3{ 0.0f, 0.0f, -1.0f };
 
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
@@ -22,13 +20,12 @@ constexpr auto light_color = glm::vec3{ 1.0f };
 Scene::Scene()
     : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
-      _camera_controller(_camera), _light(std::make_shared<zth::PointLight>(light_position, light_color))
+      _camera_controller(_camera)
 {}
 
 auto Scene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
-    zth::Renderer::set_light(_light);
 }
 
 auto Scene::on_update() -> void

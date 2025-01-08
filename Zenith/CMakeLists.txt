@@ -19,6 +19,7 @@ add_library(
 	"src/Core/SceneManager.cpp"
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
+	"src/Debug/Ui/Ui.cpp"
 	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Shapes/PyramidShape.cpp"
 	"src/Graphics/Shapes/Shape.cpp"

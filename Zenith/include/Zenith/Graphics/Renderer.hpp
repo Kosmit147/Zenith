@@ -1,6 +1,8 @@
 #pragma once
 
+#include <glad/glad.h>
 #include <glm/fwd.hpp>
+#include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -46,7 +48,8 @@ public:
     static auto clear() -> void;
 
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
-    static auto set_light(std::shared_ptr<const Light> light) -> void;
+    static auto set_directional_light(std::shared_ptr<const DirectionalLight> directional_light) -> void;
+    static auto set_point_light(std::shared_ptr<const PointLight> point_light) -> void;
 
     static auto draw(const Shape3D& shape, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
@@ -60,7 +63,9 @@ public:
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
         std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
-    std::shared_ptr<const Light> _light = std::make_shared<PointLight>(glm::vec3{ 0.0f }, glm::vec3{ 1.0f });
+    std::shared_ptr<const DirectionalLight> _directional_light =
+        std::make_shared<DirectionalLight>(glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
+    std::shared_ptr<const PointLight> _point_light = nullptr;
 
     UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), ZTH_CAMERA_UBO_BINDING_INDEX);
     UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);

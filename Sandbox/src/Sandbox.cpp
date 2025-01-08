@@ -33,7 +33,10 @@ Sandbox::Sandbox() : Application(app_spec)
     zth::SceneManager::load_scene(std::make_unique<Scene>());
 }
 
-auto Sandbox::on_update() -> void {}
+auto Sandbox::on_update() -> void
+{
+    _debug_tools_ui.on_update();
+}
 
 auto Sandbox::on_event(const zth::Event& event) -> void
 {
@@ -43,6 +46,8 @@ auto Sandbox::on_event(const zth::Event& event) -> void
 
 auto Sandbox::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
+    _debug_tools_ui.on_key_pressed_event(event);
+
     static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
 
     switch (event.key)

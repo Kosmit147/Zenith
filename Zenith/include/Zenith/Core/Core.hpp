@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fwd.hpp"
+
 #include "Application.hpp"
 #include "Assert.hpp"
 #include "CameraController.hpp"
