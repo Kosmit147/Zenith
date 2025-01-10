@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <ImGuizmo.h>
 
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Window.hpp"
@@ -16,7 +17,6 @@ auto ImGuiRenderer::init() -> void
 
     ImGui_ImplGlfw_InitForOpenGL(Window::glfw_handle(), true);
     ImGui_ImplOpenGL3_Init();
-
     ZTH_CORE_INFO("ImGui Renderer initialized.");
 }
 
@@ -24,7 +24,12 @@ auto ImGuiRenderer::on_update() -> void
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
+
     ImGui::NewFrame();
+
+    ImGuizmo::BeginFrame();
+    auto& io = ImGui::GetIO();
+    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 }
 
 auto ImGuiRenderer::on_render() -> void

@@ -2,9 +2,6 @@
 
 #include <glm/vec3.hpp>
 
-#include "Zenith/Core/Transformable.hpp"
-#include "Zenith/Utility/Macros.hpp"
-
 namespace zth {
 
 struct LightProperties
@@ -15,41 +12,24 @@ struct LightProperties
     glm::vec3 specular = glm::vec3{ 1.0f };
 };
 
-class Light : public Transformable3D
+struct DirectionalLight
 {
-public:
+    glm::vec3 direction{ 0.0f, -1.0f, 0.0f };
     LightProperties properties{};
-
-public:
-    ZTH_DEFAULT_COPY_DEFAULT_MOVE(Light)
-    ~Light() override = default;
-
-protected:
-    explicit Light() = default;
-    explicit Light(glm::vec3 color);
-    explicit Light(const LightProperties& properties);
 };
 
-class DirectionalLight : public Light
+struct PointLight
 {
-public:
-    explicit DirectionalLight(glm::vec3 direction, glm::vec3 color = glm::vec3{ 1.0f });
-    explicit DirectionalLight(glm::vec3 direction, const LightProperties& properties);
+    glm::vec3 position{ 0.0f };
+    LightProperties properties{};
 };
 
-class PointLight : public Light
-{
-public:
-    explicit PointLight(glm::vec3 position, glm::vec3 color = glm::vec3{ 1.0f });
-    explicit PointLight(glm::vec3 position, const LightProperties& properties);
-};
-
-class SpotLight : public Light
+struct SpotLight
 {
     // TODO
 };
 
-class AmbientLight : public Light
+struct AmbientLight
 {
     // TODO
 };

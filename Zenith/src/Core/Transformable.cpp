@@ -1,18 +1,9 @@
 #include "Zenith/Core/Transformable.hpp"
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/geometric.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
-#include <glm/trigonometric.hpp>
+#include "Zenith/Math/Matrix.hpp"
+#include "Zenith/Math/Quaternion.hpp"
 
 namespace zth {
-
-namespace {
-
-// reference vector used for operations on quaternions
-constexpr auto forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
-
-} // namespace
 
 Transformable3D::Transformable3D(glm::vec3 translation)
 {
@@ -33,7 +24,26 @@ auto Transformable3D::translate(glm::vec3 translation) -> Transformable3D&
 
 auto Transformable3D::rotate(float angle, glm::vec3 axis) -> Transformable3D&
 {
-    _rotation = glm::normalize(glm::rotate(_rotation, angle, axis));
+    _rotation = math::rotate(_rotation, angle, axis);
+    update_transform();
+    return *this;
+}
+
+auto Transformable3D::rotate(math::Rotation rotation) -> Transformable3D&
+{
+    return rotate(rotation.angle, rotation.axis);
+}
+
+auto Transformable3D::rotate(glm::quat rotation) -> Transformable3D&
+{
+    _rotation = math::rotate(_rotation, rotation);
+    update_transform();
+    return *this;
+}
+
+auto Transformable3D::rotate(math::EulerAngles rotation) -> Transformable3D&
+{
+    _rotation = math::rotate(_rotation, rotation);
     update_transform();
     return *this;
 }
@@ -61,24 +71,33 @@ auto Transformable3D::set_translation(glm::vec3 translation) -> Transformable3D&
 
 auto Transformable3D::set_rotation(float angle, glm::vec3 axis) -> Transformable3D&
 {
-    _rotation = glm::rotate(glm::identity<glm::quat>(), angle, axis);
+    _rotation = math::to_quaternion(angle, axis);
     update_transform();
     return *this;
 }
 
+auto Transformable3D::set_rotation(math::Rotation rotation) -> Transformable3D&
+{
+    return set_rotation(rotation.angle, rotation.axis);
+}
+
 auto Transformable3D::set_rotation(glm::quat rotation) -> Transformable3D&
 {
-    _rotation = glm::normalize(rotation);
+    _rotation = rotation;
+    update_transform();
+    return *this;
+}
+
+auto Transformable3D::set_rotation(math::EulerAngles rotation) -> Transformable3D&
+{
+    _rotation = math::to_quaternion(rotation);
     update_transform();
     return *this;
 }
 
 auto Transformable3D::set_direction(glm::vec3 direction) -> Transformable3D&
 {
-    auto axis = glm::cross(forward, direction);
-    auto angle = glm::acos(glm::dot(forward, direction));
-    set_rotation(angle, axis);
-    return *this;
+    return set_rotation(math::to_rotation(direction));
 }
 
 auto Transformable3D::set_scale(float scale) -> Transformable3D&
@@ -97,13 +116,11 @@ auto Transformable3D::set_scale(glm::vec3 scale) -> Transformable3D&
 
 auto Transformable3D::set_transform(const glm::mat4& transform) -> Transformable3D&
 {
-    glm::vec3 unused_skew;
-    glm::vec4 unused_perspective;
-    glm::decompose(transform, _scale, _rotation, _translation, unused_skew, unused_perspective);
+    auto [translation, rotation, scale] = math::decompose(transform);
 
-    // the resulting quaternion is incorrect, and we need to conjugate it
-    // TODO: check if this works correctly
-    _rotation = glm::conjugate(_rotation);
+    _translation = translation;
+    _rotation = rotation;
+    _scale = scale;
 
     _transform = transform;
     return *this;
@@ -111,14 +128,12 @@ auto Transformable3D::set_transform(const glm::mat4& transform) -> Transformable
 
 auto Transformable3D::direction() const -> glm::vec3
 {
-    return _rotation * forward;
+    return math::to_direction(_rotation);
 }
 
 auto Transformable3D::update_transform() -> void
 {
-    _transform = glm::translate(glm::mat4{ 1.0f }, _translation);
-    _transform *= glm::mat4_cast(_rotation);
-    _transform = glm::scale(_transform, _scale);
+    _transform = math::compose_transform(_scale, _rotation, _translation);
 }
 
 } // namespace zth

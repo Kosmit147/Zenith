@@ -39,6 +39,7 @@ private:
     std::string _emission_map_selected = no_map_selected.data();
 
     zth::debug::TransformUi _transform_ui{ _cube };
+    zth::debug::TransformGizmo _transform_gizmo{ _cube, *_camera };
     zth::debug::DirectionalLightUi _directional_light_ui{ *_directional_light };
     zth::debug::PointLightUi _point_light_ui{ *_point_light };
 
@@ -47,7 +48,8 @@ private:
     auto on_update() -> void override;
     auto on_event(const zth::Event& event) -> void override;
 
-    auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
+    auto on_window_resized_event(const zth::WindowResizedEvent& event) -> void;
+    auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 
     auto update_ui() -> void;
     auto draw_material_ui() -> void;

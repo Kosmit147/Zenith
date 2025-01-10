@@ -10,6 +10,10 @@
 
 namespace zth::math {
 
+constexpr auto world_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
+constexpr auto world_right = glm::vec3{ 1.0f, 0.0f, 0.0f };
+constexpr auto world_up = glm::vec3{ 0.0f, 1.0f, 0.0f };
+
 template<glm::length_t Size, std::floating_point T>
 [[nodiscard]] auto equal(glm::vec<Size, T> a, glm::vec<Size, T> b, T epsilon = default_epsilon<T>) -> bool;
 

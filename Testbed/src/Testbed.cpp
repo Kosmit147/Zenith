@@ -100,7 +100,7 @@ auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
     case Escape:
         zth::Window::close();
         break;
-    case LeftControl:
+    case toggle_cursor_key:
         cursor_enabled = !cursor_enabled;
         zth::Window::set_cursor_enabled(cursor_enabled);
         break;

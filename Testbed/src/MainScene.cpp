@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "Embedded.hpp"
+#include "Testbed.hpp"
 
 namespace {
 
@@ -34,7 +35,8 @@ MainScene::MainScene()
                                        directional_light_direction, directional_light_properties)),
       _point_light(std::make_shared<zth::PointLight>(point_light_position, point_light_properties))
 {
-    _light_marker.set_translation(_point_light->translation()).set_scale(0.1f);
+    _transform_gizmo.toggle_key = Testbed::toggle_cursor_key;
+    _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
     _diffuse_maps.emplace("Cobble", zth::Texture2D{ embedded::cobble_diffuse_map_data, cobble_diffuse_map_params });
     _diffuse_maps.emplace("Container", zth::Texture2D{ embedded::container_diffuse_map_data });
@@ -49,6 +51,8 @@ MainScene::MainScene()
 
 auto MainScene::on_load() -> void
 {
+    _transform_gizmo.enabled = zth::Window::cursor_enabled();
+
     zth::Renderer::set_camera(_camera);
     zth::Renderer::set_directional_light(_directional_light);
     zth::Renderer::set_point_light(_point_light);
@@ -61,7 +65,7 @@ auto MainScene::on_update() -> void
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
 
-    _light_marker.set_translation(_point_light->translation());
+    _light_marker.set_translation(_point_light->position);
     _light_marker_material.albedo = _point_light->properties.color;
 
     if (_material_was_changed)
@@ -90,20 +94,32 @@ auto MainScene::on_event(const zth::Event& event) -> void
         on_window_resized_event(window_resized_event);
     }
     break;
+    case KeyPressed:
+    {
+        auto key_pressed_event = event.key_pressed_event();
+        on_key_pressed_event(key_pressed_event);
+    }
+    break;
     default:
         break;
     }
 }
 
-auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
 {
     auto new_size = event.new_size;
     _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
 }
 
+auto MainScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    _transform_gizmo.on_key_pressed_event(event);
+}
+
 auto MainScene::update_ui() -> void
 {
     _transform_ui.on_update();
+    _transform_gizmo.on_update();
     _directional_light_ui.on_update();
     _point_light_ui.on_update();
     draw_material_ui();

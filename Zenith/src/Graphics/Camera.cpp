@@ -3,37 +3,29 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Zenith/Math/Quaternion.hpp"
+#include "Zenith/Math/Vector.hpp"
+
 namespace zth {
 
-PerspectiveCamera::PerspectiveCamera(glm::vec3 position, glm::vec3 front, float aspect_ratio, float fov)
-    : _position(position), _aspect_ratio(aspect_ratio), _fov(fov), _front(front)
+PerspectiveCamera::PerspectiveCamera(glm::vec3 translation, glm::vec3 direction, float aspect_ratio, float fov)
+    : _aspect_ratio(aspect_ratio), _fov(fov), _translation(translation), _forward(direction)
 {
-    update_right();
-    update_up();
+    auto [pitch, yaw, roll] = math::to_euler_angles(direction);
 
-    _pitch = glm::asin(front.y);
-    _yaw = std::atan2(front.z, front.y);
+    _pitch = pitch;
+    _yaw = yaw;
+    _roll = roll;
 
-    update_view_projection();
-}
-
-PerspectiveCamera::PerspectiveCamera(glm::vec3 position, float yaw, float pitch, float aspect_ratio, float fov)
-    : _position(position), _aspect_ratio(aspect_ratio), _fov(fov), _yaw(yaw), _pitch(pitch)
-{
     update_direction_vectors();
     update_view_projection();
 }
 
-auto PerspectiveCamera::update_view_projection() -> void
+PerspectiveCamera::PerspectiveCamera(glm::vec3 translation, math::EulerAngles rotation, float aspect_ratio, float fov)
+    : _aspect_ratio(aspect_ratio), _fov(fov), _translation(translation), _pitch(rotation.pitch), _yaw(rotation.yaw),
+      _roll(rotation.roll)
 {
-    auto view = glm::lookAt(_position, _position + _front, _up);
-    auto projection = glm::perspective(_fov, _aspect_ratio, 0.1f, 100.0f);
-    _view_projection = projection * view;
-}
-
-auto PerspectiveCamera::set_position(glm::vec3 position) -> void
-{
-    _position = position;
+    update_direction_vectors();
     update_view_projection();
 }
 
@@ -49,51 +41,91 @@ auto PerspectiveCamera::set_fov(float fov) -> void
     update_view_projection();
 }
 
-auto PerspectiveCamera::set_yaw(float yaw) -> void
+auto PerspectiveCamera::translate(glm::vec3 translation) -> PerspectiveCamera&
 {
-    _yaw = yaw;
+    _translation += translation;
     update_direction_vectors();
     update_view_projection();
+    return *this;
 }
 
-auto PerspectiveCamera::set_pitch(float pitch) -> void
+auto PerspectiveCamera::rotate(float pitch, float yaw, float roll) -> PerspectiveCamera&
+{
+    _pitch += pitch;
+    _yaw += yaw;
+    _roll += roll;
+    update_direction_vectors();
+    update_view_projection();
+    return *this;
+}
+
+auto PerspectiveCamera::rotate(math::EulerAngles rotation) -> PerspectiveCamera&
+{
+    return rotate(rotation.pitch, rotation.yaw, rotation.roll);
+}
+
+auto PerspectiveCamera::set_translation(glm::vec3 translation) -> PerspectiveCamera&
+{
+    _translation = translation;
+    update_direction_vectors();
+    update_view_projection();
+    return *this;
+}
+
+auto PerspectiveCamera::set_rotation(float pitch, float yaw, float roll) -> PerspectiveCamera&
 {
     _pitch = pitch;
-    update_direction_vectors();
-    update_view_projection();
-}
-
-auto PerspectiveCamera::set_yaw_and_pitch(float yaw, float pitch) -> void
-{
     _yaw = yaw;
-    _pitch = pitch;
+    _roll = roll;
     update_direction_vectors();
     update_view_projection();
+    return *this;
 }
 
-auto PerspectiveCamera::update_front() -> void
+auto PerspectiveCamera::set_rotation(math::EulerAngles rotation) -> PerspectiveCamera&
 {
-    _front.x = glm::cos(_yaw) * glm::cos(_pitch);
-    _front.y = glm::sin(_pitch);
-    _front.z = glm::sin(_yaw) * glm::cos(_pitch);
-    _front = normalize(_front);
+    return set_rotation(rotation.pitch, rotation.yaw, rotation.roll);
 }
 
-auto PerspectiveCamera::update_right() -> void
+auto PerspectiveCamera::set_translation_and_rotation(glm::vec3 translation,
+                                                     math::EulerAngles rotation) -> PerspectiveCamera&
 {
-    _right = normalize(cross(_front, glm::vec3(0.0f, 1.0f, 0.0f)));
+    _translation = translation;
+    _pitch = rotation.pitch;
+    _yaw = rotation.yaw;
+    _roll = rotation.roll;
+    update_direction_vectors();
+    update_view_projection();
+    return *this;
 }
 
-auto PerspectiveCamera::update_up() -> void
+auto PerspectiveCamera::rotation() const -> math::EulerAngles
 {
-    _up = normalize(cross(_right, _front));
+    return math::EulerAngles{
+        .pitch = _pitch,
+        .yaw = _yaw,
+        .roll = _roll,
+    };
 }
 
 auto PerspectiveCamera::update_direction_vectors() -> void
 {
-    update_front();
-    update_right();
-    update_up();
+    auto euler_angles = math::EulerAngles{
+        .pitch = _pitch,
+        .yaw = _yaw,
+        .roll = 0.0f, // roll doesn't influence forward vector's value
+    };
+
+    _forward = math::to_direction(euler_angles);
+    _right = glm::normalize(glm::cross(_forward, math::world_up));
+    _up = glm::normalize(glm::cross(_right, _forward));
+}
+
+auto PerspectiveCamera::update_view_projection() -> void
+{
+    _view = glm::lookAt(_translation, _translation + _forward, _up);
+    _projection = glm::perspective(_fov, _aspect_ratio, 0.1f, 100.0f);
+    _view_projection = _projection * _view;
 }
 
 } // namespace zth
