@@ -7,19 +7,16 @@ namespace {
 const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
 
 constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
-constexpr auto camera_front = glm::vec3{ 0.0f, 0.0f, -1.0f };
+constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
-
-constexpr auto light_position = glm::vec3{ 0.0f, 5.0f, 5.0f };
-constexpr auto light_color = glm::vec3{ 1.0f };
 
 } // namespace
 
 Scene::Scene()
     : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture },
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
+      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller(_camera)
 {}
 

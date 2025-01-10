@@ -18,11 +18,9 @@
 #include "Zenith/Graphics/Vertex.hpp"
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/fwd.hpp"
+#include "Zenith/Platform/fwd.hpp"
 
 namespace zth {
-
-class Event;
 
 struct RenderBatch
 {

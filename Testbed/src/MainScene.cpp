@@ -15,7 +15,7 @@ const zth::TextureParams cobble_diffuse_map_params = {
 };
 
 constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
-constexpr auto camera_front = glm::vec3{ 0.0f, 0.0f, -1.0f };
+constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
@@ -30,7 +30,7 @@ constexpr auto point_light_properties = zth::LightProperties{};
 
 MainScene::MainScene()
     : _light_marker_material{ .shader = &zth::shaders::flat_color(), .albedo = point_light_properties.color },
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
+      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller(_camera), _directional_light(std::make_shared<zth::DirectionalLight>(
                                        directional_light_direction, directional_light_properties)),
       _point_light(std::make_shared<zth::PointLight>(point_light_position, point_light_properties))

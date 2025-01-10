@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fwd.hpp"
+
 #include "Event.hpp"
 #include "EventQueue.hpp"
 #include "Events.hpp"

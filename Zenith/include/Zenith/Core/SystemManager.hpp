@@ -3,10 +3,9 @@
 #include <vector>
 
 #include "Zenith/Core/fwd.hpp"
+#include "Zenith/Platform/fwd.hpp"
 
 namespace zth {
-
-class Event;
 
 class SystemManager
 {
@@ -20,9 +19,9 @@ public:
     static auto shut_down_systems() -> void;
 
 private:
-    using SystemShutdownFunc = void(*)();
+    using SystemShutdownFunc = void (*)();
 
-    static inline std::vector<SystemShutdownFunc> _system_shutdown_funcs; 
+    static inline std::vector<SystemShutdownFunc> _system_shutdown_funcs;
 };
 
 } // namespace zth

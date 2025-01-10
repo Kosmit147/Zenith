@@ -1,10 +1,9 @@
 #pragma once
 
+#include "Zenith/Platform/fwd.hpp"
 #include "Zenith/Utility/Macros.hpp"
 
 namespace zth {
-
-class Event;
 
 class Scene
 {

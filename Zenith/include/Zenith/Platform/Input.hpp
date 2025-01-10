@@ -6,10 +6,9 @@
 
 #include "Zenith/Platform/Key.hpp"
 #include "Zenith/Platform/Mouse.hpp"
+#include "Zenith/Platform/fwd.hpp"
 
 namespace zth {
-
-class Event;
 
 class Input
 {

@@ -3,10 +3,9 @@
 #include <memory>
 
 #include "Zenith/Core/Scene.hpp"
+#include "Zenith/Platform/fwd.hpp"
 
 namespace zth {
-
-class Event;
 
 class SceneManager
 {
