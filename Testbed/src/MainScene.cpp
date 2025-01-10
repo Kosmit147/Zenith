@@ -2,8 +2,6 @@
 
 #include <imgui.h>
 
-#include <optional>
-
 #include "Embedded.hpp"
 #include "Testbed.hpp"
 
@@ -38,15 +36,24 @@ MainScene::MainScene()
     _transform_gizmo.toggle_key = Testbed::toggle_cursor_key;
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
-    _diffuse_maps.emplace("Cobble", zth::Texture2D{ embedded::cobble_diffuse_map_data, cobble_diffuse_map_params });
-    _diffuse_maps.emplace("Container", zth::Texture2D{ embedded::container_diffuse_map_data });
-    _diffuse_maps.emplace("Container2", zth::Texture2D{ embedded::container2_diffuse_map_data });
-    _diffuse_maps.emplace("Emoji", zth::Texture2D{ embedded::emoji_diffuse_map_data });
-    _diffuse_maps.emplace("Wall", zth::Texture2D{ embedded::wall_diffuse_map_data });
+    _diffuse_maps.emplace_back(embedded::cobble_diffuse_map_data, cobble_diffuse_map_params);
+    _diffuse_maps.emplace_back(embedded::container_diffuse_map_data);
+    _diffuse_maps.emplace_back(embedded::container2_diffuse_map_data);
+    _diffuse_maps.emplace_back(embedded::emoji_diffuse_map_data);
+    _diffuse_maps.emplace_back(embedded::wall_diffuse_map_data);
 
-    _specular_maps.emplace("Container2", zth::Texture2D{ embedded::container2_specular_map_data });
+    std::size_t i = 0;
+    _material_ui.add_diffuse_map("Cobble", _diffuse_maps[i++]);
+    _material_ui.add_diffuse_map("Container", _diffuse_maps[i++]);
+    _material_ui.add_diffuse_map("Container2", _diffuse_maps[i++]);
+    _material_ui.add_diffuse_map("Emoji", _diffuse_maps[i++]);
+    _material_ui.add_diffuse_map("Wall", _diffuse_maps[i++]);
 
-    _emission_maps.emplace("Matrix", zth::Texture2D{ embedded::matrix_emission_map_data });
+    _specular_maps.emplace_back(embedded::container2_specular_map_data);
+    _material_ui.add_specular_map("Container2", _specular_maps[0]);
+
+    _emission_maps.emplace_back(embedded::matrix_emission_map_data);
+    _material_ui.add_emission_map("Matrix", _emission_maps[0]);
 }
 
 auto MainScene::on_load() -> void
@@ -67,17 +74,6 @@ auto MainScene::on_update() -> void
 
     _light_marker.set_translation(_point_light->position);
     _light_marker_material.albedo = _point_light->properties.color;
-
-    if (_material_was_changed)
-    {
-        auto& materials = zth::materials::materials();
-        ZTH_ASSERT(_material_selected_index < materials.size());
-        _material = materials[_material_selected_index];
-        _material_was_changed = false;
-        _diffuse_map_selected = no_map_selected;
-        _specular_map_selected = no_map_selected;
-        _emission_map_selected = no_map_selected;
-    }
 
     zth::Renderer::draw(_cube, _material);
     zth::Renderer::draw(_light_marker, _light_marker_material);
@@ -120,107 +116,7 @@ auto MainScene::update_ui() -> void
 {
     _transform_ui.on_update();
     _transform_gizmo.on_update();
+    _material_ui.on_update();
     _directional_light_ui.on_update();
     _point_light_ui.on_update();
-    draw_material_ui();
-}
-
-auto MainScene::draw_material_ui() -> void
-{
-    // TODO: move into Zenith debug uis
-
-    constexpr auto ui_slider_drag_speed = 0.01f;
-
-    ImGui::Begin("Material");
-
-    constexpr std::array material_names = {
-        "plain",         "emerald",      "jade",          "obsidian",       "pearl",
-        "ruby",          "turquoise",    "brass",         "bronze",         "chrome",
-        "copper",        "gold",         "silver",        "black_plastic",  "cyan_plastic",
-        "green_plastic", "red_plastic",  "white_plastic", "yellow_plastic", "black_rubber",
-        "cyan_rubber",   "green_rubber", "red_rubber",    "white_rubber",   "yellow_rubber",
-    };
-
-    ZTH_ASSERT(material_names.size() == zth::materials::materials().size());
-
-    if (ImGui::BeginCombo("Preset", material_names[_material_selected_index]))
-    {
-        for (std::size_t n = 0; n < material_names.size(); n++)
-        {
-            const auto is_selected = _material_selected_index == n;
-
-            if (ImGui::Selectable(material_names[n], is_selected))
-            {
-                _material_selected_index = n;
-                _material_was_changed = true;
-            }
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    ImGui::Spacing();
-
-    ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
-
-    ImGui::Spacing();
-
-    auto map_picker = [](std::string_view label, std::string& selected,
-                         const zth::StringMap<zth::Texture2D>& texture_map) {
-        std::optional<const zth::Texture2D*> pick = std::nullopt;
-
-        if (ImGui::BeginCombo(label.data(), selected.c_str()))
-        {
-            for (const auto& [name, texture] : texture_map)
-            {
-                const auto is_selected = selected == name;
-
-                if (ImGui::Selectable(name.c_str(), is_selected))
-                {
-                    selected = name;
-                    pick = &texture;
-                }
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            {
-                constexpr auto name = no_map_selected.data();
-                const auto is_selected = selected == name;
-
-                if (ImGui::Selectable(name, is_selected))
-                {
-                    selected = name;
-                    pick = nullptr;
-                }
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            ImGui::EndCombo();
-        }
-
-        return pick;
-    };
-
-    if (auto pick = map_picker("Diffuse Map", _diffuse_map_selected, _diffuse_maps))
-        _material.diffuse_map = *pick;
-
-    if (auto pick = map_picker("Specular Map", _specular_map_selected, _specular_maps))
-        _material.specular_map = *pick;
-
-    if (auto pick = map_picker("Emission Map", _emission_map_selected, _emission_maps))
-        _material.emission_map = *pick;
-
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_material.ambient), ui_slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_material.diffuse), ui_slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_material.specular), ui_slider_drag_speed);
-    ImGui::DragFloat("Shininess", &_material.shininess, ui_slider_drag_speed * 20.0f);
-
-    ImGui::End();
 }
