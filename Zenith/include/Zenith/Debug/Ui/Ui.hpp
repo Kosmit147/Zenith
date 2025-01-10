@@ -8,13 +8,10 @@
 #include "Zenith/Graphics/fwd.hpp"
 #include "Zenith/Math/Quaternion.hpp"
 #include "Zenith/Platform/Key.hpp"
+#include "Zenith/Platform/fwd.hpp"
 #include "Zenith/Utility/Macros.hpp"
 
-namespace zth {
-
-struct KeyPressedEvent;
-
-namespace debug {
+namespace zth::debug {
 
 class DebugToolsUi
 {
@@ -103,6 +100,4 @@ private:
     PointLight& _light;
 };
 
-} // namespace debug
-
-} // namespace zth
+} // namespace zth::debug

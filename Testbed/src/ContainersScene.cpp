@@ -9,7 +9,7 @@
 namespace {
 
 constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
-constexpr auto camera_front = glm::vec3{ 0.0f, 0.0f, -1.0f };
+constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
@@ -29,7 +29,7 @@ ContainersScene::ContainersScene()
     : _diffuse_map{ embedded::container2_diffuse_map_data }, _specular_map{ embedded::container2_specular_map_data },
       _container_material{ .diffuse_map = &_diffuse_map, .specular_map = &_specular_map },
       _light_marker_material{ .shader = &zth::shaders::flat_color() },
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_front, aspect_ratio, fov)),
+      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller{ _camera },
       _directional_light(std::make_shared<zth::DirectionalLight>(directional_light_direction)),
       _point_light(std::make_shared<zth::PointLight>(point_light_position))

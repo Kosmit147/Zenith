@@ -2,6 +2,7 @@
 
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Window.hpp"
+#include "Zenith/Platform/fwd.hpp"
 #include "Zenith/Utility/Macros.hpp"
 
 #define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
@@ -14,8 +15,6 @@
     }
 
 namespace zth {
-
-class Event;
 
 struct ApplicationSpec
 {
