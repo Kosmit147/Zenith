@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/Material.hpp"
 #include "Zenith/Utility/Macros.hpp"
@@ -8,7 +10,7 @@ namespace zth::materials {
 
 struct MaterialList
 {
-    // add ONLY materials here
+    // keep this list consistent with the material_names array
 
     Material plain;
     Material emerald;
@@ -48,6 +50,13 @@ struct MaterialList
 
     [[nodiscard]] auto begin() const { return materials_start; }
     [[nodiscard]] auto end() const { return materials_end; }
+};
+
+constexpr std::array material_names = {
+    "plain",        "emerald",       "jade",         "obsidian",      "pearl",          "ruby",         "turquoise",
+    "brass",        "bronze",        "chrome",       "copper",        "gold",           "silver",       "black_plastic",
+    "cyan_plastic", "green_plastic", "red_plastic",  "white_plastic", "yellow_plastic", "black_rubber", "cyan_rubber",
+    "green_rubber", "red_rubber",    "white_rubber", "yellow_rubber",
 };
 
 auto load_materials() -> void;
