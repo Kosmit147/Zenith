@@ -211,7 +211,7 @@ auto Renderer::upload_camera_ubo() -> void
 
     CameraUboData camera_ubo_data = {
         .view_projection = camera->view_projection(),
-        .camera_position = camera->position(),
+        .camera_position = camera->translation(),
     };
 
     renderer->_camera_ubo.buffer_data(camera_ubo_data);
@@ -223,29 +223,29 @@ auto Renderer::upload_light_ubo() -> void
 
     if (renderer->_directional_light)
     {
-        const auto& directional_light = *renderer->_directional_light;
+        const auto& [direction, properties] = *renderer->_directional_light;
         light_ubo_data.has_directional_light = true;
 
-        light_ubo_data.directional_light_direction = directional_light.direction();
+        light_ubo_data.directional_light_direction = direction;
         light_ubo_data.directional_light_properties = {
-            .color = directional_light.properties.color,
-            .ambient = directional_light.properties.ambient,
-            .diffuse = directional_light.properties.diffuse,
-            .specular = directional_light.properties.specular,
+            .color = properties.color,
+            .ambient = properties.ambient,
+            .diffuse = properties.diffuse,
+            .specular = properties.specular,
         };
     }
 
     if (renderer->_point_light)
     {
-        const auto& point_light = *renderer->_point_light;
+        const auto& [position, properties] = *renderer->_point_light;
         light_ubo_data.has_point_light = true;
 
-        light_ubo_data.point_light_position = point_light.translation();
+        light_ubo_data.point_light_position = position;
         light_ubo_data.point_light_properties = {
-            .color = point_light.properties.color,
-            .ambient = point_light.properties.ambient,
-            .diffuse = point_light.properties.diffuse,
-            .specular = point_light.properties.specular,
+            .color = properties.color,
+            .ambient = properties.ambient,
+            .diffuse = properties.diffuse,
+            .specular = properties.specular,
         };
     }
 

@@ -1,10 +1,26 @@
 #include "Zenith/Math/Matrix.hpp"
 
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include "Zenith/Math/Vector.hpp"
 
 namespace zth::math {
+
+auto compose_transform(glm::vec3 scale, glm::quat rotation, glm::vec3 translation) -> glm::mat4
+{
+    glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, translation);
+    transform *= glm::mat4_cast(rotation);
+    transform = glm::scale(transform, scale);
+
+    return transform;
+}
+
+auto compose_transform(const TransformComponents& components) -> glm::mat4
+{
+    auto& [scale, rotation, translation] = components;
+    return compose_transform(scale, rotation, translation);
+}
 
 auto get_translation(const glm::mat4& transform) -> glm::vec3
 {
@@ -37,6 +53,27 @@ auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3
     // the transpose of the inverse of the upper-left 3x3 part of the transform matrix
     // TODO: investigate whether caching these matrices is worth it
     return glm::inverseTranspose(glm::mat3{ transform });
+}
+
+auto decompose(const glm::mat4& matrix) -> TransformComponents
+{
+    glm::vec3 scale;
+    glm::quat rotation;
+    glm::vec3 translation;
+
+    glm::vec3 unused_skew;
+    glm::vec4 unused_perspective;
+    glm::decompose(matrix, scale, rotation, translation, unused_skew, unused_perspective);
+
+    // the resulting quaternion is incorrect, and we need to conjugate it
+    // TODO: check if this works correctly
+    rotation = glm::conjugate(rotation);
+
+    return TransformComponents{
+        .translation = translation,
+        .rotation = rotation,
+        .scale = scale,
+    };
 }
 
 } // namespace zth::math

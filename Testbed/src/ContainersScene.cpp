@@ -34,7 +34,7 @@ ContainersScene::ContainersScene()
       _directional_light(std::make_shared<zth::DirectionalLight>(directional_light_direction)),
       _point_light(std::make_shared<zth::PointLight>(point_light_position))
 {
-    _light_marker.set_translation(_point_light->translation()).set_scale(0.1f);
+    _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
     const auto rotation_axis = glm::normalize(glm::vec3{ 1.0f, 0.3f, 0.5f });
 
@@ -60,7 +60,7 @@ auto ContainersScene::on_update() -> void
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
 
-    _light_marker.set_translation(_point_light->translation());
+    _light_marker.set_translation(_point_light->position);
     _light_marker_material.albedo = _point_light->properties.color;
 
     zth::Renderer::draw(_light_marker, _light_marker_material);

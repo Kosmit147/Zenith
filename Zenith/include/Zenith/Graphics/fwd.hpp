@@ -4,12 +4,9 @@ namespace zth {
 
 class CubeShape;
 class PyramidShape;
-class Shape;
-class Shape2D;
 class Shape3D;
 class SphereShape;
 
-class Camera;
 class PerspectiveCamera;
 
 struct DrawCommand;
@@ -17,11 +14,10 @@ struct DrawCommand;
 class ImGuiRenderer;
 
 struct LightProperties;
-class Light;
-class DirectionalLight;
-class PointLight;
-class SpotLight;
-class AmbientLight;
+struct DirectionalLight;
+struct PointLight;
+struct SpotLight;
+struct AmbientLight;
 
 struct Material;
 

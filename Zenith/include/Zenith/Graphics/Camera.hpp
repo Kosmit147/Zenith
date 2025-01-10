@@ -4,70 +4,70 @@
 #include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
 
+#include "Zenith/Math/Quaternion.hpp"
+
 namespace zth {
 
-class Camera
+class PerspectiveCamera
 {
 public:
-    virtual ~Camera() = default;
-
-    [[nodiscard]] virtual auto view_projection() const -> const glm::mat4& = 0;
-};
-
-class PerspectiveCamera : public Camera
-{
-public:
-    explicit PerspectiveCamera(glm::vec3 position, glm::vec3 front, float aspect_ratio,
+    explicit PerspectiveCamera(glm::vec3 translation, glm::vec3 direction, float aspect_ratio,
                                float fov = glm::radians(45.0f));
-    explicit PerspectiveCamera(glm::vec3 position, float yaw, float pitch, float aspect_ratio,
+    explicit PerspectiveCamera(glm::vec3 translation, math::EulerAngles rotation, float aspect_ratio,
                                float fov = glm::radians(45.0f));
 
-    auto update_view_projection() -> void;
-
-    auto set_position(glm::vec3 position) -> void;
     auto set_aspect_ratio(float aspect_ratio) -> void;
     auto set_fov(float fov) -> void;
 
-    auto set_yaw(float yaw) -> void;
-    auto set_pitch(float pitch) -> void;
-    auto set_yaw_and_pitch(float yaw, float pitch) -> void;
+    auto translate(glm::vec3 translation) -> PerspectiveCamera&;
+    auto rotate(float pitch, float yaw, float roll) -> PerspectiveCamera&;
+    auto rotate(math::EulerAngles rotation) -> PerspectiveCamera&;
 
-    [[nodiscard]] auto position() const { return _position; }
+    auto set_translation(glm::vec3 translation) -> PerspectiveCamera&;
+    auto set_rotation(float pitch, float yaw, float roll) -> PerspectiveCamera&;
+    auto set_rotation(math::EulerAngles rotation) -> PerspectiveCamera&;
+    auto set_translation_and_rotation(glm::vec3 translation, math::EulerAngles rotation) -> PerspectiveCamera&;
 
     [[nodiscard]] auto aspect_ratio() const { return _aspect_ratio; }
     [[nodiscard]] auto fov() const { return _fov; }
 
-    [[nodiscard]] auto front() const { return _front; }
+    [[nodiscard]] auto translation() const { return _translation; }
+
+    [[nodiscard]] auto pitch() const { return _pitch; }
+    [[nodiscard]] auto yaw() const { return _yaw; }
+    [[nodiscard]] auto roll() const { return _roll; }
+    [[nodiscard]] auto rotation() const -> math::EulerAngles;
+
+    [[nodiscard]] auto forward() const { return _forward; }
     [[nodiscard]] auto right() const { return _right; }
     [[nodiscard]] auto up() const { return _up; }
 
-    [[nodiscard]] auto yaw() const { return _yaw; }
-    [[nodiscard]] auto pitch() const { return _pitch; }
-
-    [[nodiscard]] auto view_projection() const -> const glm::mat4& override { return _view_projection; }
+    [[nodiscard]] auto view() const -> auto& { return _view; }
+    [[nodiscard]] auto projection() const -> auto& { return _projection; }
+    [[nodiscard]] auto view_projection() const -> auto& { return _view_projection; }
 
 private:
-    glm::vec3 _position;
-
     float _aspect_ratio;
     float _fov;
 
+    glm::vec3 _translation;
+
+    float _pitch;
+    float _yaw;
+    float _roll;
+
     // these three vectors represent the camera's coordinate system
-    glm::vec3 _front;
+    glm::vec3 _forward;
     glm::vec3 _right;
     glm::vec3 _up;
 
-    float _yaw;
-    float _pitch;
-
-    glm::mat4 _view_projection;
+    glm::mat4 _view{ 1.0f };
+    glm::mat4 _projection{ 1.0f };
+    glm::mat4 _view_projection{ 1.0f };
 
 private:
-    auto update_front() -> void;
-    auto update_right() -> void;
-    auto update_up() -> void;
-
     auto update_direction_vectors() -> void;
+    auto update_view_projection() -> void;
 };
 
 } // namespace zth

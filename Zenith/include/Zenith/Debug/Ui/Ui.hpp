@@ -1,9 +1,12 @@
 #pragma once
 
+#include <imgui.h>
+#include <ImGuizmo.h>
 #include <glm/vec3.hpp>
 
 #include "Zenith/Core/fwd.hpp"
 #include "Zenith/Graphics/fwd.hpp"
+#include "Zenith/Math/Quaternion.hpp"
 #include "Zenith/Platform/Key.hpp"
 #include "Zenith/Utility/Macros.hpp"
 
@@ -42,11 +45,36 @@ public:
 private:
     Transformable3D& _transformable;
 
-    glm::vec3 _translation = glm::vec3{ 0.0f };
-    float _rotation_angle = 0.0f;
-    glm::vec3 _rotation_axis = glm::vec3{ 0.0f, 1.0f, 0.0f };
-    glm::vec3 _scale = glm::vec3{ 1.0f };
+    glm::vec3 _translation{ 0.0f };
+    math::Rotation _rotation{};
+    glm::vec3 _scale{ 1.0f };
     bool _uniform_scale = true;
+};
+
+class TransformGizmo
+{
+public:
+    Key toggle_key = Key::LeftControl;
+    Key switch_to_translate_mode_key = Key::Q;
+    Key switch_to_rotate_mode_key = Key::E;
+    Key switch_to_scale_mode_key = Key::R;
+
+    bool enabled = false;
+
+public:
+    explicit TransformGizmo(Transformable3D& transformable, const PerspectiveCamera& camera);
+    ZTH_NO_COPY_NO_MOVE(TransformGizmo)
+    ~TransformGizmo() = default;
+
+    auto on_update() -> void;
+    auto on_key_pressed_event(const KeyPressedEvent& event) -> void;
+
+private:
+    Transformable3D& _transformable;
+    const PerspectiveCamera& _camera;
+
+    ImGuizmo::OPERATION _current_gizmo_operation = ImGuizmo::TRANSLATE;
+    ImGuizmo::MODE _current_gizmo_mode = ImGuizmo::WORLD;
 };
 
 class DirectionalLightUi
@@ -60,7 +88,6 @@ public:
 
 private:
     DirectionalLight& _light;
-    glm::vec3 _light_direction;
 };
 
 class PointLightUi
@@ -74,7 +101,6 @@ public:
 
 private:
     PointLight& _light;
-    glm::vec3 _light_position;
 };
 
 } // namespace debug
