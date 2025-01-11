@@ -48,6 +48,7 @@ public:
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
     static auto set_directional_light(std::shared_ptr<const DirectionalLight> directional_light) -> void;
     static auto set_point_light(std::shared_ptr<const PointLight> point_light) -> void;
+    static auto set_spot_light(std::shared_ptr<const SpotLight> spot_light) -> void;
 
     static auto draw(const Shape3D& shape, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
@@ -64,6 +65,7 @@ private:
     std::shared_ptr<const DirectionalLight> _directional_light =
         std::make_shared<DirectionalLight>(glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
     std::shared_ptr<const PointLight> _point_light = nullptr;
+    std::shared_ptr<const SpotLight> _spot_light = nullptr;
 
     UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), ZTH_CAMERA_UBO_BINDING_INDEX);
     UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);

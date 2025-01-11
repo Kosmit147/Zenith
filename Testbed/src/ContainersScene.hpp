@@ -2,10 +2,14 @@
 
 #include <Zenith/Zenith.hpp>
 
+#include <memory>
 #include <vector>
 
 class ContainersScene : public zth::Scene
 {
+public:
+    static constexpr auto toggle_spotlight_key = zth::Key::F;
+
 public:
     explicit ContainersScene();
     ZTH_NO_COPY_NO_MOVE(ContainersScene)
@@ -25,6 +29,8 @@ private:
     zth::FpsCameraController _camera_controller;
     std::shared_ptr<zth::DirectionalLight> _directional_light;
     std::shared_ptr<zth::PointLight> _point_light;
+    std::shared_ptr<zth::SpotLight> _spot_light;
+    bool _spot_light_on = true;
 
     zth::debug::DirectionalLightUi _directional_light_ui{ *_directional_light };
     zth::debug::PointLightUi _point_light_ui{ *_point_light };
@@ -34,7 +40,8 @@ private:
     auto on_update() -> void override;
     auto on_event(const zth::Event& event) -> void override;
 
-    auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
+    auto on_window_resized_event(const zth::WindowResizedEvent& event) -> void;
+    auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 
     auto update_ui() -> void;
 };
