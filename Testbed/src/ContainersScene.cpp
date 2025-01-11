@@ -14,8 +14,25 @@ constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
 
-const auto directional_light_direction = glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f });
-constexpr auto point_light_position = glm::vec3{ -0.7f, 1.3f, 1.7f };
+const auto directional_light = zth::DirectionalLight{
+    .direction = glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }),
+    .properties = {
+        .ambient = glm::vec3{ 0.1f },
+        .diffuse = glm::vec3{ 0.25f },
+        .specular = glm::vec3{ 0.5f },
+    },
+};
+
+constexpr auto point_light = zth::PointLight{
+    .position = glm::vec3{ -0.7f, 1.3f, 1.7f },
+    .properties = {
+        .color = glm::vec3{ 1.0f, 0.0f, 1.0f },
+    },
+    .attenuation = {
+        .linear = 0.09f,
+        .quadratic = 0.032f,
+    },
+};
 
 constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    glm::vec3{ 2.0f, 5.0f, -15.0f },
                                              glm::vec3{ -1.5f, -2.2f, -2.5f }, glm::vec3{ -3.8f, -2.0f, -12.3f },
@@ -30,9 +47,8 @@ ContainersScene::ContainersScene()
       _container_material{ .diffuse_map = &_diffuse_map, .specular_map = &_specular_map },
       _light_marker_material{ .shader = &zth::shaders::flat_color() },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
-      _camera_controller{ _camera },
-      _directional_light(std::make_shared<zth::DirectionalLight>(directional_light_direction)),
-      _point_light(std::make_shared<zth::PointLight>(point_light_position))
+      _camera_controller{ _camera }, _directional_light(std::make_shared<zth::DirectionalLight>(directional_light)),
+      _point_light(std::make_shared<zth::PointLight>(point_light))
 {
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
