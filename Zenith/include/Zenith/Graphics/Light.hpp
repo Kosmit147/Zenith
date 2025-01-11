@@ -1,6 +1,9 @@
 #pragma once
 
+#include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
+
+#include "Zenith/Math/Vector.hpp"
 
 namespace zth {
 
@@ -36,7 +39,7 @@ struct LightAttenuation
 
 struct DirectionalLight
 {
-    glm::vec3 direction{ 0.0f, -1.0f, 0.0f };
+    glm::vec3 direction{ math::world_down };
     LightProperties properties{};
 };
 
@@ -49,7 +52,12 @@ struct PointLight
 
 struct SpotLight
 {
-    // TODO
+    glm::vec3 position{ 0.0f };
+    glm::vec3 direction{ math::world_down };
+    float inner_cutoff = glm::cos(glm::radians(12.5f)); // cos of the inner cone angle
+    float outer_cutoff = glm::cos(glm::radians(15.0f)); // cos of the outer cone angle
+    LightProperties properties{};
+    LightAttenuation attenuation{};
 };
 
 struct AmbientLight

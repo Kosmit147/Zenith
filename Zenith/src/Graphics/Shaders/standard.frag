@@ -54,8 +54,16 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
     LightProperties pointLightProperties;
     LightAttenuation pointLightAttenuation;
 
+    vec3 spotLightPosition;
+    vec3 spotLightDirection;
+    float spotLightInnerCutoff;
+    float spotLightOuterCutoff;
+    LightProperties spotLightProperties;
+    LightAttenuation spotLightAttenuation;
+
     bool hasDirectionalLight;
     bool hasPointLight;
+    bool hasSpotLight;
 };
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
@@ -91,6 +99,31 @@ Light createPointLight()
 Light createDirectionalLight()
 {
     return Light(normalize(directionalLightDirection), directionalLightProperties, 1.0);
+}
+
+Light createSpotLight()
+{
+    vec3 diff = Position - spotLightPosition;
+    float dist = length(diff);
+    float attenuation = getAttenuation(spotLightAttenuation, dist);
+
+    diff = normalize(diff);
+    float angle = dot(spotLightDirection, diff);
+    float intensity = clamp((angle - spotLightOuterCutoff) / (spotLightInnerCutoff - spotLightOuterCutoff), 0.0, 1.0);
+    attenuation *= intensity;
+
+    return Light(normalize(spotLightDirection), spotLightProperties, attenuation);
+}
+
+bool isLitBySpotlight()
+{
+    vec3 diff = normalize(Position - spotLightPosition);
+    float angle = dot(spotLightDirection, diff);
+
+    if (angle < spotLightOuterCutoff)
+        return false;
+    else
+        return true;
 }
 
 vec3 getAmbientStrength(Light light)
@@ -142,6 +175,12 @@ void main()
     {
         Light directionalLight = createDirectionalLight();
         lightStrength += getLightStrength(directionalLight);
+    }
+
+    if (hasSpotLight && isLitBySpotlight())
+    {
+        Light spotLight = createSpotLight();
+        lightStrength += getLightStrength(spotLight);
     }
 
     outColor = vec4(lightStrength * objectColor.rgb, objectColor.a);

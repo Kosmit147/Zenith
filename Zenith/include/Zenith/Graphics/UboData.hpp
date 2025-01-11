@@ -41,8 +41,16 @@ struct LightUboData
     LightProperties point_light_properties;
     LightAttenuation point_light_attenuation;
 
+    ZTH_UBO_FIELD(glm::vec3, spot_light_position);
+    ZTH_UBO_FIELD(glm::vec3, spot_light_direction);
+    ZTH_UBO_FIELD(GLfloat, spot_light_inner_cutoff);
+    ZTH_UBO_FIELD(GLfloat, spot_light_outer_cutoff);
+    LightProperties spot_light_properties;
+    LightAttenuation spot_light_attenuation;
+
     ZTH_UBO_FIELD(GlslBool, has_directional_light = false);
     ZTH_UBO_FIELD(GlslBool, has_point_light = false);
+    ZTH_UBO_FIELD(GlslBool, has_spot_light = false);
 };
 
 struct MaterialUboData

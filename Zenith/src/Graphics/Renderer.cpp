@@ -105,6 +105,11 @@ auto Renderer::set_point_light(std::shared_ptr<const PointLight> point_light) ->
     renderer->_point_light = std::move(point_light);
 }
 
+auto Renderer::set_spot_light(std::shared_ptr<const SpotLight> spot_light) -> void
+{
+    renderer->_spot_light = std::move(spot_light);
+}
+
 auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
 {
     draw(shape.mesh(), shape.transform(), material);
@@ -248,6 +253,28 @@ auto Renderer::upload_light_ubo() -> void
             .specular = properties.specular,
         };
         light_ubo_data.point_light_attenuation = {
+            .constant = attenuation.constant,
+            .linear = attenuation.linear,
+            .quadratic = attenuation.quadratic,
+        };
+    }
+
+    if (renderer->_spot_light)
+    {
+        const auto& [position, direction, inner_cutoff, outer_cutoff, properties, attenuation] = *renderer->_spot_light;
+        light_ubo_data.has_spot_light = true;
+
+        light_ubo_data.spot_light_position = position;
+        light_ubo_data.spot_light_direction = direction;
+        light_ubo_data.spot_light_inner_cutoff = inner_cutoff;
+        light_ubo_data.spot_light_outer_cutoff = outer_cutoff;
+        light_ubo_data.spot_light_properties = {
+            .color = properties.color,
+            .ambient = properties.ambient,
+            .diffuse = properties.diffuse,
+            .specular = properties.specular,
+        };
+        light_ubo_data.spot_light_attenuation = {
             .constant = attenuation.constant,
             .linear = attenuation.linear,
             .quadratic = attenuation.quadratic,

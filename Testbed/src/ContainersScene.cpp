@@ -34,6 +34,15 @@ constexpr auto point_light = zth::PointLight{
     },
 };
 
+const auto spot_light = zth::SpotLight{
+    .position = camera_position,
+    .direction = camera_forward,
+    .attenuation = {
+        .linear = 0.09f,
+        .quadratic = 0.032f,
+    },
+};
+
 constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    glm::vec3{ 2.0f, 5.0f, -15.0f },
                                              glm::vec3{ -1.5f, -2.2f, -2.5f }, glm::vec3{ -3.8f, -2.0f, -12.3f },
                                              glm::vec3{ 2.4f, -0.4f, -3.5f },  glm::vec3{ -1.7f, 3.0f, -7.5f },
@@ -48,7 +57,8 @@ ContainersScene::ContainersScene()
       _light_marker_material{ .shader = &zth::shaders::flat_color() },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller{ _camera }, _directional_light(std::make_shared<zth::DirectionalLight>(directional_light)),
-      _point_light(std::make_shared<zth::PointLight>(point_light))
+      _point_light(std::make_shared<zth::PointLight>(point_light)),
+      _spot_light(std::make_shared<zth::SpotLight>(spot_light))
 {
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
@@ -67,6 +77,7 @@ auto ContainersScene::on_load() -> void
     zth::Renderer::set_camera(_camera);
     zth::Renderer::set_directional_light(_directional_light);
     zth::Renderer::set_point_light(_point_light);
+    zth::Renderer::set_spot_light(_spot_light);
 }
 
 auto ContainersScene::on_update() -> void
@@ -75,6 +86,9 @@ auto ContainersScene::on_update() -> void
 
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
+
+    _spot_light->position = _camera->translation();
+    _spot_light->direction = zth::math::to_direction(_camera->rotation());
 
     _light_marker.set_translation(_point_light->position);
     _light_marker_material.albedo = _point_light->properties.color;
@@ -96,15 +110,30 @@ auto ContainersScene::on_event(const zth::Event& event) -> void
         on_window_resized_event(window_resized_event);
     }
     break;
+    case KeyPressed:
+    {
+        auto key_pressed_event = event.key_pressed_event();
+        on_key_pressed_event(key_pressed_event);
+    }
+    break;
     default:
         break;
     }
 }
 
-auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
 {
     auto new_size = event.new_size;
     _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
+}
+
+auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    if (event.key == toggle_spotlight_key)
+    {
+        _spot_light_on = !_spot_light_on;
+        zth::Renderer::set_spot_light(_spot_light_on ? _spot_light : nullptr);
+    }
 }
 
 auto ContainersScene::update_ui() -> void
