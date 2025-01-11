@@ -17,10 +17,18 @@ struct LightProperties
     vec3 specular;
 };
 
+struct LightAttenuation
+{
+    float constant;
+    float linear;
+    float quadratic;
+};
+
 struct Light
 {
     vec3 direction;
     LightProperties properties;
+    float attenuation;
 };
 
 in vec3 Position;
@@ -44,6 +52,7 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
 
     vec3 pointLightPosition;
     LightProperties pointLightProperties;
+    LightAttenuation pointLightAttenuation;
 
     bool hasDirectionalLight;
     bool hasPointLight;
@@ -64,28 +73,34 @@ uniform sampler2D emissionMap;
 
 out vec4 outColor;
 
+float getAttenuation(LightAttenuation attenuation, float dist)
+{
+    return 1.0 / (attenuation.constant + attenuation.linear * dist + attenuation.quadratic * (dist * dist));
+}
+
 Light createPointLight()
 {
-    vec3 pointLightDirection = normalize(Position - pointLightPosition);
-    Light pointLight = Light(pointLightDirection, pointLightProperties);
-    return pointLight;
+    vec3 diff = Position - pointLightPosition;
+    float dist = length(diff);
+    float attenuation = getAttenuation(pointLightAttenuation, dist);
+    vec3 pointLightDirection = normalize(diff);
+
+    return Light(pointLightDirection, pointLightProperties, attenuation);
 }
 
 Light createDirectionalLight()
 {
-    Light directionalLight = Light(normalize(directionalLightDirection), directionalLightProperties);
-    return directionalLight;
+    return Light(normalize(directionalLightDirection), directionalLightProperties, 1.0);
 }
 
 vec3 getAmbientStrength(Light light)
 {
-    return light.properties.ambient * light.properties.color;
+    return light.properties.ambient;
 }
 
 vec3 getDiffuseStrength(Light light)
 {
-    vec3 diffuseFactor = light.properties.diffuse * max(dot(-light.direction, Normal), 0.0);
-    return diffuseFactor * light.properties.color;
+    return light.properties.diffuse * max(dot(-light.direction, Normal), 0.0);
 }
 
 vec3 getSpecularStrength(Light light)
@@ -97,7 +112,7 @@ vec3 getSpecularStrength(Light light)
     if (hasSpecularMap)
         specularFactor *= vec3(texture(specularMap, UV));
 
-    return specularFactor * light.properties.color;
+    return specularFactor;
 }
 
 vec3 getLightStrength(Light light)
@@ -105,7 +120,7 @@ vec3 getLightStrength(Light light)
     vec3 ambient = getAmbientStrength(light) * material.ambient;
     vec3 diffuse = getDiffuseStrength(light) * material.diffuse;
     vec3 specular = getSpecularStrength(light) * material.specular;
-    return ambient + diffuse + specular;
+    return (ambient + diffuse + specular) * light.properties.color * light.attenuation;
 }
 
 void main()

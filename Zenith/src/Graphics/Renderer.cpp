@@ -237,7 +237,7 @@ auto Renderer::upload_light_ubo() -> void
 
     if (renderer->_point_light)
     {
-        const auto& [position, properties] = *renderer->_point_light;
+        const auto& [position, properties, attenuation] = *renderer->_point_light;
         light_ubo_data.has_point_light = true;
 
         light_ubo_data.point_light_position = position;
@@ -246,6 +246,11 @@ auto Renderer::upload_light_ubo() -> void
             .ambient = properties.ambient,
             .diffuse = properties.diffuse,
             .specular = properties.specular,
+        };
+        light_ubo_data.point_light_attenuation = {
+            .constant = attenuation.constant,
+            .linear = attenuation.linear,
+            .quadratic = attenuation.quadratic,
         };
     }
 

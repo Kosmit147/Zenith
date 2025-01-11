@@ -291,6 +291,9 @@ auto PointLightUi::on_update() -> void
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
     ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
 
+    static_assert(sizeof(_light.attenuation) == 3 * sizeof(float));
+    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed);
+
     ImGui::End();
 }
 

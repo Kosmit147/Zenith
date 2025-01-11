@@ -18,20 +18,24 @@ constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
 constexpr auto aspect_ratio = 16.0f / 9.0f;
 constexpr auto fov = glm::radians(45.0f);
 
-const auto directional_light_direction = glm::normalize(glm::vec3{ 0.0f, -1.0f, 0.0f });
-constexpr auto directional_light_properties = zth::LightProperties{ .color = glm::vec3{ 0.0f } };
+const auto directional_light = zth::DirectionalLight{
+    .direction = glm::normalize(glm::vec3{ 0.0f, -1.0f, 0.0f }),
+    .properties = zth::LightProperties{ .color = glm::vec3{ 0.0f } },
+};
 
-constexpr auto point_light_position = glm::vec3{ -0.7f, 1.3f, 1.7f };
-constexpr auto point_light_properties = zth::LightProperties{};
+constexpr auto point_light = zth::PointLight{ .position = glm::vec3{ -0.7f, 1.3f, 1.7f },
+                                              .attenuation = {
+                                                  .linear = 0.09f,
+                                                  .quadratic = 0.032f,
+                                              } };
 
 } // namespace
 
 MainScene::MainScene()
-    : _light_marker_material{ .shader = &zth::shaders::flat_color(), .albedo = point_light_properties.color },
+    : _light_marker_material{ .shader = &zth::shaders::flat_color(), .albedo = point_light.properties.color },
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
-      _camera_controller(_camera), _directional_light(std::make_shared<zth::DirectionalLight>(
-                                       directional_light_direction, directional_light_properties)),
-      _point_light(std::make_shared<zth::PointLight>(point_light_position, point_light_properties))
+      _camera_controller(_camera), _directional_light(std::make_shared<zth::DirectionalLight>(directional_light)),
+      _point_light(std::make_shared<zth::PointLight>(point_light))
 {
     _transform_gizmo.toggle_key = Testbed::toggle_cursor_key;
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
