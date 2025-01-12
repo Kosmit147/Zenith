@@ -11,11 +11,6 @@ GlBuffer::GlBuffer()
     create();
 }
 
-GlBuffer::~GlBuffer()
-{
-    destroy();
-}
-
 auto GlBuffer::create_static(usize size) -> GlBuffer
 {
     GlBuffer buffer;
@@ -61,6 +56,11 @@ auto GlBuffer::operator=(GlBuffer&& other) noexcept -> GlBuffer&
     other._usage = std::nullopt;
 
     return *this;
+}
+
+GlBuffer::~GlBuffer()
+{
+    destroy();
 }
 
 auto GlBuffer::init_static(usize size) -> void
@@ -184,15 +184,14 @@ auto VertexBuffer::create_dynamic(usize size, GlBufferUsage usage) -> VertexBuff
     return buffer;
 }
 
-VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : GlBuffer(std::move(other)), _stride(other._stride)
+VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : _buffer(std::move(other._buffer)), _stride(other._stride)
 {
     other._stride = 0;
 }
 
 auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
 {
-    GlBuffer::operator=(std::move(other));
-
+    _buffer = std::move(other._buffer);
     _stride = other._stride;
 
     other._stride = 0;
@@ -202,17 +201,17 @@ auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
 
 auto VertexBuffer::init_static(usize size) -> void
 {
-    GlBuffer::init_static(size);
+    _buffer.init_static(size);
 }
 
 auto VertexBuffer::init_dynamic(GlBufferUsage usage) -> void
 {
-    GlBuffer::init_dynamic(usage);
+    _buffer.init_dynamic(usage);
 }
 
 auto VertexBuffer::init_dynamic(usize size, GlBufferUsage usage) -> void
 {
-    GlBuffer::init_dynamic(size, usage);
+    _buffer.init_dynamic(size, usage);
 }
 
 auto VertexBuffer::bind() const -> void
@@ -254,7 +253,7 @@ auto IndexBuffer::create_dynamic(usize size, GlBufferUsage usage) -> IndexBuffer
 }
 
 IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
-    : GlBuffer(std::move(other)), _index_type(other._index_type), _size(other._size)
+    : _buffer(std::move(other._buffer)), _index_type(other._index_type), _size(other._size)
 {
     other._index_type = GL_NONE;
     other._size = 0;
@@ -262,8 +261,7 @@ IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
 
 auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
 {
-    GlBuffer::operator=(std::move(other));
-
+    _buffer = std::move(other._buffer);
     _index_type = other._index_type;
     _size = other._size;
 
@@ -275,17 +273,17 @@ auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
 
 auto IndexBuffer::init_static(usize size) -> void
 {
-    GlBuffer::init_static(size);
+    _buffer.init_static(size);
 }
 
 auto IndexBuffer::init_dynamic(GlBufferUsage usage) -> void
 {
-    GlBuffer::init_dynamic(usage);
+    _buffer.init_dynamic(usage);
 }
 
 auto IndexBuffer::init_dynamic(usize size, GlBufferUsage usage) -> void
 {
-    GlBuffer::init_dynamic(size, usage);
+    _buffer.init_dynamic(size, usage);
 }
 
 auto IndexBuffer::bind() const -> void
@@ -296,53 +294,6 @@ auto IndexBuffer::bind() const -> void
 auto IndexBuffer::unbind() -> void
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
-}
-
-// --------------------------- UniformBuffer ---------------------------
-
-auto UniformBuffer::create_static(usize size) -> UniformBuffer
-{
-    UniformBuffer buffer;
-    buffer.init_static(size);
-    return buffer;
-}
-
-auto UniformBuffer::create_static(usize size, u32 binding_index) -> UniformBuffer
-{
-    UniformBuffer buffer;
-    buffer.init_static(size, binding_index);
-    return buffer;
-}
-
-auto UniformBuffer::init_static(usize size) -> void
-{
-    GlBuffer::init_static(size);
-}
-
-auto UniformBuffer::init_static(usize size, u32 binding_index) -> void
-{
-    GlBuffer::init_static(size);
-    set_binding_index(binding_index);
-}
-
-auto UniformBuffer::buffer_data(const void* data, usize offset, usize size_bytes) -> void
-{
-    GlBuffer::buffer_data(data, offset, size_bytes);
-}
-
-auto UniformBuffer::bind() const -> void
-{
-    glBindBuffer(GL_UNIFORM_BUFFER, native_handle());
-}
-
-auto UniformBuffer::unbind() -> void
-{
-    glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
-}
-
-auto UniformBuffer::set_binding_index(u32 index) const -> void
-{
-    glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(index), native_handle());
 }
 
 // --------------------------- InstanceBuffer ---------------------------
@@ -366,6 +317,53 @@ auto InstanceBuffer::create_dynamic(usize size, GlBufferUsage usage) -> Instance
     InstanceBuffer buffer;
     buffer.init_dynamic(size, usage);
     return buffer;
+}
+
+// --------------------------- UniformBuffer ---------------------------
+
+auto UniformBuffer::create_static(usize size) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static(size);
+    return buffer;
+}
+
+auto UniformBuffer::create_static(usize size, u32 binding_index) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static(size, binding_index);
+    return buffer;
+}
+
+auto UniformBuffer::init_static(usize size) -> void
+{
+    _buffer.init_static(size);
+}
+
+auto UniformBuffer::init_static(usize size, u32 binding_index) -> void
+{
+    _buffer.init_static(size);
+    set_binding_index(binding_index);
+}
+
+auto UniformBuffer::buffer_data(const void* data, usize offset, usize size_bytes) -> void
+{
+    _buffer.buffer_data(data, offset, size_bytes);
+}
+
+auto UniformBuffer::bind() const -> void
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, native_handle());
+}
+
+auto UniformBuffer::unbind() -> void
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
+}
+
+auto UniformBuffer::set_binding_index(u32 index) const -> void
+{
+    glBindBufferBase(GL_UNIFORM_BUFFER, index, native_handle());
 }
 
 } // namespace zth
