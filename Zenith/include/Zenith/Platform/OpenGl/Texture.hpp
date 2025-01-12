@@ -10,16 +10,7 @@
 
 namespace zth {
 
-class Texture
-{
-public:
-    virtual ~Texture() = default;
-
-    virtual auto bind(u32 slot = 0) const -> void = 0;
-    virtual auto unbind(u32 slot = 0) const -> void = 0;
-};
-
-class Texture2D : public Texture
+class Texture2D
 {
 public:
     explicit Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params = {});
@@ -29,10 +20,10 @@ public:
     Texture2D(Texture2D&& other) noexcept;
     auto operator=(Texture2D&& other) noexcept -> Texture2D&;
 
-    ~Texture2D() override;
+    ~Texture2D();
 
-    auto bind(u32 slot = 0) const -> void override;
-    auto unbind(u32 slot = 0) const -> void override;
+    auto bind(u32 slot = 0) const -> void;
+    auto unbind(u32 slot = 0) const -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
 
