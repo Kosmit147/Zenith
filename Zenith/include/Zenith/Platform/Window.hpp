@@ -25,6 +25,7 @@ struct WindowSpec
     GlProfile gl_profile = GlProfile::Core;
     bool fullscreen = false;
     bool vsync = true;
+    std::optional<u32> frame_rate_limit = std::nullopt;
     bool resizable = true;
     bool maximized = false;
     bool cursor_enabled = false;
@@ -57,6 +58,8 @@ public:
     static auto poll_events() -> void;
     static auto close() -> void;
 
+    static auto set_frame_rate_limit(u32 limit) -> void;
+    static auto disable_frame_rate_limit() -> void;
     static auto set_cursor_enabled(bool enabled) -> void;
     static auto enable_cursor() -> void;
     static auto disable_cursor() -> void;
@@ -68,6 +71,8 @@ public:
 
 private:
     static inline GLFWwindow* _window = nullptr;
+    static inline double _target_frame_time = 0.0;
+    static inline double _last_frame_time = 0.0;
 
 private:
     [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;

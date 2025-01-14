@@ -11,6 +11,7 @@
 #include "Zenith/Graphics/Materials.hpp"
 #include "Zenith/Graphics/Renderer.hpp"
 #include "Zenith/Platform/Events.hpp"
+#include "Zenith/Platform/Window.hpp"
 
 namespace zth::debug {
 
@@ -35,6 +36,25 @@ auto DebugToolsUi::on_update() -> void
 
     auto fps = ImGui::GetIO().Framerate;
     ImGui::Text("FPS: %0.0f", fps);
+
+    if (ImGui::Checkbox("FPS Limit", &_frame_rate_limit_enabled))
+    {
+        if (_frame_rate_limit_enabled)
+            Window::set_frame_rate_limit(_frame_rate_limit);
+        else
+            Window::disable_frame_rate_limit();
+    }
+
+    if (_frame_rate_limit_enabled)
+    {
+        int fps_limit = static_cast<int>(_frame_rate_limit);
+
+        if (ImGui::InputInt("##", &fps_limit))
+        {
+            _frame_rate_limit = static_cast<u32>(fps_limit);
+            Window::set_frame_rate_limit(_frame_rate_limit);
+        }
+    }
 
     auto label = fmt::format("Wireframe ({})", toggle_wireframe_mode_key);
 

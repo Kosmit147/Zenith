@@ -20,7 +20,7 @@ public:
         return static_cast<usize>(ns.count());
     }
 
-    [[nodiscard]] auto elapsed_ms() const -> double { return static_cast<double>(elapsed_ns()) / 1000.0 / 1000.0; }
+    [[nodiscard]] auto elapsed_ms() const -> double { return static_cast<double>(elapsed_ns()) / (1000.0 * 1000.0); }
     [[nodiscard]] auto elapsed_s() const -> double { return elapsed_ms() / 1000.0; }
 
 private:

@@ -83,12 +83,16 @@ auto Window::init(const WindowSpec& spec) -> void
 
     set_active();
     set_vsync(spec.vsync);
+
+    if (auto limit = spec.frame_rate_limit)
+        set_frame_rate_limit(*limit);
+
     set_cursor_enabled(spec.cursor_enabled);
 
     set_glfw_input_callbacks();
 
-    if (spec.forced_aspect_ratio)
-        glfw_force_aspect_ratio(spec.forced_aspect_ratio.value());
+    if (auto ratio = spec.forced_aspect_ratio)
+        glfw_force_aspect_ratio(*ratio);
 
     if (!init_glad())
     {
@@ -137,6 +141,13 @@ auto Window::set_vsync(bool value) -> void
 auto Window::swap_buffers() -> void
 {
     glfwSwapBuffers(_window);
+
+    auto frame_time = time() - _last_frame_time;
+
+    while (frame_time < _target_frame_time)
+        frame_time = time() - _last_frame_time;
+
+    _last_frame_time = time();
 }
 
 auto Window::poll_events() -> void
@@ -147,6 +158,16 @@ auto Window::poll_events() -> void
 auto Window::close() -> void
 {
     glfwSetWindowShouldClose(_window, true);
+}
+
+auto Window::set_frame_rate_limit(u32 limit) -> void
+{
+    _target_frame_time = 1.0 / static_cast<double>(limit);
+}
+
+auto Window::disable_frame_rate_limit() -> void
+{
+    _target_frame_time = 0.0;
 }
 
 auto Window::set_cursor_enabled(bool enabled) -> void

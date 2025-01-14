@@ -35,6 +35,8 @@ public:
     auto on_update() -> void;
 
 private:
+    bool _frame_rate_limit_enabled = false;
+    u32 _frame_rate_limit = 60;
     bool _wireframe_mode_enabled = false;
 };
 
