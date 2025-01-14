@@ -37,6 +37,12 @@ auto DebugToolsUi::on_update() -> void
     auto fps = ImGui::GetIO().Framerate;
     ImGui::Text("FPS: %0.0f", fps);
 
+    {
+        auto limit = Window::frame_rate_limit();
+        _frame_rate_limit = limit.value_or(60);
+        _frame_rate_limit_enabled = limit.has_value();
+    }
+
     if (ImGui::Checkbox("FPS Limit", &_frame_rate_limit_enabled))
     {
         if (_frame_rate_limit_enabled)
@@ -47,11 +53,11 @@ auto DebugToolsUi::on_update() -> void
 
     if (_frame_rate_limit_enabled)
     {
-        int fps_limit = static_cast<int>(_frame_rate_limit);
+        int limit = static_cast<int>(_frame_rate_limit);
 
-        if (ImGui::InputInt("##", &fps_limit))
+        if (ImGui::InputInt("##", &limit))
         {
-            _frame_rate_limit = static_cast<u32>(fps_limit);
+            _frame_rate_limit = static_cast<u32>(limit);
             Window::set_frame_rate_limit(_frame_rate_limit);
         }
     }

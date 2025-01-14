@@ -162,11 +162,13 @@ auto Window::close() -> void
 
 auto Window::set_frame_rate_limit(u32 limit) -> void
 {
+    _frame_rate_limit = limit;
     _target_frame_time = 1.0 / static_cast<double>(limit);
 }
 
 auto Window::disable_frame_rate_limit() -> void
 {
+    _frame_rate_limit = std::nullopt;
     _target_frame_time = 0.0;
 }
 
@@ -211,6 +213,11 @@ auto Window::mouse_pos() -> glm::vec2
     double x_pos, y_pos;
     glfwGetCursorPos(_window, &x_pos, &y_pos);
     return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
+}
+
+auto Window::frame_rate_limit() -> std::optional<u32>
+{
+    return _frame_rate_limit;
 }
 
 auto Window::cursor_enabled() -> bool

@@ -67,12 +67,14 @@ public:
     [[nodiscard]] static auto glfw_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
+    [[nodiscard]] static auto frame_rate_limit() -> std::optional<u32>;
     [[nodiscard]] static auto cursor_enabled() -> bool;
 
 private:
     static inline GLFWwindow* _window = nullptr;
     static inline double _target_frame_time = 0.0;
     static inline double _last_frame_time = 0.0;
+    static inline std::optional<u32> _frame_rate_limit = std::nullopt;
 
 private:
     [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;
