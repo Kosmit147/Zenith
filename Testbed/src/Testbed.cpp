@@ -14,7 +14,7 @@ const zth::ApplicationSpec app_spec = {
         .size = { 800, 600 },
         .title = "Testbed",
         .fullscreen = false,
-        .vsync = true,
+        .vsync = false,
         .maximized = true,
         .cursor_enabled = false,
     },
