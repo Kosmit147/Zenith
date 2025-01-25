@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+#include "Zenith/Utility/Macros.hpp"
+
 namespace zth {
 
 struct LoggerSpec
@@ -53,7 +55,7 @@ private:
 #undef ZTH_CORE_TRACE
 #undef ZTH_CORE_DEBUG
 
-#define ZTH_CORE_TRACE(...)
-#define ZTH_CORE_DEBUG(...)
+#define ZTH_CORE_TRACE(...) ZTH_NOP
+#define ZTH_CORE_DEBUG(...) ZTH_NOP
 
 #endif

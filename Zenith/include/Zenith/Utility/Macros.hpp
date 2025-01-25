@@ -74,3 +74,7 @@
 #define ZTH_UNIQUE_NAME_INTERNAL(name, counter) ZTH_UNIQUE_NAME_INTERNAL2(name, counter)
 
 #define ZTH_UNIQUE_NAME(name) ZTH_UNIQUE_NAME_INTERNAL(name, __COUNTER__)
+
+// ZTH_NOP
+
+#define ZTH_NOP ((void)0)
