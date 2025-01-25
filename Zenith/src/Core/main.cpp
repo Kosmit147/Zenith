@@ -25,17 +25,21 @@ auto main() -> int
     }
     catch (const spdlog::spdlog_ex& e)
     {
-        std::println(std::cerr, "Failed to initialize logger: {}", e.what());
+        std::println(std::cerr, "CRITICAL ERROR: Failed to initialize logger: {}", e.what());
     }
     catch (const Exception& e)
     {
-        std::println(std::cerr, "{}\n{}", e.what(), e.stacktrace());
+        std::println(std::cerr, "CRITICAL ERROR: {}\n{}", e.what(), e.stacktrace());
     }
     catch (const std::exception& e)
     {
-        std::println(std::cerr, "{}", e.what());
+        std::println(std::cerr, "CRITICAL ERROR: {}", e.what());
+    }
+    catch (...)
+    {
+        std::println(std::cerr, "CRITICAL ERROR: Unrecognized exception thrown.");
     }
 
-    // this must be called before main finishes if using asynchronous loggers
+    // this should be called before main finishes if using asynchronous loggers
     spdlog::drop_all();
 }

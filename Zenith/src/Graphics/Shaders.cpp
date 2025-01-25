@@ -10,12 +10,12 @@ namespace zth::shaders {
 namespace {
 
 // @cleanup: move to some kind of embedded module
-const auto fallback_vertex_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_fallback.vert">().data());
-const auto fallback_fragment_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_fallback.frag">().data());
-const auto flat_color_vertex_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_flat_color.vert">().data());
-const auto flat_color_fragment_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_flat_color.frag">().data());
-const auto standard_vertex_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_standard.vert">().data());
-const auto standard_fragment_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_standard.frag">().data());
+const auto fallback_vertex_source = std::string_view(b::embed<"src/graphics/shaders/zth_fallback.vert">().data());
+const auto fallback_fragment_source = std::string_view(b::embed<"src/graphics/shaders/zth_fallback.frag">().data());
+const auto flat_color_vertex_source = std::string_view(b::embed<"src/graphics/shaders/zth_flat_color.vert">().data());
+const auto flat_color_fragment_source = std::string_view(b::embed<"src/graphics/shaders/zth_flat_color.frag">().data());
+const auto standard_vertex_source = std::string_view(b::embed<"src/graphics/shaders/zth_standard.vert">().data());
+const auto standard_fragment_source = std::string_view(b::embed<"src/graphics/shaders/zth_standard.frag">().data());
 
 std::unique_ptr<ShaderList> shader_list;
 

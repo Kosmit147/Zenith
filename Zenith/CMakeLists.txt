@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.28)
-project(Zenith VERSION 0.1.0 LANGUAGES CXX)
+project(zenith VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(
-	ZenithCore STATIC
+	zenith_core STATIC
 	"src/core/application.cpp"
 	"src/core/asset_manager.cpp"
 	"src/core/camera_controller.cpp"
@@ -44,39 +44,40 @@ add_library(
 	"src/utility/string.cpp"
 )
 
-b_embed(ZenithCore "src/Graphics/Shaders/test.glsl")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_defines.glsl")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_fallback.vert")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_fallback.frag")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_flat_color.vert")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_flat_color.frag")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_standard.vert")
-b_embed(ZenithCore "src/Graphics/Shaders/zth_standard.frag")
+b_embed(zenith_core "src/graphics/shaders/test.glsl")
+b_embed(zenith_core "src/graphics/shaders/zth_defines.glsl")
+b_embed(zenith_core "src/graphics/shaders/zth_fallback.vert")
+b_embed(zenith_core "src/graphics/shaders/zth_fallback.frag")
+b_embed(zenith_core "src/graphics/shaders/zth_flat_color.vert")
+b_embed(zenith_core "src/graphics/shaders/zth_flat_color.frag")
+b_embed(zenith_core "src/graphics/shaders/zth_standard.vert")
+b_embed(zenith_core "src/graphics/shaders/zth_standard.frag")
 
-target_include_directories(ZenithCore PUBLIC "include")
-target_compile_features(ZenithCore PRIVATE cxx_std_23)
-target_compile_options(ZenithCore PRIVATE ${ZTH_COMPILE_WARNINGS})
-target_precompile_headers(ZenithCore PRIVATE "src/pch.hpp")
-set_property(TARGET ZenithCore PROPERTY COMPILE_WARNING_AS_ERROR On)
+target_include_directories(zenith_core PUBLIC "include")
+target_compile_features(zenith_core PRIVATE cxx_std_23)
+target_compile_options(zenith_core PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(zenith_core PRIVATE "src/pch.hpp")
+set_property(TARGET zenith_core PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 # GLM_ENABLE_EXPERIMENTAL is needed for matrix decomposition
-target_compile_definitions(ZenithCore PRIVATE GLM_ENABLE_EXPERIMENTAL)
+target_compile_definitions(zenith_core PRIVATE GLM_ENABLE_EXPERIMENTAL)
 
-add_subdirectory("ImGui")
+add_subdirectory("imgui")
 
-target_link_libraries(ZenithCore PUBLIC glad)
-target_link_libraries(ZenithCore PUBLIC glm)
-target_link_libraries(ZenithCore PUBLIC ImGui)
-target_link_libraries(ZenithCore PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
-target_link_libraries(ZenithCore PUBLIC stb_image)
+# we're linking with glfw through imgui
+target_link_libraries(zenith_core PUBLIC glad)
+target_link_libraries(zenith_core PUBLIC glm)
+target_link_libraries(zenith_core PUBLIC imgui)
+target_link_libraries(zenith_core PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(zenith_core PUBLIC stb_image)
 
 add_library(
-	Zenith STATIC
-	"src/Core/main.cpp"
+	zenith STATIC
+	"src/core/main.cpp"
 )
 
-target_compile_features(Zenith PRIVATE cxx_std_23)
-target_compile_options(Zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
-set_property(TARGET Zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+target_compile_features(zenith PRIVATE cxx_std_23)
+target_compile_options(zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
+set_property(TARGET zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-target_link_libraries(Zenith PUBLIC ZenithCore)
+target_link_libraries(zenith PUBLIC zenith_core)

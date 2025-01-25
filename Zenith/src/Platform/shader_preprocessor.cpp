@@ -14,8 +14,8 @@ namespace zth {
 namespace {
 
 // @todo: remove test_source
-const auto test_source = std::string_view{ b::embed<"src/Graphics/Shaders/test.glsl">().data() };
-const auto zth_defines_source = std::string_view{ b::embed<"src/Graphics/Shaders/zth_defines.glsl">().data() };
+const auto test_source = std::string_view{ b::embed<"src/graphics/shaders/test.glsl">().data() };
+const auto zth_defines_source = std::string_view{ b::embed<"src/graphics/shaders/zth_defines.glsl">().data() };
 
 constexpr auto include_str = "#include"sv;
 
