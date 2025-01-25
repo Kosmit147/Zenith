@@ -46,7 +46,7 @@ auto to_direction(glm::quat rotation) -> glm::vec3
 
 auto to_direction(EulerAngles angles) -> glm::vec3
 {
-    auto [pitch, yaw, roll] = angles;
+    auto [pitch, yaw, _] = angles;
 
     auto x = glm::cos(pitch) * glm::cos(yaw);
     auto y = glm::sin(pitch);

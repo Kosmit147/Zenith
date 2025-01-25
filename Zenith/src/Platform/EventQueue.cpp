@@ -9,14 +9,12 @@ auto EventQueue::push(const Event& event) -> void
 
 auto EventQueue::pop() -> std::optional<Event>
 {
-    std::optional<Event> res = {};
-
     if (_event_queue.empty())
-        return res;
+        return {};
 
-    res = _event_queue.front();
+    auto res = _event_queue.front();
     _event_queue.pop();
-    return res;
+    return std::make_optional(res);
 }
 
 } // namespace zth

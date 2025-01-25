@@ -1,6 +1,7 @@
 #include "Zenith/Core/SystemManager.hpp"
 
 #include "Zenith/Core/Application.hpp"
+#include "Zenith/Core/AssetManager.hpp"
 #include "Zenith/Core/SceneManager.hpp"
 #include "Zenith/Core/Typedefs.hpp"
 #include "Zenith/Graphics/ImGuiRenderer.hpp"
@@ -8,6 +9,7 @@
 #include "Zenith/Logging/Logger.hpp"
 #include "Zenith/Platform/Event.hpp"
 #include "Zenith/Platform/Input.hpp"
+#include "Zenith/Platform/ShaderPreprocessor.hpp"
 #include "Zenith/Time/Time.hpp"
 
 // list of which systems depend on which other systems
@@ -17,6 +19,8 @@
 // Time -> { Logger }
 // Window -> { Logger }
 // Input -> { Logger, Window }
+// ShaderPreprocessor -> { Logger }
+// AssetManager -> { Logger, ShaderPreprocessor }
 // Renderer -> { Logger, Window }
 // ImGuiRenderer -> { Logger, Renderer, Window }
 // SceneManager -> { Logger }
@@ -25,7 +29,7 @@ namespace zth {
 
 auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
 {
-    auto add_system = [&]<typename InitLambda>(InitLambda init_func, SystemShutdownFunc shutdown_func) {
+    auto add_system = [&]<typename InitFunc>(InitFunc init_func, SystemShutdownFunc shutdown_func) {
         init_func();
         _system_shutdown_funcs.push_back(shutdown_func);
     };
@@ -36,6 +40,8 @@ auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
         add_system([&] { Time::init(); }, Time::shut_down);
         add_system([&] { Window::init(spec.window_spec); }, Window::shut_down);
         add_system([&] { Input::init(); }, Input::shut_down);
+        add_system([&] { ShaderPreprocessor::init(); }, ShaderPreprocessor::shut_down);
+        add_system([&] { AssetManager::init(); }, AssetManager::shut_down);
         add_system([&] { Renderer::init(); }, Renderer::shut_down);
         add_system([&] { ImGuiRenderer::init(); }, ImGuiRenderer::shut_down);
         add_system([&] { SceneManager::init(); }, SceneManager::shut_down);

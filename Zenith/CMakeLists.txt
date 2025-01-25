@@ -4,12 +4,14 @@ project(Zenith VERSION 0.1.0 LANGUAGES CXX)
 add_library(
 	ZenithCore STATIC
 	"src/Core/Application.cpp"
+	"src/Core/AssetManager.cpp"
 	"src/Core/CameraController.cpp"
 	"src/Core/Exception.cpp"
 	"src/Core/SceneManager.cpp"
 	"src/Core/SystemManager.cpp"
 	"src/Core/Transformable.cpp"
 	"src/Debug/Ui/Ui.cpp"
+	"src/Filesystem/File.cpp"
 	"src/Graphics/Shapes/CubeShape.cpp"
 	"src/Graphics/Shapes/PyramidShape.cpp"
 	"src/Graphics/Shapes/Shape.cpp"
@@ -36,16 +38,20 @@ add_library(
 	"src/Platform/Input.cpp"
 	"src/Platform/Key.cpp"
 	"src/Platform/Mouse.cpp"
+	"src/Platform/ShaderPreprocessor.cpp"
 	"src/Platform/Window.cpp"
 	"src/Time/Time.cpp"
+	"src/Utility/String.cpp"
 )
 
-b_embed(ZenithCore "include/Zenith/Graphics/ShaderDefines.h")
-
-b_embed(ZenithCore "src/Graphics/Shaders/flat_color.vert")
-b_embed(ZenithCore "src/Graphics/Shaders/flat_color.frag")
-b_embed(ZenithCore "src/Graphics/Shaders/standard.vert")
-b_embed(ZenithCore "src/Graphics/Shaders/standard.frag")
+b_embed(ZenithCore "src/Graphics/Shaders/test.glsl")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_defines.glsl")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_fallback.vert")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_fallback.frag")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_flat_color.vert")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_flat_color.frag")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_standard.vert")
+b_embed(ZenithCore "src/Graphics/Shaders/zth_standard.frag")
 
 target_include_directories(ZenithCore PUBLIC "include")
 target_compile_features(ZenithCore PRIVATE cxx_std_23)

@@ -7,7 +7,7 @@ namespace zth {
 
 auto SceneManager::init() -> void
 {
-    ZTH_CORE_INFO("Scene Manager initialized.");
+    ZTH_CORE_INFO("Scene manager initialized.");
 }
 
 auto SceneManager::on_update() -> void
@@ -51,7 +51,7 @@ auto SceneManager::on_render() -> void
 
 auto SceneManager::shut_down() -> void
 {
-    ZTH_CORE_INFO("Scene Manager shut down.");
+    ZTH_CORE_INFO("Scene manager shut down.");
 }
 
 auto SceneManager::load_scene(std::unique_ptr<Scene>&& scene) -> void

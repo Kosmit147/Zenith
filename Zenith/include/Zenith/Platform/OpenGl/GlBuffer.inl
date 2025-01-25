@@ -27,7 +27,7 @@ auto GlBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
 
     using T = std::ranges::range_value_t<decltype(data)>;
     _size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
-    glNamedBufferStorage(_id, _size_bytes, data.data(), GL_DYNAMIC_STORAGE_BIT);
+    glNamedBufferStorage(_id, _size_bytes, std::data(data), GL_DYNAMIC_STORAGE_BIT);
 
     _state = GlBufferState::InitializedStatic;
 }
@@ -39,7 +39,7 @@ auto GlBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferU
     using T = std::ranges::range_value_t<decltype(data)>;
     _size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
     _usage = usage;
-    glNamedBufferData(_id, _size_bytes, data.data(), to_gl_enum(*_usage));
+    glNamedBufferData(_id, _size_bytes, std::data(data), to_gl_enum(*_usage));
 
     _state = GlBufferState::InitializedDynamic;
 }
@@ -48,7 +48,7 @@ auto GlBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offs
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = static_cast<GLsizeiptr>(std::size(data) * sizeof(T));
-    buffer_data(data.data(), offset, data_size_bytes);
+    buffer_data(std::data(data), offset, data_size_bytes);
 }
 
 auto GlBuffer::buffer_data(auto&& object, usize offset) -> void

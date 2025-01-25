@@ -26,6 +26,10 @@ enum class Key : u16;
 
 enum class MouseButton : u8;
 
+struct LineInfo;
+struct PreprocessShaderError;
+class ShaderPreprocessor;
+
 struct WindowAspectRatio;
 struct WindowSpec;
 class Window;

@@ -4,53 +4,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Zenith/Logging/Logger.hpp"
+#include "Zenith/Platform/ShaderPreprocessor.hpp"
 #include "Zenith/Utility/Cleanup.hpp"
 
 namespace zth {
 
 namespace {
 
-const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">().str();
-
-[[nodiscard]] auto preprocess_shader(std::string_view source) -> std::string
-{
-    std::string result;
-
-    const auto glsl_version_string_start = source.find("#version");
-    const auto glsl_version_string_end = source.find('\n', glsl_version_string_start);
-
-    // make sure we found a #version string, and it's not the only line in the file
-    if (glsl_version_string_start == std::string::npos || glsl_version_string_end + 1 >= source.size())
-    {
-        ZTH_DEBUG_BREAK;
-        result = source;
-        return result;
-    }
-
-    const auto shader_source_before_version = source.substr(0, glsl_version_string_start);
-    const auto glsl_version_string =
-        source.substr(glsl_version_string_start, glsl_version_string_end - glsl_version_string_start + 1);
-    const auto shader_source_after_version = source.substr(glsl_version_string_end + 1);
-
-    const std::array parts = {
-        shader_source_before_version,
-        glsl_version_string,
-        std::string_view{ shader_defines },
-        shader_source_after_version,
-    };
-
-    usize new_capacity = 0;
-
-    for (const auto& part : parts)
-        new_capacity += part.size();
-
-    result.reserve(new_capacity);
-
-    for (const auto& part : parts)
-        result += part;
-
-    return result;
-}
+// @cleanup: move to some kind of embedded module
+const auto fallback_vertex_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_fallback.vert">().data());
+const auto fallback_fragment_source = std::string_view(b::embed<"src/Graphics/Shaders/zth_fallback.frag">().data());
 
 [[nodiscard]] auto compile_shader(GLuint id, ShaderType type) -> bool
 {
@@ -83,7 +46,7 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
     auto shader = glCreateShader(to_gl_enum(type));
     Cleanup shader_cleanup{ [&] { glDeleteShader(shader); } };
 
-    const std::array sources = { source.data(), "\n\0" };
+    const std::array sources = { source.data(), "\n" };
     glShaderSource(shader, static_cast<GLsizei>(sources.size()), sources.data(), nullptr);
 
     auto success = compile_shader(shader, type);
@@ -153,20 +116,26 @@ const auto shader_defines = b::embed<"include/Zenith/Graphics/ShaderDefines.h">(
 
 Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
 {
-    auto preprocessed_vertex_source = preprocess_shader(vertex_source);
-    auto preprocessed_fragment_source = preprocess_shader(fragment_source);
+    // @todo: log errors
+    auto preprocessed_vertex_source = ShaderPreprocessor::preprocess(vertex_source);
+    auto preprocessed_fragment_source = ShaderPreprocessor::preprocess(fragment_source);
 
-    auto vertex_shader = create_shader(preprocessed_vertex_source, ShaderType::Vertex);
-    Cleanup vertex_shader_cleanup{ [&] { glDeleteShader(vertex_shader); } };
+    if (!preprocessed_vertex_source || !preprocessed_fragment_source)
+            return;
+
+    auto vertex_shader = create_shader(*preprocessed_vertex_source, ShaderType::Vertex);
 
     if (!vertex_shader)
         return;
 
-    auto fragment_shader = create_shader(preprocessed_fragment_source, ShaderType::Fragment);
-    Cleanup fragment_shader_cleanup{ [&] { glDeleteShader(fragment_shader); } };
+    Cleanup vertex_shader_cleanup{ [&] { glDeleteShader(vertex_shader); } };
+
+    auto fragment_shader = create_shader(*preprocessed_fragment_source, ShaderType::Fragment);
 
     if (!fragment_shader)
         return;
+
+    Cleanup fragment_shader_cleanup{ [&] { glDeleteShader(fragment_shader); } };
 
     auto program = create_shader_program(vertex_shader, fragment_shader);
 

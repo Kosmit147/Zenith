@@ -13,6 +13,7 @@ namespace zth {
 class Texture2D
 {
 public:
+    explicit Texture2D(const void* data, usize data_size_bytes, const TextureParams& params = {});
     explicit Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params = {});
 
     ZTH_NO_COPY(Texture2D)
@@ -23,7 +24,7 @@ public:
     ~Texture2D();
 
     auto bind(u32 slot = 0) const -> void;
-    auto unbind(u32 slot = 0) const -> void;
+    static auto unbind(u32 slot = 0) -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
 
@@ -35,6 +36,8 @@ private:
     auto destroy() const -> void;
 };
 
-} // namespace zth
+Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params)
+    : Texture2D(data.data(), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params)
+{}
 
-#include "Texture.inl"
+} // namespace zth

@@ -99,12 +99,12 @@ public:
 
 private:
     Material& _material;
+    usize _material_selected_idx = 0;
 
-    static constexpr i64 _none_selected = -1;
-    i64 _material_selected_idx = 0;
-    i64 _diffuse_map_selected_idx = _none_selected;
-    i64 _specular_map_selected_idx = _none_selected;
-    i64 _emission_map_selected_idx = _none_selected;
+    static constexpr i16 _no_map_selected = -1;
+    i16 _diffuse_map_selected_idx = _no_map_selected;
+    i16 _specular_map_selected_idx = _no_map_selected;
+    i16 _emission_map_selected_idx = _no_map_selected;
 
     std::vector<std::string> _diffuse_map_names;
     std::vector<const Texture2D*> _diffuse_maps;
@@ -114,9 +114,9 @@ private:
     std::vector<const Texture2D*> _emission_maps;
 
 private:
-    auto set_diffuse_map(i64 idx) -> void;
-    auto set_specular_map(i64 idx) -> void;
-    auto set_emission_map(i64 idx) -> void;
+    auto set_diffuse_map(i16 idx) -> void;
+    auto set_specular_map(i16 idx) -> void;
+    auto set_emission_map(i16 idx) -> void;
 };
 
 class DirectionalLightUi
@@ -174,7 +174,7 @@ private:
     std::vector<std::function<std::unique_ptr<Scene>()>> _scene_constructors;
 
 private:
-    auto load_scene(usize idx) -> void;
+    auto load_scene(usize idx) const -> void;
 };
 
 template<typename T>

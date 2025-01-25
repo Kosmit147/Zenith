@@ -78,8 +78,6 @@ private:
 
 private:
     [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;
-    static auto set_glfw_window_hints(const WindowSpec& spec) -> void;
-    static auto set_glfw_input_callbacks() -> void;
     static auto glfw_force_aspect_ratio(WindowAspectRatio aspect_ratio) -> void;
 
     static auto set_glfw_resize_callback(ResizeCallback callback) -> void;

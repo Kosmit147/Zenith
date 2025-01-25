@@ -175,7 +175,7 @@ auto MaterialUi::on_update() -> void
 
     if (ImGui::BeginCombo("Preset", material_names[_material_selected_idx]))
     {
-        for (const auto [i, name] : material_names | std::views::enumerate)
+        for (usize i = 0; i < material_names.size(); i++)
         {
             const auto is_selected = _material_selected_idx == i;
 
@@ -197,9 +197,9 @@ auto MaterialUi::on_update() -> void
 
     ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
 
-    auto map_picker = [](std::string_view label, i64 selected_idx, const std::vector<std::string>& map_names) {
+    auto map_picker = [](std::string_view label, i16 selected_idx, const std::vector<std::string>& map_names) {
         constexpr auto none_selected_label = "None";
-        std::optional<i64> pick = std::nullopt;
+        std::optional<i16> pick = std::nullopt;
 
         std::string_view selected_map_name = none_selected_label;
 
@@ -209,16 +209,16 @@ auto MaterialUi::on_update() -> void
         if (ImGui::BeginCombo(label.data(), selected_map_name.data()))
         {
             {
-                const auto is_selected = selected_idx == _none_selected;
+                const auto is_selected = selected_idx == _no_map_selected;
 
                 if (ImGui::Selectable(none_selected_label, is_selected))
-                    pick = _none_selected;
+                    pick = _no_map_selected;
 
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
             }
 
-            for (const auto [i, map] : map_names | std::views::enumerate)
+            for (i16 i = 0; i < static_cast<i16>(map_names.size()); i++)
             {
                 const auto is_selected = selected_idx == i;
 
@@ -270,19 +270,19 @@ auto MaterialUi::add_emission_map(std::string_view name, const Texture2D& emissi
     _emission_maps.push_back(&emission_map);
 }
 
-auto MaterialUi::set_diffuse_map(i64 idx) -> void
+auto MaterialUi::set_diffuse_map(i16 idx) -> void
 {
     _diffuse_map_selected_idx = idx;
     _material.diffuse_map = idx >= 0 ? _diffuse_maps[idx] : nullptr;
 }
 
-auto MaterialUi::set_specular_map(i64 idx) -> void
+auto MaterialUi::set_specular_map(i16 idx) -> void
 {
     _specular_map_selected_idx = idx;
     _material.specular_map = idx >= 0 ? _specular_maps[idx] : nullptr;
 }
 
-auto MaterialUi::set_emission_map(i64 idx) -> void
+auto MaterialUi::set_emission_map(i16 idx) -> void
 {
     _emission_map_selected_idx = idx;
     _material.emission_map = idx >= 0 ? _emission_maps[idx] : nullptr;
@@ -384,7 +384,7 @@ auto ScenePickerUi::next() -> void
     load_scene(_selected_scene_idx);
 }
 
-auto ScenePickerUi::load_scene(usize idx) -> void
+auto ScenePickerUi::load_scene(usize idx) const -> void
 {
     auto scene = _scene_constructors[idx]();
     SceneManager::load_scene(std::move(scene));
