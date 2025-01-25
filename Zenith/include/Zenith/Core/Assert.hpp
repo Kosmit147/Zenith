@@ -21,10 +21,10 @@
             std::abort();                                                                                              \
         }                                                                                                              \
     }                                                                                                                  \
-    ((void)0)
+    ZTH_NOP
 
 #else
 
-#define ZTH_ASSERT(expr) ((void)0)
+#define ZTH_ASSERT(expr) ZTH_NOP
 
 #endif
