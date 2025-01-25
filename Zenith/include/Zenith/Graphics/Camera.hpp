@@ -4,7 +4,7 @@
 #include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
 
-#include "Zenith/Math/Quaternion.hpp"
+#include "zenith/math/quaternion.hpp"
 
 namespace zth {
 

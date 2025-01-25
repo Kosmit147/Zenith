@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CubeShape.hpp"
-#include "PyramidShape.hpp"
-#include "Shape.hpp"
-#include "SphereShape.hpp"
+#include "cube_shape.hpp"
+#include "pyramid_shape.hpp"
+#include "shape.hpp"
+#include "sphere_shape.hpp"

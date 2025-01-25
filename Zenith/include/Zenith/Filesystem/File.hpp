@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "Zenith/Core/Typedefs.hpp"
+#include "zenith/core/typedefs.hpp"
 
 namespace zth::filesystem {
 

@@ -1,4 +1,4 @@
-#include "Zenith/Graphics/Mesh.hpp"
+#include "zenith/graphics/mesh.hpp"
 
 namespace zth {
 

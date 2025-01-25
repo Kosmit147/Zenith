@@ -1,10 +1,10 @@
-#include "Zenith/Logging/Logger.hpp"
+#include "zenith/logging/logger.hpp"
 
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include "Zenith/Core/Assert.hpp"
+#include "zenith/core/assert.hpp"
 
 namespace zth {
 

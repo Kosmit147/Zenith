@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-#include "Zenith/Platform/OpenGl/GlContext.hpp"
+#include "zenith/platform/gl/gl_context.hpp"
 
 struct GLFWwindow;
 

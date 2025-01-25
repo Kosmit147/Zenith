@@ -1,4 +1,4 @@
 #pragma once
 
-#include "Formatters.hpp"
-#include "Logger.hpp"
+#include "formatters.hpp"
+#include "logger.hpp"

@@ -1,7 +1,7 @@
-#include "Zenith/Core/Transformable.hpp"
+#include "zenith/core/transformable.hpp"
 
-#include "Zenith/Math/Matrix.hpp"
-#include "Zenith/Math/Quaternion.hpp"
+#include "zenith/math/matrix.hpp"
+#include "zenith/math/quaternion.hpp"
 
 namespace zth {
 

@@ -3,10 +3,10 @@ project(CubeGame LANGUAGES CXX)
 
 add_executable(
 	CubeGame
-	"src/Block.cpp"
-	"src/CubeGame.cpp"
-	"src/Player.cpp"
-	"src/Scene.cpp"
+	"src/block.cpp"
+	"src/cube_game.cpp"
+	"src/player.cpp"
+	"src/scene.cpp"
 )
 
 b_embed(CubeGame "assets/cobble.png")

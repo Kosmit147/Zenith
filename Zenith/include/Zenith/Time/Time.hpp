@@ -2,7 +2,7 @@
 
 #include <concepts>
 
-#include "Timer.hpp"
+#include "timer.hpp"
 
 namespace zth {
 

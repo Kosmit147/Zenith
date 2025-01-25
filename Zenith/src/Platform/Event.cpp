@@ -1,6 +1,6 @@
-#include "Zenith/Platform/Event.hpp"
+#include "zenith/platform/event.hpp"
 
-#include "Zenith/Core/Assert.hpp"
+#include "zenith/core/assert.hpp"
 
 namespace zth {
 

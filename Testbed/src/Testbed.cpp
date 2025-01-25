@@ -1,9 +1,9 @@
-#include "Testbed.hpp"
+#include "testbed.hpp"
 
 #include <imgui.h>
 
-#include "ContainersScene.hpp"
-#include "MainScene.hpp"
+#include "containers_scene.hpp"
+#include "main_scene.hpp"
 
 ZTH_IMPLEMENT_APP(Testbed)
 

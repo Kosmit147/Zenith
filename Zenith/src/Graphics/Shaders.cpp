@@ -1,9 +1,9 @@
-#include "Zenith/Graphics/Shaders.hpp"
+#include "zenith/graphics/shaders.hpp"
 
 #include <battery/embed.hpp>
 
-#include "Zenith/Core/Assert.hpp"
-#include "Zenith/Logging/Logger.hpp"
+#include "zenith/core/assert.hpp"
+#include "zenith/logging/logger.hpp"
 
 namespace zth::shaders {
 

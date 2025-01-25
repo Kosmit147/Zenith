@@ -2,8 +2,8 @@
 
 #include <glm/vec3.hpp>
 
-#include "Zenith/Graphics/Shaders.hpp"
-#include "Zenith/Platform/OpenGl/fwd.hpp"
+#include "zenith/graphics/shaders.hpp"
+#include "zenith/platform/gl/fwd.hpp"
 
 namespace zth {
 

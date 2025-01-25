@@ -1,6 +1,6 @@
-#include "Zenith/Filesystem/File.hpp"
+#include "zenith/filesystem/file.hpp"
 
-#include "Zenith/Logging/Logger.hpp"
+#include "zenith/logging/logger.hpp"
 
 namespace zth::filesystem {
 

@@ -4,8 +4,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-#include "Zenith/Math/Quaternion.hpp"
-#include "Zenith/Utility/Macros.hpp"
+#include "zenith/math/quaternion.hpp"
+#include "zenith/utility/macros.hpp"
 
 namespace zth {
 

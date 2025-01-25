@@ -3,8 +3,8 @@ project(Sandbox LANGUAGES CXX)
 
 add_executable(
 	Sandbox
-	"src/Sandbox.cpp"
-	"src/Scene.cpp"
+	"src/sandbox.cpp"
+	"src/scene.cpp"
 )
 
 b_embed(Sandbox "assets/wall.jpg")

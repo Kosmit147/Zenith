@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Zenith/Zenith.hpp>
+#include <zenith/zenith.hpp>
 
 #include <vector>
 #include <memory>
 
-#include "Block.hpp"
-#include "Player.hpp"
+#include "block.hpp"
+#include "player.hpp"
 
 class Scene : public zth::Scene
 {

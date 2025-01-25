@@ -1,9 +1,9 @@
-#include "Zenith/Math/Matrix.hpp"
+#include "zenith/math/matrix.hpp"
 
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-#include "Zenith/Math/Vector.hpp"
+#include "zenith/math/vector.hpp"
 
 namespace zth::math {
 

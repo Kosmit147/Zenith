@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Zenith/Zenith.hpp>
+#include <zenith/zenith.hpp>
 
 class Testbed : public zth::Application
 {

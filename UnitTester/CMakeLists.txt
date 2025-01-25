@@ -6,11 +6,11 @@ include(Catch)
 
 add_executable(
 	UnitTester
-	"src/Cleanup.cpp"
-	"src/InPlaceVector.cpp"
-	"src/ShaderPreprocessor.cpp"
-	"src/String.cpp"
-	"src/StringHasher.cpp"
+	"src/cleanup.cpp"
+	"src/inplace_vector.cpp"
+	"src/shader_preprocessor.cpp"
+	"src/string.cpp"
+	"src/string_hasher.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")

@@ -1,4 +1,4 @@
-#include "Zenith/Graphics/Shapes/Shape.hpp"
+#include "zenith/graphics/shapes/shape.hpp"
 
 namespace zth {
 

@@ -1,17 +1,17 @@
-#include "Zenith/Debug/Ui/Ui.hpp"
+#include "zenith/debug/ui/ui.hpp"
 
 #include <glm/geometric.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <spdlog/spdlog.h>
 
-#include "Zenith/Core/SceneManager.hpp"
-#include "Zenith/Core/Transformable.hpp"
-#include "Zenith/Graphics/Light.hpp"
-#include "Zenith/Graphics/Material.hpp"
-#include "Zenith/Graphics/Materials.hpp"
-#include "Zenith/Graphics/Renderer.hpp"
-#include "Zenith/Platform/Events.hpp"
-#include "Zenith/Platform/Window.hpp"
+#include "zenith/core/scene_manager.hpp"
+#include "zenith/core/transformable.hpp"
+#include "zenith/graphics/light.hpp"
+#include "zenith/graphics/material.hpp"
+#include "zenith/graphics/materials.hpp"
+#include "zenith/graphics/renderer.hpp"
+#include "zenith/platform/events.hpp"
+#include "zenith/platform/window.hpp"
 
 namespace zth::debug {
 
