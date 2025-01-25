@@ -17,7 +17,7 @@ auto ImGuiRenderer::init() -> void
 
     ImGui_ImplGlfw_InitForOpenGL(Window::glfw_handle(), true);
     ImGui_ImplOpenGL3_Init();
-    ZTH_CORE_INFO("ImGui Renderer initialized.");
+    ZTH_CORE_INFO("ImGui renderer initialized.");
 }
 
 auto ImGuiRenderer::on_update() -> void
@@ -44,7 +44,7 @@ auto ImGuiRenderer::shut_down() -> void
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    ZTH_CORE_INFO("ImGui Renderer shut down.");
+    ZTH_CORE_INFO("ImGui renderer shut down.");
 }
 
 } // namespace zth

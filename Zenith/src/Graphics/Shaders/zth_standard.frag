@@ -1,5 +1,7 @@
 #version 460 core
 
+#include "zth_defines.glsl"
+
 struct Material
 {
     vec3 albedo;
@@ -34,10 +36,6 @@ struct Light
 in vec3 Position;
 in vec3 Normal;
 in vec2 UV;
-
-//! #define ZTH_CAMERA_UBO_BINDING_INDEX 0
-//! #define ZTH_LIGHT_UBO_BINDING_INDEX 1
-//! #define ZTH_MATERIAL_UBO_BINDING_INDEX 2
 
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {

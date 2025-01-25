@@ -1,6 +1,6 @@
 #version 460 core
 
-//! #define ZTH_MATERIAL_UBO_BINDING_INDEX 0
+#include "zth_defines.glsl"
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 {

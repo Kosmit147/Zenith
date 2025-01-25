@@ -69,7 +69,17 @@ auto Window::init(const WindowSpec& spec) -> void
 
     Cleanup glfw_cleanup{ [] { glfwTerminate(); } };
 
-    set_glfw_window_hints(spec);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, static_cast<int>(spec.gl_version.minor));
+    glfwWindowHint(GLFW_OPENGL_PROFILE, to_glfw_enum(spec.gl_profile));
+    glfwWindowHint(GLFW_RESIZABLE, to_glfw_enum(spec.resizable));
+    glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
+
+#ifndef ZTH_DIST_BUILD
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
+
     _window = create_glfw_window(spec.size, spec.title.data(), spec.fullscreen);
 
     if (!_window)
@@ -89,7 +99,11 @@ auto Window::init(const WindowSpec& spec) -> void
 
     set_cursor_enabled(spec.cursor_enabled);
 
-    set_glfw_input_callbacks();
+    set_glfw_resize_callback(glfw_resize_callback);
+    set_glfw_key_callback(glfw_key_callback);
+    set_glfw_mouse_button_callback(glfw_mouse_button_callback);
+    set_glfw_mouse_pos_callback(glfw_mouse_pos_callback);
+    set_glfw_scroll_callback(glfw_scroll_callback);
 
     if (auto ratio = spec.forced_aspect_ratio)
         glfw_force_aspect_ratio(*ratio);
@@ -144,6 +158,7 @@ auto Window::swap_buffers() -> void
 
     auto frame_time = time() - _last_frame_time;
 
+    // @todo: sleep instead if spinning
     while (frame_time < _target_frame_time)
         frame_time = time() - _last_frame_time;
 
@@ -241,29 +256,6 @@ auto Window::create_glfw_window(glm::uvec2 size, const char* title, bool fullscr
         monitor = glfwGetPrimaryMonitor();
 
     return glfwCreateWindow(static_cast<int>(size.x), static_cast<int>(size.y), title, monitor, nullptr);
-}
-
-auto Window::set_glfw_window_hints(const WindowSpec& spec) -> void
-{
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, static_cast<int>(spec.gl_version.minor));
-    glfwWindowHint(GLFW_OPENGL_PROFILE, to_glfw_enum(spec.gl_profile));
-    glfwWindowHint(GLFW_RESIZABLE, to_glfw_enum(spec.resizable));
-    glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
-    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
-
-#ifndef ZTH_DIST_BUILD
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
-}
-
-auto Window::set_glfw_input_callbacks() -> void
-{
-    set_glfw_resize_callback(glfw_resize_callback);
-    set_glfw_key_callback(glfw_key_callback);
-    set_glfw_mouse_button_callback(glfw_mouse_button_callback);
-    set_glfw_mouse_pos_callback(glfw_mouse_pos_callback);
-    set_glfw_scroll_callback(glfw_scroll_callback);
 }
 
 auto Window::glfw_force_aspect_ratio(WindowAspectRatio aspect_ratio) -> void

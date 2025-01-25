@@ -1,5 +1,7 @@
 #version 460 core
 
+#include "zth_defines.glsl"
+
 layout (location = 0) in vec3 inLocalPosition;
 layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inUV;
@@ -10,8 +12,6 @@ layout (location = 5) in vec3 inTransformCol2;
 layout (location = 6) in vec3 inTransformCol3;
 
 layout (location = 7) in mat3 inNormalMat;
-
-//! #define ZTH_CAMERA_UBO_BINDING_INDEX 0
 
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {

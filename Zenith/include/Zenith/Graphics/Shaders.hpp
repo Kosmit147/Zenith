@@ -7,6 +7,7 @@ namespace zth::shaders {
 
 struct ShaderList
 {
+    Shader fallback;
     Shader flat_color;
     Shader standard;
 
@@ -20,6 +21,7 @@ auto unload_shaders() -> void;
 
 [[nodiscard]] auto shaders() -> const ShaderList&;
 
+[[nodiscard]] auto fallback() -> const Shader&;
 [[nodiscard]] auto flat_color() -> const Shader&;
 [[nodiscard]] auto standard() -> const Shader&;
 

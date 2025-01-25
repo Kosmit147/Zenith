@@ -8,6 +8,8 @@ add_executable(
 	UnitTester
 	"src/Cleanup.cpp"
 	"src/InPlaceVector.cpp"
+	"src/ShaderPreprocessor.cpp"
+	"src/String.cpp"
 	"src/StringHasher.cpp"
 )
 

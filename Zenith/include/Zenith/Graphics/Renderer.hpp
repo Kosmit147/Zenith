@@ -13,7 +13,6 @@
 #include "Zenith/Graphics/Camera.hpp"
 #include "Zenith/Graphics/DrawCommand.hpp"
 #include "Zenith/Graphics/Light.hpp"
-#include "Zenith/Graphics/ShaderDefines.h"
 #include "Zenith/Graphics/UboData.hpp"
 #include "Zenith/Graphics/Vertex.hpp"
 #include "Zenith/Graphics/fwd.hpp"
@@ -35,6 +34,11 @@ public:
     static constexpr GLint diffuse_map_slot = 0;
     static constexpr GLint specular_map_slot = 1;
     static constexpr GLint emission_map_slot = 2;
+
+    // @volatile: Keep in sync with zth_defines.glsl
+    static constexpr u32 camera_ubo_binding_index = 0;
+    static constexpr u32 light_ubo_binding_index = 1;
+    static constexpr u32 material_ubo_binding_index = 2;
 
 public:
     static auto init() -> void;
@@ -67,9 +71,9 @@ private:
     std::shared_ptr<const PointLight> _point_light = nullptr;
     std::shared_ptr<const SpotLight> _spot_light = nullptr;
 
-    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), ZTH_CAMERA_UBO_BINDING_INDEX);
-    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), ZTH_LIGHT_UBO_BINDING_INDEX);
-    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), ZTH_MATERIAL_UBO_BINDING_INDEX);
+    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_index);
+    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_index);
+    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_index);
 
     std::vector<InstanceVertex> _instance_data;
     InstanceBuffer _instance_buffer = InstanceBuffer::create_dynamic();

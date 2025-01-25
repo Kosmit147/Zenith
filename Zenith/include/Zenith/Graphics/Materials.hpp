@@ -10,7 +10,8 @@ namespace zth::materials {
 
 struct MaterialList
 {
-    // keep this list consistent with the material_names array
+    // @volatile: keep this list consistent with the material_names array
+    // @volatile: make sure to update materials_start and materials_end after modifying this list
 
     Material plain;
     Material emerald;
