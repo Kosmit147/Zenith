@@ -1,23 +1,23 @@
-#include "Zenith/Graphics/Renderer.hpp"
+#include "zenith/graphics/renderer.hpp"
 
 #include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include "Zenith/Core/Assert.hpp"
-#include "Zenith/Graphics/Colors.hpp"
-#include "Zenith/Graphics/Material.hpp"
-#include "Zenith/Graphics/Materials.hpp"
-#include "Zenith/Graphics/Mesh.hpp"
-#include "Zenith/Graphics/Meshes.hpp"
-#include "Zenith/Graphics/Shaders.hpp"
-#include "Zenith/Graphics/Shapes/Shapes.hpp"
-#include "Zenith/Logging/Logger.hpp"
-#include "Zenith/Math/Matrix.hpp"
-#include "Zenith/Platform/Event.hpp"
-#include "Zenith/Platform/OpenGl/GlDebug.hpp"
-#include "Zenith/Platform/OpenGl/Shader.hpp"
-#include "Zenith/Platform/OpenGl/Texture.hpp"
-#include "Zenith/Platform/OpenGl/VertexArray.hpp"
+#include "zenith/core/assert.hpp"
+#include "zenith/graphics/colors.hpp"
+#include "zenith/graphics/material.hpp"
+#include "zenith/graphics/materials.hpp"
+#include "zenith/graphics/mesh.hpp"
+#include "zenith/graphics/meshes.hpp"
+#include "zenith/graphics/shaders.hpp"
+#include "zenith/graphics/shapes/shapes.hpp"
+#include "zenith/logging/logger.hpp"
+#include "zenith/math/matrix.hpp"
+#include "zenith/platform/event.hpp"
+#include "zenith/platform/gl/gl_debug.hpp"
+#include "zenith/platform/gl/shader.hpp"
+#include "zenith/platform/gl/texture.hpp"
+#include "zenith/platform/gl/vertex_array.hpp"
 
 namespace zth {
 

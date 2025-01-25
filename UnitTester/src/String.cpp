@@ -2,9 +2,9 @@
 
 #include <string_view>
 
-#include <Zenith/Utility/String.hpp>
+#include <zenith/utility/string.hpp>
 
-#include "Matchers.hpp"
+#include "matchers.hpp"
 
 using namespace std::string_view_literals;
 

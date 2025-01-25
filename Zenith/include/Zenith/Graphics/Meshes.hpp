@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Zenith/Graphics/Mesh.hpp"
-#include "Zenith/Platform/OpenGl/fwd.hpp"
-#include "Zenith/Utility/Macros.hpp"
+#include "zenith/graphics/mesh.hpp"
+#include "zenith/platform/gl/fwd.hpp"
+#include "zenith/utility/macros.hpp"
 
 namespace zth::meshes {
 

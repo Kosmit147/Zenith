@@ -1,6 +1,6 @@
-#include "Zenith/Platform/Mouse.hpp"
+#include "zenith/platform/mouse.hpp"
 
-#include "Zenith/Core/Assert.hpp"
+#include "zenith/core/assert.hpp"
 
 namespace zth {
 

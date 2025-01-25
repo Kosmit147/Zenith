@@ -5,8 +5,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "Zenith/Platform/OpenGl/VertexArray.hpp"
-#include "Zenith/Platform/OpenGl/VertexLayout.hpp"
+#include "zenith/platform/gl/vertex_array.hpp"
+#include "zenith/platform/gl/vertex_layout.hpp"
 
 namespace zth {
 

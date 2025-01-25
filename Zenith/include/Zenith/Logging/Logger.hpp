@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-#include "Zenith/Utility/Macros.hpp"
+#include "zenith/utility/macros.hpp"
 
 namespace zth {
 

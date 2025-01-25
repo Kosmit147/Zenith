@@ -1,6 +1,6 @@
-#include "Sandbox.hpp"
+#include "sandbox.hpp"
 
-#include "Scene.hpp"
+#include "scene.hpp"
 
 ZTH_IMPLEMENT_APP(Sandbox)
 

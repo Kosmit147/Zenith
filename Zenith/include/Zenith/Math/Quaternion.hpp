@@ -3,7 +3,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec3.hpp>
 
-#include "Zenith/Math/Vector.hpp"
+#include "zenith/math/vector.hpp"
 
 namespace zth::math {
 

@@ -9,15 +9,15 @@
 #include <memory>
 #include <vector>
 
-#include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Graphics/Camera.hpp"
-#include "Zenith/Graphics/DrawCommand.hpp"
-#include "Zenith/Graphics/Light.hpp"
-#include "Zenith/Graphics/UboData.hpp"
-#include "Zenith/Graphics/Vertex.hpp"
-#include "Zenith/Graphics/fwd.hpp"
-#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/fwd.hpp"
+#include "zenith/core/typedefs.hpp"
+#include "zenith/graphics/camera.hpp"
+#include "zenith/graphics/draw_command.hpp"
+#include "zenith/graphics/light.hpp"
+#include "zenith/graphics/ubo_data.hpp"
+#include "zenith/graphics/vertex.hpp"
+#include "zenith/graphics/fwd.hpp"
+#include "zenith/platform/gl/gl_buffer.hpp"
+#include "zenith/platform/fwd.hpp"
 
 namespace zth {
 

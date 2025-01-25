@@ -2,9 +2,9 @@
 
 #include <ranges>
 
-#include "Zenith/Platform/OpenGl/GlBuffer.hpp"
-#include "Zenith/Platform/OpenGl/VertexArray.hpp"
-#include "Zenith/Utility/Macros.hpp"
+#include "zenith/platform/gl/gl_buffer.hpp"
+#include "zenith/platform/gl/vertex_array.hpp"
+#include "zenith/utility/macros.hpp"
 
 namespace zth {
 

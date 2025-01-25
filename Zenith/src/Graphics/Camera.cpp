@@ -1,10 +1,10 @@
-#include "Zenith/Graphics/Camera.hpp"
+#include "zenith/graphics/camera.hpp"
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Zenith/Math/Quaternion.hpp"
-#include "Zenith/Math/Vector.hpp"
+#include "zenith/math/quaternion.hpp"
+#include "zenith/math/vector.hpp"
 
 namespace zth {
 

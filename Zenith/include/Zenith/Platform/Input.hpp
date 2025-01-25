@@ -4,9 +4,9 @@
 
 #include <unordered_map>
 
-#include "Zenith/Platform/Key.hpp"
-#include "Zenith/Platform/Mouse.hpp"
-#include "Zenith/Platform/fwd.hpp"
+#include "zenith/platform/key.hpp"
+#include "zenith/platform/mouse.hpp"
+#include "zenith/platform/fwd.hpp"
 
 namespace zth {
 

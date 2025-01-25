@@ -11,13 +11,13 @@
 #include <string_view>
 #include <vector>
 
-#include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Core/fwd.hpp"
-#include "Zenith/Graphics/fwd.hpp"
-#include "Zenith/Math/Quaternion.hpp"
-#include "Zenith/Platform/Key.hpp"
-#include "Zenith/Platform/fwd.hpp"
-#include "Zenith/Utility/Macros.hpp"
+#include "zenith/core/typedefs.hpp"
+#include "zenith/core/fwd.hpp"
+#include "zenith/graphics/fwd.hpp"
+#include "zenith/math/quaternion.hpp"
+#include "zenith/platform/key.hpp"
+#include "zenith/platform/fwd.hpp"
+#include "zenith/utility/macros.hpp"
 
 namespace zth::debug {
 

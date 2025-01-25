@@ -2,8 +2,8 @@
 
 #include <glm/vec2.hpp>
 
-#include "Zenith/Platform/Key.hpp"
-#include "Zenith/Platform/Mouse.hpp"
+#include "zenith/platform/key.hpp"
+#include "zenith/platform/mouse.hpp"
 
 namespace zth {
 

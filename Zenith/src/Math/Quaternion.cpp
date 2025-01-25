@@ -1,11 +1,11 @@
-#include "Zenith/Math/Quaternion.hpp"
+#include "zenith/math/quaternion.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_transform.hpp>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
 
-#include "Zenith/Math/Vector.hpp"
+#include "zenith/math/vector.hpp"
 
 namespace zth::math {
 

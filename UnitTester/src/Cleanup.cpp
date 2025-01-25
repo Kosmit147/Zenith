@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <Zenith/Utility/Cleanup.hpp>
+#include <zenith/utility/cleanup.hpp>
 
 TEST_CASE("cleanup works", "[Cleanup]")
 {

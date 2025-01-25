@@ -1,14 +1,14 @@
-#include "Zenith/Platform/Window.hpp"
+#include "zenith/platform/window.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Zenith/Core/Assert.hpp"
-#include "Zenith/Core/Exception.hpp"
-#include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Logging/Logger.hpp"
-#include "Zenith/Platform/EventQueue.hpp"
-#include "Zenith/Utility/Cleanup.hpp"
+#include "zenith/core/assert.hpp"
+#include "zenith/core/exception.hpp"
+#include "zenith/core/typedefs.hpp"
+#include "zenith/logging/logger.hpp"
+#include "zenith/platform/event_queue.hpp"
+#include "zenith/utility/cleanup.hpp"
 
 namespace zth {
 

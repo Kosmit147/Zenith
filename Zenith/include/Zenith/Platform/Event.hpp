@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Zenith/Core/Typedefs.hpp"
-#include "Zenith/Platform/Events.hpp"
+#include "zenith/core/typedefs.hpp"
+#include "zenith/platform/events.hpp"
 
 namespace zth {
 

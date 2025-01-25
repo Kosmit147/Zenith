@@ -1,9 +1,9 @@
-#include "Zenith/Platform/Input.hpp"
+#include "zenith/platform/input.hpp"
 
-#include "Zenith/Core/Assert.hpp"
-#include "Zenith/Logging/Logger.hpp"
-#include "Zenith/Platform/Event.hpp"
-#include "Zenith/Platform/Window.hpp"
+#include "zenith/core/assert.hpp"
+#include "zenith/logging/logger.hpp"
+#include "zenith/platform/event.hpp"
+#include "zenith/platform/window.hpp"
 
 namespace zth {
 

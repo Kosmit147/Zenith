@@ -7,7 +7,7 @@
 #include <array>
 #include <string>
 
-#include "Zenith/Core/Typedefs.hpp"
+#include "zenith/core/typedefs.hpp"
 
 namespace zth {
 

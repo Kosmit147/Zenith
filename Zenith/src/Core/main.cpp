@@ -5,8 +5,8 @@
 #include <memory>
 #include <print>
 
-#include "Zenith/Core/Application.hpp"
-#include "Zenith/Core/Exception.hpp"
+#include "zenith/core/application.hpp"
+#include "zenith/core/exception.hpp"
 
 namespace zth {
 

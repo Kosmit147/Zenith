@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Float.hpp"
-#include "Matrix.hpp"
-#include "Quaternion.hpp"
-#include "Vector.hpp"
+#include "float.hpp"
+#include "matrix.hpp"
+#include "quaternion.hpp"
+#include "vector.hpp"

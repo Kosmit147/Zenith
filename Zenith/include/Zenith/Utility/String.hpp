@@ -5,7 +5,7 @@
 #include <optional>
 #include <string_view>
 
-#include "Zenith/Core/Typedefs.hpp"
+#include "zenith/core/typedefs.hpp"
 
 namespace zth::string {
 

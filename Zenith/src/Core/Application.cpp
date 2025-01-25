@@ -1,8 +1,8 @@
-#include "Zenith/Core/Application.hpp"
+#include "zenith/core/application.hpp"
 
-#include "Zenith/Core/SystemManager.hpp"
-#include "Zenith/Graphics/Renderer.hpp"
-#include "Zenith/Platform/EventQueue.hpp"
+#include "zenith/core/system_manager.hpp"
+#include "zenith/graphics/renderer.hpp"
+#include "zenith/platform/event_queue.hpp"
 
 namespace zth {
 

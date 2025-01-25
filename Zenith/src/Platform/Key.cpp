@@ -1,6 +1,6 @@
-#include "Zenith/Platform/Key.hpp"
+#include "zenith/platform/key.hpp"
 
-#include "Zenith/Core/Assert.hpp"
+#include "zenith/core/assert.hpp"
 
 namespace zth {
 

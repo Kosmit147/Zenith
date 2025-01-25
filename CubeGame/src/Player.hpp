@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Zenith/Zenith.hpp>
+#include <zenith/zenith.hpp>
 
 #include <memory>
 

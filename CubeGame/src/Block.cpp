@@ -1,4 +1,4 @@
-#include "Block.hpp"
+#include "block.hpp"
 
 Block::Block(glm::ivec3 translation)
 {

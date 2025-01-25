@@ -1,8 +1,8 @@
 #pragma once
 
-#include "OpenGl/fwd.hpp"
+#include "gl/fwd.hpp"
 
-#include "Zenith/Core/Typedefs.hpp"
+#include "zenith/core/typedefs.hpp"
 
 namespace zth {
 

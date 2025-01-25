@@ -6,7 +6,7 @@
 
 #include <concepts>
 
-#include "Zenith/Math/Float.hpp"
+#include "zenith/math/float.hpp"
 
 namespace zth::math {
 
