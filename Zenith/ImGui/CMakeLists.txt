@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
-project(ImGui LANGUAGES CXX)
+project(imgui LANGUAGES CXX)
 
-add_library(ImGui STATIC
+add_library(imgui STATIC
     "../../dependencies/imgui/imgui.cpp"
 	"../../dependencies/imgui/imgui_demo.cpp"
 	"../../dependencies/imgui/imgui_draw.cpp"
@@ -13,10 +13,10 @@ add_library(ImGui STATIC
 	"../../dependencies/ImGuizmo/ImGuizmo.cpp"
 )
 
-target_include_directories(ImGui SYSTEM PUBLIC "../../dependencies/imgui")
-target_include_directories(ImGui SYSTEM PUBLIC "../../dependencies/imgui/backends")
-target_include_directories(ImGui SYSTEM PUBLIC "../../dependencies/ImGuizmo")
+target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/imgui")
+target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/imgui/backends")
+target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/ImGuizmo")
 
-target_compile_features(ImGui PRIVATE cxx_std_23)
+target_compile_features(imgui PRIVATE cxx_std_23)
 
-target_link_libraries(ImGui PUBLIC glfw)
+target_link_libraries(imgui PUBLIC glfw)

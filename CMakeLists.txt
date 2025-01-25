@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 include("cmake/warnings.cmake")
 
-project(ZenithEngine LANGUAGES C CXX)
+project(zenith_engine LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -39,10 +39,10 @@ add_subdirectory("dependencies/glm")
 add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/stb_image")
 
-add_subdirectory("Zenith")
-add_subdirectory("Sandbox")
-add_subdirectory("Testbed")
-add_subdirectory("CubeGame")
-add_subdirectory("UnitTester")
+add_subdirectory("zenith")
+add_subdirectory("sandbox")
+add_subdirectory("testbed")
+add_subdirectory("cube_game")
+add_subdirectory("unit_tester")
 
 enable_testing()
