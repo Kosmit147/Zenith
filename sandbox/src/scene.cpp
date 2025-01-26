@@ -4,7 +4,7 @@
 
 namespace {
 
-const auto wall_texture = b::embed<"assets/wall.jpg">().vec();
+const auto wall_texture = b::embed<"assets/wall.jpg">().data();
 
 constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
 constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
