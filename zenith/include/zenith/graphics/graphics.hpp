@@ -13,6 +13,6 @@
 #include "meshes.hpp"
 #include "renderer.hpp"
 #include "shaders.hpp"
-#include "shapes/shapes.hpp"
+#include "shape.hpp"
 #include "ubo_data.hpp"
 #include "vertex.hpp"

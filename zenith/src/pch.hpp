@@ -48,4 +48,6 @@
 #include <filesystem>
 #include <fstream>
 
+#include <chrono>
+
 #include <spdlog/spdlog.h>

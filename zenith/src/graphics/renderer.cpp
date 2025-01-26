@@ -10,7 +10,7 @@
 #include "zenith/graphics/mesh.hpp"
 #include "zenith/graphics/meshes.hpp"
 #include "zenith/graphics/shaders.hpp"
-#include "zenith/graphics/shapes/shapes.hpp"
+#include "zenith/graphics/shape.hpp"
 #include "zenith/logging/logger.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/platform/event.hpp"

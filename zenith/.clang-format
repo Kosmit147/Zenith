@@ -6,7 +6,10 @@ IncludeCategories:
   - Regex:           'glad.h'
     Priority:        1
     CaseSensitive:   true
-  - Regex:           'imgui'
+  - Regex:           'imgui.h'
+    Priority:        1
+    CaseSensitive:   true
+  - Regex:           'imgui_impl'
     Priority:        1
     CaseSensitive:   true
   - Regex:           'glfw3.h'
