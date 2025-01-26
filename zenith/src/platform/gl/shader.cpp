@@ -6,7 +6,7 @@
 
 #include "zenith/logging/logger.hpp"
 #include "zenith/platform/shader_preprocessor.hpp"
-#include "zenith/utility/cleanup.hpp"
+#include "zenith/utility/defer.hpp"
 
 namespace zth {
 
@@ -41,7 +41,7 @@ namespace {
 [[nodiscard]] auto create_shader(std::string_view source, ShaderType type) -> GLuint
 {
     auto shader = glCreateShader(to_gl_enum(type));
-    Cleanup shader_cleanup{ [&] { glDeleteShader(shader); } };
+    Defer delete_shader{ [&] { glDeleteShader(shader); } };
 
     const std::array sources = { source.data(), "\n" };
     glShaderSource(shader, static_cast<GLsizei>(sources.size()), sources.data(), nullptr);
@@ -50,7 +50,7 @@ namespace {
 
     if (success)
     {
-        shader_cleanup.dismiss();
+        delete_shader.dismiss();
         return shader;
     }
     else
@@ -88,7 +88,7 @@ namespace {
 [[nodiscard]] auto create_shader_program(GLuint vertex_shader, GLuint fragment_shader) -> GLuint
 {
     auto program = glCreateProgram();
-    Cleanup program_cleanup{ [&] { glDeleteProgram(program); } };
+    Defer delete_program{ [&] { glDeleteProgram(program); } };
 
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
@@ -100,7 +100,7 @@ namespace {
 
     if (success)
     {
-        program_cleanup.dismiss();
+        delete_program.dismiss();
         return program;
     }
     else
@@ -125,14 +125,14 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
     if (!vertex_shader)
         return;
 
-    Cleanup vertex_shader_cleanup{ [&] { glDeleteShader(vertex_shader); } };
+    Defer delete_vertex_shader{ [&] { glDeleteShader(vertex_shader); } };
 
     auto fragment_shader = create_shader(*preprocessed_fragment_source, ShaderType::Fragment);
 
     if (!fragment_shader)
         return;
 
-    Cleanup fragment_shader_cleanup{ [&] { glDeleteShader(fragment_shader); } };
+    Defer delete_fragment_shader{ [&] { glDeleteShader(fragment_shader); } };
 
     auto program = create_shader_program(vertex_shader, fragment_shader);
 
@@ -140,8 +140,8 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
         return;
 
 #ifndef ZTH_DIST_BUILD
-    vertex_shader_cleanup.dismiss();
-    fragment_shader_cleanup.dismiss();
+    delete_vertex_shader.dismiss();
+    delete_fragment_shader.dismiss();
 #endif
 
     _id = program;
