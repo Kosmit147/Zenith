@@ -9,10 +9,10 @@ namespace zth {
 
 struct LightProperties
 {
-    glm::vec3 color = glm::vec3{ 1.0f };
-    glm::vec3 ambient = glm::vec3{ 0.2f };
-    glm::vec3 diffuse = glm::vec3{ 0.5f };
-    glm::vec3 specular = glm::vec3{ 1.0f };
+    glm::vec3 color{ 1.0f };
+    glm::vec3 ambient{ 0.2f };
+    glm::vec3 diffuse{ 0.5f };
+    glm::vec3 specular{ 1.0f };
 };
 
 // example light attenuation values:
@@ -62,7 +62,7 @@ struct SpotLight
 
 struct AmbientLight
 {
-    // TODO
+    // @todo
 };
 
 } // namespace zth

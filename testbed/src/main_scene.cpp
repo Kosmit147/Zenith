@@ -1,7 +1,5 @@
 #include "main_scene.hpp"
 
-#include <imgui.h>
-
 #include "embedded.hpp"
 #include "testbed.hpp"
 
@@ -107,8 +105,9 @@ auto MainScene::on_event(const zth::Event& event) -> void
 
 auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
 {
-    auto new_size = event.new_size;
-    _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
+    auto new_width = event.new_size.x;
+    auto new_height = event.new_size.y;
+    _camera->set_aspect_ratio(static_cast<float>(new_width) / static_cast<float>(new_height));
 }
 
 auto MainScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
