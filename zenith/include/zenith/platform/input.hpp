@@ -4,9 +4,9 @@
 
 #include <unordered_map>
 
+#include "zenith/platform/fwd.hpp"
 #include "zenith/platform/key.hpp"
 #include "zenith/platform/mouse.hpp"
-#include "zenith/platform/fwd.hpp"
 
 namespace zth {
 
@@ -34,8 +34,10 @@ public:
     static auto set_mouse_scroll_delta(glm::vec2 value) -> void;
 
 private:
-    static inline std::unordered_map<Key, bool> _key_states;
-    static inline std::unordered_map<MouseButton, bool> _mouse_button_states;
+    // @speed: these shouldn't be hash maps
+    static std::unordered_map<Key, bool> _key_states;
+    static std::unordered_map<MouseButton, bool> _mouse_button_states;
+
     static inline glm::vec2 _mouse_pos = { 0.0f, 0.0f };
     static inline glm::vec2 _mouse_pos_delta = { 0.0f, 0.0f };
     static inline glm::vec2 _mouse_scroll_delta = { 0.0f, 0.0f };

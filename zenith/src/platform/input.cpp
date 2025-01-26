@@ -7,6 +7,9 @@
 
 namespace zth {
 
+std::unordered_map<Key, bool> Input::_key_states;
+std::unordered_map<MouseButton, bool> Input::_mouse_button_states;
+
 auto Input::init() -> void
 {
     for (auto key : key_enumerations)

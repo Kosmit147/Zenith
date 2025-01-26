@@ -8,6 +8,9 @@
 
 namespace zth {
 
+std::shared_ptr<spdlog::logger> Logger::_core_logger;
+std::shared_ptr<spdlog::logger> Logger::_client_logger;
+
 auto Logger::init(const LoggerSpec& logger_spec) -> void
 {
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();

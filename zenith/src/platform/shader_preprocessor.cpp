@@ -21,6 +21,8 @@ constexpr auto include_str = "#include"sv;
 
 } // namespace
 
+StringHashMap<std::string> ShaderPreprocessor::_sources;
+
 auto ShaderPreprocessor::init() -> void
 {
     add_source("test.glsl", test_source);

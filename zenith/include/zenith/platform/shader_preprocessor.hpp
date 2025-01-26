@@ -64,7 +64,7 @@ private:
 
     std::ostringstream _result_buffer;
 
-    static inline StringHashMap<std::string> _sources;
+    static StringHashMap<std::string> _sources;
 
 private:
     explicit ShaderPreprocessor(std::string_view source, u16 recursion_depth = 0);

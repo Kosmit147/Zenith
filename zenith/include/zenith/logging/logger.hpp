@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-#include "zenith/utility/macros.hpp"
-
 namespace zth {
 
 struct LoggerSpec
@@ -28,8 +26,8 @@ public:
     [[nodiscard]] static auto client_logger() -> spdlog::logger&;
 
 private:
-    static inline std::shared_ptr<spdlog::logger> _core_logger;
-    static inline std::shared_ptr<spdlog::logger> _client_logger;
+    static std::shared_ptr<spdlog::logger> _core_logger;
+    static std::shared_ptr<spdlog::logger> _client_logger;
 };
 
 } // namespace zth
