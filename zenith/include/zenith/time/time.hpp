@@ -2,14 +2,12 @@
 
 #include <concepts>
 
-#include "timer.hpp"
-
 namespace zth {
 
 class Time
 {
 public:
-    static constexpr auto delta_time_limit = 1.0 / 30; // 1 second divided by 30 fps
+    static constexpr auto delta_time_limit = 1.0 / 30.0; // 1 second divided by 30 fps
 
 public:
     Time() = delete;

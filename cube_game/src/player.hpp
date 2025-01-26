@@ -1,9 +1,5 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
-
-#include <memory>
-
 class Player
 {
 public:

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <span>
-
 namespace embedded {
 
 extern const std::span<const std::uint8_t> cobble_diffuse_map_data;

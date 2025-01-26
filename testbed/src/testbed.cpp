@@ -1,7 +1,5 @@
 #include "testbed.hpp"
 
-#include <imgui.h>
-
 #include "containers_scene.hpp"
 #include "main_scene.hpp"
 
@@ -29,8 +27,6 @@ const zth::ApplicationSpec app_spec = {
 Testbed::Testbed() : Application(app_spec)
 {
     zth::SceneManager::load_scene(std::make_unique<MainScene>());
-    ImGui::GetIO().FontGlobalScale = 1.5f;
-
     _scene_picker_ui.add_scene<MainScene>("Main Scene");
     _scene_picker_ui.add_scene<ContainersScene>("Containers");
 }

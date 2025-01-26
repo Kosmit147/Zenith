@@ -1,7 +1,5 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
-
 class CubeGame : public zth::Application
 {
 public:

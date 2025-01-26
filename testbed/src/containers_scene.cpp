@@ -1,9 +1,5 @@
 #include "containers_scene.hpp"
 
-#include <imgui.h>
-
-#include <ranges>
-
 #include "embedded.hpp"
 
 namespace {

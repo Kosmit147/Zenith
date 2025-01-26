@@ -2,8 +2,6 @@
 
 #include <battery/embed.hpp>
 
-#include <ranges>
-
 namespace {
 
 const auto cobble_texture_data = b::embed<"assets/cobble.png">().data();

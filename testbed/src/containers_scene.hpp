@@ -1,10 +1,5 @@
 #pragma once
 
-#include <Zenith/Zenith.hpp>
-
-#include <memory>
-#include <vector>
-
 class ContainersScene : public zth::Scene
 {
 public:

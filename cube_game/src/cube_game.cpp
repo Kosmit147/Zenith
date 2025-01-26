@@ -2,8 +2,6 @@
 
 #include "scene.hpp"
 
-#include <memory>
-
 ZTH_IMPLEMENT_APP(CubeGame)
 
 namespace {

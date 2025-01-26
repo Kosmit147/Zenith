@@ -1,9 +1,5 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
-
-#include <memory>
-
 class Scene : public zth::Scene
 {
 public:
