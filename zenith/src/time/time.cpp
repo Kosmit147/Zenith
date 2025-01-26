@@ -1,7 +1,7 @@
 #include "zenith/time/time.hpp"
 
-#include "zenith/platform/window.hpp"
 #include "zenith/logging/logger.hpp"
+#include "zenith/platform/window.hpp"
 
 namespace zth {
 

@@ -30,7 +30,7 @@ public:
     static auto unload_shader(std::string_view name) -> bool;
 
 private:
-    static inline StringHashMap<Shader> _shaders;
+    static StringHashMap<Shader> _shaders;
 };
 
 } // namespace zth

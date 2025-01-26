@@ -14,7 +14,7 @@ public:
     [[nodiscard]] static auto pop() -> std::optional<Event>;
 
 private:
-    static inline std::queue<Event> _event_queue;
+    static std::queue<Event> _event_queue;
 };
 
 } // namespace zth

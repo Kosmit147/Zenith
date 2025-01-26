@@ -5,6 +5,8 @@
 
 namespace zth {
 
+StringHashMap<Shader> AssetManager::_shaders;
+
 auto AssetManager::init() -> void
 {
     ZTH_CORE_INFO("Asset manager initialized.");
@@ -25,14 +27,16 @@ auto AssetManager::load_shader_from_file(std::string_view name, const std::files
     if (!vertex_source)
     {
         // @speed: string() throws
-        ZTH_CORE_DEBUG("[Asset Manager] Couldn't load vertex shader \"{}\" from file \"{}\"", name, vertex_path.string());
+        ZTH_CORE_DEBUG("[Asset Manager] Couldn't load vertex shader \"{}\" from file \"{}\"", name,
+                       vertex_path.string());
         return {};
     }
 
     if (!fragment_source)
     {
         // @speed: string() throws
-        ZTH_CORE_DEBUG("[Asset Manager] Couldn't load fragment shader \"{}\" from file \"{}\"", name, fragment_path.string());
+        ZTH_CORE_DEBUG("[Asset Manager] Couldn't load fragment shader \"{}\" from file \"{}\"", name,
+                       fragment_path.string());
         return {};
     }
 

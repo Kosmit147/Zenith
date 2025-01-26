@@ -2,6 +2,8 @@
 
 namespace zth {
 
+std::queue<Event> EventQueue::_event_queue;
+
 auto EventQueue::push(const Event& event) -> void
 {
     _event_queue.push(event);

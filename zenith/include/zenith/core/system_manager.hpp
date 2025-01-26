@@ -21,7 +21,7 @@ public:
 private:
     using SystemShutdownFunc = void (*)();
 
-    static inline std::vector<SystemShutdownFunc> _system_shutdown_funcs;
+    static std::vector<SystemShutdownFunc> _system_shutdown_funcs;
 };
 
 } // namespace zth
