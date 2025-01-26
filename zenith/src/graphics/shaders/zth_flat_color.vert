@@ -15,7 +15,7 @@ layout (location = 7) in mat3 inNormalMat;
 
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {
-	mat4 viewProjection;
+    mat4 viewProjection;
     vec3 cameraPosition;
 };
 

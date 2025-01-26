@@ -16,7 +16,7 @@ Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParam
     auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(data), static_cast<int>(data_size_bytes),
                                        &width, &height, &channels, 0);
 
-    if (!image) [[unlikely]]
+    if (!image)
     {
         ZTH_CORE_ERROR("Failed to load texture from memory.");
         ZTH_DEBUG_BREAK;

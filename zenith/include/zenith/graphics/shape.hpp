@@ -21,4 +21,28 @@ public:
     [[nodiscard]] virtual auto mesh() const -> const Mesh& = 0;
 };
 
+class CubeShape : public Shape3D
+{
+public:
+    using Shape3D::Shape3D;
+
+    [[nodiscard]] auto mesh() const -> const Mesh& override;
+};
+
+class PyramidShape : public Shape3D
+{
+public:
+    using Shape3D::Shape3D;
+
+    [[nodiscard]] auto mesh() const -> const Mesh& override;
+};
+
+class SphereShape : public Shape3D
+{
+public:
+    using Shape3D::Shape3D;
+
+    [[nodiscard]] auto mesh() const -> const Mesh& override;
+};
+
 } // namespace zth

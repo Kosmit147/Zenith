@@ -2,11 +2,6 @@
 
 namespace zth {
 
-class CubeShape;
-class PyramidShape;
-class Shape3D;
-class SphereShape;
-
 class PerspectiveCamera;
 
 struct DrawCommand;
@@ -46,6 +41,11 @@ namespace shaders {
 struct ShaderList;
 
 } // namespace shaders
+
+class Shape3D;
+class CubeShape;
+class PyramidShape;
+class SphereShape;
 
 struct CameraUboData;
 struct LightUboData;
