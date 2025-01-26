@@ -1,9 +1,5 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
-
-#include <vector>
-
 class MainScene : public zth::Scene
 {
 public:

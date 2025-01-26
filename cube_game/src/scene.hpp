@@ -1,10 +1,5 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
-
-#include <vector>
-#include <memory>
-
 #include "block.hpp"
 #include "player.hpp"
 

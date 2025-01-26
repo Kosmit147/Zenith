@@ -1,3 +1,3 @@
 #pragma once
 
-#include <zenith/zenith.hpp>
+#include <zenith.hpp>

@@ -5,6 +5,9 @@ namespace zth {
 class ImGuiRenderer
 {
 public:
+    static constexpr auto initial_font_scale = 1.5f;
+
+public:
     ImGuiRenderer() = delete;
 
     static auto init() -> void;
