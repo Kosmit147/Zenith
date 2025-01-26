@@ -7,13 +7,13 @@
 
 namespace zth {
 
-template<std::invocable Func> class Cleanup
+template<std::invocable Func> class Defer
 {
 public:
-    constexpr explicit Cleanup(const Func& func) : _func(func) {}
-    constexpr explicit Cleanup(Func&& func) : _func(std::move(func)) {}
-    ZTH_NO_COPY_NO_MOVE(Cleanup)
-    constexpr ~Cleanup() { release(); }
+    constexpr explicit Defer(const Func& func) : _func(func) {}
+    constexpr explicit Defer(Func&& func) : _func(std::move(func)) {}
+    ZTH_NO_COPY_NO_MOVE(Defer)
+    constexpr ~Defer() { release(); }
 
     constexpr auto dismiss() noexcept -> void { _dismissed = true; }
 

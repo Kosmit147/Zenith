@@ -5,7 +5,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/filesystem/file.hpp"
 #include "zenith/logging/logger.hpp"
-#include "zenith/utility/cleanup.hpp"
+#include "zenith/utility/defer.hpp"
 
 using namespace std::string_view_literals;
 
@@ -257,7 +257,7 @@ auto ShaderPreprocessor::advance_until_directive_or_comment() -> bool
 {
     usize i = 0;
 
-    Cleanup push_i_characters{ [&] {
+    Defer push_i_characters{ [&] {
         push(i);
         update_rest_in_line_after_advancing_or_skipping(i);
     } };

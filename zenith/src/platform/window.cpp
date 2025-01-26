@@ -8,7 +8,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/logging/logger.hpp"
 #include "zenith/platform/event_queue.hpp"
-#include "zenith/utility/cleanup.hpp"
+#include "zenith/utility/defer.hpp"
 
 namespace zth {
 
@@ -67,7 +67,7 @@ auto Window::init(const WindowSpec& spec) -> void
         throw Exception{ error_message };
     }
 
-    Cleanup glfw_cleanup{ [] { glfwTerminate(); } };
+    Defer terminate_glfw{ [] { glfwTerminate(); } };
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(spec.gl_version.major));
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, static_cast<int>(spec.gl_version.minor));
@@ -89,7 +89,7 @@ auto Window::init(const WindowSpec& spec) -> void
         throw Exception{ error_message };
     }
 
-    Cleanup window_cleanup{ [&] { glfwDestroyWindow(_window); } };
+    Defer destroy_window{ [&] { glfwDestroyWindow(_window); } };
 
     set_active();
     set_vsync(spec.vsync);
@@ -120,8 +120,8 @@ auto Window::init(const WindowSpec& spec) -> void
 
     ZTH_CORE_INFO("Window initialized.");
 
-    window_cleanup.dismiss();
-    glfw_cleanup.dismiss();
+    destroy_window.dismiss();
+    terminate_glfw.dismiss();
 }
 
 auto Window::shut_down() -> void

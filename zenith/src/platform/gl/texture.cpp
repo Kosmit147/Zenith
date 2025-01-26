@@ -3,18 +3,18 @@
 #include <stb_image/stb_image.h>
 
 #include "zenith/logging/logger.hpp"
-#include "zenith/utility/cleanup.hpp"
+#include "zenith/utility/defer.hpp"
 
 namespace zth {
 
 Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParams& params)
 {
     stbi_set_flip_vertically_on_load(true);
-    Cleanup unset_flip_vertically_on_load{ [] { stbi_set_flip_vertically_on_load(false); } };
+    Defer unset_flip_vertically_on_load{ [] { stbi_set_flip_vertically_on_load(false); } };
 
     int width, height, channels;
-    auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(data), static_cast<int>(data_size_bytes),
-                                       &width, &height, &channels, 0);
+    auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(data), static_cast<int>(data_size_bytes), &width,
+                                       &height, &channels, 0);
 
     if (!image)
     {
@@ -23,7 +23,7 @@ Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParam
         return;
     }
 
-    Cleanup image_cleanup{ [&] { stbi_image_free(image); } };
+    Defer free_image{ [&] { stbi_image_free(image); } };
 
     create();
 
