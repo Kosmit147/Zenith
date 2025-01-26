@@ -39,8 +39,9 @@ struct FindResult
 
 template<> struct fmt::formatter<zth::string::FindResult> : formatter<std::string>
 {
-    static auto format(const zth::string::FindResult& result, format_context& ctx) -> decltype(ctx.out())
+    static auto format(const zth::string::FindResult& find_result, format_context& ctx) -> decltype(ctx.out())
     {
-        return format_to(ctx.out(), "{{ .found_at = {}, .result = {} }}", result.found_at, result.result);
+        auto& [found_at, result] = find_result;
+        return format_to(ctx.out(), "{{ .found_at = {}, .result = {} }}", found_at, result);
     }
 };

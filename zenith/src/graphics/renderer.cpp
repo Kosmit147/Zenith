@@ -1,5 +1,6 @@
 #include "zenith/graphics/renderer.hpp"
 
+#include <glm/gtx/structured_bindings.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -76,7 +77,8 @@ auto Renderer::shut_down() -> void
 
 auto Renderer::set_clear_color(glm::vec4 color) -> void
 {
-    glClearColor(color.r, color.g, color.b, color.a);
+    auto [r, g, b, a] = color;
+    glClearColor(r, g, b, a);
 }
 
 auto Renderer::set_wireframe_mode(bool enabled) -> void

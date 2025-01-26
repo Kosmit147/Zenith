@@ -31,4 +31,4 @@ template<glm::length_t Size, std::floating_point T>
 
 } // namespace zth::math
 
-#include "Vector.inl"
+#include "vector.inl"

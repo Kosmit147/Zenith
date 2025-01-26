@@ -227,7 +227,7 @@ auto Window::mouse_pos() -> glm::vec2
 {
     double x_pos, y_pos;
     glfwGetCursorPos(_window, &x_pos, &y_pos);
-    return { static_cast<float>(x_pos), static_cast<float>(y_pos) };
+    return glm::vec2{ static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
 auto Window::frame_rate_limit() -> std::optional<u32>

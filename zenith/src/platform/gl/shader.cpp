@@ -2,6 +2,7 @@
 
 #include <battery/embed.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/structured_bindings.hpp>
 
 #include "zenith/logging/logger.hpp"
 #include "zenith/platform/shader_preprocessor.hpp"
@@ -121,7 +122,7 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
     auto preprocessed_fragment_source = ShaderPreprocessor::preprocess(fragment_source);
 
     if (!preprocessed_vertex_source || !preprocessed_fragment_source)
-            return;
+        return;
 
     auto vertex_shader = create_shader(*preprocessed_vertex_source, ShaderType::Vertex);
 
@@ -211,17 +212,20 @@ auto Shader::set_unif(GLint location, GLfloat val) -> void
 
 auto Shader::set_unif(GLint location, glm::vec2 val) -> void
 {
-    glUniform2f(location, val.x, val.y);
+    auto [x, y] = val;
+    glUniform2f(location, x, y);
 }
 
 auto Shader::set_unif(GLint location, glm::vec3 val) -> void
 {
-    glUniform3f(location, val.x, val.y, val.z);
+    auto [x, y, z] = val;
+    glUniform3f(location, x, y, z);
 }
 
 auto Shader::set_unif(GLint location, glm::vec4 val) -> void
 {
-    glUniform4f(location, val.x, val.y, val.z, val.w);
+    auto [x, y, z, w] = val;
+    glUniform4f(location, x, y, z, w);
 }
 
 auto Shader::set_unif(GLint location, const glm::mat4& val) -> void

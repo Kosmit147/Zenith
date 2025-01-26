@@ -3,6 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/quaternion_transform.hpp>
 #include <glm/geometric.hpp>
+#include <glm/gtx/structured_bindings.hpp>
 #include <glm/trigonometric.hpp>
 
 #include "zenith/math/vector.hpp"
@@ -32,7 +33,7 @@ auto to_quaternion(EulerAngles angles) -> glm::quat
 
 auto to_rotation(glm::vec3 direction) -> Rotation
 {
-    // TODO: handle cases where direction vector is opposite to the reference vector
+    // @todo: handle cases where direction vector is opposite to the reference vector
     // in that case the resulting axis vector is (0, 0, 0)
     auto axis = glm::cross(reference_vector, direction);
     auto angle = glm::acos(glm::dot(reference_vector, direction));
@@ -57,20 +58,22 @@ auto to_direction(EulerAngles angles) -> glm::vec3
 
 auto to_euler_angles(glm::quat rotation) -> EulerAngles
 {
-    auto angles = glm::eulerAngles(rotation);
+    auto [x, y, z] = glm::eulerAngles(rotation);
 
     return EulerAngles{
-        .pitch = angles.x,
-        .yaw = angles.y,
-        .roll = angles.z,
+        .pitch = x,
+        .yaw = y,
+        .roll = z,
     };
 }
 
 auto to_euler_angles(glm::vec3 direction) -> EulerAngles
 {
+    auto [x, y, z] = direction;
+
     return EulerAngles{
-        .pitch = glm::asin(direction.y),
-        .yaw = std::atan2(direction.z, direction.x),
+        .pitch = glm::asin(y),
+        .yaw = std::atan2(z, x),
         .roll = 0.0f, // a direction vector does not define roll
     };
 }

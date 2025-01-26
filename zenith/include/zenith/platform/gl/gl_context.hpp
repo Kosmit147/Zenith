@@ -29,7 +29,8 @@ template<> struct fmt::formatter<zth::GlVersion> : formatter<std::string>
 {
     static auto format(const zth::GlVersion& version, format_context& ctx) -> decltype(ctx.out())
     {
-        return format_to(ctx.out(), "{}.{}", version.major, version.minor);
+        auto& [major, minor] = version;
+        return format_to(ctx.out(), "{}.{}", major, minor);
     }
 };
 

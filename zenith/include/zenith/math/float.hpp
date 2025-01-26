@@ -12,4 +12,4 @@ template<std::floating_point T> [[nodiscard]] auto relative_equal(T a, T b, T ep
 
 } // namespace zth::math
 
-#include "Float.inl"
+#include "float.inl"
