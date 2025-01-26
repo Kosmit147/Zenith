@@ -59,13 +59,17 @@ target_compile_options(zenith_core PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(zenith_core PRIVATE "src/pch.hpp")
 set_property(TARGET zenith_core PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-# GLM_ENABLE_EXPERIMENTAL is needed for matrix decomposition
-target_compile_definitions(zenith_core PRIVATE GLM_ENABLE_EXPERIMENTAL)
+set(ZTH_COMPILE_DEFINITIONS
+	_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # for battery::embed
+	GLM_ENABLE_EXPERIMENTAL # for matrix decomposition
+)
+
+target_compile_definitions(zenith_core PRIVATE ${ZTH_COMPILE_DEFINITIONS})
 
 add_subdirectory("imgui")
 
-# we're linking with glfw through imgui
 target_link_libraries(zenith_core PUBLIC glad)
+target_link_libraries(zenith_core PUBLIC glfw)
 target_link_libraries(zenith_core PUBLIC glm)
 target_link_libraries(zenith_core PUBLIC imgui)
 target_link_libraries(zenith_core PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
@@ -78,6 +82,9 @@ add_library(
 
 target_compile_features(zenith PRIVATE cxx_std_23)
 target_compile_options(zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(zenith REUSE_FROM zenith_core)
 set_property(TARGET zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+
+target_compile_definitions(zenith PRIVATE ${ZTH_COMPILE_DEFINITIONS})
 
 target_link_libraries(zenith PUBLIC zenith_core)

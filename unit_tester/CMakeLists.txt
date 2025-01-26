@@ -19,6 +19,7 @@ endif()
 
 target_compile_features(unit_tester PRIVATE cxx_std_23)
 target_compile_options(unit_tester PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(unit_tester PRIVATE "src/pch.hpp")
 set_property(TARGET unit_tester PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 target_link_libraries(unit_tester PRIVATE Catch2WithMain)

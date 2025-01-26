@@ -15,6 +15,7 @@ endif()
 
 target_compile_features(sandbox PRIVATE cxx_std_23)
 target_compile_options(sandbox PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(sandbox PRIVATE "src/pch.hpp")
 set_property(TARGET sandbox PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 target_link_libraries(sandbox PRIVATE zenith)
