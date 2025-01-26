@@ -12,10 +12,6 @@ namespace zth {
 
 namespace {
 
-// @cleanup: move to some kind of embedded module
-const auto fallback_vertex_source = std::string_view(b::embed<"src/graphics/shaders/zth_fallback.vert">().data());
-const auto fallback_fragment_source = std::string_view(b::embed<"src/graphics/shaders/zth_fallback.frag">().data());
-
 [[nodiscard]] auto compile_shader(GLuint id, ShaderType type) -> bool
 {
     glCompileShader(id);

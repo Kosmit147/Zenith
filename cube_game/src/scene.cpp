@@ -6,7 +6,7 @@
 
 namespace {
 
-const auto cobble_texture_data = b::embed<"assets/cobble.png">().vec();
+const auto cobble_texture_data = b::embed<"assets/cobble.png">().data();
 
 const zth::TextureParams cobble_texture_params = {
     .min_filter = zth::TextureMinFilter::nearest_mipmap_linear,
