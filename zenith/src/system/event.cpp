@@ -1,4 +1,4 @@
-#include "zenith/platform/event.hpp"
+#include "zenith/system/event.hpp"
 
 #include "zenith/core/assert.hpp"
 

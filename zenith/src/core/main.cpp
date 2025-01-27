@@ -2,8 +2,8 @@
 
 #include <print>
 
-#include "zenith/core/application.hpp"
 #include "zenith/core/exception.hpp"
+#include "zenith/system/application.hpp"
 
 namespace zth {
 

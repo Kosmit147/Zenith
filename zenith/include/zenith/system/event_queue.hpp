@@ -3,7 +3,7 @@
 #include <optional>
 #include <queue>
 
-#include "zenith/platform/event.hpp"
+#include "zenith/system/event.hpp"
 
 namespace zth {
 

@@ -1,4 +1,4 @@
-#include "zenith/platform/event_queue.hpp"
+#include "zenith/system/event_queue.hpp"
 
 namespace zth {
 

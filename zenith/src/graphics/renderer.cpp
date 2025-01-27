@@ -18,7 +18,7 @@
 #include "zenith/graphics/shape.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
-#include "zenith/platform/event.hpp"
+#include "zenith/system/event.hpp"
 
 namespace zth {
 

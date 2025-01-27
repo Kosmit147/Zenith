@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "zenith/core/fwd.hpp"
-#include "zenith/platform/fwd.hpp"
+#include "zenith/system/fwd.hpp"
 
 namespace zth {
 

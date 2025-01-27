@@ -17,7 +17,7 @@
 #include "zenith/graphics/light.hpp"
 #include "zenith/graphics/ubo_data.hpp"
 #include "zenith/graphics/vertex.hpp"
-#include "zenith/platform/fwd.hpp"
+#include "zenith/system/fwd.hpp"
 
 namespace zth {
 

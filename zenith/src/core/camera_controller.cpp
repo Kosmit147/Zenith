@@ -1,8 +1,8 @@
 #include "zenith/core/camera_controller.hpp"
 
 #include "zenith/core/assert.hpp"
-#include "zenith/platform/input.hpp"
-#include "zenith/time/time.hpp"
+#include "zenith/system/input.hpp"
+#include "zenith/system/time.hpp"
 
 #include "zenith/math/quaternion.hpp"
 

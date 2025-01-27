@@ -10,8 +10,8 @@
 #include "zenith/graphics/material.hpp"
 #include "zenith/graphics/materials.hpp"
 #include "zenith/graphics/renderer.hpp"
-#include "zenith/platform/event.hpp"
-#include "zenith/platform/window.hpp"
+#include "zenith/system/event.hpp"
+#include "zenith/system/window.hpp"
 
 namespace zth::debug {
 

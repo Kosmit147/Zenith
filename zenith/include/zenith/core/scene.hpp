@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zenith/platform/fwd.hpp"
+#include "zenith/system/fwd.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth {

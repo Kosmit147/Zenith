@@ -1,4 +1,4 @@
-#include "zenith/platform/window.hpp"
+#include "zenith/system/window.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -7,7 +7,7 @@
 #include "zenith/core/exception.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/logger.hpp"
-#include "zenith/platform/event_queue.hpp"
+#include "zenith/system/event_queue.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth {
