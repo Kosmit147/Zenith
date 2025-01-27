@@ -1,6 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
-
-#include <zenith/utility/defer.hpp>
+#include <zenith/util/defer.hpp>
 
 TEST_CASE("defer works", "[Defer]")
 {

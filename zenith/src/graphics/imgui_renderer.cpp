@@ -5,7 +5,7 @@
 #include <imgui_impl_opengl3.h>
 #include <ImGuizmo.h>
 
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/platform/window.hpp"
 
 namespace zth {

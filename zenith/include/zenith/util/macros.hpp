@@ -44,7 +44,7 @@
 
 #endif
 
-#ifdef ZTH_DIST_BUILD
+#if defined(ZTH_DIST_BUILD)
 
 #undef ZTH_DEBUG_BREAK
 #define ZTH_DEBUG_BREAK

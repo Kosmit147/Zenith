@@ -1,8 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
-
 #include <string_view>
 
-#include <zenith/utility/string.hpp>
+#include <zenith/stl/string.hpp>
 
 #include "matchers.hpp"
 

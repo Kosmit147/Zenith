@@ -3,9 +3,9 @@
 #include <battery/embed.hpp>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/filesystem/file.hpp"
-#include "zenith/logging/logger.hpp"
-#include "zenith/utility/defer.hpp"
+#include "zenith/fs/fs.hpp"
+#include "zenith/log/logger.hpp"
+#include "zenith/util/defer.hpp"
 
 using namespace std::string_view_literals;
 
@@ -63,7 +63,7 @@ auto ShaderPreprocessor::add_source(std::string_view name, std::string&& source)
 
 auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path) -> bool
 {
-    auto filename = filesystem::extract_filename(path);
+    auto filename = fs::extract_filename(path);
 
     if (!filename)
     {
@@ -77,7 +77,7 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
 
 auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::filesystem::path& path) -> bool
 {
-    auto data = filesystem::load_to_string(path);
+    auto data = fs::load_to_string(path);
 
     if (!data)
     {
@@ -334,12 +334,12 @@ auto ShaderPreprocessor::update_rest_in_line() -> void
     _rest_in_line = _rest.substr(0, endline_pos);
 }
 
-auto ShaderPreprocessor::update_rest_in_line_after_advancing_or_skipping(usize characters_advanced_or_skipped) -> void
+auto ShaderPreprocessor::update_rest_in_line_after_advancing_or_skipping(usize advanced_or_skipped_count) -> void
 {
-    if (characters_advanced_or_skipped >= _rest_in_line.size())
+    if (advanced_or_skipped_count >= _rest_in_line.size())
         update_rest_in_line();
     else
-        _rest_in_line = _rest_in_line.substr(characters_advanced_or_skipped);
+        _rest_in_line = _rest_in_line.substr(advanced_or_skipped_count);
 }
 
 auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<std::string_view>

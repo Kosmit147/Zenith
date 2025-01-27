@@ -1,6 +1,5 @@
 #pragma once
 
-#include <catch2/matchers/catch_matchers_templated.hpp>
 #include <spdlog/spdlog.h>
 
 #include <string>

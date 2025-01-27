@@ -1,9 +1,9 @@
 #pragma once
 
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/platform/window.hpp"
 #include "zenith/platform/fwd.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 #define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
     namespace zth {                                                                                                    \

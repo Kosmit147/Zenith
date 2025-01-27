@@ -4,9 +4,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/platform/shader_preprocessor.hpp"
-#include "zenith/utility/defer.hpp"
+#include "zenith/util/defer.hpp"
 
 namespace zth {
 
@@ -139,7 +139,7 @@ Shader::Shader(std::string_view vertex_source, std::string_view fragment_source)
     if (!program)
         return;
 
-#ifndef ZTH_DIST_BUILD
+#if !defined(ZTH_DIST_BUILD)
     delete_vertex_shader.dismiss();
     delete_fragment_shader.dismiss();
 #endif

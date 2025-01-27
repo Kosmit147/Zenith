@@ -1,7 +1,7 @@
 #include "zenith/core/scene_manager.hpp"
 
 #include "zenith/core/scene.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 
 namespace zth {
 

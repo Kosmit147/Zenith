@@ -3,7 +3,7 @@
 #include <concepts>
 #include <utility>
 
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

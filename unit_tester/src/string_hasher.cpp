@@ -1,9 +1,7 @@
-#include <catch2/catch_test_macros.hpp>
-
 #include <string>
 #include <string_view>
 
-#include <zenith/utility/string_hasher.hpp>
+#include <zenith/stl/string_hash.hpp>
 
 TEST_CASE("StringHasher hashes strings transparently", "[StringHasher]")
 {

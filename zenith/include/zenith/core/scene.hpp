@@ -1,7 +1,7 @@
 #pragma once
 
 #include "zenith/platform/fwd.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

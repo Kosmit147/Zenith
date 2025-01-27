@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "zenith/graphics/camera.hpp"
-#include "zenith/platform/key.hpp"
+#include "zenith/platform/input.hpp"
 
 namespace zth {
 

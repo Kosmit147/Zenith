@@ -2,33 +2,20 @@
 
 #include <ranges>
 
-#include "zenith/platform/gl/gl_buffer.hpp"
+#include "zenith/platform/gl/buffer.hpp"
 #include "zenith/platform/gl/vertex_array.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 
 class Mesh
 {
 public:
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
-        : _vertex_buffer(VertexBuffer::create_static(vertex_data)),
-          _index_buffer(IndexBuffer::create_static(index_data)),
-          _vertex_array(VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
-    {}
-
+    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const VertexArrayLayout& layout)
-        : _vertex_buffer(VertexBuffer::create_static(vertex_data)),
-          _index_buffer(IndexBuffer::create_static(index_data)), _vertex_array(layout, _vertex_buffer, _index_buffer)
-    {}
-
+                  const VertexArrayLayout& layout);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const VertexArrayLayout& layout, const InstanceBuffer& instance_buffer)
-        : _vertex_buffer(VertexBuffer::create_static(vertex_data)),
-          _index_buffer(IndexBuffer::create_static(index_data)),
-          _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
-    {}
+                  const VertexArrayLayout& layout, const InstanceBuffer& instance_buffer);
 
     ZTH_NO_COPY(Mesh)
 
@@ -49,5 +36,22 @@ private:
     IndexBuffer _index_buffer;
     VertexArray _vertex_array;
 };
+
+Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
+    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
+      _vertex_array(VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
+{}
+
+Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
+           const VertexArrayLayout& layout)
+    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
+      _vertex_array(layout, _vertex_buffer, _index_buffer)
+{}
+
+Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
+           const VertexArrayLayout& layout, const InstanceBuffer& instance_buffer)
+    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
+      _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
+{}
 
 } // namespace zth

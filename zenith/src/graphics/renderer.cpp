@@ -12,10 +12,10 @@
 #include "zenith/graphics/meshes.hpp"
 #include "zenith/graphics/shaders.hpp"
 #include "zenith/graphics/shape.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/platform/event.hpp"
-#include "zenith/platform/gl/gl_debug.hpp"
+#include "zenith/platform/gl/debug.hpp"
 #include "zenith/platform/gl/shader.hpp"
 #include "zenith/platform/gl/texture.hpp"
 #include "zenith/platform/gl/vertex_array.hpp"
@@ -28,9 +28,55 @@ std::unique_ptr<Renderer> renderer;
 
 } // namespace
 
+auto DrawCommand::operator==(const DrawCommand& other) const -> bool
+{
+    // ignore transform
+    return vertex_array == other.vertex_array && material == other.material;
+}
+
+auto DrawCommand::operator<(const DrawCommand& other) const -> bool
+{
+    // sort by vertex array first
+    if (vertex_array < other.vertex_array)
+        return true;
+    else if (vertex_array > other.vertex_array)
+        return false;
+
+    // sort by material second
+    if (material < other.material)
+        return true;
+
+    return false;
+}
+
+auto DrawCommand::operator>(const DrawCommand& other) const -> bool
+{
+    // sort by vertex array first
+    if (vertex_array > other.vertex_array)
+        return true;
+    else if (vertex_array < other.vertex_array)
+        return false;
+
+    // sort by material second
+    if (material > other.material)
+        return true;
+
+    return false;
+}
+
+auto DrawCommand::operator<=(const DrawCommand& other) const -> bool
+{
+    return *this < other || *this == other;
+}
+
+auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
+{
+    return *this > other || *this == other;
+}
+
 auto Renderer::init() -> void
 {
-#ifndef ZTH_DIST_BUILD
+#if !defined(ZTH_DIST_BUILD)
     enable_gl_debug();
 #endif
 
@@ -331,6 +377,8 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
 
 auto Renderer::log_gl_version() -> void
 {
+    // @cleanup: this function should probably be moved somewhere else
+
     auto vendor_str = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
     auto renderer_str = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
     auto version_str = reinterpret_cast<const char*>(glGetString(GL_VERSION));

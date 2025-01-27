@@ -6,7 +6,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/platform/gl/texture_params.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

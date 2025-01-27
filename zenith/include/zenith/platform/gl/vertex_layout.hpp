@@ -5,7 +5,7 @@
 #include <initializer_list>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/utility/inplace_vector.hpp"
+#include "zenith/stl/inplace_vector.hpp"
 
 namespace zth {
 
