@@ -3,11 +3,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 
-#include "zenith/log/logger.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 namespace {
 
@@ -228,4 +228,4 @@ auto Shader::set_unif(GLint location, const glm::mat4& val) -> void
     glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
 }
 
-} // namespace zth
+} // namespace zth::gl

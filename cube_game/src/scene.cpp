@@ -6,9 +6,9 @@ namespace {
 
 const auto cobble_texture_data = b::embed<"assets/cobble.png">().data();
 
-const zth::TextureParams cobble_texture_params = {
-    .min_filter = zth::TextureMinFilter::nearest_mipmap_linear,
-    .mag_filter = zth::TextureMagFilter::nearest,
+const zth::gl::TextureParams cobble_texture_params = {
+    .min_filter = zth::gl::TextureMinFilter::nearest_mipmap_linear,
+    .mag_filter = zth::gl::TextureMagFilter::nearest,
 };
 
 const auto light_direction = glm::normalize(glm::vec3{ 1.0f, -1.0f, 0.2f });

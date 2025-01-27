@@ -5,9 +5,9 @@
 
 namespace {
 
-const zth::TextureParams cobble_diffuse_map_params = {
-    .min_filter = zth::TextureMinFilter::nearest_mipmap_linear,
-    .mag_filter = zth::TextureMagFilter::nearest,
+const zth::gl::TextureParams cobble_diffuse_map_params = {
+    .min_filter = zth::gl::TextureMinFilter::nearest_mipmap_linear,
+    .mag_filter = zth::gl::TextureMagFilter::nearest,
 };
 
 constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };

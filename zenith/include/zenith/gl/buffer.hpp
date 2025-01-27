@@ -9,42 +9,41 @@
 #include "zenith/gl/buffer_usage.hpp"
 #include "zenith/util/macros.hpp"
 
-namespace zth {
+namespace zth::gl {
 
-enum class GlBufferState : u8
+enum class BufferState : u8
 {
     Uninitialized,
     InitializedStatic,  // buffer cannot be reinitialized, size cannot be changed
     InitializedDynamic, // buffer can be reinitialized, size can be changed
 };
 
-class GlBuffer
+class Buffer
 {
 public:
-    explicit GlBuffer();
+    explicit Buffer();
 
-    [[nodiscard]] static auto create_static(usize size) -> GlBuffer;
-    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> GlBuffer;
+    [[nodiscard]] static auto create_static(usize size) -> Buffer;
+    [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> Buffer;
 
-    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
-    [[nodiscard]] static auto create_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
+    [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> Buffer;
+    [[nodiscard]] static auto create_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> Buffer;
     [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> GlBuffer;
+                                             BufferUsage usage = BufferUsage::dynamic_draw) -> Buffer;
 
-    ZTH_NO_COPY(GlBuffer)
+    ZTH_NO_COPY(Buffer)
 
-    GlBuffer(GlBuffer&& other) noexcept;
-    auto operator=(GlBuffer&& other) noexcept -> GlBuffer&;
+    Buffer(Buffer&& other) noexcept;
+    auto operator=(Buffer&& other) noexcept -> Buffer&;
 
-    ~GlBuffer();
+    ~Buffer();
 
     auto init_static(usize size) -> void;
     auto init_static(std::ranges::contiguous_range auto&& data) -> void;
 
-    auto init_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(std::ranges::contiguous_range auto&& data,
-                      GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
     auto buffer_data(auto&& object, usize offset = 0) -> void;
@@ -52,15 +51,15 @@ public:
 
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto size_bytes() const { return _size_bytes; }
-    [[nodiscard]] auto is_static() const { return _state == GlBufferState::InitializedStatic; }
-    [[nodiscard]] auto is_dynamic() const { return _state == GlBufferState::InitializedDynamic; }
-    [[nodiscard]] auto is_initialized() const { return _state != GlBufferState::Uninitialized; }
+    [[nodiscard]] auto is_static() const { return _state == BufferState::InitializedStatic; }
+    [[nodiscard]] auto is_dynamic() const { return _state == BufferState::InitializedDynamic; }
+    [[nodiscard]] auto is_initialized() const { return _state != BufferState::Uninitialized; }
 
 private:
     GLuint _id = GL_NONE;
     GLsizei _size_bytes = 0;
-    GlBufferState _state = GlBufferState::Uninitialized;
-    std::optional<GlBufferUsage> _usage = std::nullopt;
+    BufferState _state = BufferState::Uninitialized;
+    std::optional<BufferUsage> _usage = std::nullopt;
 
 private:
     auto create() -> void;
@@ -77,11 +76,10 @@ public:
     [[nodiscard]] static auto create_static(usize size) -> VertexBuffer;
     [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
-    [[nodiscard]] static auto create_dynamic(usize size,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
+    [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
     [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> VertexBuffer;
+                                             BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
     ZTH_NO_COPY(VertexBuffer)
 
@@ -93,10 +91,9 @@ public:
     auto init_static(usize size) -> void;
     auto init_static(std::ranges::contiguous_range auto&& data) -> void;
 
-    auto init_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(std::ranges::contiguous_range auto&& data,
-                      GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
 
@@ -113,7 +110,7 @@ public:
     [[nodiscard]] auto stride() const { return _stride; }
 
 private:
-    GlBuffer _buffer;
+    Buffer _buffer;
     GLsizei _stride = 0;
 };
 
@@ -125,11 +122,10 @@ public:
     [[nodiscard]] static auto create_static(usize size) -> IndexBuffer;
     [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
 
-    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
-    [[nodiscard]] static auto create_dynamic(usize size,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
+    [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
     [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> IndexBuffer;
+                                             BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
 
     ZTH_NO_COPY(IndexBuffer)
 
@@ -141,10 +137,9 @@ public:
     auto init_static(usize size) -> void;
     auto init_static(std::ranges::contiguous_range auto&& data) -> void;
 
-    auto init_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(usize size, GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
-    auto init_dynamic(std::ranges::contiguous_range auto&& data,
-                      GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
 
@@ -160,7 +155,7 @@ public:
     [[nodiscard]] auto size() const { return _size; }
 
 private:
-    GlBuffer _buffer;
+    Buffer _buffer;
     GLenum _index_type = GL_NONE;
     GLsizei _size = 0;
 };
@@ -173,11 +168,11 @@ public:
     [[nodiscard]] static auto create_static(usize size) -> InstanceBuffer;
     [[nodiscard]] static auto create_static(std::ranges::contiguous_range auto&& data) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic(GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+    [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
     [[nodiscard]] static auto create_dynamic(usize size,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+                                             BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
     [[nodiscard]] static auto create_dynamic(std::ranges::contiguous_range auto&& data,
-                                             GlBufferUsage usage = GlBufferUsage::dynamic_draw) -> InstanceBuffer;
+                                             BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
     ZTH_NO_COPY(InstanceBuffer)
     ZTH_DEFAULT_MOVE(InstanceBuffer)
@@ -222,9 +217,9 @@ public:
     [[nodiscard]] auto is_initialized() const { return _buffer.is_initialized(); }
 
 private:
-    GlBuffer _buffer;
+    Buffer _buffer;
 };
 
-} // namespace zth
+} // namespace zth::gl
 
 #include "buffer.inl"

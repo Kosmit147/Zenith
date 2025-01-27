@@ -5,7 +5,7 @@
 
 namespace zth {
 
-StringHashMap<Shader> AssetManager::_shaders;
+StringHashMap<gl::Shader> AssetManager::_shaders;
 
 auto AssetManager::init() -> void
 {

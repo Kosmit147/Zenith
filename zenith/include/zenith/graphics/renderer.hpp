@@ -23,7 +23,7 @@ namespace zth {
 
 struct DrawCommand
 {
-    const VertexArray* vertex_array;
+    const gl::VertexArray* vertex_array;
     const Material* material;
     const glm::mat4* transform;
 
@@ -37,7 +37,7 @@ struct DrawCommand
 
 struct RenderBatch
 {
-    const VertexArray* vertex_array;
+    const gl::VertexArray* vertex_array;
     const Material* material;
     std::vector<const glm::mat4*> transforms;
 };
@@ -70,12 +70,12 @@ public:
 
     static auto draw(const Shape3D& shape, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
-    static auto draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
+    static auto draw(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
 
     static auto render() -> void;
 
-    static auto draw_indexed(const VertexArray& vertex_array, const Material& material) -> void;
-    static auto draw_instanced(const VertexArray& vertex_array, const Material& material, usize instances) -> void;
+    static auto draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void;
+    static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, usize instances) -> void;
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
@@ -85,12 +85,13 @@ private:
     std::shared_ptr<const PointLight> _point_light = nullptr;
     std::shared_ptr<const SpotLight> _spot_light = nullptr;
 
-    UniformBuffer _camera_ubo = UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_index);
-    UniformBuffer _light_ubo = UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_index);
-    UniformBuffer _material_ubo = UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_index);
+    gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_index);
+    gl::UniformBuffer _light_ubo = gl::UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_index);
+    gl::UniformBuffer _material_ubo =
+        gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_index);
 
     std::vector<InstanceVertex> _instance_data;
-    InstanceBuffer _instance_buffer = InstanceBuffer::create_dynamic();
+    gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic();
 
     std::vector<DrawCommand> _draw_commands;
     std::vector<RenderBatch> _batches;

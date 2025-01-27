@@ -8,7 +8,7 @@
 #include "zenith/gl/texture_params.hpp"
 #include "zenith/util/macros.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 class Texture2D
 {
@@ -40,4 +40,4 @@ Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TexturePar
     : Texture2D(data.data(), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params)
 {}
 
-} // namespace zth
+} // namespace zth::gl

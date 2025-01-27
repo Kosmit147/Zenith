@@ -5,7 +5,7 @@
 #include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParams& params)
 {
@@ -76,4 +76,4 @@ auto Texture2D::destroy() const -> void
     glDeleteTextures(1, &_id);
 }
 
-} // namespace zth
+} // namespace zth::gl

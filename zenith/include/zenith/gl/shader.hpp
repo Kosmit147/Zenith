@@ -20,6 +20,8 @@
 
 namespace zth {
 
+namespace gl {
+
 enum class ShaderType : u16
 {
     Vertex = GL_VERTEX_SHADER,
@@ -83,11 +85,13 @@ private:
     std::unreachable();
 }
 
-[[nodiscard]] constexpr auto to_string(ShaderType shader_type) -> const char*
+} // namespace gl
+
+[[nodiscard]] constexpr auto to_string(gl::ShaderType shader_type) -> const char*
 {
     switch (shader_type)
     {
-        using enum ShaderType;
+        using enum gl::ShaderType;
     case Vertex:
         return "Vertex";
     case Fragment:
@@ -100,9 +104,9 @@ private:
 
 } // namespace zth
 
-template<> struct fmt::formatter<zth::ShaderType> : formatter<std::string>
+template<> struct fmt::formatter<zth::gl::ShaderType> : formatter<std::string>
 {
-    static auto format(zth::ShaderType shader_type, format_context& ctx) -> decltype(ctx.out())
+    static auto format(zth::gl::ShaderType shader_type, format_context& ctx) -> decltype(ctx.out())
     {
         return format_to(ctx.out(), "{}", zth::to_string(shader_type));
     }

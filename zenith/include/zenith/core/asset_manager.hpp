@@ -13,7 +13,7 @@ namespace zth {
 class AssetManager
 {
 public:
-    using ShaderRef = std::reference_wrapper<Shader>;
+    using ShaderRef = std::reference_wrapper<gl::Shader>;
 
     AssetManager() = delete;
 
@@ -30,7 +30,7 @@ public:
     static auto unload_shader(std::string_view name) -> bool;
 
 private:
-    static StringHashMap<Shader> _shaders;
+    static StringHashMap<gl::Shader> _shaders;
 };
 
 } // namespace zth

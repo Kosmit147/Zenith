@@ -21,8 +21,8 @@ struct WindowSpec
 {
     glm::uvec2 size = { 800, 600 };
     std::string title = "Title";
-    GlVersion gl_version = { 4, 6 };
-    GlProfile gl_profile = GlProfile::Core;
+    gl::Version gl_version = { 4, 6 };
+    gl::Profile gl_profile = gl::Profile::Core;
     bool fullscreen = false;
     bool vsync = true;
     std::optional<u32> frame_rate_limit = std::nullopt;

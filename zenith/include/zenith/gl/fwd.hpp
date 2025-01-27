@@ -2,21 +2,21 @@
 
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::gl {
 
-enum class GlBufferState : u8;
-class GlBuffer;
+enum class BufferState : u8;
+class Buffer;
 class VertexBuffer;
 class IndexBuffer;
 class UniformBuffer;
 class InstanceBuffer;
 
-enum class GlBufferAccessFrequency : u8;
-enum class GlBufferAccessType : u8;
-struct GlBufferUsage;
+enum class BufferAccessFrequency : u8;
+enum class BufferAccessType : u8;
+struct BufferUsage;
 
-struct GlVersion;
-enum class GlProfile : u8;
+struct Version;
+enum class Profile : u8;
 
 enum class ShaderType : u16;
 struct UniformInfo;
@@ -40,4 +40,4 @@ enum class VertexLayoutElement : u8;
 struct VertexLayoutElementInfo;
 class VertexLayout;
 
-} // namespace zth
+} // namespace zth::gl

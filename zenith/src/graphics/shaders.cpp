@@ -37,7 +37,7 @@ auto shaders() -> const ShaderList&
 }
 
 #define ZTH_SHADER_GETTER(shader_name)                                                                                 \
-    auto shader_name() -> const Shader&                                                                                \
+    auto shader_name() -> const gl::Shader&                                                                            \
     {                                                                                                                  \
         ZTH_ASSERT(shader_list != nullptr);                                                                            \
         return shader_list->shader_name;                                                                               \

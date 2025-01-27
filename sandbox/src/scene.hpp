@@ -9,7 +9,7 @@ public:
 
 private:
     zth::CubeShape _cube;
-    zth::Texture2D _cube_texture;
+    zth::gl::Texture2D _cube_texture;
     zth::Material _cube_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;

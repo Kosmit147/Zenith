@@ -7,7 +7,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/stl/inplace_vector.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 enum class VertexLayoutElement : u8
 {
@@ -56,6 +56,6 @@ private:
 
 [[nodiscard]] constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo;
 
-} // namespace zth
+} // namespace zth::gl
 
 #include "vertex_layout.inl"

@@ -3,7 +3,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 VertexArray::VertexArray()
 {
@@ -234,4 +234,4 @@ auto VertexArray::bind_instance_buffer_layout() const -> void
     }
 }
 
-} // namespace zth
+} // namespace zth::gl

@@ -13,9 +13,9 @@ class Mesh
 public:
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const VertexArrayLayout& layout);
+                  const gl::VertexArrayLayout& layout);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const VertexArrayLayout& layout, const InstanceBuffer& instance_buffer);
+                  const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer);
 
     ZTH_NO_COPY(Mesh)
 
@@ -32,25 +32,27 @@ public:
     [[nodiscard]] auto index_buffer() const -> auto& { return _index_buffer; }
 
 private:
-    VertexBuffer _vertex_buffer;
-    IndexBuffer _index_buffer;
-    VertexArray _vertex_array;
+    gl::VertexBuffer _vertex_buffer;
+    gl::IndexBuffer _index_buffer;
+    gl::VertexArray _vertex_array;
 };
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
-    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
-      _vertex_array(VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
+    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static(index_data)),
+      _vertex_array(gl::VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
 {}
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-           const VertexArrayLayout& layout)
-    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
-      _vertex_array(layout, _vertex_buffer, _index_buffer)
+           const gl::VertexArrayLayout& layout)
+    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static(index_data)), _vertex_array(layout, _vertex_buffer, _index_buffer)
 {}
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-           const VertexArrayLayout& layout, const InstanceBuffer& instance_buffer)
-    : _vertex_buffer(VertexBuffer::create_static(vertex_data)), _index_buffer(IndexBuffer::create_static(index_data)),
+           const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer)
+    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static(index_data)),
       _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
 {}
 

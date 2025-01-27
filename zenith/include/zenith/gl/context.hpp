@@ -8,36 +8,42 @@
 
 namespace zth {
 
-struct GlVersion
+namespace gl {
+
+struct Version
 {
     u32 major;
     u32 minor;
 
-    [[nodiscard]] auto operator<=>(const GlVersion&) const = default;
+    [[nodiscard]] auto operator<=>(const Version&) const = default;
 };
 
-enum class GlProfile : u8
+enum class Profile : u8
 {
     Compatibility,
     Core,
 };
 
-[[nodiscard]] auto to_string(GlProfile gl_profile) -> const char*;
+auto set_debug_context() -> void;
+
+} // namespace gl
+
+[[nodiscard]] auto to_string(gl::Profile gl_profile) -> const char*;
 
 } // namespace zth
 
-template<> struct fmt::formatter<zth::GlVersion> : formatter<std::string>
+template<> struct fmt::formatter<zth::gl::Version> : formatter<std::string>
 {
-    static auto format(const zth::GlVersion& version, format_context& ctx) -> decltype(ctx.out())
+    static auto format(const zth::gl::Version& version, format_context& ctx) -> decltype(ctx.out())
     {
         auto& [major, minor] = version;
         return format_to(ctx.out(), "{}.{}", major, minor);
     }
 };
 
-template<> struct fmt::formatter<zth::GlProfile> : formatter<std::string>
+template<> struct fmt::formatter<zth::gl::Profile> : formatter<std::string>
 {
-    static auto format(zth::GlProfile profile, format_context& ctx) -> decltype(ctx.out())
+    static auto format(zth::gl::Profile profile, format_context& ctx) -> decltype(ctx.out())
     {
         return format_to(ctx.out(), "{}", zth::to_string(profile));
     }
