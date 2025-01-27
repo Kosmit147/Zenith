@@ -1,4 +1,4 @@
-#include "zenith/platform/gl/context.hpp"
+#include "zenith/gl/context.hpp"
 
 #include "zenith/core/assert.hpp"
 

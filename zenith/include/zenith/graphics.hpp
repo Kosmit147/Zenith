@@ -11,6 +11,7 @@
 #include "graphics/mesh.hpp"
 #include "graphics/meshes.hpp"
 #include "graphics/renderer.hpp"
+#include "graphics/shader_preprocessor.hpp"
 #include "graphics/shaders.hpp"
 #include "graphics/shape.hpp"
 #include "graphics/ubo_data.hpp"

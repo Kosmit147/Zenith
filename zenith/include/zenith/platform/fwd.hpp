@@ -1,7 +1,5 @@
 #pragma once
 
-#include "gl/fwd.hpp"
-
 #include "zenith/core/typedefs.hpp"
 
 namespace zth {

@@ -4,8 +4,8 @@
 
 #include <ranges>
 
-#include "zenith/platform/gl/vertex_layout.hpp"
-#include "zenith/platform/gl/fwd.hpp"
+#include "zenith/gl/vertex_layout.hpp"
+#include "zenith/gl/fwd.hpp"
 
 namespace zth {
 

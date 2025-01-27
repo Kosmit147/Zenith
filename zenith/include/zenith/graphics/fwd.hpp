@@ -39,6 +39,10 @@ struct ShaderList;
 
 } // namespace shaders
 
+struct LineInfo;
+struct PreprocessShaderError;
+class ShaderPreprocessor;
+
 class Shape3D;
 class CubeShape;
 class PyramidShape;

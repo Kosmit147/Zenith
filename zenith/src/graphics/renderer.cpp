@@ -5,6 +5,10 @@
 #include <glm/mat4x4.hpp>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/gl/debug.hpp"
+#include "zenith/gl/shader.hpp"
+#include "zenith/gl/texture.hpp"
+#include "zenith/gl/vertex_array.hpp"
 #include "zenith/graphics/colors.hpp"
 #include "zenith/graphics/material.hpp"
 #include "zenith/graphics/materials.hpp"
@@ -15,10 +19,6 @@
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/platform/event.hpp"
-#include "zenith/platform/gl/debug.hpp"
-#include "zenith/platform/gl/shader.hpp"
-#include "zenith/platform/gl/texture.hpp"
-#include "zenith/platform/gl/vertex_array.hpp"
 
 namespace zth {
 

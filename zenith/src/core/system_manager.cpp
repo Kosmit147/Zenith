@@ -6,10 +6,10 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/graphics/imgui_renderer.hpp"
 #include "zenith/graphics/renderer.hpp"
+#include "zenith/graphics/shader_preprocessor.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/platform/event.hpp"
 #include "zenith/platform/input.hpp"
-#include "zenith/platform/shader_preprocessor.hpp"
 #include "zenith/time/time.hpp"
 
 // list of which systems depend on which other systems

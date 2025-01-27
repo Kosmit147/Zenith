@@ -1,4 +1,4 @@
-#include "zenith/platform/gl/texture.hpp"
+#include "zenith/gl/texture.hpp"
 
 #include <stb_image/stb_image.h>
 

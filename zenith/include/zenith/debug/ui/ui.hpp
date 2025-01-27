@@ -13,6 +13,7 @@
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/platform/fwd.hpp"

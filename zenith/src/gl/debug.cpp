@@ -1,4 +1,4 @@
-#include "zenith/platform/gl/debug.hpp"
+#include "zenith/gl/debug.hpp"
 
 #include <glad/glad.h>
 

@@ -1,6 +1,6 @@
 #include <string_view>
 
-#include <zenith/platform/shader_preprocessor.hpp>
+#include <zenith/graphics/shader_preprocessor.hpp>
 
 #include "matchers.hpp"
 
