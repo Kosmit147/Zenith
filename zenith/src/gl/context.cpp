@@ -99,5 +99,5 @@ ZTH_DEFINE_FORMATTER(zth::gl::Version, version)
 
 ZTH_DEFINE_FORMATTER(zth::gl::Profile, profile)
 {
-    ZTH_FORMAT_OUT("{}", to_string(profile));
+    ZTH_FORMAT_OUT("{}", zth::to_string(profile));
 }

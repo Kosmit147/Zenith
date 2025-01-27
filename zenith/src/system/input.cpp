@@ -681,10 +681,10 @@ auto to_string(MouseButton button) -> const char*
 
 ZTH_DEFINE_FORMATTER(zth::Key, key)
 {
-    ZTH_FORMAT_OUT("{}", to_string(key));
+    ZTH_FORMAT_OUT("{}", zth::to_string(key));
 }
 
 ZTH_DEFINE_FORMATTER(zth::MouseButton, button)
 {
-    ZTH_FORMAT_OUT("{}", to_string(button));
+    ZTH_FORMAT_OUT("{}", zth::to_string(button));
 }

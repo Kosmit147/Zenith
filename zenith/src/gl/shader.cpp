@@ -266,5 +266,5 @@ auto to_string(gl::ShaderType shader_type) -> const char*
 
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
 {
-    ZTH_FORMAT_OUT("{}", to_string(type));
+    ZTH_FORMAT_OUT("{}", zth::to_string(type));
 }
