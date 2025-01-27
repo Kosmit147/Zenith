@@ -33,7 +33,7 @@
 - Lights
 - Drawing custom stuff: VertexArrays, VertexBuffers, VertexLayouts
 - Logging
-- Custom formatters for logging
+- Format, implementing custom formatters
 - Asserts
 - Scene Manager
 - Scenes

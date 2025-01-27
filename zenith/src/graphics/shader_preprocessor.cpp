@@ -361,3 +361,8 @@ auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::LineInfo, line_info)
+{
+    ZTH_FORMAT_OUT("({}:{})", line_info.line, line_info.col);
+}

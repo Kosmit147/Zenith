@@ -10,6 +10,7 @@
 
 #include "zenith/core/error.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/stl/string_map.hpp"
 
 namespace zth {
@@ -96,3 +97,5 @@ private:
 };
 
 } // namespace zth
+
+ZTH_DECLARE_FORMATTER(zth::LineInfo);
