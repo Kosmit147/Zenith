@@ -35,6 +35,7 @@ public:
 
 public:
     using StringRef = std::reference_wrapper<std::string>;
+    using ConstStringRef = std::reference_wrapper<const std::string>;
 
     ShaderPreprocessor() = delete;
 
@@ -48,7 +49,7 @@ public:
     static auto add_source_from_file(const std::filesystem::path& path) -> bool;
     static auto add_source_from_file(std::string_view name, const std::filesystem::path& path) -> bool;
 
-    [[nodiscard]] static auto get_source(std::string_view name) -> std::optional<StringRef>;
+    [[nodiscard]] static auto get_source(std::string_view name) -> std::optional<ConstStringRef>;
 
     static auto remove_source(std::string_view name) -> bool;
 

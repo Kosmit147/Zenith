@@ -87,7 +87,7 @@ auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::
     return add_source(name, *data);
 }
 
-auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<StringRef>
+auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<ConstStringRef>
 {
     if (auto kv = _sources.find(name); kv != _sources.end())
     {
