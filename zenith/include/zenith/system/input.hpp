@@ -11,7 +11,7 @@
 #include <unordered_map>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/platform/fwd.hpp"
+#include "zenith/system/fwd.hpp"
 
 namespace zth {
 

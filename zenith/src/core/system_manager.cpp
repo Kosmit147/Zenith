@@ -1,6 +1,5 @@
 #include "zenith/core/system_manager.hpp"
 
-#include "zenith/core/application.hpp"
 #include "zenith/core/asset_manager.hpp"
 #include "zenith/core/scene_manager.hpp"
 #include "zenith/core/typedefs.hpp"
@@ -8,9 +7,10 @@
 #include "zenith/graphics/renderer.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
 #include "zenith/log/logger.hpp"
-#include "zenith/platform/event.hpp"
-#include "zenith/platform/input.hpp"
-#include "zenith/time/time.hpp"
+#include "zenith/system/application.hpp"
+#include "zenith/system/event.hpp"
+#include "zenith/system/input.hpp"
+#include "zenith/system/time.hpp"
 
 // list of which systems depend on which other systems
 // we need to make sure that they're initialized in the right order

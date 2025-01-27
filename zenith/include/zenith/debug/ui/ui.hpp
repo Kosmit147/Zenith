@@ -16,8 +16,8 @@
 #include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
-#include "zenith/platform/fwd.hpp"
-#include "zenith/platform/input.hpp"
+#include "zenith/system/fwd.hpp"
+#include "zenith/system/input.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth::debug {

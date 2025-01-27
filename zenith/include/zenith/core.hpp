@@ -2,7 +2,6 @@
 
 #include "core/fwd.hpp"
 
-#include "core/application.hpp"
 #include "core/assert.hpp"
 #include "core/asset_manager.hpp"
 #include "core/camera_controller.hpp"

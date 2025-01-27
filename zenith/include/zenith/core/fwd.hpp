@@ -2,9 +2,6 @@
 
 namespace zth {
 
-struct ApplicationSpec;
-class Application;
-
 class AssetManager;
 
 class FpsCameraController;

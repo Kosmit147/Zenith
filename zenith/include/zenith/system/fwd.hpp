@@ -4,6 +4,9 @@
 
 namespace zth {
 
+struct ApplicationSpec;
+class Application;
+
 enum class EventType : u8;
 enum class EventCategory : u8;
 class Event;

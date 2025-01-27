@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "zenith/core/scene.hpp"
-#include "zenith/platform/fwd.hpp"
+#include "zenith/system/fwd.hpp"
 
 namespace zth {
 

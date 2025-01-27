@@ -3,7 +3,6 @@ project(zenith VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(
 	zenith_core STATIC
-	"src/core/application.cpp"
 	"src/core/asset_manager.cpp"
 	"src/core/camera_controller.cpp"
 	"src/core/exception.cpp"
@@ -30,12 +29,13 @@ add_library(
 	"src/log/logger.cpp"
 	"src/math/matrix.cpp"
 	"src/math/quaternion.cpp"
-	"src/platform/event.cpp"
-	"src/platform/event_queue.cpp"
-	"src/platform/input.cpp"
-	"src/platform/window.cpp"
 	"src/stl/string.cpp"
-	"src/time/time.cpp"
+	"src/system/application.cpp"
+	"src/system/event.cpp"
+	"src/system/event_queue.cpp"
+	"src/system/input.cpp"
+	"src/system/time.cpp"
+	"src/system/window.cpp"
 )
 
 b_embed(zenith_core "src/shaders/test.glsl")

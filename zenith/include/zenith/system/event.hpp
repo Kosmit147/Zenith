@@ -3,7 +3,7 @@
 #include <glm/vec2.hpp>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/platform/input.hpp"
+#include "zenith/system/input.hpp"
 
 namespace zth {
 
