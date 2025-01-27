@@ -4,6 +4,18 @@
 
 namespace zth::gl {
 
+const BufferUsage BufferUsage::stream_draw{ BufferAccessFrequency::Stream, BufferAccessType::Draw };
+const BufferUsage BufferUsage::static_draw{ BufferAccessFrequency::Static, BufferAccessType::Draw };
+const BufferUsage BufferUsage::dynamic_draw{ BufferAccessFrequency::Dynamic, BufferAccessType::Draw };
+
+const BufferUsage BufferUsage::stream_read{ BufferAccessFrequency::Stream, BufferAccessType::Read };
+const BufferUsage BufferUsage::static_read{ BufferAccessFrequency::Static, BufferAccessType::Read };
+const BufferUsage BufferUsage::dynamic_read{ BufferAccessFrequency::Dynamic, BufferAccessType::Read };
+
+const BufferUsage BufferUsage::stream_copy{ BufferAccessFrequency::Stream, BufferAccessType::Copy };
+const BufferUsage BufferUsage::static_copy{ BufferAccessFrequency::Static, BufferAccessType::Copy };
+const BufferUsage BufferUsage::dynamic_copy{ BufferAccessFrequency::Dynamic, BufferAccessType::Copy };
+
 // --------------------------- GlBuffer ---------------------------
 
 Buffer::Buffer()
@@ -364,6 +376,14 @@ auto UniformBuffer::unbind() -> void
 auto UniformBuffer::set_binding_index(u32 index) const -> void
 {
     glBindBufferBase(GL_UNIFORM_BUFFER, index, native_handle());
+}
+
+auto to_gl_enum(BufferUsage buffer_usage) -> GLenum
+{
+    GLenum res = GL_STREAM_DRAW;
+    res += std::to_underlying(buffer_usage.access_frequency);
+    res += std::to_underlying(buffer_usage.access_type);
+    return res;
 }
 
 } // namespace zth::gl
