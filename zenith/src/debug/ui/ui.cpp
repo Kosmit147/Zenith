@@ -252,19 +252,19 @@ auto MaterialUi::on_update() -> void
     ImGui::End();
 }
 
-auto MaterialUi::add_diffuse_map(std::string_view name, const Texture2D& diffuse_map) -> void
+auto MaterialUi::add_diffuse_map(std::string_view name, const gl::Texture2D& diffuse_map) -> void
 {
     _diffuse_map_names.emplace_back(name);
     _diffuse_maps.push_back(&diffuse_map);
 }
 
-auto MaterialUi::add_specular_map(std::string_view name, const Texture2D& specular_map) -> void
+auto MaterialUi::add_specular_map(std::string_view name, const gl::Texture2D& specular_map) -> void
 {
     _specular_map_names.emplace_back(name);
     _specular_maps.push_back(&specular_map);
 }
 
-auto MaterialUi::add_emission_map(std::string_view name, const Texture2D& emission_map) -> void
+auto MaterialUi::add_emission_map(std::string_view name, const gl::Texture2D& emission_map) -> void
 {
     _emission_map_names.emplace_back(name);
     _emission_maps.push_back(&emission_map);

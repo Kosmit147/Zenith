@@ -7,7 +7,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 enum class TextureFormat : u16
 {
@@ -178,9 +178,9 @@ struct TextureParams
     case 4:
         return Rgba;
     }
-    
+
     ZTH_ASSERT(false);
     std::unreachable();
 }
 
-} // namespace zth
+} // namespace zth::gl

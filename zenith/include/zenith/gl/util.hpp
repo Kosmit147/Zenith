@@ -5,7 +5,7 @@
 
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 using GlslBool = u32;
 
@@ -80,4 +80,4 @@ template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<glm::mat4
     return 16;
 }
 
-} // namespace zth
+} // namespace zth::gl

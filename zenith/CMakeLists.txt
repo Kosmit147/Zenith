@@ -15,7 +15,6 @@ add_library(
 	"src/fs/fs.cpp"
 	"src/gl/buffer.cpp"
 	"src/gl/context.cpp"
-	"src/gl/debug.cpp"
 	"src/gl/shader.cpp"
 	"src/gl/texture.cpp"
 	"src/gl/vertex_array.cpp"

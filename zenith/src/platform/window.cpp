@@ -19,11 +19,11 @@ namespace {
     return value ? GLFW_TRUE : GLFW_FALSE;
 }
 
-[[nodiscard]] constexpr auto to_glfw_enum(GlProfile profile) -> int
+[[nodiscard]] constexpr auto to_glfw_enum(gl::Profile profile) -> int
 {
     switch (profile)
     {
-        using enum GlProfile;
+        using enum gl::Profile;
     case Compatibility:
         return GLFW_OPENGL_COMPAT_PROFILE;
     case Core:
@@ -43,7 +43,7 @@ namespace {
 
 auto Window::init(const WindowSpec& spec) -> void
 {
-    if (spec.gl_version != GlVersion{ 4, 6 })
+    if (spec.gl_version != gl::Version{ 4, 6 })
     {
         auto error_message = fmt::format(
             "Zenith supports only OpenGL 4.6. Tried to create an OpenGL context with version {}.", spec.gl_version);
@@ -51,7 +51,7 @@ auto Window::init(const WindowSpec& spec) -> void
         throw Exception{ error_message };
     }
 
-    if (spec.gl_profile != GlProfile::Core)
+    if (spec.gl_profile != gl::Profile::Core)
     {
         auto error_message =
             fmt::format("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",

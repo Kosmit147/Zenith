@@ -5,7 +5,7 @@
 #include <glm/mat4x4.hpp>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/gl/debug.hpp"
+#include "zenith/gl/context.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
 #include "zenith/gl/vertex_array.hpp"
@@ -77,7 +77,7 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
 auto Renderer::init() -> void
 {
 #if !defined(ZTH_DIST_BUILD)
-    enable_gl_debug();
+    gl::set_debug_context();
 #endif
 
     log_gl_version();
@@ -168,7 +168,7 @@ auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material
     draw(mesh.vertex_array(), transform, material);
 }
 
-auto Renderer::draw(const VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
+auto Renderer::draw(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
@@ -186,7 +186,7 @@ auto Renderer::render() -> void
     renderer->_batches.clear();
 }
 
-auto Renderer::draw_indexed(const VertexArray& vertex_array, const Material& material) -> void
+auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void
 {
     vertex_array.bind();
     bind_material(material);
@@ -194,7 +194,7 @@ auto Renderer::draw_indexed(const VertexArray& vertex_array, const Material& mat
     glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
 }
 
-auto Renderer::draw_instanced(const VertexArray& vertex_array, const Material& material, usize instances) -> void
+auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, usize instances) -> void
 {
     vertex_array.bind();
     bind_material(material);
@@ -214,8 +214,8 @@ auto Renderer::batch_draw_commands() -> void
 
     for (usize i = 0; i < draw_commands.size(); i++)
     {
-        const VertexArray* current_vertex_array = draw_commands[i].vertex_array;
-        const Material* current_material = draw_commands[i].material;
+        const auto* current_vertex_array = draw_commands[i].vertex_array;
+        const auto* current_material = draw_commands[i].material;
         transforms.push_back(draw_commands[i].transform);
 
         while (i + 1 < draw_commands.size() && draw_commands[i + 1].material == current_material)

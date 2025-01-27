@@ -4,10 +4,10 @@
 
 #include <ranges>
 
-#include "zenith/gl/vertex_layout.hpp"
 #include "zenith/gl/fwd.hpp"
+#include "zenith/gl/vertex_layout.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 struct VertexArrayLayout
 {
@@ -97,4 +97,4 @@ template<std::ranges::contiguous_range VertexData>
                               .instance_buffer_layout = {} };
 }
 
-} // namespace zth
+} // namespace zth::gl

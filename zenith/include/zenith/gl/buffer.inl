@@ -3,55 +3,55 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/gl/util.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 // --------------------------- GlBuffer ---------------------------
 
-auto GlBuffer::create_static(std::ranges::contiguous_range auto&& data) -> GlBuffer
+auto Buffer::create_static(std::ranges::contiguous_range auto&& data) -> Buffer
 {
-    GlBuffer buffer;
+    Buffer buffer;
     buffer.init_static(data);
     return buffer;
 }
 
-auto GlBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> GlBuffer
+auto Buffer::create_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> Buffer
 {
-    GlBuffer buffer;
+    Buffer buffer;
     buffer.init_dynamic(data, usage);
     return buffer;
 }
 
-auto GlBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
+auto Buffer::init_static(std::ranges::contiguous_range auto&& data) -> void
 {
-    ZTH_ASSERT(_state == GlBufferState::Uninitialized);
+    ZTH_ASSERT(_state == BufferState::Uninitialized);
 
     using T = std::ranges::range_value_t<decltype(data)>;
     _size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
     glNamedBufferStorage(_id, _size_bytes, std::data(data), GL_DYNAMIC_STORAGE_BIT);
 
-    _state = GlBufferState::InitializedStatic;
+    _state = BufferState::InitializedStatic;
 }
 
-auto GlBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> void
+auto Buffer::init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
-    ZTH_ASSERT(_state != GlBufferState::InitializedStatic);
+    ZTH_ASSERT(_state != BufferState::InitializedStatic);
 
     using T = std::ranges::range_value_t<decltype(data)>;
     _size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
     _usage = usage;
     glNamedBufferData(_id, _size_bytes, std::data(data), to_gl_enum(*_usage));
 
-    _state = GlBufferState::InitializedDynamic;
+    _state = BufferState::InitializedDynamic;
 }
 
-auto GlBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = static_cast<GLsizeiptr>(std::size(data) * sizeof(T));
     buffer_data(std::data(data), offset, data_size_bytes);
 }
 
-auto GlBuffer::buffer_data(auto&& object, usize offset) -> void
+auto Buffer::buffer_data(auto&& object, usize offset) -> void
 {
     using T = decltype(object);
     auto data_size_bytes = static_cast<GLsizeiptr>(sizeof(T));
@@ -67,7 +67,7 @@ auto VertexBuffer::create_static(std::ranges::contiguous_range auto&& data) -> V
     return buffer;
 }
 
-auto VertexBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> VertexBuffer
+auto VertexBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> VertexBuffer
 {
     VertexBuffer buffer;
     buffer.init_dynamic(data, usage);
@@ -81,7 +81,7 @@ auto VertexBuffer::init_static(std::ranges::contiguous_range auto&& data) -> voi
     _buffer.init_static(data);
 }
 
-auto VertexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> void
+auto VertexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _stride = sizeof(T);
@@ -104,7 +104,7 @@ auto IndexBuffer::create_static(std::ranges::contiguous_range auto&& data) -> In
     return buffer;
 }
 
-auto IndexBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> IndexBuffer
+auto IndexBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> IndexBuffer
 {
     IndexBuffer buffer;
     buffer.init_dynamic(data, usage);
@@ -119,7 +119,7 @@ auto IndexBuffer::init_static(std::ranges::contiguous_range auto&& data) -> void
     _buffer.init_static(data);
 }
 
-auto IndexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> void
+auto IndexBuffer::init_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _index_type = to_gl_enum<T>();
@@ -144,7 +144,7 @@ auto InstanceBuffer::create_static(std::ranges::contiguous_range auto&& data) ->
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, GlBufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_dynamic(data, usage);
@@ -188,4 +188,4 @@ auto UniformBuffer::buffer_data(auto&& object, usize offset) -> void
     _buffer.buffer_data(object, offset);
 }
 
-} // namespace zth
+} // namespace zth::gl

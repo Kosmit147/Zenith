@@ -94,9 +94,9 @@ public:
 
     auto on_update() -> void;
 
-    auto add_diffuse_map(std::string_view name, const Texture2D& diffuse_map) -> void;
-    auto add_specular_map(std::string_view name, const Texture2D& specular_map) -> void;
-    auto add_emission_map(std::string_view name, const Texture2D& emission_map) -> void;
+    auto add_diffuse_map(std::string_view name, const gl::Texture2D& diffuse_map) -> void;
+    auto add_specular_map(std::string_view name, const gl::Texture2D& specular_map) -> void;
+    auto add_emission_map(std::string_view name, const gl::Texture2D& emission_map) -> void;
 
 private:
     Material& _material;
@@ -108,11 +108,11 @@ private:
     i16 _emission_map_selected_idx = _no_map_selected;
 
     std::vector<std::string> _diffuse_map_names;
-    std::vector<const Texture2D*> _diffuse_maps;
+    std::vector<const gl::Texture2D*> _diffuse_maps;
     std::vector<std::string> _specular_map_names;
-    std::vector<const Texture2D*> _specular_maps;
+    std::vector<const gl::Texture2D*> _specular_maps;
     std::vector<std::string> _emission_map_names;
-    std::vector<const Texture2D*> _emission_maps;
+    std::vector<const gl::Texture2D*> _emission_maps;
 
 private:
     auto set_diffuse_map(i16 idx) -> void;

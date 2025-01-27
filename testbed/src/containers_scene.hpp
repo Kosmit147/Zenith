@@ -14,8 +14,8 @@ private:
     std::vector<zth::CubeShape> _containers;
     zth::SphereShape _light_marker;
 
-    zth::Texture2D _diffuse_map;
-    zth::Texture2D _specular_map;
+    zth::gl::Texture2D _diffuse_map;
+    zth::gl::Texture2D _specular_map;
 
     zth::Material _container_material;
     zth::Material _light_marker_material;

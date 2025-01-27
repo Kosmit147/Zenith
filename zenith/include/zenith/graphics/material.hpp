@@ -9,12 +9,12 @@ namespace zth {
 
 struct Material
 {
-    const Shader* shader = &shaders::standard();
+    const gl::Shader* shader = &shaders::standard();
 
     glm::vec3 albedo{ 1.0f };
-    const Texture2D* diffuse_map = nullptr;
-    const Texture2D* specular_map = nullptr;
-    const Texture2D* emission_map = nullptr;
+    const gl::Texture2D* diffuse_map = nullptr;
+    const gl::Texture2D* specular_map = nullptr;
+    const gl::Texture2D* emission_map = nullptr;
 
     glm::vec3 ambient{ 0.2f };
     glm::vec3 diffuse{ 1.0f };

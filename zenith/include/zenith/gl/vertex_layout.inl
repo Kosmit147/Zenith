@@ -11,7 +11,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/util/reflection.hpp"
 
-namespace zth {
+namespace zth::gl {
 
 template<typename T> constexpr auto to_vertex_layout_elem() -> VertexLayoutElement
 {
@@ -170,4 +170,4 @@ constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> Verte
     std::unreachable();
 }
 
-} // namespace zth
+} // namespace zth::gl

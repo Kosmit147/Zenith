@@ -11,7 +11,7 @@ public:
     ~Scene() override = default;
 
 private:
-    zth::Texture2D _block_texture;
+    zth::gl::Texture2D _block_texture;
     zth::Material _block_material;
     std::shared_ptr<zth::DirectionalLight> _light;
 

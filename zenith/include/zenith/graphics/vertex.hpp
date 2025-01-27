@@ -19,10 +19,10 @@ struct InstanceVertex
 
     glm::mat3 normal_mat;
 
-    static const VertexLayout layout;
+    static const gl::VertexLayout layout;
 };
 
-inline const VertexLayout InstanceVertex::layout = VertexLayout::from_vertex<InstanceVertex>();
+inline const gl::VertexLayout InstanceVertex::layout = gl::VertexLayout::from_vertex<InstanceVertex>();
 
 struct StandardVertex
 {
@@ -30,13 +30,13 @@ struct StandardVertex
     glm::vec3 normal;
     glm::vec2 tex_coords;
 
-    static const VertexLayout layout;
-    static const VertexArrayLayout instanced_layout;
+    static const gl::VertexLayout layout;
+    static const gl::VertexArrayLayout instanced_layout;
 };
 
-inline const VertexLayout StandardVertex::layout = VertexLayout::from_vertex<StandardVertex>();
+inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::from_vertex<StandardVertex>();
 
-inline const VertexArrayLayout StandardVertex::instanced_layout = {
+inline const gl::VertexArrayLayout StandardVertex::instanced_layout = {
     .vertex_buffer_layout = StandardVertex::layout,
     .instance_buffer_layout = InstanceVertex::layout,
 };

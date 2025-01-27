@@ -8,8 +8,10 @@
 
 namespace zth {
 
-#define ZTH_UBO_FIELD(type, name) alignas(::zth::get_std140_ubo_field_alignment<type>()) type name
+#define ZTH_UBO_FIELD(type, name) alignas(::zth::gl::get_std140_ubo_field_alignment<type>()) type name
 #define ZTH_UBO_STRUCT(name) struct alignas(16) name
+
+using GlslBool = gl::GlslBool;
 
 struct CameraUboData
 {
