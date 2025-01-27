@@ -2,6 +2,7 @@
 
 #include "zenith/core.hpp"
 #include "zenith/debug.hpp"
+#include "zenith/embedded.hpp"
 #include "zenith/fs.hpp"
 #include "zenith/graphics.hpp"
 #include "zenith/log.hpp"

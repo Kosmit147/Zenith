@@ -1,6 +1,5 @@
 #include "zenith/platform/gl/shader.hpp"
 
-#include <battery/embed.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 

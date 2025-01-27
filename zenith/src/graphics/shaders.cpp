@@ -1,30 +1,21 @@
 #include "zenith/graphics/shaders.hpp"
 
-#include <battery/embed.hpp>
-
 #include "zenith/core/assert.hpp"
+#include "zenith/embedded/shaders.hpp"
 #include "zenith/log/logger.hpp"
 
 namespace zth::shaders {
 
 namespace {
 
-// @cleanup: move to some kind of embedded module
-const auto fallback_vertex_source = b::embed<"src/graphics/shaders/zth_fallback.vert">().str();
-const auto fallback_fragment_source = b::embed<"src/graphics/shaders/zth_fallback.frag">().str();
-const auto flat_color_vertex_source = b::embed<"src/graphics/shaders/zth_flat_color.vert">().str();
-const auto flat_color_fragment_source = b::embed<"src/graphics/shaders/zth_flat_color.frag">().str();
-const auto standard_vertex_source = b::embed<"src/graphics/shaders/zth_standard.vert">().str();
-const auto standard_fragment_source = b::embed<"src/graphics/shaders/zth_standard.frag">().str();
-
 std::unique_ptr<ShaderList> shader_list;
 
 } // namespace
 
 ShaderList::ShaderList()
-    : fallback(fallback_vertex_source, fallback_fragment_source),
-      flat_color(flat_color_vertex_source, flat_color_fragment_source),
-      standard(standard_vertex_source, standard_fragment_source)
+    : fallback(embedded::shaders::fallback_vert, embedded::shaders::fallback_frag),
+      flat_color(embedded::shaders::flat_color_vert, embedded::shaders::flat_color_frag),
+      standard(embedded::shaders::standard_vert, embedded::shaders::standard_frag)
 {}
 
 auto load_shaders() -> void

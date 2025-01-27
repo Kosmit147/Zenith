@@ -2,7 +2,7 @@
 
 #include <glm/geometric.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "zenith/core/scene_manager.hpp"
 #include "zenith/core/transform.hpp"
