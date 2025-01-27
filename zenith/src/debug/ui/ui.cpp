@@ -10,6 +10,7 @@
 #include "zenith/graphics/material.hpp"
 #include "zenith/graphics/materials.hpp"
 #include "zenith/graphics/renderer.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/window.hpp"
 
@@ -62,7 +63,7 @@ auto DebugToolsUi::on_update() -> void
         }
     }
 
-    auto label = fmt::format("Wireframe ({})", toggle_wireframe_mode_key);
+    auto label = ZTH_FORMAT("Wireframe ({})", toggle_wireframe_mode_key);
 
     if (ImGui::Checkbox(label.c_str(), &_wireframe_mode_enabled))
         Renderer::set_wireframe_mode(_wireframe_mode_enabled);
@@ -329,7 +330,7 @@ auto ScenePickerUi::on_update() -> void
 
     ImGui::Text("%s", _scene_names[_selected_scene_idx].c_str());
 
-    auto prev_scene_label = fmt::format("Prev ({})", prev_scene_key);
+    auto prev_scene_label = ZTH_FORMAT("Prev ({})", prev_scene_key);
     ImGui::TextUnformatted(prev_scene_label.c_str());
 
     ImGui::SameLine();
@@ -344,7 +345,7 @@ auto ScenePickerUi::on_update() -> void
 
     ImGui::SameLine();
 
-    auto next_scene_label = fmt::format("Next ({})", next_scene_key);
+    auto next_scene_label = ZTH_FORMAT("Next ({})", next_scene_key);
     ImGui::TextUnformatted(next_scene_label.c_str());
 
     ImGui::End();

@@ -1,15 +1,15 @@
 #pragma once
 
-#include <spdlog/fmt/fmt.h>
-
 #include <string>
+
+#include "zenith/log/format.hpp"
 
 template<typename T> struct EqualsMatcher : Catch::Matchers::MatcherGenericBase
 {
     EqualsMatcher(const T& val) : _val(val) {}
 
     auto match(const T& other) const -> bool { return _val == other; }
-    auto describe() const -> std::string override { return fmt::format("Equals: {}", _val); }
+    auto describe() const -> std::string override { return ZTH_FORMAT("Equals: {}", _val); }
 
 private:
     const T& _val;

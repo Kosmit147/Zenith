@@ -4,6 +4,8 @@
 
 #include <string>
 
+#define ZTH_FORMAT(...) ::fmt::format(__VA_ARGS__)
+
 #define ZTH_DECLARE_FORMATTER(type)                                                                                    \
     template<> struct ::fmt::formatter<type> : formatter<::std::string>                                                \
     {                                                                                                                  \
