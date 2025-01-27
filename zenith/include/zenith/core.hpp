@@ -11,5 +11,5 @@
 #include "core/scene.hpp"
 #include "core/scene_manager.hpp"
 #include "core/system_manager.hpp"
-#include "core/transformable.hpp"
+#include "core/transform.hpp"
 #include "core/typedefs.hpp"

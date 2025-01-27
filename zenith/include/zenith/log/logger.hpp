@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+#include "zenith/util/macros.hpp"
+
 namespace zth {
 
 struct LoggerSpec
@@ -48,7 +50,7 @@ private:
 #define ZTH_ERROR(...) ::zth::Logger::client_logger().error(__VA_ARGS__)
 #define ZTH_CRITICAL(...) ::zth::Logger::client_logger().critical(__VA_ARGS__)
 
-#ifdef ZTH_DIST_BUILD
+#if defined(ZTH_DIST_BUILD)
 
 #undef ZTH_CORE_TRACE
 #undef ZTH_CORE_DEBUG

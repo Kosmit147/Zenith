@@ -5,12 +5,12 @@
 #include <spdlog/spdlog.h>
 
 #include "zenith/core/scene_manager.hpp"
-#include "zenith/core/transformable.hpp"
+#include "zenith/core/transform.hpp"
 #include "zenith/graphics/light.hpp"
 #include "zenith/graphics/material.hpp"
 #include "zenith/graphics/materials.hpp"
 #include "zenith/graphics/renderer.hpp"
-#include "zenith/platform/events.hpp"
+#include "zenith/platform/event.hpp"
 #include "zenith/platform/window.hpp"
 
 namespace zth::debug {

@@ -4,7 +4,6 @@
 
 #include "graphics/camera.hpp"
 #include "graphics/colors.hpp"
-#include "graphics/draw_command.hpp"
 #include "graphics/imgui_renderer.hpp"
 #include "graphics/light.hpp"
 #include "graphics/material.hpp"

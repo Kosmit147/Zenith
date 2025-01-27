@@ -1,7 +1,7 @@
 #include "zenith/graphics/meshes.hpp"
 
 #include "zenith/graphics/vertex.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 
 namespace zth::meshes {
 

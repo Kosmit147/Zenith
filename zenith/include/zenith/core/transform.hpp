@@ -5,7 +5,7 @@
 #include <glm/vec3.hpp>
 
 #include "zenith/math/quaternion.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

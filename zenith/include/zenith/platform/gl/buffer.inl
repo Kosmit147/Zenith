@@ -1,7 +1,7 @@
 #pragma once
 
 #include "zenith/core/assert.hpp"
-#include "zenith/platform/gl/gl_utils.hpp"
+#include "zenith/platform/gl/util.hpp"
 
 namespace zth {
 

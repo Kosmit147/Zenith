@@ -3,9 +3,9 @@
 #include <glm/fwd.hpp>
 #include <glm/vec3.hpp>
 
-#include "zenith/core/transformable.hpp"
+#include "zenith/core/transform.hpp"
 #include "zenith/graphics/fwd.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

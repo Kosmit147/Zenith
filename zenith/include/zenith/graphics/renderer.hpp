@@ -11,15 +11,28 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/graphics/camera.hpp"
-#include "zenith/graphics/draw_command.hpp"
 #include "zenith/graphics/light.hpp"
 #include "zenith/graphics/ubo_data.hpp"
 #include "zenith/graphics/vertex.hpp"
 #include "zenith/graphics/fwd.hpp"
-#include "zenith/platform/gl/gl_buffer.hpp"
+#include "zenith/platform/gl/buffer.hpp"
 #include "zenith/platform/fwd.hpp"
 
 namespace zth {
+
+struct DrawCommand
+{
+    const VertexArray* vertex_array;
+    const Material* material;
+    const glm::mat4* transform;
+
+    // comparison operators are used to sort draw commands into batches
+    [[nodiscard]] auto operator==(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator<(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator>(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator<=(const DrawCommand& other) const -> bool;
+    [[nodiscard]] auto operator>=(const DrawCommand& other) const -> bool;
+};
 
 struct RenderBatch
 {

@@ -4,9 +4,9 @@
 #include <iostream>
 #include <source_location>
 
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
-#ifndef ZTH_DIST_BUILD
+#if !defined(ZTH_DIST_BUILD)
 
 #define ZTH_ASSERT(expr)                                                                                               \
     {                                                                                                                  \

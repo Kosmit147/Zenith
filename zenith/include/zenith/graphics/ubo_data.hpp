@@ -4,7 +4,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-#include "zenith/platform/gl/gl_utils.hpp"
+#include "zenith/platform/gl/util.hpp"
 
 namespace zth {
 

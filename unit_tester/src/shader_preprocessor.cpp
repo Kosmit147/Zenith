@@ -1,12 +1,10 @@
-#include <catch2/catch_test_macros.hpp>
-
 #include <string_view>
 
 #include <zenith/platform/shader_preprocessor.hpp>
 
 #include "matchers.hpp"
 
-TEST_CASE("ShaderPreprocessor preprocesses properly", "[ShaderPreprocessor]")
+TEST_CASE("ShaderPreprocessor", "[ShaderPreprocessor]")
 {
     using namespace std::string_view_literals;
 

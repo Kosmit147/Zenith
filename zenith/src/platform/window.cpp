@@ -6,9 +6,9 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/core/exception.hpp"
 #include "zenith/core/typedefs.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/platform/event_queue.hpp"
-#include "zenith/utility/defer.hpp"
+#include "zenith/util/defer.hpp"
 
 namespace zth {
 
@@ -76,7 +76,7 @@ auto Window::init(const WindowSpec& spec) -> void
     glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
 
-#ifndef ZTH_DIST_BUILD
+#if !defined(ZTH_DIST_BUILD)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 

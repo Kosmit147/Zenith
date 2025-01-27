@@ -14,9 +14,9 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
-#include "zenith/logging/logger.hpp"
-#include "zenith/utility/macros.hpp"
-#include "zenith/utility/string_map.hpp"
+#include "zenith/log/logger.hpp"
+#include "zenith/stl/string_map.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

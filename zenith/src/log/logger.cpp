@@ -1,4 +1,4 @@
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
@@ -20,7 +20,7 @@ auto Logger::init(const LoggerSpec& logger_spec) -> void
     _core_logger = std::make_shared<spdlog::logger>(logger_spec.core_logger_label, sink_list);
     _client_logger = std::make_shared<spdlog::logger>(logger_spec.client_logger_label, sink_list);
 
-#ifndef ZTH_DIST_BUILD
+#if !defined(ZTH_DIST_BUILD)
     _core_logger->set_level(spdlog::level::trace);
     _client_logger->set_level(spdlog::level::trace);
 #else

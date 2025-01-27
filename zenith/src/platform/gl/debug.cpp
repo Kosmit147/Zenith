@@ -1,9 +1,9 @@
-#include "zenith/platform/gl/gl_debug.hpp"
+#include "zenith/platform/gl/debug.hpp"
 
 #include <glad/glad.h>
 
-#include "zenith/logging/logger.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/log/logger.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 

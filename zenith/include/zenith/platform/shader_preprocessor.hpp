@@ -12,7 +12,7 @@
 
 #include "zenith/core/error.hpp"
 #include "zenith/core/typedefs.hpp"
-#include "zenith/utility/string_map.hpp"
+#include "zenith/stl/string_map.hpp"
 
 namespace zth {
 
@@ -92,7 +92,7 @@ private:
     auto push(usize count) -> void;
 
     auto update_rest_in_line() -> void;
-    auto update_rest_in_line_after_advancing_or_skipping(usize characters_advanced_or_skipped) -> void;
+    auto update_rest_in_line_after_advancing_or_skipping(usize advanced_or_skipped_count) -> void;
 
     [[nodiscard]] auto extract_source_name_from_line() const -> std::optional<std::string_view>;
 };

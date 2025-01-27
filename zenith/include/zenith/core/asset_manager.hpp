@@ -6,7 +6,7 @@
 #include <string_view>
 
 #include "zenith/platform/gl/shader.hpp"
-#include "zenith/utility/string_map.hpp"
+#include "zenith/stl/string_map.hpp"
 
 namespace zth {
 

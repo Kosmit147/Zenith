@@ -3,7 +3,7 @@
 #include <battery/embed.hpp>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 
 namespace zth::shaders {
 

@@ -4,8 +4,6 @@ namespace zth {
 
 class PerspectiveCamera;
 
-struct DrawCommand;
-
 class ImGuiRenderer;
 
 struct LightProperties;
@@ -31,10 +29,9 @@ struct MeshList;
 
 } // namespace meshes
 
+struct DrawCommand;
 struct RenderBatch;
 class Renderer;
-
-class Renderer2D;
 
 namespace shaders {
 

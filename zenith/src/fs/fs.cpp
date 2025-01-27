@@ -1,8 +1,8 @@
-#include "zenith/filesystem/file.hpp"
+#include "zenith/fs/fs.hpp"
 
-#include "zenith/logging/logger.hpp"
+#include "zenith/log/logger.hpp"
 
-namespace zth::filesystem {
+namespace zth::fs {
 
 auto load_to_string(const std::filesystem::path& path) -> std::optional<std::string>
 {
@@ -67,4 +67,4 @@ auto extract_filename(const std::filesystem::path& path) -> std::optional<std::s
     return filename.empty() ? std::nullopt : std::make_optional(filename);
 }
 
-} // namespace zth::filesystem
+} // namespace zth::fs

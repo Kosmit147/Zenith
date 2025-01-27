@@ -9,8 +9,6 @@ class AssetManager;
 
 class FpsCameraController;
 
-class Entity;
-
 class Exception;
 
 class Scene;

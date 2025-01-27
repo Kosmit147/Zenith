@@ -2,7 +2,7 @@
 
 #include "zenith/graphics/mesh.hpp"
 #include "zenith/platform/gl/fwd.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth::meshes {
 

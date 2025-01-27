@@ -1,7 +1,7 @@
 #include "zenith/core/asset_manager.hpp"
 
-#include "zenith/filesystem/file.hpp"
-#include "zenith/logging/logger.hpp"
+#include "zenith/fs/fs.hpp"
+#include "zenith/log/logger.hpp"
 
 namespace zth {
 
@@ -21,8 +21,8 @@ auto AssetManager::shut_down() -> void
 auto AssetManager::load_shader_from_file(std::string_view name, const std::filesystem::path& vertex_path,
                                          const std::filesystem::path& fragment_path) -> std::optional<ShaderRef>
 {
-    auto vertex_source = filesystem::load_to_string(vertex_path);
-    auto fragment_source = filesystem::load_to_string(fragment_path);
+    auto vertex_source = fs::load_to_string(vertex_path);
+    auto fragment_source = fs::load_to_string(fragment_path);
 
     if (!vertex_source)
     {

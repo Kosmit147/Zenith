@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/utility/struct_arity.hpp"
+#include "zenith/util/reflection.hpp"
 
 namespace zth {
 

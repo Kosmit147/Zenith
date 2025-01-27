@@ -6,8 +6,8 @@
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/platform/gl/gl_buffer_usage.hpp"
-#include "zenith/utility/macros.hpp"
+#include "zenith/platform/gl/buffer_usage.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 
@@ -227,4 +227,4 @@ private:
 
 } // namespace zth
 
-#include "gl_buffer.inl"
+#include "buffer.inl"

@@ -1,11 +1,7 @@
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_quantifiers.hpp>
-#include <catch2/matchers/catch_matchers_range_equals.hpp>
-
 #include <array>
 #include <utility>
 
-#include <zenith/utility/inplace_vector.hpp>
+#include <zenith/stl/inplace_vector.hpp>
 
 #include "lifetime_helper.hpp"
 #include "matchers.hpp"
