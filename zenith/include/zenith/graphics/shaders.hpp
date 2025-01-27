@@ -1,6 +1,6 @@
 #pragma once
 
-#include "zenith/platform/gl/shader.hpp"
+#include "zenith/gl/shader.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth::shaders {

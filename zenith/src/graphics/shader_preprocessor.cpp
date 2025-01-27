@@ -1,4 +1,4 @@
-#include "zenith/platform/shader_preprocessor.hpp"
+#include "zenith/graphics/shader_preprocessor.hpp"
 
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"

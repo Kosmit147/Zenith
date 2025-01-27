@@ -1,4 +1,4 @@
-#include "zenith/platform/gl/buffer.hpp"
+#include "zenith/gl/buffer.hpp"
 
 #include "zenith/core/assert.hpp"
 

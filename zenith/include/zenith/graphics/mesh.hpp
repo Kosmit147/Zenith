@@ -2,8 +2,8 @@
 
 #include <ranges>
 
-#include "zenith/platform/gl/buffer.hpp"
-#include "zenith/platform/gl/vertex_array.hpp"
+#include "zenith/gl/buffer.hpp"
+#include "zenith/gl/vertex_array.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth {

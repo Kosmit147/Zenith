@@ -4,6 +4,7 @@
 #include "zenith/debug.hpp"
 #include "zenith/embedded.hpp"
 #include "zenith/fs.hpp"
+#include "zenith/gl.hpp"
 #include "zenith/graphics.hpp"
 #include "zenith/log.hpp"
 #include "zenith/math.hpp"

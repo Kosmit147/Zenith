@@ -1,10 +1,10 @@
-#include "zenith/platform/gl/shader.hpp"
+#include "zenith/gl/shader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 
 #include "zenith/log/logger.hpp"
-#include "zenith/platform/shader_preprocessor.hpp"
+#include "zenith/graphics/shader_preprocessor.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth {

@@ -10,12 +10,13 @@
 #include <vector>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/gl/buffer.hpp"
+#include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/camera.hpp"
+#include "zenith/graphics/fwd.hpp"
 #include "zenith/graphics/light.hpp"
 #include "zenith/graphics/ubo_data.hpp"
 #include "zenith/graphics/vertex.hpp"
-#include "zenith/graphics/fwd.hpp"
-#include "zenith/platform/gl/buffer.hpp"
 #include "zenith/platform/fwd.hpp"
 
 namespace zth {

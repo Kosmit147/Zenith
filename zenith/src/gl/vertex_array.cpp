@@ -1,7 +1,7 @@
-#include "zenith/platform/gl/vertex_array.hpp"
+#include "zenith/gl/vertex_array.hpp"
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/platform/gl/buffer.hpp"
+#include "zenith/gl/buffer.hpp"
 
 namespace zth {
 

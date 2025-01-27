@@ -6,7 +6,7 @@
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/platform/gl/buffer_usage.hpp"
+#include "zenith/gl/buffer_usage.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth {
