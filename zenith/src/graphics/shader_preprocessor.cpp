@@ -3,6 +3,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"
 #include "zenith/fs/fs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
 
@@ -196,7 +197,7 @@ auto ShaderPreprocessor::resolve_include_directive() -> std::expected<Success, P
 
     if (!included_source)
     {
-        auto message = fmt::format("Source {} not present in shader preprocessor's source list", *source_name);
+        auto message = ZTH_FORMAT("Source {} not present in shader preprocessor's source list", *source_name);
         return std::unexpected{ PreprocessShaderError{ .line_info = line_info(), .description = std::move(message) } };
     }
 
