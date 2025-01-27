@@ -54,7 +54,7 @@ private:
     InPlaceVector<VertexLayoutElement, max_element_count> _elements;
 };
 
-[[nodiscard]] constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo;
+[[nodiscard]] auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo;
 
 } // namespace zth::gl
 

@@ -3,11 +3,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 
+#include "zenith/core/assert.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
-#include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth::gl {
+namespace zth {
+
+namespace gl {
 
 namespace {
 
@@ -184,9 +186,9 @@ auto Shader::retrieve_unif_info() -> void
 
 auto Shader::get_unif_info(std::string_view name) const -> std::optional<UniformInfo>
 {
-    if (auto res = _uniform_map.find(name); res != _uniform_map.end())
+    if (auto kv = _uniform_map.find(name); kv != _uniform_map.end())
     {
-        auto& unif_info = res->second;
+        auto& [_, unif_info] = *kv;
         return unif_info;
     }
     else [[unlikely]]
@@ -228,4 +230,36 @@ auto Shader::set_unif(GLint location, const glm::mat4& val) -> void
     glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
 }
 
-} // namespace zth::gl
+auto to_gl_enum(ShaderType shader_type) -> GLenum
+{
+    switch (shader_type)
+    {
+        using enum ShaderType;
+    case Vertex:
+        return GL_VERTEX_SHADER;
+    case Fragment:
+        return GL_FRAGMENT_SHADER;
+    }
+
+    ZTH_ASSERT(false);
+    std::unreachable();
+}
+
+} // namespace gl
+
+auto to_string(gl::ShaderType shader_type) -> const char*
+{
+    switch (shader_type)
+    {
+        using enum gl::ShaderType;
+    case Vertex:
+        return "Vertex";
+    case Fragment:
+        return "Fragment";
+    }
+
+    ZTH_ASSERT(false);
+    return "Unknown";
+}
+
+} // namespace zth

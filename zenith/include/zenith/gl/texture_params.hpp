@@ -2,9 +2,6 @@
 
 #include <glad/glad.h>
 
-#include <utility>
-
-#include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 
 namespace zth::gl {
@@ -35,12 +32,16 @@ enum class TextureWrapMode : u16
 
 enum class TextureFilteringMode : u8
 {
+    // @volatile: these numbers are chosen to make converting TextureMinFilter to an OpenGL value easier
+
     Nearest = 0,
     Linear = 1,
 };
 
 enum class MipmapFilteringMode : u8
 {
+    // @volatile: these numbers are chosen to make converting TextureMinFilter to an OpenGL value easier
+
     Nearest = 0,
     Linear = 2,
 };
@@ -64,6 +65,7 @@ inline const TextureMinFilter TextureMinFilter::nearest_mipmap_linear = { Textur
                                                                           MipmapFilteringMode::Linear };
 inline const TextureMinFilter TextureMinFilter::linear_mipmap_linear = { TextureFilteringMode::Linear,
                                                                          MipmapFilteringMode::Linear };
+
 struct TextureMagFilter
 {
     TextureFilteringMode texture_filtering;
@@ -84,103 +86,11 @@ struct TextureParams
     SizedTextureFormat internal_format = SizedTextureFormat::Rgba8;
 };
 
-[[nodiscard]] constexpr auto to_gl_int(TextureWrapMode wrap) -> GLint
-{
-    switch (wrap)
-    {
-        using enum TextureWrapMode;
-    case Repeat:
-        return GL_REPEAT;
-    case MirroredRepeat:
-        return GL_MIRRORED_REPEAT;
-    case ClampToEdge:
-        return GL_CLAMP_TO_EDGE;
-    case ClampToBorder:
-        return GL_CLAMP_TO_BORDER;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
-
-[[nodiscard]] constexpr auto to_gl_int(TextureMagFilter mag_filter) -> GLint
-{
-    switch (mag_filter.texture_filtering)
-    {
-        using enum TextureFilteringMode;
-    case Linear:
-        return GL_LINEAR;
-    case Nearest:
-        return GL_NEAREST;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
-
-[[nodiscard]] constexpr auto to_gl_int(TextureMinFilter min_filter) -> GLint
-{
-    GLint res = GL_NEAREST_MIPMAP_NEAREST;
-    res += std::to_underlying(min_filter.texture_filtering);
-    res += std::to_underlying(min_filter.mipmap_filtering);
-    return res;
-}
-
-[[nodiscard]] constexpr auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum
-{
-    switch (tex_format)
-    {
-        using enum SizedTextureFormat;
-    case R8:
-        return GL_R8;
-    case Rg8:
-        return GL_RG8;
-    case Rgb8:
-        return GL_RGB8;
-    case Rgba8:
-        return GL_RGBA8;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
-
-[[nodiscard]] constexpr auto to_gl_enum(TextureFormat tex_format) -> GLenum
-{
-    switch (tex_format)
-    {
-        using enum TextureFormat;
-    case R:
-        return GL_RED;
-    case Rg:
-        return GL_RG;
-    case Rgb:
-        return GL_RGB;
-    case Rgba:
-        return GL_RGBA;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
-
-[[nodiscard]] constexpr auto texture_format_from_channels(u32 channels) -> TextureFormat
-{
-    switch (channels)
-    {
-        using enum TextureFormat;
-    case 1:
-        return R;
-    case 2:
-        return Rg;
-    case 3:
-        return Rgb;
-    case 4:
-        return Rgba;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
+[[nodiscard]] auto to_gl_int(TextureWrapMode wrap) -> GLint;
+[[nodiscard]] auto to_gl_int(TextureMagFilter mag_filter) -> GLint;
+[[nodiscard]] auto to_gl_int(TextureMinFilter min_filter) -> GLint;
+[[nodiscard]] auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum;
+[[nodiscard]] auto to_gl_enum(TextureFormat tex_format) -> GLenum;
+[[nodiscard]] auto texture_format_from_channels(u32 channels) -> TextureFormat;
 
 } // namespace zth::gl

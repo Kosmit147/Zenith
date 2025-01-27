@@ -19,7 +19,7 @@ namespace {
     return value ? GLFW_TRUE : GLFW_FALSE;
 }
 
-[[nodiscard]] constexpr auto to_glfw_enum(gl::Profile profile) -> int
+[[nodiscard]] auto to_glfw_enum(gl::Profile profile) -> int
 {
     switch (profile)
     {

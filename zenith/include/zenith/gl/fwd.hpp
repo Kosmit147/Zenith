@@ -22,6 +22,8 @@ enum class ShaderType : u16;
 struct UniformInfo;
 class Shader;
 
+class Texture2D;
+
 enum class TextureFormat : u16;
 enum class SizedTextureFormat : u16;
 enum class TextureWrapMode : u16;
@@ -30,8 +32,6 @@ enum class MipmapFilteringMode : u8;
 struct TextureMinFilter;
 struct TextureMagFilter;
 struct TextureParams;
-
-class Texture2D;
 
 struct VertexArrayLayout;
 class VertexArray;

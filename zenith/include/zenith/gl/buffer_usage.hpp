@@ -8,6 +8,8 @@ namespace zth::gl {
 
 enum class BufferAccessFrequency : u8
 {
+    // @volatile: These numbers are chosen to make converting BufferUsage to an OpenGL value easier
+
     Stream = 0,  // The data store contents will be modified once and used at most a few times.
     Static = 4,  // The data store contents will be modified once and used many times.
     Dynamic = 8, // The data store contents will be modified repeatedly and used many times.
@@ -15,6 +17,8 @@ enum class BufferAccessFrequency : u8
 
 enum class BufferAccessType : u8
 {
+    // @volatile: These numbers are chosen to make converting BufferUsage to an OpenGL value easier
+
     Draw = 0, // The data store contents are modified by the application, and used as the source for GL drawing and
               // image specification commands.
     Read = 1, // The data store contents are modified by reading data from the GL, and used to return that data when
@@ -53,12 +57,6 @@ inline const BufferUsage BufferUsage::stream_copy{ BufferAccessFrequency::Stream
 inline const BufferUsage BufferUsage::static_copy{ BufferAccessFrequency::Static, BufferAccessType::Copy };
 inline const BufferUsage BufferUsage::dynamic_copy{ BufferAccessFrequency::Dynamic, BufferAccessType::Copy };
 
-[[nodiscard]] constexpr auto to_gl_enum(BufferUsage buffer_usage) -> GLenum
-{
-    GLenum res = GL_STREAM_DRAW;
-    res += std::to_underlying(buffer_usage.access_frequency);
-    res += std::to_underlying(buffer_usage.access_type);
-    return res;
-}
+[[nodiscard]] auto to_gl_enum(BufferUsage buffer_usage) -> GLenum;
 
 } // namespace zth::gl

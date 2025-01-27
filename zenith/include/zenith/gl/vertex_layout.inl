@@ -6,9 +6,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include <utility>
-
-#include "zenith/core/assert.hpp"
 #include "zenith/util/reflection.hpp"
 
 namespace zth::gl {
@@ -145,29 +142,6 @@ template<typename VertexType> constexpr auto VertexLayout::from_vertex() -> Vert
         static_assert(false, "not implemented");
         return {};
     }
-}
-
-constexpr auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo
-{
-    switch (elem)
-    {
-        using enum VertexLayoutElement;
-    case Float:
-        return { .count = 1, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) };
-    case Vec2:
-        return { .count = 2, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 2 };
-    case Vec3:
-        return { .count = 3, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 3 };
-    case Vec4:
-        return { .count = 4, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 4 };
-    case Mat3:
-        return { .count = 3, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 3, .slots_occupied = 3 };
-    case Mat4:
-        return { .count = 4, .type = GL_FLOAT, .size_bytes = sizeof(GLfloat) * 4, .slots_occupied = 4 };
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
 }
 
 } // namespace zth::gl
