@@ -1,32 +1,16 @@
 #pragma once
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 #include <spdlog/fmt/fmt.h>
 
 #include <string>
 
-template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<std::string>
-{
-    static auto format(const glm::vec<2, T>& vec, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{{ .x = {}, .y = {} }}", vec.x, vec.y);
+#define ZTH_DECLARE_FORMATTER(type)                                                                                    \
+    template<> struct ::fmt::formatter<type> : formatter<::std::string>                                                \
+    {                                                                                                                  \
+        static auto format(const type&, format_context& ctx) -> decltype(ctx.out());                                   \
     }
-};
 
-template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<std::string>
-{
-    static auto format(const glm::vec<3, T>& vec, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{{ .x = {}, .y = {}, .z = {} }}", vec.x, vec.y, vec.z);
-    }
-};
+#define ZTH_DEFINE_FORMATTER(type, var)                                                                                \
+    auto ::fmt::formatter<type>::format(const type& var, format_context& ctx)->decltype(ctx.out())
 
-template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<std::string>
-{
-    static auto format(const glm::vec<4, T>& vec, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{{ .x = {}, .y = {}, .z = {}, .w = {} }}", vec.x, vec.y, vec.z, vec.w);
-    }
-};
+#define ZTH_FORMAT_OUT(...) return ::fmt::format_to(ctx.out(), __VA_ARGS__)

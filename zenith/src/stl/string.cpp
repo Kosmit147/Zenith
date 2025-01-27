@@ -69,3 +69,8 @@ auto find_substr_between_with_offset(std::string_view text, usize offset, char o
 }
 
 } // namespace zth::string
+
+ZTH_DEFINE_FORMATTER(zth::string::FindResult, result)
+{
+    ZTH_FORMAT_OUT("{{ .found_at = {}, .result = {} }}", result.found_at, result.result);
+}

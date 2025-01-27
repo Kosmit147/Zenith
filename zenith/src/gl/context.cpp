@@ -91,3 +91,13 @@ auto to_string(gl::Profile gl_profile) -> const char*
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::gl::Version, version)
+{
+    ZTH_FORMAT_OUT("{}.{}", version.major, version.minor);
+}
+
+ZTH_DEFINE_FORMATTER(zth::gl::Profile, profile)
+{
+    ZTH_FORMAT_OUT("{}", to_string(profile));
+}

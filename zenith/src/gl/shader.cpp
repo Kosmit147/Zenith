@@ -263,3 +263,8 @@ auto to_string(gl::ShaderType shader_type) -> const char*
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
+{
+    ZTH_FORMAT_OUT("{}", to_string(type));
+}

@@ -1,10 +1,7 @@
 #pragma once
 
-#include <spdlog/fmt/fmt.h>
-
-#include <string>
-
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 
 namespace zth {
 
@@ -32,19 +29,5 @@ auto set_debug_context() -> void;
 
 } // namespace zth
 
-template<> struct fmt::formatter<zth::gl::Version> : formatter<std::string>
-{
-    static auto format(const zth::gl::Version& version, format_context& ctx) -> decltype(ctx.out())
-    {
-        auto& [major, minor] = version;
-        return format_to(ctx.out(), "{}.{}", major, minor);
-    }
-};
-
-template<> struct fmt::formatter<zth::gl::Profile> : formatter<std::string>
-{
-    static auto format(zth::gl::Profile profile, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{}", zth::to_string(profile));
-    }
-};
+ZTH_DECLARE_FORMATTER(zth::gl::Version);
+ZTH_DECLARE_FORMATTER(zth::gl::Profile);
