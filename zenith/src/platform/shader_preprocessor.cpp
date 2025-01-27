@@ -1,8 +1,7 @@
 #include "zenith/platform/shader_preprocessor.hpp"
 
-#include <battery/embed.hpp>
-
 #include "zenith/core/assert.hpp"
+#include "zenith/embedded/shaders.hpp"
 #include "zenith/fs/fs.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
@@ -13,10 +12,6 @@ namespace zth {
 
 namespace {
 
-// @todo: remove test_source
-const auto test_source = b::embed<"src/graphics/shaders/test.glsl">().str();
-const auto zth_defines_source = b::embed<"src/graphics/shaders/zth_defines.glsl">().str();
-
 constexpr auto include_str = "#include"sv;
 
 } // namespace
@@ -25,8 +20,9 @@ StringHashMap<std::string> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> void
 {
-    add_source("test.glsl", test_source);
-    add_source("zth_defines.glsl", zth_defines_source);
+    // @todo: remove test_glsl
+    add_source("test.glsl", embedded::shaders::test_glsl);
+    add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
     ZTH_CORE_INFO("Shader preprocessor initialized.");
 }
 

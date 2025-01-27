@@ -1,6 +1,7 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
+
 #include <string>
 
 #include "zenith/core/typedefs.hpp"

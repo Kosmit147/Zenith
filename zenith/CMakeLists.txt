@@ -11,6 +11,7 @@ add_library(
 	"src/core/system_manager.cpp"
 	"src/core/transform.cpp"
 	"src/debug/ui/ui.cpp"
+	"src/embedded/shaders.cpp"
 	"src/fs/fs.cpp"
 	"src/graphics/camera.cpp"
 	"src/graphics/imgui_renderer.cpp"
@@ -38,14 +39,14 @@ add_library(
 	"src/time/time.cpp"
 )
 
-b_embed(zenith_core "src/graphics/shaders/test.glsl")
-b_embed(zenith_core "src/graphics/shaders/zth_defines.glsl")
-b_embed(zenith_core "src/graphics/shaders/zth_fallback.vert")
-b_embed(zenith_core "src/graphics/shaders/zth_fallback.frag")
-b_embed(zenith_core "src/graphics/shaders/zth_flat_color.vert")
-b_embed(zenith_core "src/graphics/shaders/zth_flat_color.frag")
-b_embed(zenith_core "src/graphics/shaders/zth_standard.vert")
-b_embed(zenith_core "src/graphics/shaders/zth_standard.frag")
+b_embed(zenith_core "src/shaders/test.glsl")
+b_embed(zenith_core "src/shaders/zth_defines.glsl")
+b_embed(zenith_core "src/shaders/zth_fallback.vert")
+b_embed(zenith_core "src/shaders/zth_fallback.frag")
+b_embed(zenith_core "src/shaders/zth_flat_color.vert")
+b_embed(zenith_core "src/shaders/zth_flat_color.frag")
+b_embed(zenith_core "src/shaders/zth_standard.vert")
+b_embed(zenith_core "src/shaders/zth_standard.frag")
 
 target_include_directories(zenith_core PUBLIC "include")
 target_compile_features(zenith_core PRIVATE cxx_std_23)
