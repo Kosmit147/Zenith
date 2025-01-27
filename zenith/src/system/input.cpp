@@ -678,3 +678,13 @@ auto to_string(MouseButton button) -> const char*
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::Key, key)
+{
+    ZTH_FORMAT_OUT("{}", to_string(key));
+}
+
+ZTH_DEFINE_FORMATTER(zth::MouseButton, button)
+{
+    ZTH_FORMAT_OUT("{}", to_string(button));
+}

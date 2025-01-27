@@ -3,14 +3,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
-#include <spdlog/fmt/fmt.h>
 
 #include <array>
 #include <optional>
-#include <string>
 #include <unordered_map>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/system/fwd.hpp"
 
 namespace zth {
@@ -319,18 +318,5 @@ constexpr std::array mouse_button_enumerations = {
 
 } // namespace zth
 
-template<> struct fmt::formatter<zth::Key> : formatter<std::string>
-{
-    static auto format(zth::Key key, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{}", zth::to_string(key));
-    }
-};
-
-template<> struct fmt::formatter<zth::MouseButton> : formatter<std::string>
-{
-    static auto format(zth::MouseButton button, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{}", zth::to_string(button));
-    }
-};
+ZTH_DECLARE_FORMATTER(zth::Key);
+ZTH_DECLARE_FORMATTER(zth::MouseButton);

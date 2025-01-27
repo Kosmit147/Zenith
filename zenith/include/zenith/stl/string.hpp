@@ -1,11 +1,10 @@
 #pragma once
 
-#include <spdlog/fmt/fmt.h>
-
 #include <optional>
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 
 namespace zth::string {
 
@@ -37,11 +36,4 @@ struct FindResult
 
 } // namespace zth::string
 
-template<> struct fmt::formatter<zth::string::FindResult> : formatter<std::string>
-{
-    static auto format(const zth::string::FindResult& find_result, format_context& ctx) -> decltype(ctx.out())
-    {
-        auto& [found_at, result] = find_result;
-        return format_to(ctx.out(), "{{ .found_at = {}, .result = {} }}", found_at, result);
-    }
-};
+ZTH_DECLARE_FORMATTER(zth::string::FindResult);

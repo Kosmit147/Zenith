@@ -5,13 +5,12 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-#include <spdlog/fmt/fmt.h>
 
 #include <optional>
-#include <string>
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/stl/string_map.hpp"
 #include "zenith/util/macros.hpp"
@@ -76,10 +75,4 @@ private:
 
 } // namespace zth
 
-template<> struct fmt::formatter<zth::gl::ShaderType> : formatter<std::string>
-{
-    static auto format(zth::gl::ShaderType shader_type, format_context& ctx) -> decltype(ctx.out())
-    {
-        return format_to(ctx.out(), "{}", zth::to_string(shader_type));
-    }
-};
+ZTH_DECLARE_FORMATTER(zth::gl::ShaderType);
