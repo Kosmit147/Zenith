@@ -10,9 +10,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
-#include <utility>
 
-#include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/stl/string_map.hpp"
@@ -70,37 +68,11 @@ private:
     static auto set_unif(GLint location, const glm::mat4& val) -> void;
 };
 
-[[nodiscard]] constexpr auto to_gl_enum(ShaderType shader_type) -> GLenum
-{
-    switch (shader_type)
-    {
-        using enum ShaderType;
-    case Vertex:
-        return GL_VERTEX_SHADER;
-    case Fragment:
-        return GL_FRAGMENT_SHADER;
-    }
-
-    ZTH_ASSERT(false);
-    std::unreachable();
-}
+[[nodiscard]] auto to_gl_enum(ShaderType shader_type) -> GLenum;
 
 } // namespace gl
 
-[[nodiscard]] constexpr auto to_string(gl::ShaderType shader_type) -> const char*
-{
-    switch (shader_type)
-    {
-        using enum gl::ShaderType;
-    case Vertex:
-        return "Vertex";
-    case Fragment:
-        return "Fragment";
-    }
-
-    ZTH_ASSERT(false);
-    return "Unknown";
-}
+[[nodiscard]] auto to_string(gl::ShaderType shader_type) -> const char*;
 
 } // namespace zth
 

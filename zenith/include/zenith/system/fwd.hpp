@@ -9,10 +9,6 @@ class Application;
 
 enum class EventType : u8;
 enum class EventCategory : u8;
-class Event;
-
-class EventQueue;
-
 struct WindowResizedEvent;
 struct KeyPressedEvent;
 struct KeyReleasedEvent;
@@ -20,12 +16,17 @@ struct MouseButtonPressedEvent;
 struct MouseButtonReleasedEvent;
 struct MouseMovedEvent;
 struct MouseWheelScrolledEvent;
+class Event;
+
+class EventQueue;
 
 class Input;
-
 enum class Key : u16;
-
 enum class MouseButton : u8;
+
+class Time;
+
+class Timer;
 
 struct LineInfo;
 struct PreprocessShaderError;
