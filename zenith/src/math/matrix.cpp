@@ -45,13 +45,14 @@ auto has_uniform_scale(const glm::mat4& transform, float epsilon) -> bool
 auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3
 {
     // we can tolerate fairly big errors
+    // @speed: test what epsilon value would be the best
     static constexpr auto epsilon = 1e-5f;
 
     if (has_uniform_scale(transform, epsilon))
         return glm::mat3{ transform };
 
     // the transpose of the inverse of the upper-left 3x3 part of the transform matrix
-    // TODO: investigate whether caching these matrices is worth it
+    // @speed: investigate whether caching these matrices is worth it
     return glm::inverseTranspose(glm::mat3{ transform });
 }
 
@@ -66,7 +67,7 @@ auto decompose(const glm::mat4& matrix) -> TransformComponents
     glm::decompose(matrix, scale, rotation, translation, unused_skew, unused_perspective);
 
     // the resulting quaternion is incorrect, and we need to conjugate it
-    // TODO: check if this works correctly
+    // @test: check if this works correctly
     rotation = glm::conjugate(rotation);
 
     return TransformComponents{

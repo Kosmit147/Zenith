@@ -12,7 +12,7 @@ namespace zth::gl {
 
 enum class BufferAccessFrequency : u8
 {
-    // @volatile: These numbers are chosen to make converting BufferUsage to an OpenGL value easier
+    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value
 
     Stream = 0,  // The data store contents will be modified once and used at most a few times.
     Static = 4,  // The data store contents will be modified once and used many times.
@@ -21,7 +21,7 @@ enum class BufferAccessFrequency : u8
 
 enum class BufferAccessType : u8
 {
-    // @volatile: These numbers are chosen to make converting BufferUsage to an OpenGL value easier
+    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value
 
     Draw = 0, // The data store contents are modified by the application, and used as the source for GL drawing and
               // image specification commands.
