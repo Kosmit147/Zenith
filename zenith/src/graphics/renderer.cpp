@@ -205,10 +205,16 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
 
 auto Renderer::batch_draw_commands() -> void
 {
+    // @speed: we could batch draw commands more efficiently
+    // it would probably also be more optimal to copy the transforms rather than storing pointers to them for better
+    // cache efficiency
+
     auto& draw_commands = renderer->_draw_commands;
     auto& batches = renderer->_batches;
 
     std::ranges::sort(draw_commands);
+
+    // @cleanup: this shouldn't be static
     static std::vector<const glm::mat4*> transforms;
     transforms.clear();
 
@@ -218,7 +224,8 @@ auto Renderer::batch_draw_commands() -> void
         const auto* current_material = draw_commands[i].material;
         transforms.push_back(draw_commands[i].transform);
 
-        while (i + 1 < draw_commands.size() && draw_commands[i + 1].material == current_material)
+        while (i + 1 < draw_commands.size() && draw_commands[i + 1].material == current_material
+               && draw_commands[i + 1].vertex_array == current_vertex_array)
         {
             transforms.push_back(draw_commands[i + 1].transform);
             i++;
@@ -230,6 +237,7 @@ auto Renderer::batch_draw_commands() -> void
             .transforms = {},
         };
 
+        // @speed: we could probably do something better here than copying all the pointers
         std::ranges::move(transforms, std::back_inserter(batch.transforms));
         batches.push_back(std::move(batch));
         transforms.clear();
