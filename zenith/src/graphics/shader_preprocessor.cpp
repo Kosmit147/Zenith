@@ -43,7 +43,7 @@ auto ShaderPreprocessor::add_source(std::string_view name, std::string_view sour
     auto [_, success] = _sources.emplace(name, source);
 
     if (!success)
-        ZTH_CORE_DEBUG("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
+        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
 
     return success;
 }
@@ -53,7 +53,7 @@ auto ShaderPreprocessor::add_source(std::string_view name, std::string&& source)
     auto [_, success] = _sources.emplace(name, std::move(source));
 
     if (!success)
-        ZTH_CORE_DEBUG("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
+        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
 
     return success;
 }
@@ -64,8 +64,8 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
 
     if (!filename)
     {
-        // @speed: string() throws
-        ZTH_CORE_DEBUG("[Shader Preprocessor] Couldn't add shader source from file \"{}\".", path.string());
+        // @robustness: string() throws
+        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source from file \"{}\".", path.string());
         return false;
     }
 
@@ -79,7 +79,7 @@ auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::
     if (!data)
     {
         // @speed: string() throws
-        ZTH_CORE_DEBUG("[Shader Preprocessor] Couldn't add shader source \"{}\" from file \"{}\".", name,
+        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\" from file \"{}\".", name,
                        path.string());
         return false;
     }
@@ -95,7 +95,7 @@ auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<Cons
         return source;
     }
 
-    ZTH_CORE_DEBUG("[Shader Preprocessor] Couldn't get shader source \"{}\".", name);
+    ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't get shader source \"{}\".", name);
     return {};
 }
 
@@ -365,4 +365,12 @@ auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<
 ZTH_DEFINE_FORMATTER(zth::LineInfo, line_info)
 {
     ZTH_FORMAT_OUT("({}:{})", line_info.line, line_info.col);
+}
+
+ZTH_DEFINE_FORMATTER(zth::PreprocessShaderError, error)
+{
+    if (error.line_info)
+        ZTH_FORMAT_OUT("{}: {}", *error.line_info, error.description);
+    else
+        ZTH_FORMAT_OUT("{}", error.description);
 }

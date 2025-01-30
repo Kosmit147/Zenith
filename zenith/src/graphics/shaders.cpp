@@ -12,10 +12,17 @@ std::unique_ptr<ShaderList> shader_list;
 
 } // namespace
 
-ShaderList::ShaderList()
-    : fallback(embedded::shaders::fallback_vert, embedded::shaders::fallback_frag),
-      flat_color(embedded::shaders::flat_color_vert, embedded::shaders::flat_color_frag),
-      standard(embedded::shaders::standard_vert, embedded::shaders::standard_frag)
+ShaderList::ShaderList() // clang-format off
+    : fallback({
+        .vertex_source = embedded::shaders::fallback_vert,
+        .fragment_source = embedded::shaders::fallback_frag }),
+      flat_color({
+          .vertex_source = embedded::shaders::flat_color_vert,
+          .fragment_source = embedded::shaders::flat_color_frag }),
+      standard({
+          .vertex_source = embedded::shaders::standard_vert,
+          .fragment_source = embedded::shaders::standard_frag })
+// clang-format on
 {}
 
 auto load_shaders() -> void

@@ -24,7 +24,7 @@ template<typename T, usize N> [[nodiscard]] constexpr auto is_constructible_from
 }
 
 // returns the number of fields in a struct
-template<typename T, usize N = 0u> [[nodiscard]] constexpr auto get_struct_arity() -> usize
+template<typename T, usize N = 0> [[nodiscard]] constexpr auto get_struct_arity() -> usize
 {
     constexpr auto constructible = is_constructible_from_n_initializers<T, N>();
 

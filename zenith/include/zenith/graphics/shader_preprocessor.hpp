@@ -82,13 +82,11 @@ private:
 
     auto advance_by(usize count) -> void;
     auto advance_line() -> void;
-    // returns true if we managed to get to a directive or a comment
     auto advance_until_directive_or_comment() -> bool;
 
     auto skip(usize count) -> void;
     auto skip_whitespace() -> void;
 
-    // pushes count characters into _result_buffer
     auto push(usize count) -> void;
 
     auto update_rest_in_line() -> void;
@@ -100,3 +98,4 @@ private:
 } // namespace zth
 
 ZTH_DECLARE_FORMATTER(zth::LineInfo);
+ZTH_DECLARE_FORMATTER(zth::PreprocessShaderError);

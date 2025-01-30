@@ -49,7 +49,7 @@ public:
     static constexpr GLint specular_map_slot = 1;
     static constexpr GLint emission_map_slot = 2;
 
-    // @volatile: Keep in sync with zth_defines.glsl
+    // @volatile: keep in sync with zth_defines.glsl
     static constexpr u32 camera_ubo_binding_index = 0;
     static constexpr u32 light_ubo_binding_index = 1;
     static constexpr u32 material_ubo_binding_index = 2;

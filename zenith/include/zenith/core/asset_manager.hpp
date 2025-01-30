@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include <functional>
 #include <optional>
 #include <string_view>
@@ -12,6 +11,8 @@ namespace zth {
 
 class AssetManager
 {
+    // @test: loading assets from files
+
 public:
     using ShaderRef = std::reference_wrapper<gl::Shader>;
 
@@ -20,14 +21,15 @@ public:
     static auto init() -> void;
     static auto shut_down() -> void;
 
-    static auto load_shader_from_file(std::string_view name, const std::filesystem::path& vertex_path,
-                                      const std::filesystem::path& fragment_path) -> std::optional<ShaderRef>;
-    static auto load_shader_from_memory(std::string_view name, std::string_view vertex_source,
-                                        std::string_view fragment_source) -> std::optional<ShaderRef>;
+    static auto add_shader(std::string_view name, gl::Shader&& shader) -> std::optional<ShaderRef>;
+    static auto add_shader_from_sources(std::string_view name,
+                                        const gl::ShaderSources& sources) -> std::optional<ShaderRef>;
+    static auto add_shader_from_files(std::string_view name,
+                                      const gl::ShaderSourcePaths& paths) -> std::optional<ShaderRef>;
 
     [[nodiscard]] static auto get_shader(std::string_view name) -> std::optional<ShaderRef>;
 
-    static auto unload_shader(std::string_view name) -> bool;
+    static auto remove_shader(std::string_view name) -> bool;
 
 private:
     static StringHashMap<gl::Shader> _shaders;
