@@ -38,6 +38,34 @@ auto Testbed::on_update() -> void
 
 auto Testbed::on_event(const zth::Event& event) -> void
 {
+    // log_event(event);
+
+    if (event.type() == zth::EventType::KeyPressed)
+        on_key_pressed_event(event.key_pressed_event());
+}
+
+auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+{
+    _debug_tools_ui.on_key_pressed_event(event);
+    _scene_picker_ui.on_key_pressed_event(event);
+
+    static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
+
+    switch (event.key)
+    {
+        using enum zth::Key;
+    case Escape:
+        zth::Window::close();
+        break;
+    case toggle_cursor_key:
+        cursor_enabled = !cursor_enabled;
+        zth::Window::set_cursor_enabled(cursor_enabled);
+        break;
+    }
+}
+
+auto Testbed::log_event(const zth::Event& event) -> void
+{
     switch (event.type())
     {
         using enum zth::EventType;
@@ -49,9 +77,8 @@ auto Testbed::on_event(const zth::Event& event) -> void
     }
     case KeyPressed:
     {
-        auto key_pressed_event = event.key_pressed_event();
-        ZTH_INFO("{} key pressed.", key_pressed_event.key);
-        on_key_pressed_event(key_pressed_event);
+        auto [key] = event.key_pressed_event();
+        ZTH_INFO("{} key pressed.", key);
         break;
     }
     case KeyReleased:
@@ -84,26 +111,6 @@ auto Testbed::on_event(const zth::Event& event) -> void
         ZTH_INFO("Mouse scrolled. Delta: {}.", delta);
         break;
     }
-    }
-}
-
-auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
-{
-    _debug_tools_ui.on_key_pressed_event(event);
-    _scene_picker_ui.on_key_pressed_event(event);
-
-    static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
-
-    switch (event.key)
-    {
-        using enum zth::Key;
-    case Escape:
-        zth::Window::close();
-        break;
-    case toggle_cursor_key:
-        cursor_enabled = !cursor_enabled;
-        zth::Window::set_cursor_enabled(cursor_enabled);
-        break;
     }
 }
 

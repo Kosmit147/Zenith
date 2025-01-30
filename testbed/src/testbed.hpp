@@ -20,5 +20,7 @@ private:
 
     auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 
+    auto log_event(const zth::Event& event) -> void;
+
     auto update_ui() -> void;
 };
