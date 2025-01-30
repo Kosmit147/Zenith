@@ -7,9 +7,9 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 	vec3 albedo;
 };
 
-out vec4 outColor;
+out vec4 out_color;
 
 void main()
 {
-    outColor = vec4(albedo, 1.0);
+    out_color = vec4(albedo, 1.0);
 }

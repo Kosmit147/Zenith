@@ -349,19 +349,19 @@ auto Renderer::bind_material(const Material& material) -> void
     if (material.diffuse_map)
     {
         material.diffuse_map->bind(diffuse_map_slot);
-        material.shader->set_unif("diffuseMap", diffuse_map_slot);
+        material.shader->set_unif("diffuse_map", diffuse_map_slot);
     }
 
     if (material.specular_map)
     {
         material.specular_map->bind(specular_map_slot);
-        material.shader->set_unif("specularMap", specular_map_slot);
+        material.shader->set_unif("specular_map", specular_map_slot);
     }
 
     if (material.emission_map)
     {
         material.emission_map->bind(emission_map_slot);
-        material.shader->set_unif("emissionMap", emission_map_slot);
+        material.shader->set_unif("emission_map", emission_map_slot);
     }
 }
 
