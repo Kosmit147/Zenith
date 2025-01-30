@@ -39,150 +39,151 @@ in vec2 UV;
 
 layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
 {
-    mat4 viewProjection;
-    vec3 cameraPosition;
+    mat4 view_projection;
+    vec3 camera_position;
 };
 
 layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
 {
-    vec3 directionalLightDirection;
-    LightProperties directionalLightProperties;
+    vec3 directional_light_direction;
+    LightProperties directional_light_properties;
 
-    vec3 pointLightPosition;
-    LightProperties pointLightProperties;
-    LightAttenuation pointLightAttenuation;
+    vec3 point_light_position;
+    LightProperties point_light_properties;
+    LightAttenuation point_light_attenuation;
 
-    vec3 spotLightPosition;
-    vec3 spotLightDirection;
-    float spotLightInnerCutoff;
-    float spotLightOuterCutoff;
-    LightProperties spotLightProperties;
-    LightAttenuation spotLightAttenuation;
+    vec3 spot_light_position;
+    vec3 spot_light_direction;
+    float spot_light_inner_cutoff;
+    float spot_light_outer_cutoff;
+    LightProperties spot_light_properties;
+    LightAttenuation spot_light_attenuation;
 
-    bool hasDirectionalLight;
-    bool hasPointLight;
-    bool hasSpotLight;
+    bool has_directional_light;
+    bool has_point_light;
+    bool has_spot_light;
 };
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
 {
     Material material;
 
-    bool hasDiffuseMap;
-    bool hasSpecularMap;
-    bool hasEmissionMap;
+    bool has_diffuse_map;
+    bool has_specular_map;
+    bool has_emission_map;
 };
 
-uniform sampler2D diffuseMap;
-uniform sampler2D specularMap;
-uniform sampler2D emissionMap;
+uniform sampler2D diffuse_map;
+uniform sampler2D specular_map;
+uniform sampler2D emission_map;
 
-out vec4 outColor;
+out vec4 out_color;
 
-float getAttenuation(LightAttenuation attenuation, float dist)
+float get_attenuation(LightAttenuation attenuation, float dist)
 {
     return 1.0 / (attenuation.constant + attenuation.linear * dist + attenuation.quadratic * (dist * dist));
 }
 
-Light createPointLight()
+Light create_point_light()
 {
-    vec3 diff = Position - pointLightPosition;
+    vec3 diff = Position - point_light_position;
     float dist = length(diff);
-    float attenuation = getAttenuation(pointLightAttenuation, dist);
-    vec3 pointLightDirection = normalize(diff);
+    float attenuation = get_attenuation(point_light_attenuation, dist);
+    vec3 point_light_direction = normalize(diff);
 
-    return Light(pointLightDirection, pointLightProperties, attenuation);
+    return Light(point_light_direction, point_light_properties, attenuation);
 }
 
-Light createDirectionalLight()
+Light create_directional_light()
 {
-    return Light(normalize(directionalLightDirection), directionalLightProperties, 1.0);
+    return Light(normalize(directional_light_direction), directional_light_properties, 1.0);
 }
 
-Light createSpotLight()
+Light create_spot_light()
 {
-    vec3 diff = Position - spotLightPosition;
+    vec3 diff = Position - spot_light_position;
     float dist = length(diff);
-    float attenuation = getAttenuation(spotLightAttenuation, dist);
+    float attenuation = get_attenuation(spot_light_attenuation, dist);
 
     diff = normalize(diff);
-    float angle = dot(spotLightDirection, diff);
-    float intensity = clamp((angle - spotLightOuterCutoff) / (spotLightInnerCutoff - spotLightOuterCutoff), 0.0, 1.0);
+    float angle = dot(spot_light_direction, diff);
+    float intensity =
+        clamp((angle - spot_light_outer_cutoff) / (spot_light_inner_cutoff - spot_light_outer_cutoff), 0.0, 1.0);
     attenuation *= intensity;
 
-    return Light(normalize(spotLightDirection), spotLightProperties, attenuation);
+    return Light(normalize(spot_light_direction), spot_light_properties, attenuation);
 }
 
-bool isLitBySpotlight()
+bool is_lit_by_spot_light()
 {
-    vec3 diff = normalize(Position - spotLightPosition);
-    float angle = dot(spotLightDirection, diff);
+    vec3 diff = normalize(Position - spot_light_position);
+    float angle = dot(spot_light_direction, diff);
 
-    if (angle < spotLightOuterCutoff)
+    if (angle < spot_light_outer_cutoff)
         return false;
     else
         return true;
 }
 
-vec3 getAmbientStrength(Light light)
+vec3 get_ambient_strength(Light light)
 {
     return light.properties.ambient;
 }
 
-vec3 getDiffuseStrength(Light light)
+vec3 get_diffuse_strength(Light light)
 {
     return light.properties.diffuse * max(dot(-light.direction, Normal), 0.0);
 }
 
-vec3 getSpecularStrength(Light light)
+vec3 get_specular_strength(Light light)
 {
-    vec3 viewDirection = normalize(Position - cameraPosition);
+    vec3 view_direction = normalize(Position - camera_position);
     vec3 reflection = reflect(light.direction, Normal);
-    vec3 specularFactor = light.properties.specular * pow(max(dot(reflection, -viewDirection), 0.0), material.shininess);
+    vec3 specular_factor = light.properties.specular * pow(max(dot(reflection, -view_direction), 0.0), material.shininess);
 
-    if (hasSpecularMap)
-        specularFactor *= vec3(texture(specularMap, UV));
+    if (has_specular_map)
+        specular_factor *= vec3(texture(specular_map, UV));
 
-    return specularFactor;
+    return specular_factor;
 }
 
-vec3 getLightStrength(Light light)
+vec3 get_light_strength(Light light)
 {
-    vec3 ambient = getAmbientStrength(light) * material.ambient;
-    vec3 diffuse = getDiffuseStrength(light) * material.diffuse;
-    vec3 specular = getSpecularStrength(light) * material.specular;
+    vec3 ambient = get_ambient_strength(light) * material.ambient;
+    vec3 diffuse = get_diffuse_strength(light) * material.diffuse;
+    vec3 specular = get_specular_strength(light) * material.specular;
     return (ambient + diffuse + specular) * light.properties.color * light.attenuation;
 }
 
 void main()
 {
-    vec4 objectColor = vec4(material.albedo, 1.0);
+    vec4 object_color = vec4(material.albedo, 1.0);
 
-    if (hasDiffuseMap)
-        objectColor *= texture(diffuseMap, UV);
+    if (has_diffuse_map)
+        object_color *= texture(diffuse_map, UV);
 
-    vec3 lightStrength = vec3(0.0);
+    vec3 light_strength = vec3(0.0);
 
-    if (hasPointLight)
+    if (has_point_light)
     {
-        Light pointLight = createPointLight();
-        lightStrength += getLightStrength(pointLight);
+        Light point_light = create_point_light();
+        light_strength += get_light_strength(point_light);
     }
 
-    if (hasDirectionalLight)
+    if (has_directional_light)
     {
-        Light directionalLight = createDirectionalLight();
-        lightStrength += getLightStrength(directionalLight);
+        Light directional_light = create_directional_light();
+        light_strength += get_light_strength(directional_light);
     }
 
-    if (hasSpotLight && isLitBySpotlight())
+    if (has_spot_light && is_lit_by_spot_light())
     {
-        Light spotLight = createSpotLight();
-        lightStrength += getLightStrength(spotLight);
+        Light spot_light = create_spot_light();
+        light_strength += get_light_strength(spot_light);
     }
 
-    outColor = vec4(lightStrength * objectColor.rgb, objectColor.a);
+    out_color = vec4(light_strength * object_color.rgb, object_color.a);
 
-    if (hasEmissionMap)
-        outColor += texture(emissionMap, UV);
+    if (has_emission_map)
+        out_color += texture(emission_map, UV);
 }
