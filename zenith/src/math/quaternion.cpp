@@ -33,7 +33,7 @@ auto to_quaternion(EulerAngles angles) -> glm::quat
 
 auto to_rotation(glm::vec3 direction) -> Rotation
 {
-    // @todo: handle cases where direction vector is opposite to the reference vector
+    // @robustness: handle cases where direction vector is opposite to the reference vector
     // in that case the resulting axis vector is (0, 0, 0)
     auto axis = glm::cross(reference_vector, direction);
     auto angle = glm::acos(glm::dot(reference_vector, direction));

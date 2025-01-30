@@ -9,42 +9,42 @@
 
 namespace zth {
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::InPlaceVector(usize count) noexcept(std::is_nothrow_default_constructible_v<T>)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::InPlaceVector(usize count) noexcept(std::is_nothrow_default_constructible_v<T>)
 {
-    ZTH_ASSERT(count <= Size);
+    ZTH_ASSERT(count <= capacity());
     _size = count;
     std::ranges::uninitialized_default_construct(*this);
 }
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::InPlaceVector(usize count, const T& value)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::InPlaceVector(usize count, const T& value)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
-    ZTH_ASSERT(count <= Size);
+    ZTH_ASSERT(count <= capacity());
     _size = count;
     std::ranges::uninitialized_fill(*this, value);
 }
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::InPlaceVector(std::initializer_list<T> values)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::InPlaceVector(std::initializer_list<T> values)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
-    ZTH_ASSERT(values.size() <= Size);
+    ZTH_ASSERT(values.size() <= capacity());
     _size = values.size();
     std::ranges::uninitialized_copy(values, *this);
 }
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::InPlaceVector(const InPlaceVector& other)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::InPlaceVector(const InPlaceVector& other)
     noexcept(std::is_nothrow_copy_constructible_v<T>)
 {
     _size = other.size();
     std::ranges::uninitialized_copy(other, *this);
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::operator=(const InPlaceVector& other)
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::operator=(const InPlaceVector& other)
     noexcept(std::is_nothrow_copy_constructible_v<T> && std::is_nothrow_destructible_v<T>) -> InPlaceVector&
 {
     if (this == &other)
@@ -58,8 +58,9 @@ constexpr auto InPlaceVector<T, Size>::operator=(const InPlaceVector& other)
     return *this;
 }
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::InPlaceVector(InPlaceVector&& other) noexcept(std::is_nothrow_move_constructible_v<T>)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::InPlaceVector(InPlaceVector&& other)
+    noexcept(std::is_nothrow_move_constructible_v<T>)
 {
     _size = other.size();
     std::ranges::uninitialized_move(other, *this);
@@ -67,8 +68,8 @@ constexpr InPlaceVector<T, Size>::InPlaceVector(InPlaceVector&& other) noexcept(
     other.clear();
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::operator=(InPlaceVector&& other)
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::operator=(InPlaceVector&& other)
     noexcept(std::is_nothrow_move_constructible_v<T> && std::is_nothrow_destructible_v<T>) -> InPlaceVector&
 {
     clear();
@@ -81,13 +82,13 @@ constexpr auto InPlaceVector<T, Size>::operator=(InPlaceVector&& other)
     return *this;
 }
 
-template<std::movable T, usize Size>
-constexpr InPlaceVector<T, Size>::~InPlaceVector() noexcept(std::is_nothrow_destructible_v<T>)
+template<std::movable T, usize Capacity>
+constexpr InPlaceVector<T, Capacity>::~InPlaceVector() noexcept(std::is_nothrow_destructible_v<T>)
 {
     clear();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::at(usize index) -> T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::at(usize index) -> T&
 {
     if (index >= _size)
         throw Exception{ "Index out of range." };
@@ -95,7 +96,7 @@ template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::at(u
     return data()[index];
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::at(usize index) const -> const T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::at(usize index) const -> const T&
 {
     if (index >= _size)
         throw Exception{ "Index out of range." };
@@ -103,116 +104,117 @@ template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::at(u
     return data()[index];
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::operator[](usize index) noexcept -> T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::operator[](usize index) noexcept -> T&
 {
     ZTH_ASSERT(index < _size);
     return data()[index];
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::operator[](usize index) const noexcept -> const T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::operator[](usize index) const noexcept -> const T&
 {
     ZTH_ASSERT(index < _size);
     return data()[index];
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::front() noexcept -> T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::front() noexcept -> T&
 {
     ZTH_ASSERT(_size != 0);
     return *data();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::front() const noexcept -> const T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::front() const noexcept -> const T&
 {
     ZTH_ASSERT(_size != 0);
     return *data();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::back() noexcept -> T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::back() noexcept -> T&
 {
     ZTH_ASSERT(_size != 0);
     return data()[_size - 1];
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::back() const noexcept -> const T&
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::back() const noexcept -> const T&
 {
     ZTH_ASSERT(_size != 0);
     return data()[_size - 1];
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::data() noexcept -> T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::data() noexcept -> T*
 {
     return reinterpret_cast<T*>(_data.data());
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::data() const noexcept -> const T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::data() const noexcept -> const T*
 {
     return reinterpret_cast<const T*>(_data.data());
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::begin() noexcept -> T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::begin() noexcept -> T*
 {
     return cbegin();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::begin() const noexcept -> const T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::begin() const noexcept -> const T*
 {
     return cbegin();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::cbegin() noexcept -> T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::cbegin() noexcept -> T*
 {
     return data();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::cbegin() const noexcept -> const T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::cbegin() const noexcept -> const T*
 {
     return data();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::end() noexcept -> T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::end() noexcept -> T*
 {
     return cend();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::end() const noexcept -> const T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::end() const noexcept -> const T*
 {
     return cend();
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::cend() noexcept -> T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::cend() noexcept -> T*
 {
     return cbegin() + _size;
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::cend() const noexcept -> const T*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::cend() const noexcept -> const T*
 {
     return cbegin() + _size;
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::empty() const noexcept -> bool
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::empty() const noexcept -> bool
 {
     return _size == 0;
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::size() const noexcept -> usize
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::size() const noexcept -> usize
 {
     return _size;
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::max_size() noexcept -> usize
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::max_size() noexcept -> usize
 {
-    return Size;
+    return Capacity;
 }
 
-template<std::movable T, usize Size> constexpr auto InPlaceVector<T, Size>::capacity() noexcept -> usize
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::capacity() noexcept -> usize
 {
-    return Size;
+    return Capacity;
 }
 
-template<std::movable T, usize Size>
+template<std::movable T, usize Capacity>
 template<typename... Args>
-constexpr auto InPlaceVector<T, Size>::emplace_back(Args&&... args)
+constexpr auto InPlaceVector<T, Capacity>::emplace_back(Args&&... args)
     noexcept(std::is_nothrow_constructible_v<T, Args...>) -> T&
 {
     ZTH_ASSERT(_size < capacity());
@@ -221,8 +223,9 @@ constexpr auto InPlaceVector<T, Size>::emplace_back(Args&&... args)
     return back();
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::push_back(const T& value) noexcept(std::is_nothrow_copy_constructible_v<T>) -> T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::push_back(const T& value)
+    noexcept(std::is_nothrow_copy_constructible_v<T>) -> T&
 {
     ZTH_ASSERT(_size < capacity());
     std::construct_at(cbegin() + _size, value);
@@ -230,8 +233,8 @@ constexpr auto InPlaceVector<T, Size>::push_back(const T& value) noexcept(std::i
     return back();
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::push_back(T&& value) noexcept(std::is_nothrow_move_constructible_v<T>) -> T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::push_back(T&& value) noexcept(std::is_nothrow_move_constructible_v<T>) -> T&
 {
     ZTH_ASSERT(_size < capacity());
     std::construct_at(cbegin() + _size, std::move(value));
@@ -239,16 +242,16 @@ constexpr auto InPlaceVector<T, Size>::push_back(T&& value) noexcept(std::is_not
     return back();
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::pop_back() noexcept(std::is_nothrow_destructible_v<T>) -> void
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::pop_back() noexcept(std::is_nothrow_destructible_v<T>) -> void
 {
     ZTH_ASSERT(_size != 0);
     _size--;
     std::destroy_at(cend());
 }
 
-template<std::movable T, usize Size>
-constexpr auto InPlaceVector<T, Size>::clear() noexcept(std::is_nothrow_destructible_v<T>) -> void
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::clear() noexcept(std::is_nothrow_destructible_v<T>) -> void
 {
     std::destroy(begin(), end());
     _size = 0;

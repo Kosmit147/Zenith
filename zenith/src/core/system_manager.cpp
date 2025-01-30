@@ -21,7 +21,7 @@
 // Input -> { Logger, Window }
 // ShaderPreprocessor -> { Logger }
 // AssetManager -> { Logger, ShaderPreprocessor }
-// Renderer -> { Logger, Window }
+// Renderer -> { Logger, Window, ShaderPreprocessor }
 // ImGuiRenderer -> { Logger, Renderer, Window }
 // SceneManager -> { Logger }
 

@@ -10,7 +10,7 @@
 
 namespace zth {
 
-template<std::movable T, usize Size> class InPlaceVector
+template<std::movable T, usize Capacity> class InPlaceVector
 {
 public:
     constexpr InPlaceVector() noexcept = default;
@@ -71,7 +71,7 @@ public:
 
 private:
     usize _size = 0;
-    alignas(T) std::array<std::byte, sizeof(T) * Size> _data{};
+    alignas(T) std::array<std::byte, sizeof(T) * Capacity> _data{};
 };
 
 } // namespace zth
