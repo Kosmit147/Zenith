@@ -275,21 +275,20 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> std::o
 
 auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::optional<ProgramId>
 {
-    auto vertex_source = fs::load_to_string(paths.vertex_file_path);
-    auto fragment_source = fs::load_to_string(paths.fragment_file_path);
+    auto vertex_source = fs::load_to_string(paths.vertex_path);
+    auto fragment_source = fs::load_to_string(paths.fragment_path);
 
     // @robustness: .string() function on std::filesystem::filepath can throw
 
     if (!vertex_source)
     {
-        ZTH_CORE_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_file_path.string());
+        ZTH_CORE_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_path.string());
         return {};
     }
 
     if (!fragment_source)
     {
-        ZTH_CORE_ERROR("[Shader] Failed to load fragment shader source from file {}.",
-                       paths.fragment_file_path.string());
+        ZTH_CORE_ERROR("[Shader] Failed to load fragment shader source from file {}.", paths.fragment_path.string());
         return {};
     }
 
@@ -304,42 +303,42 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
     std::optional<std::string> tess_evaluation_source;
     std::optional<std::string> geometry_source;
 
-    if (paths.tess_control_file_path)
+    if (paths.tess_control_path)
     {
-        tess_control_source = fs::load_to_string(*paths.tess_control_file_path);
+        tess_control_source = fs::load_to_string(*paths.tess_control_path);
 
         if (!tess_control_source)
         {
             ZTH_CORE_ERROR("[Shader] Failed to load tesselation control shader source from file {}.",
-                           paths.tess_control_file_path->string());
+                           paths.tess_control_path->string());
             return {};
         }
 
         sources.tess_control_source = *tess_control_source;
     }
 
-    if (paths.tess_evaluation_file_path)
+    if (paths.tess_evaluation_path)
     {
-        tess_evaluation_source = fs::load_to_string(*paths.tess_evaluation_file_path);
+        tess_evaluation_source = fs::load_to_string(*paths.tess_evaluation_path);
 
         if (!tess_evaluation_source)
         {
             ZTH_CORE_ERROR("[Shader] Failed to load tesselation evaluation shader source from file {}.",
-                           paths.tess_evaluation_file_path->string());
+                           paths.tess_evaluation_path->string());
             return {};
         }
 
         sources.tess_evaluation_source = *tess_evaluation_source;
     }
 
-    if (paths.geometry_file_path)
+    if (paths.geometry_path)
     {
-        geometry_source = fs::load_to_string(*paths.geometry_file_path);
+        geometry_source = fs::load_to_string(*paths.geometry_path);
 
         if (!geometry_source)
         {
             ZTH_CORE_ERROR("[Shader] Failed to load geometry shader source from file {}.",
-                           paths.geometry_file_path->string());
+                           paths.geometry_path->string());
             return {};
         }
 
@@ -475,4 +474,45 @@ auto to_string(gl::ShaderType shader_type) -> const char*
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
 {
     ZTH_FORMAT_OUT("{}", zth::to_string(type));
+}
+
+ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
+{
+    // @test
+
+    // @robustness: .string() throws
+
+    std::string result = ZTH_FORMAT("{{\n"
+                                    "\t.vertex_path = \"{}\",\n"
+                                    "\t.fragment_path = \"{}\",\n",
+                                    paths.vertex_path.string(), paths.fragment_path.string());
+
+    {
+        result += "\t.tess_control_path = ";
+
+        if (paths.tess_control_path)
+            result += ZTH_FORMAT("\"{}\",\n", paths.tess_control_path->string());
+        else
+            result += "null,\n";
+    }
+
+    {
+        result += "\t.tess_evaluation_path = ";
+
+        if (paths.tess_evaluation_path)
+            result += ZTH_FORMAT("\"{}\",\n", paths.tess_evaluation_path->string());
+        else
+            result += "null,\n";
+    }
+
+    {
+        result += "\t.geometry_path = ";
+
+        if (paths.geometry_path)
+            result += ZTH_FORMAT("\"{}\",\n", paths.geometry_path->string());
+        else
+            result += "null,\n";
+    }
+
+    ZTH_FORMAT_OUT("{}}}", result);
 }

@@ -124,7 +124,7 @@ private:
 [[nodiscard]] auto texture_format_from_channels(u32 channels) -> TextureFormat;
 
 Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params)
-    : Texture2D(data.data(), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params)
+    : Texture2D(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params)
 {}
 
 auto Texture2D::from_memory(std::ranges::contiguous_range auto&& data, const TextureParams& params) -> Texture2D

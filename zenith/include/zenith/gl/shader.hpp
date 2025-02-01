@@ -48,11 +48,11 @@ struct ShaderSources
 
 struct ShaderSourcePaths
 {
-    std::filesystem::path vertex_file_path;
-    std::filesystem::path fragment_file_path;
-    std::optional<std::filesystem::path> tess_control_file_path = std::nullopt;
-    std::optional<std::filesystem::path> tess_evaluation_file_path = std::nullopt;
-    std::optional<std::filesystem::path> geometry_file_path = std::nullopt;
+    std::filesystem::path vertex_path;
+    std::filesystem::path fragment_path;
+    std::optional<std::filesystem::path> tess_control_path = std::nullopt;
+    std::optional<std::filesystem::path> tess_evaluation_path = std::nullopt;
+    std::optional<std::filesystem::path> geometry_path = std::nullopt;
 };
 
 struct UniformInfo
@@ -132,3 +132,4 @@ private:
 } // namespace zth
 
 ZTH_DECLARE_FORMATTER(zth::gl::ShaderType);
+ZTH_DECLARE_FORMATTER(zth::gl::ShaderSourcePaths);

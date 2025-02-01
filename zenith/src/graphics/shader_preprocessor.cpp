@@ -102,7 +102,7 @@ auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<Cons
 auto ShaderPreprocessor::remove_source(std::string_view name) -> bool
 {
     auto elems_erased = _sources.erase(name);
-    return elems_erased > 0;
+    return elems_erased != 0;
 }
 
 ShaderPreprocessor::ShaderPreprocessor(std::string_view source, u16 recursion_depth)
