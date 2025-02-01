@@ -66,10 +66,6 @@ auto decompose(const glm::mat4& matrix) -> TransformComponents
     glm::vec4 unused_perspective;
     glm::decompose(matrix, scale, rotation, translation, unused_skew, unused_perspective);
 
-    // the resulting quaternion is incorrect, and we need to conjugate it
-    // @test: check if this works correctly
-    rotation = glm::conjugate(rotation);
-
     return TransformComponents{
         .translation = translation,
         .rotation = rotation,
