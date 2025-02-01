@@ -11,13 +11,15 @@ enum class BufferState : u8;
 class Buffer;
 class VertexBuffer;
 class IndexBuffer;
-class UniformBuffer;
 class InstanceBuffer;
+class UniformBuffer;
 
 struct Version;
 enum class Profile : u8;
 
 enum class ShaderType : u16;
+struct ShaderSources;
+struct ShaderSourcePaths;
 struct UniformInfo;
 class Shader;
 
