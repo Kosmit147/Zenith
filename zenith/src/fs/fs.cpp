@@ -11,7 +11,7 @@ auto load_to_string(const std::filesystem::path& path) -> std::optional<std::str
 
     if (!std::filesystem::exists(path))
     {
-        ZTH_CORE_TRACE("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
 
@@ -19,7 +19,7 @@ auto load_to_string(const std::filesystem::path& path) -> std::optional<std::str
 
     if (!file.is_open())
     {
-        ZTH_CORE_TRACE("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
 
@@ -38,7 +38,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
     if (!std::filesystem::exists(path))
     {
         // @speed: string() throws
-        ZTH_CORE_TRACE("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
 
@@ -47,7 +47,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
     if (!file.is_open())
     {
         // @speed: string() throws
-        ZTH_CORE_TRACE("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
 
