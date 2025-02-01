@@ -36,9 +36,7 @@ public:
     auto on_update() -> void;
 
 private:
-    bool _frame_rate_limit_enabled = false;
     u32 _frame_rate_limit = 60;
-    bool _wireframe_mode_enabled = false;
 };
 
 class TransformUi
@@ -53,9 +51,7 @@ public:
 private:
     Transformable3D& _transformable;
 
-    glm::vec3 _translation{ 0.0f };
     math::Rotation _rotation{};
-    glm::vec3 _scale{ 1.0f };
     bool _uniform_scale = true;
 };
 
