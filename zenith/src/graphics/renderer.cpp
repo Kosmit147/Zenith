@@ -121,15 +121,21 @@ auto Renderer::shut_down() -> void
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
+auto Renderer::set_wireframe_mode(bool enabled) -> void
+{
+    _wireframe_mode_enabled = enabled;
+    glPolygonMode(GL_FRONT_AND_BACK, _wireframe_mode_enabled ? GL_LINE : GL_FILL);
+}
+
+auto Renderer::toggle_wireframe_mode() -> void
+{
+    set_wireframe_mode(!_wireframe_mode_enabled);
+}
+
 auto Renderer::set_clear_color(glm::vec4 color) -> void
 {
     auto [r, g, b, a] = color;
     glClearColor(r, g, b, a);
-}
-
-auto Renderer::set_wireframe_mode(bool enabled) -> void
-{
-    glPolygonMode(GL_FRONT_AND_BACK, enabled ? GL_LINE : GL_FILL);
 }
 
 auto Renderer::clear() -> void

@@ -59,8 +59,10 @@ public:
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 
-    static auto set_clear_color(glm::vec4 color) -> void;
     static auto set_wireframe_mode(bool enabled) -> void;
+    static auto toggle_wireframe_mode() -> void;
+
+    static auto set_clear_color(glm::vec4 color) -> void;
     static auto clear() -> void;
 
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
@@ -76,6 +78,8 @@ public:
 
     static auto draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void;
     static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, usize instances) -> void;
+
+    [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
@@ -95,6 +99,8 @@ private:
 
     std::vector<DrawCommand> _draw_commands;
     std::vector<RenderBatch> _batches;
+
+    static inline bool _wireframe_mode_enabled = false;
 
 private:
     explicit Renderer() = default;

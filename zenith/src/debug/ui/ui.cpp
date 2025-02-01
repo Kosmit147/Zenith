@@ -26,10 +26,7 @@ constexpr auto slider_drag_speed = 0.01f;
 auto DebugToolsUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
 {
     if (event.key == toggle_wireframe_mode_key)
-    {
-        _wireframe_mode_enabled = !_wireframe_mode_enabled;
-        Renderer::set_wireframe_mode(_wireframe_mode_enabled);
-    }
+        Renderer::toggle_wireframe_mode();
 }
 
 auto DebugToolsUi::on_update() -> void
@@ -39,35 +36,33 @@ auto DebugToolsUi::on_update() -> void
     auto fps = ImGui::GetIO().Framerate;
     ImGui::Text("FPS: %0.0f", fps);
 
+    bool frame_rate_limit_enabled;
+
     {
         auto limit = Window::frame_rate_limit();
-        _frame_rate_limit = limit.value_or(60);
-        _frame_rate_limit_enabled = limit.has_value();
+        frame_rate_limit_enabled = limit.has_value();
+        _frame_rate_limit = limit.value_or(_frame_rate_limit);
     }
 
-    if (ImGui::Checkbox("FPS Limit", &_frame_rate_limit_enabled))
+    if (ImGui::Checkbox("FPS Limit", &frame_rate_limit_enabled))
     {
-        if (_frame_rate_limit_enabled)
+        if (frame_rate_limit_enabled)
             Window::set_frame_rate_limit(_frame_rate_limit);
         else
             Window::disable_frame_rate_limit();
     }
 
-    if (_frame_rate_limit_enabled)
+    if (frame_rate_limit_enabled)
     {
-        int limit = static_cast<int>(_frame_rate_limit);
-
-        if (ImGui::InputInt("##", &limit))
-        {
-            _frame_rate_limit = static_cast<u32>(limit);
+        if (ImGui::InputInt("##", reinterpret_cast<int*>(&_frame_rate_limit)))
             Window::set_frame_rate_limit(_frame_rate_limit);
-        }
     }
 
     auto label = ZTH_FORMAT("Wireframe ({})", toggle_wireframe_mode_key);
+    auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
 
-    if (ImGui::Checkbox(label.c_str(), &_wireframe_mode_enabled))
-        Renderer::set_wireframe_mode(_wireframe_mode_enabled);
+    if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
+        Renderer::set_wireframe_mode(wireframe_mode_enabled);
 
     ImGui::End();
 }
@@ -76,13 +71,12 @@ TransformUi::TransformUi(Transformable3D& transformable) : _transformable(transf
 
 auto TransformUi::on_update() -> void
 {
-    _translation = _transformable.translation();
-    _scale = _transformable.scale();
-
     ImGui::Begin("Transform");
 
-    if (ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&_translation), slider_drag_speed))
-        _transformable.set_translation(_translation);
+    auto translation = _transformable.translation();
+
+    if (ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&translation), slider_drag_speed))
+        _transformable.set_translation(translation);
 
     if (ImGui::SliderAngle("Rotation Angle", &_rotation.angle))
         _transformable.set_rotation(_rotation);
@@ -93,28 +87,28 @@ auto TransformUi::on_update() -> void
         _transformable.set_rotation(_rotation);
     }
 
+    auto scale = _transformable.scale();
+
     if (_uniform_scale)
     {
-        if (ImGui::DragFloat("Scale", reinterpret_cast<float*>(&_scale), slider_drag_speed))
+        if (ImGui::DragFloat("Scale", reinterpret_cast<float*>(&scale), slider_drag_speed))
         {
-            _scale = glm::vec3{ _scale.x };
-            _transformable.set_scale(_scale);
+            scale = glm::vec3{ scale.x };
+            _transformable.set_scale(scale);
         }
     }
     else
     {
-        if (ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&_scale), slider_drag_speed))
-        {
-            _transformable.set_scale(_scale);
-        }
+        if (ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), slider_drag_speed))
+            _transformable.set_scale(scale);
     }
 
     if (ImGui::Checkbox("Uniform Scale", &_uniform_scale))
     {
         if (_uniform_scale)
         {
-            _scale = glm::vec3{ _scale.x };
-            _transformable.set_scale(_scale);
+            scale = glm::vec3{ scale.x };
+            _transformable.set_scale(scale);
         }
     }
 
