@@ -265,6 +265,8 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> std::o
         return {};
 
 #if !defined(ZTH_DIST_BUILD)
+    // we're not deleting the shaders in non-distribution builds because that lets us look at their source code when
+    // using api debugging tools
     shaders_cleanup.dismiss();
 #endif
 

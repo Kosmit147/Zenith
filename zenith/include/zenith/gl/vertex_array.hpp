@@ -21,6 +21,8 @@ struct VertexArrayLayout
 class VertexArray
 {
 public:
+    using VertexArrayId = GLuint;
+
     static constexpr GLuint vertex_buffer_binding_index = 0;
     static constexpr GLuint instance_buffer_binding_index = 1;
 
@@ -73,7 +75,7 @@ public:
     [[nodiscard]] auto layout() const -> auto& { return _layout; }
 
 private:
-    GLuint _id = GL_NONE;
+    VertexArrayId _id = GL_NONE;
 
     const VertexBuffer* _vertex_buffer = nullptr;
     const IndexBuffer* _index_buffer = nullptr;

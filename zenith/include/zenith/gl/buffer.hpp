@@ -59,6 +59,8 @@ enum class BufferState : u8
 class Buffer
 {
 public:
+    using BufferId = GLuint;
+
     explicit Buffer();
 
     [[nodiscard]] static auto create_static(usize size) -> Buffer;
@@ -94,7 +96,7 @@ public:
     [[nodiscard]] auto is_initialized() const { return _state != BufferState::Uninitialized; }
 
 private:
-    GLuint _id = GL_NONE;
+    BufferId _id = GL_NONE;
     GLsizei _size_bytes = 0;
     BufferState _state = BufferState::Uninitialized;
     std::optional<BufferUsage> _usage = std::nullopt;
