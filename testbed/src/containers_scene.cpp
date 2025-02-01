@@ -136,4 +136,5 @@ auto ContainersScene::update_ui() -> void
 {
     _directional_light_ui.on_update();
     _point_light_ui.on_update();
+    _spot_light_ui.on_update();
 }

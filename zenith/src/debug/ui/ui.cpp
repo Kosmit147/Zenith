@@ -2,6 +2,7 @@
 
 #include <glm/geometric.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/trigonometric.hpp>
 #include <spdlog/fmt/fmt.h>
 
 #include "zenith/core/scene_manager.hpp"
@@ -289,6 +290,8 @@ auto MaterialUi::set_emission_map(i16 idx) -> void
     _material.emission_map = idx >= 0 ? _emission_maps[idx] : nullptr;
 }
 
+// @cleanup: move sliders for light properties and attenuation into separate functions
+
 DirectionalLightUi::DirectionalLightUi(DirectionalLight& light) : _light(light) {}
 
 auto DirectionalLightUi::on_update() -> void
@@ -298,6 +301,7 @@ auto DirectionalLightUi::on_update() -> void
     if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
         _light.direction = glm::normalize(_light.direction);
 
+    // @cleanup: duplicated code
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
@@ -312,7 +316,40 @@ auto PointLightUi::on_update() -> void
 {
     ImGui::Begin("Point Light");
 
+    // @cleanup: duplicated code
     ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
+    ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
+    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
+    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
+    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
+
+    static_assert(sizeof(_light.attenuation) == 3 * sizeof(float));
+    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed * 0.01f);
+
+    ImGui::End();
+}
+
+SpotLightUi::SpotLightUi(SpotLight& light) : _light(light) {}
+
+auto SpotLightUi::on_update() -> void
+{
+    ImGui::Begin("Spot Light");
+
+    ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
+
+    if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
+        _light.direction = glm::normalize(_light.direction);
+
+    float inner_cutoff = glm::acos(_light.inner_cutoff);
+    float outer_cutoff = glm::acos(_light.outer_cutoff);
+
+    if (ImGui::SliderAngle("Inner Cutoff", &inner_cutoff, 0.0f, 180.0f))
+        _light.inner_cutoff = glm::cos(inner_cutoff);
+
+    if (ImGui::SliderAngle("Outer Cutoff", &outer_cutoff, 0.0f, 180.0f))
+        _light.outer_cutoff = glm::cos(outer_cutoff);
+
+    // @cleanup: duplicated code
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);

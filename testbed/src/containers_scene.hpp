@@ -29,6 +29,7 @@ private:
 
     zth::debug::DirectionalLightUi _directional_light_ui{ *_directional_light };
     zth::debug::PointLightUi _point_light_ui{ *_point_light };
+    zth::debug::SpotLightUi _spot_light_ui{ *_spot_light };
 
 private:
     auto on_load() -> void override;

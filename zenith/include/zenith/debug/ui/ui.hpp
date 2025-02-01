@@ -146,6 +146,19 @@ private:
     PointLight& _light;
 };
 
+class SpotLightUi
+{
+public:
+    explicit SpotLightUi(SpotLight& light);
+    ZTH_NO_COPY_NO_MOVE(SpotLightUi)
+    ~SpotLightUi() = default;
+
+    auto on_update() -> void;
+
+private:
+    SpotLight& _light;
+};
+
 class ScenePickerUi
 {
 public:
