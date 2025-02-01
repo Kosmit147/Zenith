@@ -83,7 +83,7 @@ auto TransformUi::on_update() -> void
     if (ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&_translation), slider_drag_speed))
         _transformable.set_translation(_translation);
 
-    if (ImGui::DragFloat("Rotation Angle", &_rotation.angle, slider_drag_speed))
+    if (ImGui::SliderAngle("Rotation Angle", &_rotation.angle))
         _transformable.set_rotation(_rotation);
 
     if (ImGui::DragFloat3("Rotation Axis", reinterpret_cast<float*>(&_rotation.axis), slider_drag_speed))
@@ -248,7 +248,7 @@ auto MaterialUi::on_update() -> void
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_material.ambient), slider_drag_speed * 0.1f);
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_material.diffuse), slider_drag_speed);
     ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_material.specular), slider_drag_speed);
-    ImGui::DragFloat("Shininess", &_material.shininess, slider_drag_speed * 20.0f);
+    ImGui::DragFloat("Shininess", &_material.shininess, slider_drag_speed * 10.0f);
 
     ImGui::End();
 }
@@ -295,7 +295,7 @@ auto DirectionalLightUi::on_update() -> void
 {
     ImGui::Begin("Directional Light");
 
-    if (ImGui::DragFloat3("Direction", reinterpret_cast<float*>(&_light.direction), slider_drag_speed))
+    if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
         _light.direction = glm::normalize(_light.direction);
 
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
@@ -319,7 +319,7 @@ auto PointLightUi::on_update() -> void
     ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
 
     static_assert(sizeof(_light.attenuation) == 3 * sizeof(float));
-    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed * 0.1f);
+    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed * 0.01f);
 
     ImGui::End();
 }
