@@ -22,6 +22,7 @@ enum class Profile : u8
 };
 
 auto set_debug_context() -> void;
+auto log_context_info() -> void;
 
 } // namespace gl
 

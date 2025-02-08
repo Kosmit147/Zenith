@@ -113,8 +113,6 @@ private:
 
     static auto bind_material(const Material& material) -> void;
     static auto upload_material_ubo(const Material& material) -> void;
-
-    static auto log_gl_version() -> void;
 };
 
 } // namespace zth

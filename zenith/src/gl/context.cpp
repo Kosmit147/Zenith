@@ -73,6 +73,21 @@ auto set_debug_context() -> void
                           GL_FALSE);
 }
 
+auto log_context_info() -> void
+{
+    auto vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    auto renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    auto version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    auto glsl_version = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    ZTH_CORE_INFO("[OpenGL] Context info:\n"
+                  "\tVendor: {}\n"
+                  "\tRenderer: {}\n"
+                  "\tVersion: {}\n"
+                  "\tGLSL Version: {}",
+                  vendor, renderer, version, glsl_version);
+}
+
 } // namespace gl
 
 auto to_string(gl::Profile gl_profile) -> const char*

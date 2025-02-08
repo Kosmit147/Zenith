@@ -80,7 +80,7 @@ auto Renderer::init() -> void
     gl::set_debug_context();
 #endif
 
-    log_gl_version();
+    gl::log_context_info();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -387,23 +387,6 @@ auto Renderer::upload_material_ubo(const Material& material) -> void
     };
 
     renderer->_material_ubo.buffer_data(material_ubo_data);
-}
-
-auto Renderer::log_gl_version() -> void
-{
-    // @cleanup: this function should probably be moved somewhere else
-
-    auto vendor_str = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-    auto renderer_str = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-    auto version_str = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-    auto glsl_version_str = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-    ZTH_CORE_INFO("[Renderer] OpenGL context info:\n"
-                  "\tVendor: {}\n"
-                  "\tRenderer: {}\n"
-                  "\tVersion: {}\n"
-                  "\tGLSL Version: {}",
-                  vendor_str, renderer_str, version_str, glsl_version_str);
 }
 
 } // namespace zth
