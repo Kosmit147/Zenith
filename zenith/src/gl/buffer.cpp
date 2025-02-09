@@ -23,10 +23,17 @@ Buffer::Buffer()
     create();
 }
 
-auto Buffer::create_static(usize size) -> Buffer
+auto Buffer::create_static(usize size_bytes) -> Buffer
 {
     Buffer buffer;
-    buffer.init_static(size);
+    buffer.init_static(size_bytes);
+    return buffer;
+}
+
+auto Buffer::create_static_with_data(const void* data, usize data_size_bytes) -> Buffer
+{
+    Buffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
     return buffer;
 }
 
@@ -37,10 +44,17 @@ auto Buffer::create_dynamic(BufferUsage usage) -> Buffer
     return buffer;
 }
 
-auto Buffer::create_dynamic(usize size, BufferUsage usage) -> Buffer
+auto Buffer::create_dynamic(usize size_bytes, BufferUsage usage) -> Buffer
 {
     Buffer buffer;
-    buffer.init_dynamic(size, usage);
+    buffer.init_dynamic(size_bytes, usage);
+    return buffer;
+}
+
+auto Buffer::create_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> Buffer
+{
+    Buffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, usage);
     return buffer;
 }
 
@@ -75,40 +89,44 @@ Buffer::~Buffer()
     destroy();
 }
 
-auto Buffer::init_static(usize size) -> void
+auto Buffer::init_static(usize size_bytes) -> void
+{
+    init_static_with_data(nullptr, size_bytes);
+}
+
+auto Buffer::init_static_with_data(const void* data, usize data_size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::Uninitialized);
-    ZTH_ASSERT(size != 0); // can't initialize a static buffer with size 0
+    ZTH_ASSERT(data_size_bytes != 0); // can't initialize a static buffer with size 0
 
-    _size_bytes = static_cast<GLsizei>(size);
-    glNamedBufferStorage(_id, _size_bytes, nullptr, GL_DYNAMIC_STORAGE_BIT);
+    _size_bytes = static_cast<GLsizei>(data_size_bytes);
+    glNamedBufferStorage(_id, _size_bytes, data, GL_DYNAMIC_STORAGE_BIT);
 
     _state = BufferState::InitializedStatic;
 }
 
 auto Buffer::init_dynamic(BufferUsage usage) -> void
 {
-    ZTH_ASSERT(_state != BufferState::InitializedStatic);
-
-    _size_bytes = 0;
-    _usage = usage;
-    glNamedBufferData(_id, _size_bytes, nullptr, to_gl_enum(*_usage));
-
-    _state = BufferState::InitializedDynamic;
+    init_dynamic_with_data(nullptr, 0, usage);
 }
 
-auto Buffer::init_dynamic(usize size, BufferUsage usage) -> void
+auto Buffer::init_dynamic(usize size_bytes, BufferUsage usage) -> void
+{
+    init_dynamic_with_data(nullptr, size_bytes, usage);
+}
+
+auto Buffer::init_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> void
 {
     ZTH_ASSERT(_state != BufferState::InitializedStatic);
 
-    _size_bytes = static_cast<GLsizei>(size);
+    _size_bytes = static_cast<GLsizei>(data_size_bytes);
     _usage = usage;
-    glNamedBufferData(_id, _size_bytes, nullptr, to_gl_enum(*_usage));
+    glNamedBufferData(_id, _size_bytes, data, to_gl_enum(*_usage));
 
     _state = BufferState::InitializedDynamic;
 }
 
-auto Buffer::buffer_data(const void* data, usize offset, usize data_size_bytes) -> void
+auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
 {
     ZTH_ASSERT(_state != BufferState::Uninitialized);
 
@@ -150,6 +168,7 @@ auto Buffer::resize_to_at_least(GLsizei min_size_bytes) -> void
     auto old_size = _size_bytes;
     auto new_size = old_size * 2 + 1;
 
+    // @cleanup: could maybe do this a cleaner way
     while (new_size < min_size_bytes)
         new_size *= 2;
 
@@ -182,6 +201,13 @@ auto VertexBuffer::create_static(usize size) -> VertexBuffer
     return buffer;
 }
 
+auto VertexBuffer::create_static_with_data(const void* data, usize data_size_bytes) -> VertexBuffer
+{
+    VertexBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
+    return buffer;
+}
+
 auto VertexBuffer::create_dynamic(BufferUsage usage) -> VertexBuffer
 {
     VertexBuffer buffer;
@@ -193,6 +219,13 @@ auto VertexBuffer::create_dynamic(usize size, BufferUsage usage) -> VertexBuffer
 {
     VertexBuffer buffer;
     buffer.init_dynamic(size, usage);
+    return buffer;
+}
+
+auto VertexBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> VertexBuffer
+{
+    VertexBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, usage);
     return buffer;
 }
 
@@ -216,6 +249,11 @@ auto VertexBuffer::init_static(usize size) -> void
     _buffer.init_static(size);
 }
 
+auto VertexBuffer::init_static_with_data(const void* data, usize data_size_bytes) -> void
+{
+    _buffer.init_static_with_data(data, data_size_bytes);
+}
+
 auto VertexBuffer::init_dynamic(BufferUsage usage) -> void
 {
     _buffer.init_dynamic(usage);
@@ -224,6 +262,16 @@ auto VertexBuffer::init_dynamic(BufferUsage usage) -> void
 auto VertexBuffer::init_dynamic(usize size, BufferUsage usage) -> void
 {
     _buffer.init_dynamic(size, usage);
+}
+
+auto VertexBuffer::init_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
+}
+
+auto VertexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+{
+    _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto VertexBuffer::bind() const -> void
@@ -250,6 +298,13 @@ auto IndexBuffer::create_static(usize size) -> IndexBuffer
     return buffer;
 }
 
+auto IndexBuffer::create_static_with_data(const void* data, usize data_size_bytes) -> IndexBuffer
+{
+    IndexBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
+    return buffer;
+}
+
 auto IndexBuffer::create_dynamic(BufferUsage usage) -> IndexBuffer
 {
     IndexBuffer buffer;
@@ -261,6 +316,13 @@ auto IndexBuffer::create_dynamic(usize size, BufferUsage usage) -> IndexBuffer
 {
     IndexBuffer buffer;
     buffer.init_dynamic(size, usage);
+    return buffer;
+}
+
+auto IndexBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> IndexBuffer
+{
+    IndexBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, usage);
     return buffer;
 }
 
@@ -288,6 +350,11 @@ auto IndexBuffer::init_static(usize size) -> void
     _buffer.init_static(size);
 }
 
+auto IndexBuffer::init_static_with_data(const void* data, usize data_size_bytes) -> void
+{
+    _buffer.init_static_with_data(data, data_size_bytes);
+}
+
 auto IndexBuffer::init_dynamic(BufferUsage usage) -> void
 {
     _buffer.init_dynamic(usage);
@@ -296,6 +363,16 @@ auto IndexBuffer::init_dynamic(BufferUsage usage) -> void
 auto IndexBuffer::init_dynamic(usize size, BufferUsage usage) -> void
 {
     _buffer.init_dynamic(size, usage);
+}
+
+auto IndexBuffer::init_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
+}
+
+auto IndexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+{
+    _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto IndexBuffer::bind() const -> void
@@ -308,12 +385,29 @@ auto IndexBuffer::unbind() -> void
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
 }
 
+auto IndexBuffer::set_index_type(GLenum index_type) -> void
+{
+    _index_type = index_type;
+}
+
+auto IndexBuffer::set_size(GLsizei size) -> void
+{
+    _size = size;
+}
+
 // --------------------------- InstanceBuffer ---------------------------
 
 auto InstanceBuffer::create_static(usize size) -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_static(size);
+    return buffer;
+}
+
+auto InstanceBuffer::create_static_with_data(const void* data, usize data_size_bytes) -> InstanceBuffer
+{
+    InstanceBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
     return buffer;
 }
 
@@ -331,6 +425,13 @@ auto InstanceBuffer::create_dynamic(usize size, BufferUsage usage) -> InstanceBu
     return buffer;
 }
 
+auto InstanceBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> InstanceBuffer
+{
+    InstanceBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, usage);
+    return buffer;
+}
+
 // --------------------------- UniformBuffer ---------------------------
 
 auto UniformBuffer::create_static(usize size) -> UniformBuffer
@@ -340,10 +441,24 @@ auto UniformBuffer::create_static(usize size) -> UniformBuffer
     return buffer;
 }
 
-auto UniformBuffer::create_static(usize size, u32 binding_index) -> UniformBuffer
+auto UniformBuffer::create_static(usize size, u32 binding_point) -> UniformBuffer
 {
     UniformBuffer buffer;
-    buffer.init_static(size, binding_index);
+    buffer.init_static(size, binding_point);
+    return buffer;
+}
+
+auto UniformBuffer::create_static_with_data(const void* data, usize data_size_bytes) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
+    return buffer;
+}
+
+auto UniformBuffer::create_static_with_data(const void* data, usize data_size_bytes, u32 binding_point) -> UniformBuffer
+{
+    UniformBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes, binding_point);
     return buffer;
 }
 
@@ -352,15 +467,26 @@ auto UniformBuffer::init_static(usize size) -> void
     _buffer.init_static(size);
 }
 
-auto UniformBuffer::init_static(usize size, u32 binding_index) -> void
+auto UniformBuffer::init_static(usize size, u32 binding_point) -> void
 {
-    _buffer.init_static(size);
-    set_binding_index(binding_index);
+    init_static(size);
+    bind(binding_point);
 }
 
-auto UniformBuffer::buffer_data(const void* data, usize offset, usize size_bytes) -> void
+auto UniformBuffer::init_static_with_data(const void* data, usize data_size_bytes) -> void
 {
-    _buffer.buffer_data(data, offset, size_bytes);
+    _buffer.init_static_with_data(data, data_size_bytes);
+}
+
+auto UniformBuffer::init_static_with_data(const void* data, usize data_size_bytes, u32 binding_point) -> void
+{
+    init_static_with_data(data, data_size_bytes);
+    bind(binding_point);
+}
+
+auto UniformBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+{
+    _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto UniformBuffer::bind() const -> void
@@ -368,14 +494,14 @@ auto UniformBuffer::bind() const -> void
     glBindBuffer(GL_UNIFORM_BUFFER, native_handle());
 }
 
+auto UniformBuffer::bind(u32 binding_point) const -> void
+{
+    glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, native_handle());
+}
+
 auto UniformBuffer::unbind() -> void
 {
     glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
-}
-
-auto UniformBuffer::set_binding_index(u32 index) const -> void
-{
-    glBindBufferBase(GL_UNIFORM_BUFFER, index, native_handle());
 }
 
 auto to_gl_enum(BufferUsage buffer_usage) -> GLenum

@@ -16,6 +16,8 @@ public:
                   const gl::VertexArrayLayout& layout);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
                   const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer);
+    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
+                  const gl::VertexArrayLayout& layout, gl::InstanceBuffer&& instance_buffer) = delete;
 
     ZTH_NO_COPY(Mesh)
 
@@ -38,21 +40,22 @@ private:
 };
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
-    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static(index_data)),
+    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
       _vertex_array(gl::VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
 {}
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
            const gl::VertexArrayLayout& layout)
-    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static(index_data)), _vertex_array(layout, _vertex_buffer, _index_buffer)
+    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
+      _vertex_array(layout, _vertex_buffer, _index_buffer)
 {}
 
 Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
            const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer)
-    : _vertex_buffer(gl::VertexBuffer::create_static(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static(index_data)),
+    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
+      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
       _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
 {}
 
