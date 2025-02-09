@@ -108,8 +108,8 @@ private:
     static auto set_unif(GLint location, glm::vec4 val) -> void;
     static auto set_unif(GLint location, const glm::mat4& val) -> void;
 
-    [[nodiscard]] static auto
-    create_shaders_from_sources(const ShaderSources& sources) -> std::optional<InPlaceVector<ShaderId, 5>>;
+    [[nodiscard]] static auto create_shaders_from_sources(const ShaderSources& sources)
+        -> std::optional<InPlaceVector<ShaderId, 5>>;
     [[nodiscard]] static auto create_shader(std::string_view source, ShaderType type) -> std::optional<ShaderId>;
     [[nodiscard]] static auto compile_shader(ShaderId id, ShaderType type) -> bool;
 
