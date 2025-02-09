@@ -181,8 +181,8 @@ auto Renderer::draw(const gl::VertexArray& vertex_array, const glm::mat4& transf
 
 auto Renderer::render() -> void
 {
-    upload_camera_ubo();
-    upload_light_ubo();
+    upload_camera_data();
+    upload_light_data();
     batch_draw_commands();
 
     for (const auto& batch : renderer->_batches)
@@ -271,7 +271,7 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
     draw_instanced(*batch.vertex_array, *batch.material, instance_data.size());
 }
 
-auto Renderer::upload_camera_ubo() -> void
+auto Renderer::upload_camera_data() -> void
 {
     ZTH_ASSERT(renderer->_camera != nullptr);
     const auto& camera = renderer->_camera;
@@ -284,7 +284,7 @@ auto Renderer::upload_camera_ubo() -> void
     renderer->_camera_ubo.buffer_data(camera_ubo_data);
 }
 
-auto Renderer::upload_light_ubo() -> void
+auto Renderer::upload_light_data() -> void
 {
     LightUboData light_ubo_data{};
 
@@ -350,7 +350,7 @@ auto Renderer::bind_material(const Material& material) -> void
 {
     ZTH_ASSERT(material.shader != nullptr);
     material.shader->bind();
-    upload_material_ubo(material);
+    upload_material_data(material);
 
     if (material.diffuse_map)
     {
@@ -371,7 +371,7 @@ auto Renderer::bind_material(const Material& material) -> void
     }
 }
 
-auto Renderer::upload_material_ubo(const Material& material) -> void
+auto Renderer::upload_material_data(const Material& material) -> void
 {
     MaterialUboData material_ubo_data = {
         .material = {

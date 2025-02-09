@@ -50,9 +50,9 @@ public:
     static constexpr GLint emission_map_slot = 2;
 
     // @volatile: keep in sync with zth_defines.glsl
-    static constexpr u32 camera_ubo_binding_index = 0;
-    static constexpr u32 light_ubo_binding_index = 1;
-    static constexpr u32 material_ubo_binding_index = 2;
+    static constexpr u32 camera_ubo_binding_point = 0;
+    static constexpr u32 light_ubo_binding_point = 1;
+    static constexpr u32 material_ubo_binding_point = 2;
 
 public:
     static auto init() -> void;
@@ -89,10 +89,10 @@ private:
     std::shared_ptr<const PointLight> _point_light = nullptr;
     std::shared_ptr<const SpotLight> _spot_light = nullptr;
 
-    gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_index);
-    gl::UniformBuffer _light_ubo = gl::UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_index);
+    gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_point);
+    gl::UniformBuffer _light_ubo = gl::UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_point);
     gl::UniformBuffer _material_ubo =
-        gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_index);
+        gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_point);
 
     std::vector<InstanceVertex> _instance_data;
     gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic();
@@ -108,11 +108,11 @@ private:
     static auto batch_draw_commands() -> void;
     static auto render_batch(const RenderBatch& batch) -> void;
 
-    static auto upload_camera_ubo() -> void;
-    static auto upload_light_ubo() -> void;
+    static auto upload_camera_data() -> void;
+    static auto upload_light_data() -> void;
 
     static auto bind_material(const Material& material) -> void;
-    static auto upload_material_ubo(const Material& material) -> void;
+    static auto upload_material_data(const Material& material) -> void;
 };
 
 } // namespace zth
