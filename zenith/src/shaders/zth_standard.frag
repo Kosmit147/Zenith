@@ -2,15 +2,6 @@
 
 #include "zth_defines.glsl"
 
-struct Material
-{
-    vec3 albedo;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float shininess;
-};
-
 struct LightProperties
 {
     vec3 color;
@@ -37,13 +28,13 @@ in vec3 Position;
 in vec3 Normal;
 in vec2 UV;
 
-layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
+layout (std140, binding = ZTH_CAMERA_UBO_BINDING_POINT) uniform CameraUbo
 {
     mat4 view_projection;
-    vec3 camera_position;
-};
+    vec3 position;
+} camera;
 
-layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
+layout (std430, binding = ZTH_LIGHT_SSBO_BINDING_POINT) restrict readonly buffer LightSsbo
 {
     vec3 directional_light_direction;
     LightProperties directional_light_properties;
@@ -62,16 +53,20 @@ layout (std140, binding = ZTH_LIGHT_UBO_BINDING_INDEX) uniform LightUbo
     bool has_directional_light;
     bool has_point_light;
     bool has_spot_light;
-};
+} light;
 
-layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_INDEX) uniform MaterialUbo
+layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
 {
-    Material material;
+    vec3 albedo;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
 
     bool has_diffuse_map;
     bool has_specular_map;
     bool has_emission_map;
-};
+} material;
 
 uniform sampler2D diffuse_map;
 uniform sampler2D specular_map;
@@ -86,30 +81,30 @@ float get_attenuation(LightAttenuation attenuation, float dist)
 
 Light create_directional_light()
 {
-    return Light(normalize(directional_light_direction), directional_light_properties, 1.0);
+    return Light(normalize(light.directional_light_direction), light.directional_light_properties, 1.0);
 }
 
 Light create_point_light()
 {
-    vec3 diff = Position - point_light_position;
+    vec3 diff = Position - light.point_light_position;
     float dist = length(diff);
-    float attenuation = get_attenuation(point_light_attenuation, dist);
+    float attenuation = get_attenuation(light.point_light_attenuation, dist);
     vec3 point_light_direction = normalize(diff);
 
-    return Light(point_light_direction, point_light_properties, attenuation);
+    return Light(point_light_direction, light.point_light_properties, attenuation);
 }
 
 // dist is the distance from frag position to spot light
 // angle is the dot product of the direction from spot light to frag position and spot light direction
 Light create_spot_light(float dist, float angle)
 {
-    float attenuation = get_attenuation(spot_light_attenuation, dist);
+    float attenuation = get_attenuation(light.spot_light_attenuation, dist);
 
-    float intensity =
-        clamp((angle - spot_light_outer_cutoff) / (spot_light_inner_cutoff - spot_light_outer_cutoff), 0.0, 1.0);
+    float intensity = (angle - light.spot_light_outer_cutoff) / (light.spot_light_inner_cutoff - light.spot_light_outer_cutoff);
+    intensity = clamp(intensity, 0.0, 1.0);
     attenuation *= intensity;
 
-    return Light(normalize(spot_light_direction), spot_light_properties, attenuation);
+    return Light(normalize(light.spot_light_direction), light.spot_light_properties, attenuation);
 }
 
 vec3 get_ambient_strength(Light light)
@@ -127,7 +122,7 @@ vec3 get_specular_strength(Light light, vec3 normal, vec3 view_direction)
     vec3 reflection = reflect(light.direction, normal);
     vec3 specular_factor = light.properties.specular * pow(max(dot(reflection, -view_direction), 0.0), material.shininess);
 
-    if (has_specular_map)
+    if (material.has_specular_map)
         specular_factor *= vec3(texture(specular_map, UV));
 
     return specular_factor;
@@ -145,7 +140,7 @@ vec3 calc_directional_light(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (has_directional_light)
+    if (light.has_directional_light)
     {
         Light directional_light = create_directional_light();
         result += get_light_strength(directional_light, normal, view_direction);
@@ -158,7 +153,7 @@ vec3 calc_point_light(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (has_point_light)
+    if (light.has_point_light)
     {
         Light point_light = create_point_light();
         result += get_light_strength(point_light, normal, view_direction);
@@ -171,14 +166,14 @@ vec3 calc_spot_light(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (has_spot_light)
+    if (light.has_spot_light)
     {
-	    vec3 diff_from_spot_light = Position - spot_light_position;
+	    vec3 diff_from_spot_light = Position - light.spot_light_position;
 	    float distance_from_spot_light = length(diff_from_spot_light);
         vec3 normalized_diff = diff_from_spot_light / distance_from_spot_light;
-	    float angle = dot(spot_light_direction, normalized_diff);
+	    float angle = dot(light.spot_light_direction, normalized_diff);
 
-        if (angle > spot_light_outer_cutoff)
+        if (angle > light.spot_light_outer_cutoff)
         {
             Light spot_light = create_spot_light(distance_from_spot_light, angle);
             result += get_light_strength(spot_light, normal, view_direction);
@@ -192,10 +187,10 @@ void main()
 {
     vec4 object_color = vec4(material.albedo, 1.0);
 
-    if (has_diffuse_map)
+    if (material.has_diffuse_map)
         object_color *= texture(diffuse_map, UV);
 
-    vec3 view_direction = normalize(Position - camera_position);
+    vec3 view_direction = normalize(Position - camera.position);
 
     vec3 light_strength = vec3(0.0);
 
@@ -205,6 +200,6 @@ void main()
 
     out_color = vec4(light_strength * object_color.rgb, object_color.a);
 
-    if (has_emission_map)
+    if (material.has_emission_map)
         out_color += texture(emission_map, UV);
 }

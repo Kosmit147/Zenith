@@ -13,11 +13,11 @@ layout (location = 6) in vec3 in_transform_col_3;
 
 layout (location = 7) in mat3 in_normal_mat;
 
-layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
+layout (std140, binding = ZTH_CAMERA_UBO_BINDING_POINT) uniform CameraUbo
 {
 	mat4 view_projection;
-    vec3 camera_position;
-};
+    vec3 position;
+} camera;
 
 out vec3 Position;
 out flat vec3 Normal;
@@ -39,5 +39,5 @@ void main()
     Normal = normalize(in_normal_mat * in_normal);
     UV = in_uv;
 
-    gl_Position = view_projection * world_position;
+    gl_Position = camera.view_projection * world_position;
 }

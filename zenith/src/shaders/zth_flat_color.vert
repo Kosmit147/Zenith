@@ -9,11 +9,11 @@ layout (location = 4) in vec3 in_transform_col_1;
 layout (location = 5) in vec3 in_transform_col_2;
 layout (location = 6) in vec3 in_transform_col_3;
 
-layout (std140, binding = ZTH_CAMERA_UBO_BINDING_INDEX) uniform CameraUbo
+layout (std140, binding = ZTH_CAMERA_UBO_BINDING_POINT) uniform CameraUbo
 {
     mat4 view_projection;
-    vec3 camera_position;
-};
+    vec3 position;
+} camera;
 
 void main()
 {
@@ -25,5 +25,5 @@ void main()
         vec4(in_transform_col_3, 1.0)
     );
 
-    gl_Position = view_projection * transform * vec4(in_local_position, 1.0);
+    gl_Position = camera.view_projection * transform * vec4(in_local_position, 1.0);
 }

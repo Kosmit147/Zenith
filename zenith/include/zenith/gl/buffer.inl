@@ -79,7 +79,8 @@ auto VertexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& 
     return buffer;
 }
 
-auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> VertexBuffer
+auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                            BufferUsage usage) -> VertexBuffer
 {
     VertexBuffer buffer;
     buffer.init_dynamic_with_data(data, usage);
@@ -156,7 +157,8 @@ auto InstanceBuffer::create_static_with_data(std::ranges::contiguous_range auto&
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                              BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_dynamic_with_data(data, usage);
@@ -186,7 +188,8 @@ auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&&
     return buffer;
 }
 
-auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> UniformBuffer
+auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data,
+                                            u32 binding_point) -> UniformBuffer
 {
     UniformBuffer buffer;
     buffer.init_static_with_data(data, binding_point);
@@ -221,6 +224,123 @@ auto UniformBuffer::buffer_data(auto&& data, usize offset) -> void
 }
 
 auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+{
+    _buffer.buffer_data(data, offset);
+}
+
+// --------------------------- ShaderStorageBuffer ---------------------------
+
+auto ShaderStorageBuffer::create_static_with_data(auto&& data) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static_with_data(auto&& data, u32 binding_point) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data, binding_point);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data,
+                                                  u32 binding_point) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data, binding_point);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(auto&& data, BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(auto&& data, u32 binding_point,
+                                                   BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, binding_point, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                                   BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
+                                                   BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, binding_point, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::init_static_with_data(auto&& data) -> void
+{
+    _buffer.init_static_with_data(data);
+}
+
+auto ShaderStorageBuffer::init_static_with_data(auto&& data, u32 binding_point) -> void
+{
+    init_static_with_data(data);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
+{
+    _buffer.init_static_with_data(data);
+}
+
+auto ShaderStorageBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> void
+{
+    init_static_with_data(data);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic_with_data(data, usage);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(auto&& data, u32 binding_point, BufferUsage usage) -> void
+{
+    init_dynamic_with_data(data, usage);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic_with_data(data, usage);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
+                                                 BufferUsage usage) -> void
+{
+    init_dynamic_with_data(data, usage);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::buffer_data(auto&& data, usize offset) -> void
+{
+    _buffer.buffer_data(data, offset);
+}
+
+auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
 {
     _buffer.buffer_data(data, offset);
 }

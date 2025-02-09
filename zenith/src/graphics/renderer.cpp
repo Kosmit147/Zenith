@@ -286,15 +286,15 @@ auto Renderer::upload_camera_data() -> void
 
 auto Renderer::upload_light_data() -> void
 {
-    LightUboData light_ubo_data{};
+    LightSsboData light_ssbo_data{};
 
     if (renderer->_directional_light)
     {
         const auto& [direction, properties] = *renderer->_directional_light;
-        light_ubo_data.has_directional_light = true;
+        light_ssbo_data.has_directional_light = true;
 
-        light_ubo_data.directional_light_direction = direction;
-        light_ubo_data.directional_light_properties = {
+        light_ssbo_data.directional_light_direction = direction;
+        light_ssbo_data.directional_light_properties = {
             .color = properties.color,
             .ambient = properties.ambient,
             .diffuse = properties.diffuse,
@@ -305,16 +305,16 @@ auto Renderer::upload_light_data() -> void
     if (renderer->_point_light)
     {
         const auto& [position, properties, attenuation] = *renderer->_point_light;
-        light_ubo_data.has_point_light = true;
+        light_ssbo_data.has_point_light = true;
 
-        light_ubo_data.point_light_position = position;
-        light_ubo_data.point_light_properties = {
+        light_ssbo_data.point_light_position = position;
+        light_ssbo_data.point_light_properties = {
             .color = properties.color,
             .ambient = properties.ambient,
             .diffuse = properties.diffuse,
             .specular = properties.specular,
         };
-        light_ubo_data.point_light_attenuation = {
+        light_ssbo_data.point_light_attenuation = {
             .constant = attenuation.constant,
             .linear = attenuation.linear,
             .quadratic = attenuation.quadratic,
@@ -324,26 +324,26 @@ auto Renderer::upload_light_data() -> void
     if (renderer->_spot_light)
     {
         const auto& [position, direction, inner_cutoff, outer_cutoff, properties, attenuation] = *renderer->_spot_light;
-        light_ubo_data.has_spot_light = true;
+        light_ssbo_data.has_spot_light = true;
 
-        light_ubo_data.spot_light_position = position;
-        light_ubo_data.spot_light_direction = direction;
-        light_ubo_data.spot_light_inner_cutoff = inner_cutoff;
-        light_ubo_data.spot_light_outer_cutoff = outer_cutoff;
-        light_ubo_data.spot_light_properties = {
+        light_ssbo_data.spot_light_position = position;
+        light_ssbo_data.spot_light_direction = direction;
+        light_ssbo_data.spot_light_inner_cutoff = inner_cutoff;
+        light_ssbo_data.spot_light_outer_cutoff = outer_cutoff;
+        light_ssbo_data.spot_light_properties = {
             .color = properties.color,
             .ambient = properties.ambient,
             .diffuse = properties.diffuse,
             .specular = properties.specular,
         };
-        light_ubo_data.spot_light_attenuation = {
+        light_ssbo_data.spot_light_attenuation = {
             .constant = attenuation.constant,
             .linear = attenuation.linear,
             .quadratic = attenuation.quadratic,
         };
     }
 
-    renderer->_light_ubo.buffer_data(light_ubo_data);
+    renderer->_light_ssbo.buffer_data(light_ssbo_data);
 }
 
 auto Renderer::bind_material(const Material& material) -> void
@@ -374,13 +374,11 @@ auto Renderer::bind_material(const Material& material) -> void
 auto Renderer::upload_material_data(const Material& material) -> void
 {
     MaterialUboData material_ubo_data = {
-        .material = {
-            .albedo = material.albedo,
-            .ambient = material.ambient,
-            .diffuse = material.diffuse,
-            .specular = material.specular,
-            .shininess = material.shininess,
-        },
+        .albedo = material.albedo,
+        .ambient = material.ambient,
+        .diffuse = material.diffuse,
+        .specular = material.specular,
+        .shininess = material.shininess,
         .has_diffuse_map = material.diffuse_map != nullptr,
         .has_specular_map = material.specular_map != nullptr,
         .has_emission_map = material.emission_map != nullptr,

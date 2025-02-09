@@ -1,4 +1,6 @@
 // @volatile: keep in sync with constants declared in Renderer
-#define ZTH_CAMERA_UBO_BINDING_INDEX 0
-#define ZTH_LIGHT_UBO_BINDING_INDEX 1
-#define ZTH_MATERIAL_UBO_BINDING_INDEX 2
+
+#define ZTH_CAMERA_UBO_BINDING_POINT 0
+#define ZTH_MATERIAL_UBO_BINDING_POINT 1
+
+#define ZTH_LIGHT_SSBO_BINDING_POINT 0
