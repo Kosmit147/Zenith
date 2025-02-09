@@ -8,6 +8,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/macros.hpp"
 
+// @cleanup: buffers implementation
+
 namespace zth::gl {
 
 enum class BufferAccessFrequency : u8
@@ -284,6 +286,97 @@ public:
     auto init_static_with_data(auto&& data, u32 binding_point) -> void;
     auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
     auto init_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> void;
+
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
+    auto buffer_data(auto&& data, usize offset = 0) -> void;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+
+    auto bind() const -> void;
+    auto bind(u32 binding_point) const -> void;
+    static auto unbind() -> void;
+
+    [[nodiscard]] auto native_handle() const { return _buffer.native_handle(); }
+    [[nodiscard]] auto size_bytes() const { return _buffer.size_bytes(); }
+    [[nodiscard]] auto is_static() const { return _buffer.is_static(); }
+    [[nodiscard]] auto is_dynamic() const { return _buffer.is_dynamic(); }
+    [[nodiscard]] auto is_initialized() const { return _buffer.is_initialized(); }
+
+private:
+    Buffer _buffer;
+};
+
+class ShaderStorageBuffer
+{
+public:
+    explicit ShaderStorageBuffer() = default;
+
+    [[nodiscard]] static auto create_static(usize size) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static(usize size, u32 binding_point) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(const void* data, usize data_size_bytes) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(const void* data, usize data_size_bytes,
+                                                      u32 binding_point) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(auto&& data) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(auto&& data, u32 binding_point) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
+                                                      u32 binding_point) -> ShaderStorageBuffer;
+
+    // clang-format off
+    [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic(u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw)
+                                             -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw)
+                                             -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic(usize size, u32 binding_point,
+                                             BufferUsage usage = BufferUsage::dynamic_draw)
+                                             -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(const void* data, usize data_size_bytes,
+                                                       BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(const void* data, usize data_size_bytes, u32 binding_point,
+                                                       BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(auto&& data, BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(auto&& data, u32 binding_point,
+                                                       BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                                       BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
+                                                       BufferUsage usage = BufferUsage::dynamic_draw)
+                                                       -> ShaderStorageBuffer;
+    // clang-format on
+
+    ZTH_NO_COPY(ShaderStorageBuffer)
+    ZTH_DEFAULT_MOVE(ShaderStorageBuffer)
+
+    ~ShaderStorageBuffer() = default;
+
+    auto init_static(usize size) -> void;
+    auto init_static(usize size, u32 binding_point) -> void;
+    auto init_static_with_data(const void* data, usize data_size_bytes) -> void;
+    auto init_static_with_data(const void* data, usize data_size_bytes, u32 binding_point) -> void;
+    auto init_static_with_data(auto&& data) -> void;
+    auto init_static_with_data(auto&& data, u32 binding_point) -> void;
+    auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
+    auto init_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> void;
+
+    auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(usize size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(usize size, u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(const void* data, usize data_size_bytes,
+                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(const void* data, usize data_size_bytes, u32 binding_point,
+                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(auto&& data, u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
+                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
     auto buffer_data(auto&& data, usize offset = 0) -> void;

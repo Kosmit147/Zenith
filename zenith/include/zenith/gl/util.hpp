@@ -7,7 +7,7 @@
 
 namespace zth::gl {
 
-using GlslBool = u32;
+using GlslBool = GLuint;
 
 template<typename T> [[nodiscard]] constexpr auto to_gl_enum() -> GLenum
 {
@@ -45,39 +45,64 @@ template<> [[nodiscard]] constexpr auto to_gl_enum<GLint>() -> GLenum
     return GL_INT;
 }
 
-template<typename T> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment() -> usize
+template<typename T> [[nodiscard]] constexpr auto get_std140_field_alignment() -> usize
 {
     static_assert(false, "not implemented");
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<GlslBool>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLushort>() -> usize
+{
+    return 2;
+}
+
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLshort>() -> usize
+{
+    return 2;
+}
+
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLuint>() -> usize
 {
     return 4;
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<GLfloat>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLint>() -> usize
 {
     return 4;
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<glm::vec2>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLfloat>() -> usize
+{
+    return 4;
+}
+
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLdouble>() -> usize
 {
     return 8;
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<glm::vec3>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<glm::vec2>() -> usize
+{
+    return 8;
+}
+
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<glm::vec3>() -> usize
 {
     return 16;
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<glm::vec4>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<glm::vec4>() -> usize
 {
     return 16;
 }
 
-template<> [[nodiscard]] constexpr auto get_std140_ubo_field_alignment<glm::mat4>() -> usize
+template<> [[nodiscard]] constexpr auto get_std140_field_alignment<glm::mat4>() -> usize
 {
     return 16;
+}
+
+template<typename T> [[nodiscard]] constexpr auto get_std430_field_alignment() -> usize
+{
+    return get_std140_field_alignment<T>();
 }
 
 } // namespace zth::gl

@@ -425,7 +425,8 @@ auto InstanceBuffer::create_dynamic(usize size, BufferUsage usage) -> InstanceBu
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes,
+                                              BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_dynamic_with_data(data, data_size_bytes, usage);
@@ -502,6 +503,157 @@ auto UniformBuffer::bind(u32 binding_point) const -> void
 auto UniformBuffer::unbind() -> void
 {
     glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
+}
+
+// --------------------------- ShaderStorageBuffer ---------------------------
+
+auto ShaderStorageBuffer::create_static(usize size) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static(size);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static(usize size, u32 binding_point) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static(size, binding_point);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static_with_data(const void* data, usize data_size_bytes) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_static_with_data(const void* data, usize data_size_bytes,
+                                                  u32 binding_point) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_static_with_data(data, data_size_bytes, binding_point);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic(BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic(usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic(u32 binding_point, BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic(binding_point, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic(usize size, BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic(size, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic(usize size, u32 binding_point, BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic(size, binding_point, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes,
+                                                   BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::create_dynamic_with_data(const void* data, usize data_size_bytes, u32 binding_point,
+                                                   BufferUsage usage) -> ShaderStorageBuffer
+{
+    ShaderStorageBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, binding_point, usage);
+    return buffer;
+}
+
+auto ShaderStorageBuffer::init_static(usize size) -> void
+{
+    _buffer.init_static(size);
+}
+
+auto ShaderStorageBuffer::init_static(usize size, u32 binding_point) -> void
+{
+    init_static(size);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_static_with_data(const void* data, usize data_size_bytes) -> void
+{
+    _buffer.init_static_with_data(data, data_size_bytes);
+}
+
+auto ShaderStorageBuffer::init_static_with_data(const void* data, usize data_size_bytes, u32 binding_point) -> void
+{
+    init_static_with_data(data, data_size_bytes);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_dynamic(BufferUsage usage) -> void
+{
+    _buffer.init_dynamic(usage);
+}
+
+auto ShaderStorageBuffer::init_dynamic(u32 binding_point, BufferUsage usage) -> void
+{
+    init_dynamic(usage);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_dynamic(usize size, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic(size, usage);
+}
+
+auto ShaderStorageBuffer::init_dynamic(usize size, u32 binding_point, BufferUsage usage) -> void
+{
+    init_dynamic(size, usage);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(const void* data, usize data_size_bytes, BufferUsage usage) -> void
+{
+    _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
+}
+
+auto ShaderStorageBuffer::init_dynamic_with_data(const void* data, usize data_size_bytes, u32 binding_point,
+                                                 BufferUsage usage) -> void
+{
+    init_dynamic_with_data(data, data_size_bytes, usage);
+    bind(binding_point);
+}
+
+auto ShaderStorageBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+{
+    _buffer.buffer_data(data, data_size_bytes, offset);
+}
+
+auto ShaderStorageBuffer::bind() const -> void
+{
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, native_handle());
+}
+
+auto ShaderStorageBuffer::bind(u32 binding_point) const -> void
+{
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_point, native_handle());
+}
+
+auto ShaderStorageBuffer::unbind() -> void
+{
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, GL_NONE);
 }
 
 auto to_gl_enum(BufferUsage buffer_usage) -> GLenum

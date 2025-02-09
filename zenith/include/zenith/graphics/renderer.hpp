@@ -15,7 +15,7 @@
 #include "zenith/graphics/camera.hpp"
 #include "zenith/graphics/fwd.hpp"
 #include "zenith/graphics/light.hpp"
-#include "zenith/graphics/ubo_data.hpp"
+#include "zenith/graphics/shader_data.hpp"
 #include "zenith/graphics/vertex.hpp"
 #include "zenith/system/fwd.hpp"
 
@@ -51,8 +51,10 @@ public:
 
     // @volatile: keep in sync with zth_defines.glsl
     static constexpr u32 camera_ubo_binding_point = 0;
-    static constexpr u32 light_ubo_binding_point = 1;
-    static constexpr u32 material_ubo_binding_point = 2;
+    static constexpr u32 material_ubo_binding_point = 1;
+
+    // @volatile: keep in sync with zth_defines.glsl
+    static constexpr u32 light_ssbo_binding_point = 0;
 
 public:
     static auto init() -> void;
@@ -90,7 +92,8 @@ private:
     std::shared_ptr<const SpotLight> _spot_light = nullptr;
 
     gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_point);
-    gl::UniformBuffer _light_ubo = gl::UniformBuffer::create_static(sizeof(LightUboData), light_ubo_binding_point);
+    gl::ShaderStorageBuffer _light_ssbo =
+        gl::ShaderStorageBuffer::create_static(sizeof(LightSsboData), light_ssbo_binding_point);
     gl::UniformBuffer _material_ubo =
         gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_point);
 
