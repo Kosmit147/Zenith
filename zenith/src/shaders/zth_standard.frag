@@ -76,9 +76,9 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
     bool has_emission_map;
 } material;
 
-uniform sampler2D diffuse_map;
-uniform sampler2D specular_map;
-uniform sampler2D emission_map;
+layout (binding = ZTH_DIFFUSE_MAP_SLOT) uniform sampler2D diffuse_map;
+layout (binding = ZTH_SPECULAR_MAP_SLOT) uniform sampler2D specular_map;
+layout (binding = ZTH_EMISSION_MAP_SLOT) uniform sampler2D emission_map;
 
 out vec4 out_color;
 

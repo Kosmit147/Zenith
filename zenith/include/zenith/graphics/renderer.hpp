@@ -47,9 +47,9 @@ class Renderer
 public:
     // @volatile: keep these constants in sync with zth_defines.glsl
 
-    static constexpr GLint diffuse_map_slot = 0;
-    static constexpr GLint specular_map_slot = 1;
-    static constexpr GLint emission_map_slot = 2;
+    static constexpr u32 diffuse_map_slot = 0;
+    static constexpr u32 specular_map_slot = 1;
+    static constexpr u32 emission_map_slot = 2;
 
     static constexpr u32 camera_ubo_binding_point = 0;
     static constexpr u32 material_ubo_binding_point = 1;
