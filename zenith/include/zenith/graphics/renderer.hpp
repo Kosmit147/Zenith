@@ -65,6 +65,8 @@ public:
     static constexpr usize initial_point_lights_ssbo_size = sizeof(PointLightsSsboData) + sizeof(PointLightData) * 10;
     static constexpr usize initial_spot_lights_ssbo_size = sizeof(SpotLightsSsboData) + sizeof(SpotLightData) * 10;
 
+    static constexpr usize initial_instance_buffer_size = sizeof(InstanceVertex) * 1000;
+
 public:
     static auto init() -> void;
     static auto on_window_event(const Event& event) -> void;
@@ -116,22 +118,23 @@ private:
     std::vector<std::shared_ptr<const PointLight>> _point_lights;
     std::vector<std::shared_ptr<const SpotLight>> _spot_lights;
 
-    gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_point);
+    gl::UniformBuffer _camera_ubo =
+        gl::UniformBuffer::create_static_with_size(sizeof(CameraUboData), camera_ubo_binding_point);
     gl::UniformBuffer _material_ubo =
-        gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_point);
+        gl::UniformBuffer::create_static_with_size(sizeof(MaterialUboData), material_ubo_binding_point);
 
     // @speed: it might be better to fit all lights into single buffer instead of creating a separate one for every kind
     // of light
 
-    gl::ShaderStorageBuffer _directional_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic(
+    gl::ShaderStorageBuffer _directional_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic_with_size(
         initial_directional_lights_ssbo_size, directional_lights_ssbo_binding_point);
-    gl::ShaderStorageBuffer _point_lights_ssbo =
-        gl::ShaderStorageBuffer::create_dynamic(initial_point_lights_ssbo_size, point_lights_ssbo_binding_point);
-    gl::ShaderStorageBuffer _spot_lights_ssbo =
-        gl::ShaderStorageBuffer::create_dynamic(initial_spot_lights_ssbo_size, spot_lights_ssbo_binding_point);
+    gl::ShaderStorageBuffer _point_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic_with_size(
+        initial_point_lights_ssbo_size, point_lights_ssbo_binding_point);
+    gl::ShaderStorageBuffer _spot_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic_with_size(
+        initial_spot_lights_ssbo_size, spot_lights_ssbo_binding_point);
 
     std::vector<InstanceVertex> _instance_data;
-    gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic();
+    gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size);
 
     std::vector<DrawCommand> _draw_commands;
     std::vector<RenderBatch> _batches;

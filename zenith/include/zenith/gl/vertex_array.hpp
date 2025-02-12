@@ -4,6 +4,7 @@
 
 #include <ranges>
 
+#include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/gl/vertex_layout.hpp"
 
@@ -23,8 +24,8 @@ class VertexArray
 public:
     using VertexArrayId = GLuint;
 
-    static constexpr GLuint vertex_buffer_binding_index = 0;
-    static constexpr GLuint instance_buffer_binding_index = 1;
+    static constexpr u32 vertex_buffer_binding_index = 0;
+    static constexpr u32 instance_buffer_binding_index = 1;
 
 public:
     explicit VertexArray();
@@ -65,7 +66,7 @@ public:
     auto unbind_all_buffers() -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
-    [[nodiscard]] auto count() const -> GLsizei;
+    [[nodiscard]] auto count() const -> u32;
     [[nodiscard]] auto index_type() const -> GLenum;
 
     [[nodiscard]] auto vertex_buffer() const { return _vertex_buffer; }

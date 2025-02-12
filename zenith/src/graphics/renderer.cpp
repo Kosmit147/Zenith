@@ -242,7 +242,7 @@ auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material&
     vertex_array.bind();
     bind_material(material);
 
-    glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()), vertex_array.index_type(), nullptr);
 }
 
 auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void
@@ -250,8 +250,8 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
     vertex_array.bind();
     bind_material(material);
 
-    glDrawElementsInstanced(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr,
-                            static_cast<GLsizei>(instances));
+    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()), vertex_array.index_type(),
+                            nullptr, static_cast<GLsizei>(instances));
 }
 
 auto Renderer::directional_light_count() -> usize
@@ -409,7 +409,7 @@ auto Renderer::upload_directional_lights_data() -> void
         .count = static_cast<GLuint>(renderer->_directional_lights.size()),
     };
 
-    usize offset = 0;
+    u32 offset = 0;
     offset += renderer->_directional_lights_ssbo.buffer_data(directional_lights_ssbo_data);
 
     for (const auto& light : renderer->_directional_lights)
@@ -434,7 +434,7 @@ auto Renderer::upload_point_lights_data() -> void
         .count = static_cast<GLuint>(renderer->_point_lights.size()),
     };
 
-    usize offset = 0;
+    u32 offset = 0;
     offset += renderer->_point_lights_ssbo.buffer_data(point_lights_ssbo_data);
 
     for (const auto& light : renderer->_point_lights)
@@ -464,7 +464,7 @@ auto Renderer::upload_spot_lights_data() -> void
         .count = static_cast<GLuint>(renderer->_spot_lights.size()),
     };
 
-    usize offset = 0;
+    u32 offset = 0;
     offset += renderer->_spot_lights_ssbo.buffer_data(spot_lights_ssbo_data);
 
     for (const auto& light : renderer->_spot_lights)
