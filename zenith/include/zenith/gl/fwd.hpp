@@ -13,6 +13,7 @@ class VertexBuffer;
 class IndexBuffer;
 class InstanceBuffer;
 class UniformBuffer;
+class ShaderStorageBuffer;
 
 struct Version;
 enum class Profile : u8;
