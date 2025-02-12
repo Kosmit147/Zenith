@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "zenith/core/fwd.hpp"
 #include "zenith/system/fwd.hpp"
 
 namespace zth {
