@@ -13,7 +13,7 @@ constexpr auto fov = glm::radians(45.0f);
 
 const auto directional_light = zth::DirectionalLight{
     .direction = glm::normalize(glm::vec3{ 0.0f, -1.0f, 0.0f }),
-    .properties = zth::LightProperties{ .color = glm::vec3{ 0.0f } },
+    .properties = zth::LightProperties{ .color = zth::colors::black },
 };
 
 constexpr auto point_light = zth::PointLight{ .position = glm::vec3{ -0.7f, 1.3f, 1.7f },
@@ -81,7 +81,7 @@ auto MainScene::on_load() -> void
     _transform_gizmo.enabled = zth::Window::cursor_enabled();
 
     zth::Renderer::set_camera(_camera);
-    zth::Renderer::set_directional_light(_directional_light);
+    zth::Renderer::add_directional_light(_directional_light);
     zth::Renderer::add_point_light(_point_light);
     zth::Renderer::add_point_light(_point_light2);
     zth::Renderer::add_point_light(_point_light3);

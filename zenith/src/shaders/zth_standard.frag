@@ -24,9 +24,25 @@ struct Light
     float strength;
 };
 
+struct DirectionalLight
+{
+    vec3 direction;
+    LightProperties properties;
+};
+
 struct PointLight
 {
     vec3 position;
+    LightProperties properties;
+    LightAttenuation attenuation;
+};
+
+struct SpotLight
+{
+    vec3 position;
+    vec3 direction;
+    float inner_cutoff;
+    float outer_cutoff;
     LightProperties properties;
     LightAttenuation attenuation;
 };
@@ -41,27 +57,23 @@ layout (std140, binding = ZTH_CAMERA_UBO_BINDING_POINT) uniform CameraUbo
     vec3 position;
 } camera;
 
-layout (std430, binding = ZTH_LIGHT_SSBO_BINDING_POINT) restrict readonly buffer LightSsbo
+layout (std430, binding = ZTH_DIRECTIONAL_LIGHTS_SSBO_BINDING_POINT) restrict readonly buffer DirectionalLightsSsbo
 {
-    vec3 directional_light_direction;
-    LightProperties directional_light_properties;
-
-    vec3 spot_light_position;
-    vec3 spot_light_direction;
-    float spot_light_inner_cutoff;
-    float spot_light_outer_cutoff;
-    LightProperties spot_light_properties;
-    LightAttenuation spot_light_attenuation;
-
-    bool has_directional_light;
-    bool has_spot_light;
-} light;
+    uint count;
+    DirectionalLight lights[];
+} directional_lights;
 
 layout (std430, binding = ZTH_POINT_LIGHTS_SSBO_BINDING_POINT) restrict readonly buffer PointLightsSsbo
 {
     uint count;
     PointLight lights[];
 } point_lights;
+
+layout (std430, binding = ZTH_SPOT_LIGHTS_SSBO_BINDING_POINT) restrict readonly buffer SpotLightsSsbo
+{
+    uint count;
+    SpotLight lights[];
+} spot_lights;
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
 {
@@ -87,9 +99,9 @@ float calc_strength(LightAttenuation attenuation, float dist)
     return 1.0 / (attenuation.constant + attenuation.linear * dist + attenuation.quadratic * (dist * dist));
 }
 
-Light convert_directional_light()
+Light convert_directional_light(DirectionalLight directional_light)
 {
-    return Light(normalize(light.directional_light_direction), light.directional_light_properties, 1.0);
+    return Light(normalize(directional_light.direction), directional_light.properties, 1.0);
 }
 
 Light convert_point_light(PointLight point_light)
@@ -104,15 +116,15 @@ Light convert_point_light(PointLight point_light)
 
 // dist is the distance from frag position to spot light
 // angle is the dot product of the direction from spot light to frag position and spot light direction
-Light convert_spot_light(float dist, float angle)
+Light convert_spot_light(SpotLight spot_light, float dist, float angle)
 {
-    float strength = calc_strength(light.spot_light_attenuation, dist);
+    float strength = calc_strength(spot_light.attenuation, dist);
 
-    float intensity = (angle - light.spot_light_outer_cutoff) / (light.spot_light_inner_cutoff - light.spot_light_outer_cutoff);
+    float intensity = (angle - spot_light.outer_cutoff) / (spot_light.inner_cutoff - spot_light.outer_cutoff);
     intensity = clamp(intensity, 0.0, 1.0);
     strength *= intensity;
 
-    return Light(normalize(light.spot_light_direction), light.spot_light_properties, strength);
+    return Light(normalize(spot_light.direction), spot_light.properties, strength);
 }
 
 vec3 calc_light_ambient(Light light)
@@ -148,9 +160,9 @@ vec3 calc_directional_lights(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (light.has_directional_light)
+    for (uint i = 0; i < directional_lights.count; i++)
     {
-        Light directional_light = convert_directional_light();
+        Light directional_light = convert_directional_light(directional_lights.lights[i]);
         result += calc_light(directional_light, normal, view_direction);
     }
 
@@ -174,17 +186,18 @@ vec3 calc_spot_lights(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (light.has_spot_light)
+    for (uint i = 0; i < spot_lights.count; i++)
     {
-	    vec3 diff_from_spot_light = Position - light.spot_light_position;
+        SpotLight spot_light = spot_lights.lights[i];
+	    vec3 diff_from_spot_light = Position - spot_light.position;
 	    float distance_from_spot_light = length(diff_from_spot_light);
         vec3 normalized_diff = diff_from_spot_light / distance_from_spot_light;
-	    float angle = dot(light.spot_light_direction, normalized_diff);
+	    float angle = dot(spot_light.direction, normalized_diff);
 
-        if (angle > light.spot_light_outer_cutoff)
+        if (angle > spot_light.outer_cutoff)
         {
-            Light spot_light = convert_spot_light(distance_from_spot_light, angle);
-            result += calc_light(spot_light, normal, view_direction);
+            Light light = convert_spot_light(spot_light, distance_from_spot_light, angle);
+            result += calc_light(light, normal, view_direction);
         }
     }
 

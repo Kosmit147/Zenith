@@ -22,7 +22,7 @@ const auto directional_light = zth::DirectionalLight{
 constexpr auto point_light = zth::PointLight{
     .position = glm::vec3{ -0.7f, 1.3f, 1.7f },
     .properties = {
-        .color = glm::vec3{ 1.0f, 0.0f, 1.0f },
+        .color = zth::colors::magenta,
     },
     .attenuation = {
         .linear = 0.09f,
@@ -71,9 +71,9 @@ ContainersScene::ContainersScene()
 auto ContainersScene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
-    zth::Renderer::set_directional_light(_directional_light);
+    zth::Renderer::add_directional_light(_directional_light);
     zth::Renderer::add_point_light(_point_light);
-    zth::Renderer::set_spot_light(_spot_light);
+    zth::Renderer::add_spot_light(_spot_light);
 }
 
 auto ContainersScene::on_update() -> void
@@ -128,7 +128,11 @@ auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) ->
     if (event.key == toggle_spotlight_key)
     {
         _spot_light_on = !_spot_light_on;
-        zth::Renderer::set_spot_light(_spot_light_on ? _spot_light : nullptr);
+
+        if (_spot_light_on)
+            _spot_light->properties.color = zth::colors::white;
+        else
+            _spot_light->properties.color = zth::colors::black;
     }
 }
 
