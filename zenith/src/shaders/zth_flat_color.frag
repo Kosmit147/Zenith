@@ -4,7 +4,7 @@
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
 {
-	vec3 albedo;
+    vec3 albedo;
 } material;
 
 out vec4 out_color;

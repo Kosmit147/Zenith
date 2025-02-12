@@ -38,20 +38,17 @@ struct CameraUboData
     ZTH_UBO_FIELD(glm::vec3, camera_position);
 };
 
-struct LightSsboData
+struct DirectionalLightData
 {
-    ZTH_SSBO_FIELD(glm::vec3, directional_light_direction);
-    ZTH_SSBO_FIELD(LightPropertiesData, directional_light_properties);
+    ZTH_SSBO_FIELD(glm::vec3, direction);
+    ZTH_SSBO_FIELD(LightPropertiesData, properties);
+};
 
-    ZTH_SSBO_FIELD(glm::vec3, spot_light_position);
-    ZTH_SSBO_FIELD(glm::vec3, spot_light_direction);
-    ZTH_SSBO_FIELD(GLfloat, spot_light_inner_cutoff);
-    ZTH_SSBO_FIELD(GLfloat, spot_light_outer_cutoff);
-    ZTH_SSBO_FIELD(LightPropertiesData, spot_light_properties);
-    ZTH_SSBO_FIELD(LightAttenuationData, spot_light_attenuation);
-
-    ZTH_SSBO_FIELD(GlslBool, has_directional_light = false);
-    ZTH_SSBO_FIELD(GlslBool, has_spot_light = false);
+struct DirectionalLightsSsboData
+{
+    ZTH_SSBO_FIELD(GLuint, count = 0);
+    ZTH_PAD(12);
+    // here goes a variable-length array of DirectionalLightData (aligned at 16 bytes)
 };
 
 struct PointLightData
@@ -65,7 +62,24 @@ struct PointLightsSsboData
 {
     ZTH_SSBO_FIELD(GLuint, count = 0);
     ZTH_PAD(12);
-    // here goes the variable-length array of PointLightData (aligned at 16 bytes)
+    // here goes a variable-length array of PointLightData (aligned at 16 bytes)
+};
+
+struct SpotLightData
+{
+    ZTH_SSBO_FIELD(glm::vec3, position);
+    ZTH_SSBO_FIELD(glm::vec3, direction);
+    ZTH_SSBO_FIELD(GLfloat, inner_cutoff);
+    ZTH_SSBO_FIELD(GLfloat, outer_cutoff);
+    ZTH_SSBO_FIELD(LightPropertiesData, properties);
+    ZTH_SSBO_FIELD(LightAttenuationData, attenuation);
+};
+
+struct SpotLightsSsboData
+{
+    ZTH_SSBO_FIELD(GLuint, count = 0);
+    ZTH_PAD(12);
+    // here goes a variable-length array of SpotLightData (aligned at 16 bytes)
 };
 
 struct MaterialUboData
