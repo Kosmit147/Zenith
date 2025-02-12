@@ -16,6 +16,7 @@ auto AssetManager::init() -> void
 
 auto AssetManager::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down asset manager...");
     _shaders.clear();
     ZTH_CORE_INFO("Asset manager shut down.");
 }

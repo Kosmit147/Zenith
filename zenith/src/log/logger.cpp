@@ -33,7 +33,7 @@ auto Logger::init(const LoggerSpec& logger_spec) -> void
 
 auto Logger::shut_down() -> void
 {
-    ZTH_CORE_INFO("Logger shut down.");
+    ZTH_CORE_INFO("Shutting down logger...");
 
     _client_logger.reset();
     _core_logger.reset();

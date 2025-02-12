@@ -14,7 +14,7 @@ Application::Application(const ApplicationSpec& spec)
 
 Application::~Application()
 {
-    ZTH_CORE_INFO("Shutting down application.");
+    ZTH_CORE_INFO("Shutting down application...");
     SystemManager::shut_down_systems();
 }
 

@@ -12,6 +12,8 @@ std::unordered_map<MouseButton, bool> Input::_mouse_button_states;
 
 auto Input::init() -> void
 {
+    ZTH_CORE_INFO("Initializing input system...");
+
     for (auto key : key_enumerations)
         _key_states.insert({ key, false });
 
