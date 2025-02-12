@@ -21,7 +21,14 @@ struct Light
 {
     vec3 direction;
     LightProperties properties;
-    float attenuation;
+    float strength;
+};
+
+struct PointLight
+{
+    vec3 position;
+    LightProperties properties;
+    LightAttenuation attenuation;
 };
 
 in vec3 Position;
@@ -39,10 +46,6 @@ layout (std430, binding = ZTH_LIGHT_SSBO_BINDING_POINT) restrict readonly buffer
     vec3 directional_light_direction;
     LightProperties directional_light_properties;
 
-    vec3 point_light_position;
-    LightProperties point_light_properties;
-    LightAttenuation point_light_attenuation;
-
     vec3 spot_light_position;
     vec3 spot_light_direction;
     float spot_light_inner_cutoff;
@@ -51,9 +54,14 @@ layout (std430, binding = ZTH_LIGHT_SSBO_BINDING_POINT) restrict readonly buffer
     LightAttenuation spot_light_attenuation;
 
     bool has_directional_light;
-    bool has_point_light;
     bool has_spot_light;
 } light;
+
+layout (std430, binding = ZTH_POINT_LIGHTS_SSBO_BINDING_POINT) restrict readonly buffer PointLightsSsbo
+{
+    uint count;
+    PointLight lights[];
+} point_lights;
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
 {
@@ -74,50 +82,50 @@ uniform sampler2D emission_map;
 
 out vec4 out_color;
 
-float get_attenuation(LightAttenuation attenuation, float dist)
+float calc_strength(LightAttenuation attenuation, float dist)
 {
     return 1.0 / (attenuation.constant + attenuation.linear * dist + attenuation.quadratic * (dist * dist));
 }
 
-Light create_directional_light()
+Light convert_directional_light()
 {
     return Light(normalize(light.directional_light_direction), light.directional_light_properties, 1.0);
 }
 
-Light create_point_light()
+Light convert_point_light(PointLight point_light)
 {
-    vec3 diff = Position - light.point_light_position;
+    vec3 diff = Position - point_light.position;
     float dist = length(diff);
-    float attenuation = get_attenuation(light.point_light_attenuation, dist);
+    float strength = calc_strength(point_light.attenuation, dist);
     vec3 point_light_direction = normalize(diff);
 
-    return Light(point_light_direction, light.point_light_properties, attenuation);
+    return Light(point_light_direction, point_light.properties, strength);
 }
 
 // dist is the distance from frag position to spot light
 // angle is the dot product of the direction from spot light to frag position and spot light direction
-Light create_spot_light(float dist, float angle)
+Light convert_spot_light(float dist, float angle)
 {
-    float attenuation = get_attenuation(light.spot_light_attenuation, dist);
+    float strength = calc_strength(light.spot_light_attenuation, dist);
 
     float intensity = (angle - light.spot_light_outer_cutoff) / (light.spot_light_inner_cutoff - light.spot_light_outer_cutoff);
     intensity = clamp(intensity, 0.0, 1.0);
-    attenuation *= intensity;
+    strength *= intensity;
 
-    return Light(normalize(light.spot_light_direction), light.spot_light_properties, attenuation);
+    return Light(normalize(light.spot_light_direction), light.spot_light_properties, strength);
 }
 
-vec3 get_ambient_strength(Light light)
+vec3 calc_light_ambient(Light light)
 {
     return light.properties.ambient;
 }
 
-vec3 get_diffuse_strength(Light light, vec3 normal)
+vec3 calc_light_diffuse(Light light, vec3 normal)
 {
     return light.properties.diffuse * max(dot(-light.direction, normal), 0.0);
 }
 
-vec3 get_specular_strength(Light light, vec3 normal, vec3 view_direction)
+vec3 calc_light_specular(Light light, vec3 normal, vec3 view_direction)
 {
     vec3 reflection = reflect(light.direction, normal);
     vec3 specular_factor = light.properties.specular * pow(max(dot(reflection, -view_direction), 0.0), material.shininess);
@@ -128,41 +136,41 @@ vec3 get_specular_strength(Light light, vec3 normal, vec3 view_direction)
     return specular_factor;
 }
 
-vec3 get_light_strength(Light light, vec3 normal, vec3 view_direction)
+vec3 calc_light(Light light, vec3 normal, vec3 view_direction)
 {
-    vec3 ambient = get_ambient_strength(light) * material.ambient;
-    vec3 diffuse = get_diffuse_strength(light, normal) * material.diffuse;
-    vec3 specular = get_specular_strength(light, normal, view_direction) * material.specular;
-    return (ambient + diffuse + specular) * light.properties.color * light.attenuation;
+    vec3 ambient = calc_light_ambient(light) * material.ambient;
+    vec3 diffuse = calc_light_diffuse(light, normal) * material.diffuse;
+    vec3 specular = calc_light_specular(light, normal, view_direction) * material.specular;
+    return (ambient + diffuse + specular) * light.properties.color * light.strength;
 }
 
-vec3 calc_directional_light(vec3 normal, vec3 view_direction)
+vec3 calc_directional_lights(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
     if (light.has_directional_light)
     {
-        Light directional_light = create_directional_light();
-        result += get_light_strength(directional_light, normal, view_direction);
+        Light directional_light = convert_directional_light();
+        result += calc_light(directional_light, normal, view_direction);
     }
 
     return result;
 }
 
-vec3 calc_point_light(vec3 normal, vec3 view_direction)
+vec3 calc_point_lights(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
-    if (light.has_point_light)
+    for (uint i = 0; i < point_lights.count; i++)
     {
-        Light point_light = create_point_light();
-        result += get_light_strength(point_light, normal, view_direction);
+        Light light = convert_point_light(point_lights.lights[i]);
+        result += calc_light(light, normal, view_direction);
     }
 
     return result;
 }
 
-vec3 calc_spot_light(vec3 normal, vec3 view_direction)
+vec3 calc_spot_lights(vec3 normal, vec3 view_direction)
 {
     vec3 result = vec3(0.0);
 
@@ -175,8 +183,8 @@ vec3 calc_spot_light(vec3 normal, vec3 view_direction)
 
         if (angle > light.spot_light_outer_cutoff)
         {
-            Light spot_light = create_spot_light(distance_from_spot_light, angle);
-            result += get_light_strength(spot_light, normal, view_direction);
+            Light spot_light = convert_spot_light(distance_from_spot_light, angle);
+            result += calc_light(spot_light, normal, view_direction);
         }
     }
 
@@ -194,9 +202,9 @@ void main()
 
     vec3 light_strength = vec3(0.0);
 
-    light_strength += calc_directional_light(Normal, view_direction);
-    light_strength += calc_point_light(Normal, view_direction);
-    light_strength += calc_spot_light(Normal, view_direction);
+    light_strength += calc_directional_lights(Normal, view_direction);
+    light_strength += calc_point_lights(Normal, view_direction);
+    light_strength += calc_spot_lights(Normal, view_direction);
 
     out_color = vec4(light_strength * object_color.rgb, object_color.a);
 

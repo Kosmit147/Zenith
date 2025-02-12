@@ -3,6 +3,7 @@
 #include <glm/geometric.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/vec3.hpp>
 #include <spdlog/fmt/fmt.h>
 
 #include "zenith/core/scene_manager.hpp"
@@ -23,6 +24,8 @@ constexpr auto slider_drag_speed = 0.01f;
 
 } // namespace
 
+DebugToolsUi::DebugToolsUi(std::string_view label) : _label(label) {}
+
 auto DebugToolsUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
 {
     if (event.key == toggle_wireframe_mode_key)
@@ -31,7 +34,7 @@ auto DebugToolsUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
 
 auto DebugToolsUi::on_update() -> void
 {
-    ImGui::Begin("Debug Tools");
+    ImGui::Begin(_label.data());
 
     auto fps = ImGui::GetIO().Framerate;
     ImGui::Text("FPS: %0.0f", fps);
@@ -67,11 +70,13 @@ auto DebugToolsUi::on_update() -> void
     ImGui::End();
 }
 
-TransformUi::TransformUi(Transformable3D& transformable) : _transformable(transformable) {}
+TransformUi::TransformUi(Transformable3D& transformable, std::string_view label)
+    : _label(label), _transformable(transformable)
+{}
 
 auto TransformUi::on_update() -> void
 {
-    ImGui::Begin("Transform");
+    ImGui::Begin(_label.data());
 
     auto translation = _transformable.translation();
 
@@ -160,14 +165,14 @@ auto TransformGizmo::on_key_pressed_event(const KeyPressedEvent& event) -> void
     }
 }
 
-MaterialUi::MaterialUi(Material& material) : _material(material) {}
+MaterialUi::MaterialUi(Material& material, std::string_view label) : _label(label), _material(material) {}
 
 auto MaterialUi::on_update() -> void
 {
     const auto& materials = materials::materials();
     const auto& material_names = materials::material_names;
 
-    ImGui::Begin("Material");
+    ImGui::Begin(_label.data());
 
     if (ImGui::BeginCombo("Preset", material_names[_material_selected_idx]))
     {
@@ -286,11 +291,12 @@ auto MaterialUi::set_emission_map(i16 idx) -> void
 
 // @cleanup: move sliders for light properties and attenuation into separate functions
 
-DirectionalLightUi::DirectionalLightUi(DirectionalLight& light) : _light(light) {}
+DirectionalLightUi::DirectionalLightUi(DirectionalLight& light, std::string_view label) : _label(label), _light(light)
+{}
 
 auto DirectionalLightUi::on_update() -> void
 {
-    ImGui::Begin("Directional Light");
+    ImGui::Begin(_label.data());
 
     if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
         _light.direction = glm::normalize(_light.direction);
@@ -304,11 +310,11 @@ auto DirectionalLightUi::on_update() -> void
     ImGui::End();
 }
 
-PointLightUi::PointLightUi(PointLight& light) : _light(light) {}
+PointLightUi::PointLightUi(PointLight& light, std::string_view label) : _label(label), _light(light) {}
 
 auto PointLightUi::on_update() -> void
 {
-    ImGui::Begin("Point Light");
+    ImGui::Begin(_label.data());
 
     // @cleanup: duplicated code
     ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
@@ -323,11 +329,11 @@ auto PointLightUi::on_update() -> void
     ImGui::End();
 }
 
-SpotLightUi::SpotLightUi(SpotLight& light) : _light(light) {}
+SpotLightUi::SpotLightUi(SpotLight& light, std::string_view label) : _label(label), _light(light) {}
 
 auto SpotLightUi::on_update() -> void
 {
-    ImGui::Begin("Spot Light");
+    ImGui::Begin(_label.data());
 
     ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
 
@@ -355,9 +361,11 @@ auto SpotLightUi::on_update() -> void
     ImGui::End();
 }
 
+ScenePickerUi::ScenePickerUi(std::string_view label) : _label(label) {}
+
 auto ScenePickerUi::on_update() -> void
 {
-    ImGui::Begin("Scene");
+    ImGui::Begin(_label.data());
 
     ImGui::Text("%s", _scene_names[_selected_scene_idx].c_str());
 

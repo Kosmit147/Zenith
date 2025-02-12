@@ -2,7 +2,6 @@
 
 #include <imgui.h>
 #include <ImGuizmo.h>
-#include <glm/vec3.hpp>
 
 #include <concepts>
 #include <functional>
@@ -28,7 +27,7 @@ public:
     Key toggle_wireframe_mode_key = Key::F1;
 
 public:
-    explicit DebugToolsUi() = default;
+    explicit DebugToolsUi(std::string_view label = "Debug Tools");
     ZTH_NO_COPY_NO_MOVE(DebugToolsUi)
     ~DebugToolsUi() = default;
 
@@ -36,19 +35,21 @@ public:
     auto on_update() -> void;
 
 private:
+    std::string _label;
     u32 _frame_rate_limit = 60;
 };
 
 class TransformUi
 {
 public:
-    explicit TransformUi(Transformable3D& transformable);
+    explicit TransformUi(Transformable3D& transformable, std::string_view label = "Transform");
     ZTH_NO_COPY_NO_MOVE(TransformUi)
     ~TransformUi() = default;
 
     auto on_update() -> void;
 
 private:
+    std::string _label;
     Transformable3D& _transformable;
 
     math::Rotation _rotation{};
@@ -84,7 +85,7 @@ private:
 class MaterialUi
 {
 public:
-    explicit MaterialUi(Material& material);
+    explicit MaterialUi(Material& material, std::string_view label = "Material");
     ZTH_NO_COPY_NO_MOVE(MaterialUi)
     ~MaterialUi() = default;
 
@@ -95,6 +96,7 @@ public:
     auto add_emission_map(std::string_view name, const gl::Texture2D& emission_map) -> void;
 
 private:
+    std::string _label;
     Material& _material;
     usize _material_selected_idx = 0;
 
@@ -119,39 +121,42 @@ private:
 class DirectionalLightUi
 {
 public:
-    explicit DirectionalLightUi(DirectionalLight& light);
+    explicit DirectionalLightUi(DirectionalLight& light, std::string_view label = "Directional Light");
     ZTH_NO_COPY_NO_MOVE(DirectionalLightUi)
     ~DirectionalLightUi() = default;
 
     auto on_update() -> void;
 
 private:
+    std::string _label;
     DirectionalLight& _light;
 };
 
 class PointLightUi
 {
 public:
-    explicit PointLightUi(PointLight& light);
+    explicit PointLightUi(PointLight& light, std::string_view label = "Point Light");
     ZTH_NO_COPY_NO_MOVE(PointLightUi)
     ~PointLightUi() = default;
 
     auto on_update() -> void;
 
 private:
+    std::string _label;
     PointLight& _light;
 };
 
 class SpotLightUi
 {
 public:
-    explicit SpotLightUi(SpotLight& light);
+    explicit SpotLightUi(SpotLight& light, std::string_view label = "Spot Light");
     ZTH_NO_COPY_NO_MOVE(SpotLightUi)
     ~SpotLightUi() = default;
 
     auto on_update() -> void;
 
 private:
+    std::string _label;
     SpotLight& _light;
 };
 
@@ -162,7 +167,7 @@ public:
     Key next_scene_key = Key::Right;
 
 public:
-    explicit ScenePickerUi() = default;
+    explicit ScenePickerUi(std::string_view label = "Scene");
     ZTH_NO_COPY_NO_MOVE(ScenePickerUi)
     ~ScenePickerUi() = default;
 
@@ -177,6 +182,7 @@ public:
     auto next() -> void;
 
 private:
+    std::string _label;
     usize _selected_scene_idx = 0;
     usize _scene_count = 0;
 

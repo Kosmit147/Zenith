@@ -47,7 +47,8 @@ template<> [[nodiscard]] constexpr auto to_gl_enum<GLint>() -> GLenum
 
 template<typename T> [[nodiscard]] constexpr auto get_std140_field_alignment() -> usize
 {
-    static_assert(false, "not implemented");
+    // in the default case we assume T is a struct
+    return 16;
 }
 
 template<> [[nodiscard]] constexpr auto get_std140_field_alignment<GLushort>() -> usize
@@ -102,7 +103,57 @@ template<> [[nodiscard]] constexpr auto get_std140_field_alignment<glm::mat4>() 
 
 template<typename T> [[nodiscard]] constexpr auto get_std430_field_alignment() -> usize
 {
-    return get_std140_field_alignment<T>();
+    return alignof(T);
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLushort>() -> usize
+{
+    return 2;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLshort>() -> usize
+{
+    return 2;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLuint>() -> usize
+{
+    return 4;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLint>() -> usize
+{
+    return 4;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLfloat>() -> usize
+{
+    return 4;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<GLdouble>() -> usize
+{
+    return 8;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<glm::vec2>() -> usize
+{
+    return 8;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<glm::vec3>() -> usize
+{
+    return 16;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<glm::vec4>() -> usize
+{
+    return 16;
+}
+
+template<> [[nodiscard]] constexpr auto get_std430_field_alignment<glm::mat4>() -> usize
+{
+    return 16;
 }
 
 } // namespace zth::gl
