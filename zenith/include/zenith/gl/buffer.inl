@@ -42,7 +42,7 @@ auto Buffer::init_static_with_data(auto&& data) -> void
 auto Buffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
+    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
     init_static_with_data(std::data(data), data_size_bytes);
 }
 
@@ -54,19 +54,19 @@ auto Buffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
 auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<GLsizei>(std::size(data) * sizeof(T));
+    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
     init_dynamic_with_data(std::data(data), data_size_bytes, usage);
 }
 
-auto Buffer::buffer_data(auto&& data, usize offset) -> usize
+auto Buffer::buffer_data(auto&& data, u32 offset) -> u32
 {
     return buffer_data(&data, sizeof(data), offset);
 }
 
-auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<GLsizeiptr>(std::size(data) * sizeof(T));
+    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
     return buffer_data(std::data(data), data_size_bytes, offset);
 }
 
@@ -101,7 +101,7 @@ auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& d
     _buffer.init_dynamic_with_data(data, usage);
 }
 
-auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }
@@ -126,7 +126,7 @@ auto IndexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& dat
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _index_type = to_gl_enum<T>();
-    _size = static_cast<GLsizei>(std::size(data));
+    _size = static_cast<u32>(std::size(data));
     _buffer.init_static_with_data(data);
 }
 
@@ -134,11 +134,11 @@ auto IndexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& da
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     _index_type = to_gl_enum<T>();
-    _size = static_cast<GLsizei>(std::size(data));
+    _size = static_cast<u32>(std::size(data));
     _buffer.init_dynamic_with_data(data, usage);
 }
 
-auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }
@@ -218,12 +218,12 @@ auto UniformBuffer::init_static_with_data(std::ranges::contiguous_range auto&& d
     bind(binding_point);
 }
 
-auto UniformBuffer::buffer_data(auto&& data, usize offset) -> usize
+auto UniformBuffer::buffer_data(auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }
 
-auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }
@@ -335,12 +335,12 @@ auto ShaderStorageBuffer::init_dynamic_with_data(std::ranges::contiguous_range a
     bind(binding_point);
 }
 
-auto ShaderStorageBuffer::buffer_data(auto&& data, usize offset) -> usize
+auto ShaderStorageBuffer::buffer_data(auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }
 
-auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
 }

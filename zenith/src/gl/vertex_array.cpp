@@ -116,7 +116,7 @@ auto VertexArray::bind_vertex_buffer(const VertexBuffer& vertex_buffer) -> void
 {
     _vertex_buffer = &vertex_buffer;
     glVertexArrayVertexBuffer(_id, vertex_buffer_binding_index, _vertex_buffer->native_handle(), 0,
-                              _vertex_buffer->stride());
+                              static_cast<GLsizei>(_vertex_buffer->stride()));
 }
 
 auto VertexArray::bind_index_buffer(const IndexBuffer& index_buffer) -> void
@@ -129,7 +129,7 @@ auto VertexArray::bind_instance_buffer(const InstanceBuffer& instance_buffer) ->
 {
     _instance_buffer = &instance_buffer;
     glVertexArrayVertexBuffer(_id, instance_buffer_binding_index, _instance_buffer->native_handle(), 0,
-                              _instance_buffer->stride());
+                              static_cast<GLsizei>(_instance_buffer->stride()));
 }
 
 auto VertexArray::bind_layout(const VertexArrayLayout& layout) -> void
@@ -165,7 +165,7 @@ auto VertexArray::unbind_all_buffers() -> void
     unbind_instance_buffer();
 }
 
-auto VertexArray::count() const -> GLsizei
+auto VertexArray::count() const -> u32
 {
     if (!_index_buffer)
         return 0;
@@ -200,7 +200,7 @@ auto VertexArray::bind_vertex_buffer_layout() const -> void
     {
         auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 
-        for (usize i = 0; i < slots_occupied; i++)
+        for (GLuint i = 0; i < slots_occupied; i++)
         {
             glEnableVertexArrayAttrib(_id, index);
             glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
@@ -221,7 +221,7 @@ auto VertexArray::bind_instance_buffer_layout() const -> void
     {
         auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 
-        for (usize i = 0; i < slots_occupied; i++)
+        for (GLuint i = 0; i < slots_occupied; i++)
         {
             glEnableVertexArrayAttrib(_id, index);
             glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
