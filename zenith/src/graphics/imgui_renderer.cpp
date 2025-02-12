@@ -12,14 +12,17 @@ namespace zth {
 
 auto ImGuiRenderer::init() -> void
 {
+    ZTH_CORE_INFO("Initializing ImGui renderer...");
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
     ImGui_ImplGlfw_InitForOpenGL(Window::glfw_handle(), true);
     ImGui_ImplOpenGL3_Init();
-    ZTH_CORE_INFO("ImGui renderer initialized.");
 
     ImGui::GetIO().FontGlobalScale = initial_font_scale;
+
+    ZTH_CORE_INFO("ImGui renderer initialized.");
 }
 
 auto ImGuiRenderer::on_update() -> void
@@ -42,6 +45,8 @@ auto ImGuiRenderer::on_render() -> void
 
 auto ImGuiRenderer::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down ImGui renderer...");
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

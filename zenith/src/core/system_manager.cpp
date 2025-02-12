@@ -91,7 +91,7 @@ auto SystemManager::on_render() -> void
 
 auto SystemManager::shut_down_systems() -> void
 {
-    ZTH_CORE_INFO("[SystemManager] Shutting down all systems.");
+    ZTH_CORE_INFO("[System Manager] Shutting down all systems...");
 
     for (auto shutdown_func : _system_shutdown_funcs | std::views::reverse)
         shutdown_func();

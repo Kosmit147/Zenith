@@ -44,6 +44,8 @@ namespace {
 
 auto Window::init(const WindowSpec& spec) -> void
 {
+    ZTH_CORE_INFO("Initializing window...");
+
     if (spec.gl_version != gl::Version{ 4, 6 })
     {
         auto error_message = ZTH_FORMAT(
@@ -119,14 +121,16 @@ auto Window::init(const WindowSpec& spec) -> void
     // make sure that the renderer sets glViewport after initialization
     EventQueue::push(WindowResizedEvent{ size() });
 
-    ZTH_CORE_INFO("Window initialized.");
-
     destroy_window.dismiss();
     terminate_glfw.dismiss();
+
+    ZTH_CORE_INFO("Window initialized.");
 }
 
 auto Window::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down window...");
+
     glfwDestroyWindow(_window);
     glfwTerminate();
 

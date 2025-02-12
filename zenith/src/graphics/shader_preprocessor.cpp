@@ -21,6 +21,7 @@ StringHashMap<std::string> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> void
 {
+    ZTH_CORE_INFO("Initializing shader preprocessor...");
     // @todo: remove test_glsl
     add_source("test.glsl", embedded::shaders::test_glsl);
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
@@ -29,6 +30,7 @@ auto ShaderPreprocessor::init() -> void
 
 auto ShaderPreprocessor::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down shader preprocessor...");
     _sources.clear();
     ZTH_CORE_INFO("Shader preprocessor shut down.");
 }

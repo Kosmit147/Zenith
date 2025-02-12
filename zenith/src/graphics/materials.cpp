@@ -224,12 +224,14 @@ auto MaterialList::size() const -> usize
 
 auto load_materials() -> void
 {
+    ZTH_CORE_INFO("Loading materials...");
     material_list = std::make_unique<MaterialList>();
     ZTH_CORE_INFO("Materials loaded.");
 }
 
 auto unload_materials() -> void
 {
+    ZTH_CORE_INFO("Unloading materials...");
     material_list.reset();
     ZTH_CORE_INFO("Materials unloaded.");
 }

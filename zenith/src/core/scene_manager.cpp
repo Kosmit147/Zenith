@@ -52,6 +52,8 @@ auto SceneManager::on_render() -> void
 
 auto SceneManager::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down scene manager...");
+
     _queued_scene.reset();
 
     if (_scene)

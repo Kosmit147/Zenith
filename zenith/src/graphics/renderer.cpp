@@ -77,6 +77,8 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
 
 auto Renderer::init() -> void
 {
+    ZTH_CORE_INFO("Initializing renderer...");
+
 #if !defined(ZTH_DIST_BUILD)
     gl::set_debug_context();
 #endif
@@ -113,6 +115,8 @@ auto Renderer::on_window_event(const Event& event) -> void
 
 auto Renderer::shut_down() -> void
 {
+    ZTH_CORE_INFO("Shutting down renderer...");
+
     materials::unload_materials();
     meshes::unload_meshes();
     shaders::unload_shaders();

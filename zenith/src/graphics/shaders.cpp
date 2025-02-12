@@ -27,12 +27,14 @@ ShaderList::ShaderList() // clang-format off
 
 auto load_shaders() -> void
 {
+    ZTH_CORE_INFO("Loading shaders...");
     shader_list = std::make_unique<ShaderList>();
     ZTH_CORE_INFO("Shaders loaded.");
 }
 
 auto unload_shaders() -> void
 {
+    ZTH_CORE_INFO("Unloading shaders...");
     shader_list.reset();
     ZTH_CORE_INFO("Shaders unloaded.");
 }
