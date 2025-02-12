@@ -37,10 +37,7 @@ auto SceneManager::on_update() -> void
 auto SceneManager::on_event(const Event& event) -> void
 {
     if (!_scene) [[unlikely]]
-    {
-        ZTH_CORE_WARN("[Scene Manager] No scene loaded.");
         return;
-    }
 
     _scene->on_event(event);
 }
@@ -48,10 +45,7 @@ auto SceneManager::on_event(const Event& event) -> void
 auto SceneManager::on_render() -> void
 {
     if (!_scene) [[unlikely]]
-    {
-        ZTH_CORE_WARN("[Scene Manager] No scene loaded.");
         return;
-    }
 
     _scene->on_render();
 }
