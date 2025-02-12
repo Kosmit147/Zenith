@@ -39,6 +39,17 @@ struct ShaderList;
 
 } // namespace shaders
 
+struct LightPropertiesData;
+struct LightAttenuationData;
+struct CameraUboData;
+struct DirectionalLightData;
+struct DirectionalLightsSsboData;
+struct PointLightData;
+struct PointLightsSsboData;
+struct SpotLightData;
+struct SpotLightsSsboData;
+struct MaterialUboData;
+
 struct LineInfo;
 struct PreprocessShaderError;
 class ShaderPreprocessor;
@@ -47,10 +58,6 @@ class Shape3D;
 class CubeShape;
 class PyramidShape;
 class SphereShape;
-
-struct CameraUboData;
-struct LightUboData;
-struct MaterialUboData;
 
 struct InstanceVertex;
 struct StandardVertex;
