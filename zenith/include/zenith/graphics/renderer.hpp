@@ -45,21 +45,24 @@ struct RenderBatch
 class Renderer
 {
 public:
+    // @volatile: keep these constants in sync with zth_defines.glsl
+
     static constexpr GLint diffuse_map_slot = 0;
     static constexpr GLint specular_map_slot = 1;
     static constexpr GLint emission_map_slot = 2;
 
-    // @volatile: keep in sync with zth_defines.glsl
     static constexpr u32 camera_ubo_binding_point = 0;
     static constexpr u32 material_ubo_binding_point = 1;
 
-    // @volatile: keep in sync with zth_defines.glsl
     static constexpr u32 light_ssbo_binding_point = 0;
+    static constexpr u32 point_lights_ssbo_binding_point = 1;
 
 public:
     static auto init() -> void;
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
+
+    static auto clear_scene_data() -> void;
 
     static auto set_wireframe_mode(bool enabled) -> void;
     static auto toggle_wireframe_mode() -> void;
@@ -69,8 +72,11 @@ public:
 
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
     static auto set_directional_light(std::shared_ptr<const DirectionalLight> directional_light) -> void;
-    static auto set_point_light(std::shared_ptr<const PointLight> point_light) -> void;
     static auto set_spot_light(std::shared_ptr<const SpotLight> spot_light) -> void;
+
+    static auto add_point_light(std::shared_ptr<const PointLight> light) -> void;
+    static auto remove_point_light(usize index) -> void;
+    static auto clear_point_lights() -> void;
 
     static auto draw(const Shape3D& shape, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
@@ -79,21 +85,26 @@ public:
     static auto render() -> void;
 
     static auto draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void;
-    static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, usize instances) -> void;
+    static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void;
 
     [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
+    [[nodiscard]] static auto point_light_count() -> usize;
+    [[nodiscard]] static auto point_lights() -> std::vector<std::shared_ptr<const PointLight>>&;
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
         std::make_shared<PerspectiveCamera>(glm::vec3{ 1.0f }, glm::vec3{ 1.0f }, 1.0f);
     std::shared_ptr<const DirectionalLight> _directional_light =
         std::make_shared<DirectionalLight>(glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
-    std::shared_ptr<const PointLight> _point_light = nullptr;
     std::shared_ptr<const SpotLight> _spot_light = nullptr;
+
+    std::vector<std::shared_ptr<const PointLight>> _point_lights;
 
     gl::UniformBuffer _camera_ubo = gl::UniformBuffer::create_static(sizeof(CameraUboData), camera_ubo_binding_point);
     gl::ShaderStorageBuffer _light_ssbo =
         gl::ShaderStorageBuffer::create_static(sizeof(LightSsboData), light_ssbo_binding_point);
+    gl::ShaderStorageBuffer _point_lights_ssbo =
+        gl::ShaderStorageBuffer::create_dynamic(point_lights_ssbo_binding_point);
     gl::UniformBuffer _material_ubo =
         gl::UniformBuffer::create_static(sizeof(MaterialUboData), material_ubo_binding_point);
 

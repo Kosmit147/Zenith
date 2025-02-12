@@ -126,7 +126,7 @@ auto Buffer::init_dynamic_with_data(const void* data, usize data_size_bytes, Buf
     _state = BufferState::InitializedDynamic;
 }
 
-auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
     ZTH_ASSERT(_state != BufferState::Uninitialized);
 
@@ -146,6 +146,8 @@ auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) 
     {
         ZTH_ASSERT(false);
     }
+
+    return data_size_bytes;
 }
 
 auto Buffer::create() -> void
@@ -269,9 +271,9 @@ auto VertexBuffer::init_dynamic_with_data(const void* data, usize data_size_byte
     _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
 }
 
-auto VertexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+auto VertexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
-    _buffer.buffer_data(data, data_size_bytes, offset);
+    return _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto VertexBuffer::bind() const -> void
@@ -370,9 +372,9 @@ auto IndexBuffer::init_dynamic_with_data(const void* data, usize data_size_bytes
     _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
 }
 
-auto IndexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+auto IndexBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
-    _buffer.buffer_data(data, data_size_bytes, offset);
+    return _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto IndexBuffer::bind() const -> void
@@ -485,9 +487,9 @@ auto UniformBuffer::init_static_with_data(const void* data, usize data_size_byte
     bind(binding_point);
 }
 
-auto UniformBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+auto UniformBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
-    _buffer.buffer_data(data, data_size_bytes, offset);
+    return _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto UniformBuffer::bind() const -> void
@@ -636,9 +638,9 @@ auto ShaderStorageBuffer::init_dynamic_with_data(const void* data, usize data_si
     bind(binding_point);
 }
 
-auto ShaderStorageBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> void
+auto ShaderStorageBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
-    _buffer.buffer_data(data, data_size_bytes, offset);
+    return _buffer.buffer_data(data, data_size_bytes, offset);
 }
 
 auto ShaderStorageBuffer::bind() const -> void

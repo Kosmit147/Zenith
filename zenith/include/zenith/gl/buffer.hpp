@@ -26,11 +26,12 @@ enum class BufferAccessType : u8
     // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value
 
     Draw = 0, // The data store contents are modified by the application, and used as the source for GL drawing and
-              // image specification commands.
+              // image specification commands. The user will be writing data to the buffer, but will not read it.
     Read = 1, // The data store contents are modified by reading data from the GL, and used to return that data when
-              // queried by the application.
+              // queried by the application. The user will not be writing data to the buffer, but will be reading it
+              // back.
     Copy = 2, // The data store contents are modified by reading data from the GL, and used as the source for GL drawing
-              // and image specification commands.
+              // and image specification commands. The user will be neither writing not reading the data.
 };
 
 struct BufferUsage
@@ -99,9 +100,12 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
-    auto buffer_data(auto&& data, usize offset = 0) -> void;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+    // returns the number of bytes written
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    // returns the number of bytes written
+    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    // returns the number of bytes written
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto size_bytes() const { return _size_bytes; }
@@ -156,8 +160,8 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     auto bind() const -> void;
     static auto unbind() -> void;
@@ -210,8 +214,8 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     auto bind() const -> void;
     static auto unbind() -> void;
@@ -287,9 +291,9 @@ public:
     auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
     auto init_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> void;
 
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
-    auto buffer_data(auto&& data, usize offset = 0) -> void;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     auto bind() const -> void;
     auto bind(u32 binding_point) const -> void;
@@ -378,9 +382,9 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> void;
-    auto buffer_data(auto&& data, usize offset = 0) -> void;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> void;
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     auto bind() const -> void;
     auto bind(u32 binding_point) const -> void;

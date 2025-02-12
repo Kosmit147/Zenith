@@ -121,6 +121,12 @@ auto Renderer::shut_down() -> void
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
+// @temporary: this function is probably going to be deleted once we have entity component system
+auto Renderer::clear_scene_data() -> void
+{
+    clear_point_lights();
+}
+
 auto Renderer::set_wireframe_mode(bool enabled) -> void
 {
     _wireframe_mode_enabled = enabled;
@@ -154,14 +160,26 @@ auto Renderer::set_directional_light(std::shared_ptr<const DirectionalLight> dir
     renderer->_directional_light = std::move(directional_light);
 }
 
-auto Renderer::set_point_light(std::shared_ptr<const PointLight> point_light) -> void
-{
-    renderer->_point_light = std::move(point_light);
-}
-
 auto Renderer::set_spot_light(std::shared_ptr<const SpotLight> spot_light) -> void
 {
     renderer->_spot_light = std::move(spot_light);
+}
+
+auto Renderer::add_point_light(std::shared_ptr<const PointLight> light) -> void
+{
+    renderer->_point_lights.push_back(std::move(light));
+}
+
+auto Renderer::remove_point_light(usize index) -> void
+{
+    auto& lights = renderer->_point_lights;
+    ZTH_ASSERT(index < lights.size());
+    lights.erase(lights.begin() + static_cast<isize>(index));
+}
+
+auto Renderer::clear_point_lights() -> void
+{
+    renderer->_point_lights.clear();
 }
 
 auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
@@ -200,13 +218,23 @@ auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material&
     glDrawElements(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr);
 }
 
-auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, usize instances) -> void
+auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void
 {
     vertex_array.bind();
     bind_material(material);
 
     glDrawElementsInstanced(GL_TRIANGLES, vertex_array.count(), vertex_array.index_type(), nullptr,
                             static_cast<GLsizei>(instances));
+}
+
+auto Renderer::point_light_count() -> usize
+{
+    return renderer->_point_lights.size();
+}
+
+auto Renderer::point_lights() -> std::vector<std::shared_ptr<const PointLight>>&
+{
+    return renderer->_point_lights;
 }
 
 auto Renderer::batch_draw_commands() -> void
@@ -268,8 +296,10 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
     }
 
     instance_buffer.buffer_data(instance_data);
-    draw_instanced(*batch.vertex_array, *batch.material, instance_data.size());
+    draw_instanced(*batch.vertex_array, *batch.material, static_cast<u32>(instance_data.size()));
 }
+
+// @cleanup: send data to buffers in a cleaner, less error-prone way
 
 auto Renderer::upload_camera_data() -> void
 {
@@ -302,25 +332,6 @@ auto Renderer::upload_light_data() -> void
         };
     }
 
-    if (renderer->_point_light)
-    {
-        const auto& [position, properties, attenuation] = *renderer->_point_light;
-        light_ssbo_data.has_point_light = true;
-
-        light_ssbo_data.point_light_position = position;
-        light_ssbo_data.point_light_properties = {
-            .color = properties.color,
-            .ambient = properties.ambient,
-            .diffuse = properties.diffuse,
-            .specular = properties.specular,
-        };
-        light_ssbo_data.point_light_attenuation = {
-            .constant = attenuation.constant,
-            .linear = attenuation.linear,
-            .quadratic = attenuation.quadratic,
-        };
-    }
-
     if (renderer->_spot_light)
     {
         const auto& [position, direction, inner_cutoff, outer_cutoff, properties, attenuation] = *renderer->_spot_light;
@@ -344,6 +355,35 @@ auto Renderer::upload_light_data() -> void
     }
 
     renderer->_light_ssbo.buffer_data(light_ssbo_data);
+
+    PointLightsSsboData point_lights_ssbo_data = {
+        .count = static_cast<GLuint>(renderer->_point_lights.size()),
+    };
+
+    usize offset = 0;
+    offset += renderer->_point_lights_ssbo.buffer_data(point_lights_ssbo_data);
+
+    // @speed: maybe we should collect all the data first and then buffer it all at once?
+
+    for (const auto& light : renderer->_point_lights)
+    {
+        PointLightData data = {
+            .position = light->position,
+            .properties = {
+                .color = light->properties.color,
+                .ambient = light->properties.ambient,
+                .diffuse = light->properties.diffuse,
+                .specular = light->properties.specular,
+            },
+            .attenuation = {
+                .constant = light->attenuation.constant,
+                .linear = light->attenuation.linear,
+                .quadratic = light->attenuation.quadratic,
+            },
+        };
+
+        offset += renderer->_point_lights_ssbo.buffer_data(data, offset);
+    }
 }
 
 auto Renderer::bind_material(const Material& material) -> void

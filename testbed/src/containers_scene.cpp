@@ -72,7 +72,7 @@ auto ContainersScene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
     zth::Renderer::set_directional_light(_directional_light);
-    zth::Renderer::set_point_light(_point_light);
+    zth::Renderer::add_point_light(_point_light);
     zth::Renderer::set_spot_light(_spot_light);
 }
 

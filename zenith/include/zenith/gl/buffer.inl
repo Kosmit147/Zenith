@@ -58,16 +58,16 @@ auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, B
     init_dynamic_with_data(std::data(data), data_size_bytes, usage);
 }
 
-auto Buffer::buffer_data(auto&& data, usize offset) -> void
+auto Buffer::buffer_data(auto&& data, usize offset) -> usize
 {
-    buffer_data(&data, sizeof(data), offset);
+    return buffer_data(&data, sizeof(data), offset);
 }
 
-auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = static_cast<GLsizeiptr>(std::size(data) * sizeof(T));
-    buffer_data(std::data(data), data_size_bytes, offset);
+    return buffer_data(std::data(data), data_size_bytes, offset);
 }
 
 // --------------------------- VertexBuffer ---------------------------
@@ -101,9 +101,9 @@ auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& d
     _buffer.init_dynamic_with_data(data, usage);
 }
 
-auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
 // --------------------------- IndexBuffer ---------------------------
@@ -138,9 +138,9 @@ auto IndexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& da
     _buffer.init_dynamic_with_data(data, usage);
 }
 
-auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
 template<typename T> auto IndexBuffer::set_index_type() -> void
@@ -218,14 +218,14 @@ auto UniformBuffer::init_static_with_data(std::ranges::contiguous_range auto&& d
     bind(binding_point);
 }
 
-auto UniformBuffer::buffer_data(auto&& data, usize offset) -> void
+auto UniformBuffer::buffer_data(auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
-auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto UniformBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
 // --------------------------- ShaderStorageBuffer ---------------------------
@@ -335,14 +335,14 @@ auto ShaderStorageBuffer::init_dynamic_with_data(std::ranges::contiguous_range a
     bind(binding_point);
 }
 
-auto ShaderStorageBuffer::buffer_data(auto&& data, usize offset) -> void
+auto ShaderStorageBuffer::buffer_data(auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
-auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> void
+auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
 {
-    _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(data, offset);
 }
 
 } // namespace zth::gl
