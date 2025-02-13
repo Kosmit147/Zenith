@@ -392,7 +392,7 @@ auto glfw_key_to_key(int key) -> std::optional<Key>
     return std::nullopt;
 }
 
-auto glfw_mouse_button_to_mouse_button(int button) -> MouseButton
+auto glfw_mouse_button_to_mouse_button(int button) -> std::optional<MouseButton>
 {
     switch (button)
     {
@@ -407,8 +407,7 @@ auto glfw_mouse_button_to_mouse_button(int button) -> MouseButton
         break;
     }
 
-    ZTH_ASSERT(false);
-    std::unreachable();
+    return std::nullopt;
 }
 
 auto to_string(Key key) -> const char*
