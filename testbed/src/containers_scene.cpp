@@ -39,6 +39,10 @@ const auto spot_light = zth::SpotLight{
     },
 };
 
+const auto ambient_light = zth::AmbientLight{
+    .ambient = glm::vec3{ 0.05f, 0.05f, 0.05f },
+};
+
 constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    glm::vec3{ 2.0f, 5.0f, -15.0f },
                                              glm::vec3{ -1.5f, -2.2f, -2.5f }, glm::vec3{ -3.8f, -2.0f, -12.3f },
                                              glm::vec3{ 2.4f, -0.4f, -3.5f },  glm::vec3{ -1.7f, 3.0f, -7.5f },
@@ -54,7 +58,8 @@ ContainersScene::ContainersScene()
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller{ _camera }, _directional_light(std::make_shared<zth::DirectionalLight>(directional_light)),
       _point_light(std::make_shared<zth::PointLight>(point_light)),
-      _spot_light(std::make_shared<zth::SpotLight>(spot_light))
+      _spot_light(std::make_shared<zth::SpotLight>(spot_light)),
+      _ambient_light(std::make_shared<zth::AmbientLight>(ambient_light))
 {
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
 
@@ -74,6 +79,7 @@ auto ContainersScene::on_load() -> void
     zth::Renderer::add_directional_light(_directional_light);
     zth::Renderer::add_point_light(_point_light);
     zth::Renderer::add_spot_light(_spot_light);
+    zth::Renderer::add_ambient_light(_ambient_light);
 }
 
 auto ContainersScene::on_update() -> void

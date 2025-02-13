@@ -132,6 +132,7 @@ auto Renderer::clear_scene_data() -> void
     clear_directional_lights();
     clear_point_lights();
     clear_spot_lights();
+    clear_ambient_lights();
 }
 
 auto Renderer::set_wireframe_mode(bool enabled) -> void
@@ -213,6 +214,23 @@ auto Renderer::clear_spot_lights() -> void
     renderer->_spot_lights.clear();
 }
 
+auto Renderer::add_ambient_light(std::shared_ptr<const AmbientLight> light) -> void
+{
+    renderer->_ambient_lights.push_back(std::move(light));
+}
+
+auto Renderer::remove_ambient_light(usize index) -> void
+{
+    auto& lights = renderer->_ambient_lights;
+    ZTH_ASSERT(index < lights.size());
+    lights.erase(lights.begin() + static_cast<isize>(index));
+}
+
+auto Renderer::clear_ambient_lights() -> void
+{
+    renderer->_ambient_lights.clear();
+}
+
 auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
 {
     draw(shape.mesh(), shape.transform(), material);
@@ -286,6 +304,16 @@ auto Renderer::spot_light_count() -> usize
 auto Renderer::spot_lights() -> std::vector<std::shared_ptr<const SpotLight>>&
 {
     return renderer->_spot_lights;
+}
+
+auto Renderer::ambient_light_count() -> usize
+{
+    return renderer->_ambient_lights.size();
+}
+
+auto Renderer::ambient_lights() -> std::vector<std::shared_ptr<const AmbientLight>>&
+{
+    return renderer->_ambient_lights;
 }
 
 auto Renderer::batch_draw_commands() -> void
@@ -405,6 +433,7 @@ auto Renderer::upload_light_data() -> void
     upload_directional_lights_data();
     upload_point_lights_data();
     upload_spot_lights_data();
+    upload_ambient_lights_data();
 }
 
 auto Renderer::upload_directional_lights_data() -> void
@@ -492,6 +521,25 @@ auto Renderer::upload_spot_lights_data() -> void
         };
 
         offset += renderer->_spot_lights_ssbo.buffer_data(data, offset);
+    }
+}
+
+auto Renderer::upload_ambient_lights_data() -> void
+{
+    AmbientLightsSsboData ambient_lights_ssbo_data = {
+        .count = static_cast<GLuint>(renderer->_ambient_lights.size()),
+    };
+
+    u32 offset = 0;
+    offset += renderer->_ambient_lights_ssbo.buffer_data(ambient_lights_ssbo_data);
+
+    for (const auto& light : renderer->_ambient_lights)
+    {
+        AmbientLightData data = {
+            .ambient = light->ambient,
+        };
+
+        offset += renderer->_ambient_lights_ssbo.buffer_data(data, offset);
     }
 }
 

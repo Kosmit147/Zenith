@@ -43,6 +43,7 @@ struct RenderBatch
 
 // @test: multiple directional lights
 // @test: multiple spot lights
+// @test: multiple ambient lights
 
 class Renderer
 {
@@ -59,6 +60,7 @@ public:
     static constexpr u32 directional_lights_ssbo_binding_point = 0;
     static constexpr u32 point_lights_ssbo_binding_point = 1;
     static constexpr u32 spot_lights_ssbo_binding_point = 2;
+    static constexpr u32 ambient_lights_ssbo_binding_point = 3;
 
     static constexpr usize initial_directional_lights_ssbo_size =
         sizeof(DirectionalLightsSsboData) + sizeof(DirectionalLightData) * 3;
@@ -91,6 +93,9 @@ public:
     static auto add_spot_light(std::shared_ptr<const SpotLight> light) -> void;
     static auto remove_spot_light(usize index) -> void;
     static auto clear_spot_lights() -> void;
+    static auto add_ambient_light(std::shared_ptr<const AmbientLight> light) -> void;
+    static auto remove_ambient_light(usize index) -> void;
+    static auto clear_ambient_lights() -> void;
 
     static auto draw(const Shape3D& shape, const Material& material) -> void;
     static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
@@ -109,6 +114,8 @@ public:
     [[nodiscard]] static auto point_lights() -> std::vector<std::shared_ptr<const PointLight>>&;
     [[nodiscard]] static auto spot_light_count() -> usize;
     [[nodiscard]] static auto spot_lights() -> std::vector<std::shared_ptr<const SpotLight>>&;
+    [[nodiscard]] static auto ambient_light_count() -> usize;
+    [[nodiscard]] static auto ambient_lights() -> std::vector<std::shared_ptr<const AmbientLight>>&;
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
@@ -117,6 +124,7 @@ private:
     std::vector<std::shared_ptr<const DirectionalLight>> _directional_lights;
     std::vector<std::shared_ptr<const PointLight>> _point_lights;
     std::vector<std::shared_ptr<const SpotLight>> _spot_lights;
+    std::vector<std::shared_ptr<const AmbientLight>> _ambient_lights;
 
     gl::UniformBuffer _camera_ubo =
         gl::UniformBuffer::create_static_with_size(sizeof(CameraUboData), camera_ubo_binding_point);
@@ -132,6 +140,8 @@ private:
         initial_point_lights_ssbo_size, point_lights_ssbo_binding_point);
     gl::ShaderStorageBuffer _spot_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic_with_size(
         initial_spot_lights_ssbo_size, spot_lights_ssbo_binding_point);
+    gl::ShaderStorageBuffer _ambient_lights_ssbo =
+        gl::ShaderStorageBuffer::create_dynamic(ambient_lights_ssbo_binding_point);
 
     std::vector<InstanceVertex> _instance_data;
     gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size);
@@ -155,6 +165,7 @@ private:
     static auto upload_directional_lights_data() -> void;
     static auto upload_point_lights_data() -> void;
     static auto upload_spot_lights_data() -> void;
+    static auto upload_ambient_lights_data() -> void;
 };
 
 } // namespace zth

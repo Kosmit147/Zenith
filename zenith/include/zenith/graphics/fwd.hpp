@@ -48,6 +48,8 @@ struct PointLightData;
 struct PointLightsSsboData;
 struct SpotLightData;
 struct SpotLightsSsboData;
+struct AmbientLightData;
+struct AmbientLightsSsboData;
 struct MaterialUboData;
 
 struct LineInfo;
