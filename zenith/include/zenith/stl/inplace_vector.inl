@@ -253,7 +253,7 @@ constexpr auto InPlaceVector<T, Capacity>::pop_back() noexcept(std::is_nothrow_d
 template<std::movable T, usize Capacity>
 constexpr auto InPlaceVector<T, Capacity>::clear() noexcept(std::is_nothrow_destructible_v<T>) -> void
 {
-    std::destroy(begin(), end());
+    std::ranges::destroy(*this);
     _size = 0;
 }
 

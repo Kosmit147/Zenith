@@ -59,27 +59,18 @@ auto Buffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, Buf
 }
 
 Buffer::Buffer(Buffer&& other) noexcept
-    : _id(other._id), _size_bytes(other._size_bytes), _state(other._state), _usage(other._usage)
-{
-    other._id = GL_NONE;
-    other._size_bytes = 0;
-    other._state = BufferState::Uninitialized;
-    other._usage = std::nullopt;
-}
+    : _id(std::exchange(other._id, GL_NONE)), _size_bytes(std::exchange(other._size_bytes, 0)),
+      _state(std::exchange(other._state, BufferState::Uninitialized)), _usage(std::exchange(other._usage, std::nullopt))
+{}
 
 auto Buffer::operator=(Buffer&& other) noexcept -> Buffer&
 {
     destroy();
 
-    _id = other._id;
-    _size_bytes = other._size_bytes;
-    _state = other._state;
-    _usage = other._usage;
-
-    other._id = GL_NONE;
-    other._size_bytes = 0;
-    other._state = BufferState::Uninitialized;
-    other._usage = std::nullopt;
+    _id = std::exchange(other._id, GL_NONE);
+    _size_bytes = std::exchange(other._size_bytes, 0);
+    _state = std::exchange(other._state, BufferState::Uninitialized);
+    _usage = std::exchange(other._usage, std::nullopt);
 
     return *this;
 }
@@ -231,18 +222,14 @@ auto VertexBuffer::create_dynamic_with_data(const void* data, u32 data_size_byte
     return buffer;
 }
 
-VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : _buffer(std::move(other._buffer)), _stride(other._stride)
-{
-    other._stride = 0;
-}
+VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
+    : _buffer(std::move(other._buffer)), _stride(std::exchange(other._stride, 0))
+{}
 
 auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
 {
     _buffer = std::move(other._buffer);
-    _stride = other._stride;
-
-    other._stride = 0;
-
+    _stride = std::exchange(other._stride, 0);
     return *this;
 }
 
@@ -329,21 +316,15 @@ auto IndexBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes
 }
 
 IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
-    : _buffer(std::move(other._buffer)), _index_type(other._index_type), _size(other._size)
-{
-    other._index_type = GL_NONE;
-    other._size = 0;
-}
+    : _buffer(std::move(other._buffer)), _index_type(std::exchange(other._index_type, GL_NONE)),
+      _size(std::exchange(other._size, 0))
+{}
 
 auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
 {
     _buffer = std::move(other._buffer);
-    _index_type = other._index_type;
-    _size = other._size;
-
-    other._index_type = GL_NONE;
-    other._size = 0;
-
+    _index_type = std::exchange(other._index_type, GL_NONE);
+    _size = std::exchange(other._size, 0);
     return *this;
 }
 
