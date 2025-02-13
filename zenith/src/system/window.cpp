@@ -97,8 +97,8 @@ auto Window::init(const WindowSpec& spec) -> void
     set_active();
     set_vsync(spec.vsync);
 
-    if (auto limit = spec.frame_rate_limit)
-        set_frame_rate_limit(*limit);
+    if (spec.frame_rate_limit)
+        set_frame_rate_limit(*spec.frame_rate_limit);
 
     set_cursor_enabled(spec.cursor_enabled);
 
@@ -108,8 +108,8 @@ auto Window::init(const WindowSpec& spec) -> void
     set_glfw_mouse_pos_callback(glfw_mouse_pos_callback);
     set_glfw_scroll_callback(glfw_scroll_callback);
 
-    if (auto ratio = spec.forced_aspect_ratio)
-        glfw_force_aspect_ratio(*ratio);
+    if (spec.forced_aspect_ratio)
+        glfw_force_aspect_ratio(*spec.forced_aspect_ratio);
 
     if (!init_glad())
     {
@@ -303,22 +303,25 @@ auto Window::glfw_resize_callback([[maybe_unused]] GLFWwindow* window, int new_w
 auto Window::glfw_key_callback([[maybe_unused]] GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action,
                                [[maybe_unused]] int mods) -> void
 {
-    if (auto translated_key = glfw_key_to_key(key))
+    if (auto converted_key = glfw_key_to_key(key))
     {
         if (action == GLFW_PRESS)
-            EventQueue::push(KeyPressedEvent{ *translated_key });
+            EventQueue::push(KeyPressedEvent{ *converted_key });
         else if (action == GLFW_RELEASE)
-            EventQueue::push(KeyReleasedEvent{ *translated_key });
+            EventQueue::push(KeyReleasedEvent{ *converted_key });
     }
 }
 
 auto Window::glfw_mouse_button_callback([[maybe_unused]] GLFWwindow* window, int button, int action,
                                         [[maybe_unused]] int mods) -> void
 {
-    if (action == GLFW_PRESS)
-        EventQueue::push(MouseButtonPressedEvent{ glfw_mouse_button_to_mouse_button(button) });
-    else if (action == GLFW_RELEASE)
-        EventQueue::push(MouseButtonReleasedEvent{ glfw_mouse_button_to_mouse_button(button) });
+    if (auto converted_mouse_button = glfw_mouse_button_to_mouse_button(button))
+    {
+        if (action == GLFW_PRESS)
+            EventQueue::push(MouseButtonPressedEvent{ *converted_mouse_button });
+        else if (action == GLFW_RELEASE)
+            EventQueue::push(MouseButtonReleasedEvent{ *converted_mouse_button });
+    }
 }
 
 auto Window::glfw_mouse_pos_callback([[maybe_unused]] GLFWwindow* window, double xpos, double ypos) -> void

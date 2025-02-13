@@ -311,7 +311,7 @@ constexpr std::array mouse_button_enumerations = {
 };
 
 [[nodiscard]] auto glfw_key_to_key(int key) -> std::optional<Key>;
-[[nodiscard]] auto glfw_mouse_button_to_mouse_button(int button) -> MouseButton;
+[[nodiscard]] auto glfw_mouse_button_to_mouse_button(int button) -> std::optional<MouseButton>;
 
 [[nodiscard]] auto to_string(Key key) -> const char*;
 [[nodiscard]] auto to_string(MouseButton button) -> const char*;
