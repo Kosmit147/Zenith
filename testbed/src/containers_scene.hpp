@@ -25,6 +25,7 @@ private:
     std::shared_ptr<zth::DirectionalLight> _directional_light;
     std::shared_ptr<zth::PointLight> _point_light;
     std::shared_ptr<zth::SpotLight> _spot_light;
+    std::shared_ptr<zth::AmbientLight> _ambient_light;
     bool _spot_light_on = true;
 
     zth::debug::DirectionalLightUi _directional_light_ui{ *_directional_light };

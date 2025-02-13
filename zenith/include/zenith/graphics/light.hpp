@@ -62,7 +62,7 @@ struct SpotLight
 
 struct AmbientLight
 {
-    // @todo
+    glm::vec3 ambient{ 0.1f };
 };
 
 } // namespace zth

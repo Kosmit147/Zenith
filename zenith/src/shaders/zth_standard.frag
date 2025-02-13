@@ -47,6 +47,11 @@ struct SpotLight
     LightAttenuation attenuation;
 };
 
+struct AmbientLight
+{
+    vec3 ambient;
+};
+
 in vec3 Position;
 in vec3 Normal;
 in vec2 UV;
@@ -74,6 +79,12 @@ layout (std430, binding = ZTH_SPOT_LIGHTS_SSBO_BINDING_POINT) restrict readonly 
     uint count;
     SpotLight lights[];
 } spot_lights;
+
+layout (std430, binding = ZTH_AMBIENT_LIGHTS_SSBO_BINDING_POINT) restrict readonly buffer AmbientLightsSsbo
+{
+    uint count;
+    AmbientLight lights[];
+} ambient_lights;
 
 layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
 {
@@ -204,6 +215,16 @@ vec3 calc_spot_lights(vec3 normal, vec3 view_direction)
     return result;
 }
 
+vec3 calc_ambient_lights()
+{
+    vec3 result = vec3(0.0);
+
+    for (uint i = 0; i < ambient_lights.count; i++)
+        result += ambient_lights.lights[i].ambient;
+
+    return result;
+}
+
 void main()
 {
     vec4 object_color = vec4(material.albedo, 1.0);
@@ -218,6 +239,7 @@ void main()
     light_strength += calc_directional_lights(Normal, view_direction);
     light_strength += calc_point_lights(Normal, view_direction);
     light_strength += calc_spot_lights(Normal, view_direction);
+    light_strength += calc_ambient_lights();
 
     out_color = vec4(light_strength * object_color.rgb, object_color.a);
 

@@ -82,6 +82,18 @@ struct SpotLightsSsboData
     // here goes a variable-length array of SpotLightData (aligned at 16 bytes)
 };
 
+struct AmbientLightData
+{
+    ZTH_SSBO_FIELD(glm::vec3, ambient);
+};
+
+struct AmbientLightsSsboData
+{
+    ZTH_SSBO_FIELD(GLuint, count = 0);
+    ZTH_PAD(12);
+    // here goes a variable-length array of AmbientLightData (aligned at 16 bytes)
+};
+
 struct MaterialUboData
 {
     ZTH_UBO_FIELD(glm::vec3, albedo);
