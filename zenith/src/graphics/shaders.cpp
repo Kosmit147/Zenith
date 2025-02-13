@@ -12,18 +12,19 @@ std::unique_ptr<ShaderList> shader_list;
 
 } // namespace
 
-ShaderList::ShaderList() // clang-format off
+// clang-format off
+ShaderList::ShaderList()
     : fallback({
-        .vertex_source = embedded::shaders::fallback_vert,
-        .fragment_source = embedded::shaders::fallback_frag }),
+          .vertex_source = embedded::shaders::fallback_vert,
+          .fragment_source = embedded::shaders::fallback_frag }),
       flat_color({
           .vertex_source = embedded::shaders::flat_color_vert,
           .fragment_source = embedded::shaders::flat_color_frag }),
       standard({
           .vertex_source = embedded::shaders::standard_vert,
           .fragment_source = embedded::shaders::standard_frag })
-// clang-format on
 {}
+// clang-format on
 
 auto load_shaders() -> void
 {

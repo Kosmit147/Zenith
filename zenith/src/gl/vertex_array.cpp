@@ -70,29 +70,20 @@ auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
 }
 
 VertexArray::VertexArray(VertexArray&& other) noexcept
-    : _id(other._id), _vertex_buffer(other._vertex_buffer), _index_buffer(other._index_buffer),
-      _instance_buffer(other._instance_buffer), _layout(std::move(other._layout))
-{
-    other._id = GL_NONE;
-    other._vertex_buffer = nullptr;
-    other._index_buffer = nullptr;
-    other._instance_buffer = nullptr;
-}
+    : _id(std::exchange(other._id, GL_NONE)), _vertex_buffer(std::exchange(other._vertex_buffer, nullptr)),
+      _index_buffer(std::exchange(other._index_buffer, nullptr)),
+      _instance_buffer(std::exchange(other._instance_buffer, nullptr)), _layout(std::move(other._layout))
+{}
 
 auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
 {
     destroy();
 
-    _id = other._id;
-    _vertex_buffer = other._vertex_buffer;
-    _index_buffer = other._index_buffer;
-    _instance_buffer = other._instance_buffer;
+    _id = std::exchange(other._id, GL_NONE);
+    _vertex_buffer = std::exchange(other._vertex_buffer, nullptr);
+    _index_buffer = std::exchange(other._index_buffer, nullptr);
+    _instance_buffer = std::exchange(other._instance_buffer, nullptr);
     _layout = std::move(other._layout);
-
-    other._id = GL_NONE;
-    other._vertex_buffer = nullptr;
-    other._index_buffer = nullptr;
-    other._instance_buffer = nullptr;
 
     return *this;
 }

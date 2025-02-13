@@ -52,15 +52,11 @@ auto Texture2D::from_file(const std::filesystem::path& path, const TextureParams
     return Texture2D{ path, params };
 }
 
-Texture2D::Texture2D(Texture2D&& other) noexcept : _id(other._id)
-{
-    other._id = GL_NONE;
-}
+Texture2D::Texture2D(Texture2D&& other) noexcept : _id(std::exchange(other._id, GL_NONE)) {}
 
 auto Texture2D::operator=(Texture2D&& other) noexcept -> Texture2D&
 {
-    _id = other._id;
-    other._id = GL_NONE;
+    _id = std::exchange(other._id, GL_NONE);
     return *this;
 }
 
