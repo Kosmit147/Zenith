@@ -11,7 +11,7 @@ add_library(
 	"src/core/transform.cpp"
 	"src/debug/ui/ui.cpp"
 	"src/embedded/shaders.cpp"
-	"src/fs/fs.cpp"
+	"src/fs/file.cpp"
 	"src/gl/buffer.cpp"
 	"src/gl/context.cpp"
 	"src/gl/shader.cpp"

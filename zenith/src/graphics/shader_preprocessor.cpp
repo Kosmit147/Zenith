@@ -2,7 +2,7 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"
-#include "zenith/fs/fs.hpp"
+#include "zenith/fs/file.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"

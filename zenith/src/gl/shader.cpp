@@ -5,7 +5,7 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"
-#include "zenith/fs/fs.hpp"
+#include "zenith/fs/file.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
 #include "zenith/util/defer.hpp"
 

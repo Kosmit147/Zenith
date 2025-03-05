@@ -1,6 +1,6 @@
 #include "zenith/core/asset_manager.hpp"
 
-#include "zenith/fs/fs.hpp"
+#include "zenith/fs/file.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/log/logger.hpp"
 
