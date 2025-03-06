@@ -157,11 +157,11 @@ auto Buffer::reserve(u32 min_size_bytes) -> void
         return;
 
     auto old_size = _size_bytes;
-    auto new_size = old_size * 2 + 1u;
+    auto new_size = old_size * growth_factor + 1u;
 
     // @cleanup: could maybe do this a cleaner way
     while (new_size < min_size_bytes)
-        new_size *= 2;
+        new_size *= growth_factor;
 
     if (old_size != 0)
     {

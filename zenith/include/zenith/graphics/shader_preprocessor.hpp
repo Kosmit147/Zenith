@@ -30,13 +30,13 @@ struct PreprocessShaderError
 class ShaderPreprocessor
 {
 public:
+    using StringRef = std::reference_wrapper<std::string>;
+    using ConstStringRef = std::reference_wrapper<const std::string>;
+
     // @test which recursion depth would be the best
     static constexpr u16 max_recursion_depth = 30;
 
 public:
-    using StringRef = std::reference_wrapper<std::string>;
-    using ConstStringRef = std::reference_wrapper<const std::string>;
-
     ShaderPreprocessor() = delete;
 
     static auto init() -> void;
