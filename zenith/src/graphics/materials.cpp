@@ -2,8 +2,6 @@
 
 #include <glm/vec3.hpp>
 
-#include <iterator>
-
 #include "zenith/core/assert.hpp"
 #include "zenith/graphics/shaders.hpp"
 #include "zenith/log/logger.hpp"
@@ -219,7 +217,7 @@ auto MaterialList::operator[](usize index) const -> const Material&
 
 auto MaterialList::size() const -> usize
 {
-    return std::distance(begin(), end());
+    return std::ranges::distance(*this);
 }
 
 auto load_materials() -> void

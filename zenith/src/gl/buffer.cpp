@@ -128,9 +128,7 @@ auto Buffer::buffer_data(const void* data, u32 data_size_bytes, u32 offset) -> u
     }
     else if (_state == BufferState::InitializedDynamic)
     {
-        if (offset + data_size_bytes > _size_bytes)
-            resize_to_at_least(offset + data_size_bytes);
-
+        reserve(offset + data_size_bytes);
         glNamedBufferSubData(_id, offset, data_size_bytes, data);
     }
     else
@@ -151,15 +149,15 @@ auto Buffer::destroy() -> void
     glDeleteBuffers(1, &_id);
 }
 
-auto Buffer::resize_to_at_least(u32 min_size_bytes) -> void
+auto Buffer::reserve(u32 min_size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::InitializedDynamic);
 
-    if (min_size_bytes <= _size_bytes)
+    if (_size_bytes >= min_size_bytes)
         return;
 
     auto old_size = _size_bytes;
-    auto new_size = old_size * 2 + 1;
+    auto new_size = old_size * 2 + 1u;
 
     // @cleanup: could maybe do this a cleaner way
     while (new_size < min_size_bytes)
