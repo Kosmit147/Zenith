@@ -75,7 +75,7 @@ public:
 
 private:
     usize _size = 0;
-    byte* _data = nullptr; // since we're allocating with malloc, _data is always properly aligned to point to any type
+    byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
 
 private:
     auto allocate(usize size_bytes) -> void;
@@ -149,13 +149,13 @@ public:
 private:
     usize _size = 0;
     usize _capacity = 0;
-    byte* _data = nullptr; // since we're allocating with malloc, _data is always properly aligned to point to any type
+    byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
 
 private:
     auto resize_to_at_least(usize min_size_bytes) -> void;
 
     auto allocate(usize capacity_bytes) -> void;
-    auto reallocate_exactly(usize capacity_bytes) -> void;
+    auto reallocate_exactly(usize new_capacity_bytes) -> void;
     auto reallocate_at_least(usize min_capacity_bytes) -> void;
 };
 

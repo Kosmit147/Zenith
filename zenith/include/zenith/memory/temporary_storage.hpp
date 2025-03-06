@@ -25,8 +25,8 @@ public:
     static auto reset() -> void;
     static auto reset_with_new_capacity(usize new_capacity) -> void;
 
-    [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = default_alignment) -> byte*;
-    [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> byte*;
+    [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = default_alignment) -> void*;
+    [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> void*;
 
     [[nodiscard]] static auto capacity() { return _buffer.size(); }
     [[nodiscard]] static auto space_left() -> usize;
@@ -38,10 +38,10 @@ public:
 private:
     static Buffer _buffer;
     static inline byte* _buffer_ptr = nullptr;
-    static std::vector<byte*> _overflow_allocations;
+    static std::vector<void*> _overflow_allocations;
 
 private:
-    [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> byte*;
+    [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> void*;
     static auto free_overflow_allocations() -> void;
 };
 
@@ -63,7 +63,7 @@ template<typename T> struct TemporaryStorageAllocator
 
 template<typename T> auto TemporaryStorageAllocator<T>::allocate(std::size_t count) const -> T*
 {
-    return reinterpret_cast<T*>(TemporaryStorage::allocate(count * sizeof(T), alignof(T)));
+    return static_cast<T*>(TemporaryStorage::allocate(count * sizeof(T), alignof(T)));
 }
 
 using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
