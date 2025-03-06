@@ -13,14 +13,18 @@ using u32 = std::uint32_t;
 using i32 = std::int32_t;
 using u64 = std::uint64_t;
 using i64 = std::int64_t;
-using isize = i64;
-using usize = std::size_t;
+using isize = std::intmax_t;
+using usize = std::uintmax_t;
 
 using f32 = float;
 using f64 = double;
 
-static_assert(sizeof(isize) == sizeof(usize));
 static_assert(sizeof(f32) == 4);
 static_assert(sizeof(f64) == 8);
+
+using byte = std::byte;
+
+using iptr_t = std::intptr_t;
+using uptr_t = std::uintptr_t;
 
 } // namespace zth
