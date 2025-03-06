@@ -30,6 +30,7 @@ add_library(
 	"src/log/logger.cpp"
 	"src/math/matrix.cpp"
 	"src/math/quaternion.cpp"
+	"src/memory/buffer.cpp"
 	"src/stl/string.cpp"
 	"src/system/application.cpp"
 	"src/system/event.cpp"
