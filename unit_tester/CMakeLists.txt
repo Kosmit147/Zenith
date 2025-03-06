@@ -8,6 +8,7 @@ add_executable(
 	unit_tester
 	"src/defer.cpp"
 	"src/inplace_vector.cpp"
+	"src/memory.cpp"
 	"src/shader_preprocessor.cpp"
 	"src/string.cpp"
 	"src/string_hasher.cpp"

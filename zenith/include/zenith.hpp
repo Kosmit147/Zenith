@@ -8,6 +8,7 @@
 #include "zenith/graphics.hpp"
 #include "zenith/log.hpp"
 #include "zenith/math.hpp"
+#include "zenith/memory.hpp"
 #include "zenith/stl.hpp"
 #include "zenith/system.hpp"
 #include "zenith/util.hpp"
