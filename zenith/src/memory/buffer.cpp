@@ -1,6 +1,7 @@
 #include "zenith/memory/buffer.hpp"
 
 #include "zenith/core/assert.hpp"
+#include "zenith/memory/alloc.hpp"
 
 namespace zth {
 
@@ -131,7 +132,7 @@ auto Buffer::resize(usize size_bytes) -> void
 
 auto Buffer::free() -> void
 {
-    std::free(_data);
+    zth::free(_data);
     _size = 0;
     _data = nullptr;
 }
@@ -145,19 +146,14 @@ auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) 
 
 auto Buffer::allocate(usize size_bytes) -> void
 {
+    _data = static_cast<byte*>(zth::allocate(size_bytes));
     _size = size_bytes;
-    _data = static_cast<byte*>(std::malloc(size_bytes));
 }
 
 auto Buffer::reallocate(usize size_bytes) -> void
 {
-    auto old_data = _data;
-    auto old_size = _size;
-
-    allocate(size_bytes);
-
-    std::memcpy(_data, old_data, std::min(old_size, _size));
-    std::free(old_data);
+    zth::reallocate(_data, size_bytes, _size);
+    _size = size_bytes;
 }
 
 DynamicBuffer::DynamicBuffer(usize size)
@@ -305,7 +301,7 @@ auto DynamicBuffer::shrink_to_fit() -> void
 
 auto DynamicBuffer::free() -> void
 {
-    std::free(_data);
+    zth::free(_data);
     _size = 0;
     _capacity = 0;
     _data = nullptr;
@@ -331,19 +327,14 @@ auto DynamicBuffer::resize_to_at_least(usize min_size_bytes) -> void
 
 auto DynamicBuffer::allocate(usize capacity_bytes) -> void
 {
+    _data = static_cast<byte*>(zth::allocate(capacity_bytes));
     _capacity = capacity_bytes;
-    _data = static_cast<byte*>(std::malloc(capacity_bytes));
 }
 
-auto DynamicBuffer::reallocate_exactly(usize capacity_bytes) -> void
+auto DynamicBuffer::reallocate_exactly(usize new_capacity_bytes) -> void
 {
-    auto old_data = _data;
-
-    allocate(capacity_bytes);
-    _size = std::min(_size, _capacity);
-
-    std::memcpy(_data, old_data, _size);
-    std::free(old_data);
+    zth::reallocate(_data, new_capacity_bytes, _size);
+    _capacity = new_capacity_bytes;
 }
 
 auto DynamicBuffer::reallocate_at_least(usize min_capacity_bytes) -> void
