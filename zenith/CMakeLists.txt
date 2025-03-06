@@ -31,6 +31,7 @@ add_library(
 	"src/math/matrix.cpp"
 	"src/math/quaternion.cpp"
 	"src/memory/buffer.cpp"
+	"src/memory/temporary_storage.cpp"
 	"src/stl/string.cpp"
 	"src/system/application.cpp"
 	"src/system/event.cpp"

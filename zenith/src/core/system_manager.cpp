@@ -7,6 +7,7 @@
 #include "zenith/graphics/renderer.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/system/application.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/input.hpp"
@@ -14,16 +15,18 @@
 
 // list of which systems depend on which other systems
 // we need to make sure that they're initialized in the right order
+// nearly every system depends on Logger and on TemporaryStorage, so we don't list those in the dependencies list
 //
 // Logger -> {}
-// Time -> { Logger }
-// Window -> { Logger }
-// Input -> { Logger, Window }
-// ShaderPreprocessor -> { Logger }
-// AssetManager -> { Logger, ShaderPreprocessor }
-// Renderer -> { Logger, Window, ShaderPreprocessor }
-// ImGuiRenderer -> { Logger, Renderer, Window }
-// SceneManager -> { Logger }
+// TemporaryStorage -> {}
+// Time -> {}
+// Window -> {}
+// Input -> { Window }
+// ShaderPreprocessor -> {}
+// AssetManager -> { ShaderPreprocessor }
+// Renderer -> { Window, ShaderPreprocessor }
+// ImGuiRenderer -> { Renderer, Window }
+// SceneManager -> {}
 
 namespace zth {
 
@@ -39,6 +42,7 @@ auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
     try
     {
         add_system([&] { Logger::init(spec.logger_spec); }, Logger::shut_down);
+        add_system([&] { TemporaryStorage::init(); }, TemporaryStorage::shut_down);
         add_system([&] { Time::init(); }, Time::shut_down);
         add_system([&] { Window::init(spec.window_spec); }, Window::shut_down);
         add_system([&] { Input::init(); }, Input::shut_down);
@@ -75,6 +79,9 @@ auto SystemManager::on_event(const Event& event) -> void
 
 auto SystemManager::on_update() -> void
 {
+    // clear temporary storage before updating other systems
+    TemporaryStorage::on_update();
+
     // start ImGui's next frame before updating other systems
     ImGuiRenderer::on_update();
 
