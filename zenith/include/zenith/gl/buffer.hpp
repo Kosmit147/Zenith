@@ -124,7 +124,7 @@ private:
     auto create() -> void;
     auto destroy() -> void;
 
-    auto resize_to_at_least(u32 min_size_bytes) -> void;
+    auto reserve(u32 min_size_bytes) -> void;
 };
 
 class VertexBuffer

@@ -218,7 +218,7 @@ constexpr auto InPlaceVector<T, Capacity>::emplace_back(Args&&... args)
     noexcept(std::is_nothrow_constructible_v<T, Args...>) -> T&
 {
     ZTH_ASSERT(_size < capacity());
-    std::construct_at(cbegin() + _size, std::forward<Args>(args)...);
+    std::construct_at(cbegin() + _size, std::forward<decltype(args)>(args)...);
     _size++;
     return back();
 }

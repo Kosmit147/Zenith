@@ -2,7 +2,6 @@
 
 #include <array>
 #include <concepts>
-#include <cstddef>
 #include <initializer_list>
 #include <type_traits>
 
@@ -28,7 +27,7 @@ public:
 
     constexpr ~InPlaceVector() noexcept(std::is_nothrow_destructible_v<T>);
 
-    // --- Element access
+    // --- Data access
     [[nodiscard]] constexpr auto at(usize index) -> T&;
     [[nodiscard]] constexpr auto at(usize index) const -> const T&;
 
@@ -71,7 +70,7 @@ public:
 
 private:
     usize _size = 0;
-    alignas(T) std::array<std::byte, sizeof(T) * Capacity> _data{};
+    alignas(T) std::array<byte, sizeof(T) * Capacity> _data;
 };
 
 } // namespace zth
