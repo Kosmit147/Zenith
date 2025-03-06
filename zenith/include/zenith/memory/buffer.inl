@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace zth {
 
 Buffer::Buffer(std::ranges::contiguous_range auto&& data)
@@ -8,7 +10,7 @@ Buffer::Buffer(std::ranges::contiguous_range auto&& data)
 
 auto Buffer::with_data(auto&& data) -> Buffer
 {
-    return Buffer{ &data, sizeof(data) };
+    return Buffer{ std::addressof(data), sizeof(data) };
 }
 
 auto Buffer::with_data(std::ranges::contiguous_range auto&& data) -> Buffer
@@ -18,7 +20,7 @@ auto Buffer::with_data(std::ranges::contiguous_range auto&& data) -> Buffer
 
 auto Buffer::buffer_data(auto&& data, usize offset) -> usize
 {
-    return buffer_data(&data, sizeof(data), offset);
+    return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
 auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
@@ -34,7 +36,7 @@ DynamicBuffer::DynamicBuffer(std::ranges::contiguous_range auto&& data)
 
 auto DynamicBuffer::with_data(auto&& data) -> DynamicBuffer
 {
-    return DynamicBuffer{ &data, sizeof(data) };
+    return DynamicBuffer{ std::addressof(data), sizeof(data) };
 }
 
 auto DynamicBuffer::with_data(std::ranges::contiguous_range auto&& data) -> DynamicBuffer
@@ -44,7 +46,7 @@ auto DynamicBuffer::with_data(std::ranges::contiguous_range auto&& data) -> Dyna
 
 auto DynamicBuffer::buffer_data(auto&& data, usize offset) -> usize
 {
-    return buffer_data(&data, sizeof(data), offset);
+    return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
 auto DynamicBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
