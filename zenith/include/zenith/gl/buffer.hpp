@@ -64,6 +64,9 @@ class Buffer
 public:
     using BufferId = GLuint;
 
+    static constexpr u32 growth_factor = 2;
+
+public:
     explicit Buffer();
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> Buffer;
