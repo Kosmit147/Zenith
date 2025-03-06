@@ -406,8 +406,8 @@ auto InstanceBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) -> In
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes,
-                                              BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage)
+    -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_dynamic_with_data(data, data_size_bytes, usage);
@@ -509,8 +509,8 @@ auto ShaderStorageBuffer::create_static_with_data(const void* data, u32 data_siz
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_static_with_data(const void* data, u32 data_size_bytes,
-                                                  u32 binding_point) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_static_with_data(data, data_size_bytes, binding_point);
@@ -538,16 +538,16 @@ auto ShaderStorageBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) 
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_size(u32 size, u32 binding_point,
-                                                   BufferUsage usage) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_dynamic_with_size(u32 size, u32 binding_point, BufferUsage usage)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_dynamic_with_size(size, binding_point, usage);
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes,
-                                                   BufferUsage usage) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_dynamic_with_data(data, data_size_bytes, usage);

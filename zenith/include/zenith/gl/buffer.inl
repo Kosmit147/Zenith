@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "zenith/gl/util.hpp"
 
 namespace zth::gl {
@@ -36,7 +38,7 @@ auto Buffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
 
 auto Buffer::init_static_with_data(auto&& data) -> void
 {
-    init_static_with_data(&data, sizeof(data));
+    init_static_with_data(std::addressof(data), sizeof(data));
 }
 
 auto Buffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
@@ -48,7 +50,7 @@ auto Buffer::init_static_with_data(std::ranges::contiguous_range auto&& data) ->
 
 auto Buffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
 {
-    init_dynamic_with_data(&data, sizeof(data), usage);
+    init_dynamic_with_data(std::addressof(data), sizeof(data), usage);
 }
 
 auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
@@ -60,7 +62,7 @@ auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, B
 
 auto Buffer::buffer_data(auto&& data, u32 offset) -> u32
 {
-    return buffer_data(&data, sizeof(data), offset);
+    return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
 auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
@@ -79,8 +81,8 @@ auto VertexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& 
     return buffer;
 }
 
-auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                            BufferUsage usage) -> VertexBuffer
+auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage)
+    -> VertexBuffer
 {
     VertexBuffer buffer;
     buffer.init_dynamic_with_data(data, usage);
@@ -157,8 +159,8 @@ auto InstanceBuffer::create_static_with_data(std::ranges::contiguous_range auto&
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                              BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage)
+    -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_dynamic_with_data(data, usage);
@@ -188,8 +190,8 @@ auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&&
     return buffer;
 }
 
-auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data,
-                                            u32 binding_point) -> UniformBuffer
+auto UniformBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point)
+    -> UniformBuffer
 {
     UniformBuffer buffer;
     buffer.init_static_with_data(data, binding_point);
@@ -251,8 +253,8 @@ auto ShaderStorageBuffer::create_static_with_data(std::ranges::contiguous_range 
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data,
-                                                  u32 binding_point) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_static_with_data(data, binding_point);
@@ -266,16 +268,16 @@ auto ShaderStorageBuffer::create_dynamic_with_data(auto&& data, BufferUsage usag
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_data(auto&& data, u32 binding_point,
-                                                   BufferUsage usage) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_dynamic_with_data(auto&& data, u32 binding_point, BufferUsage usage)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_dynamic_with_data(data, binding_point, usage);
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                                   BufferUsage usage) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage)
+    -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
     buffer.init_dynamic_with_data(data, usage);
