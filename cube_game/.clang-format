@@ -25,7 +25,6 @@ AllowAllArgumentsOnNextLine: false
 BreakBeforeBinaryOperators: NonAssignment
 SpaceAfterTemplateKeyword: false
 AllowBreakBeforeNoexceptSpecifier: Always
-PenaltyReturnTypeOnItsOwnLine: 200
 
 AllowShortBlocksOnASingleLine: Empty
 AllowShortFunctionsOnASingleLine: Inline
