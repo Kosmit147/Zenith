@@ -19,9 +19,9 @@ template<typename T> auto reallocate(T*& ptr, usize new_size_bytes, usize buffer
 template<> auto reallocate(void*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void;
 
 // this function sets ptr to nullptr
-template<typename T> auto free(T*& ptr) noexcept -> void;
+template<typename T> auto deallocate(T*& ptr) noexcept -> void;
 // this function sets ptr to nullptr
-template<> auto free(void*& ptr) noexcept -> void;
+template<> auto deallocate(void*& ptr) noexcept -> void;
 
 template<typename T> struct Allocator
 {
@@ -48,9 +48,9 @@ template<typename T> auto reallocate(T*& ptr, usize new_size_bytes, usize buffer
     reallocate(reinterpret_cast<void*&>(ptr), new_size_bytes, buffer_size_bytes);
 }
 
-template<typename T> auto free(T*& ptr) noexcept -> void
+template<typename T> auto deallocate(T*& ptr) noexcept -> void
 {
-    free(reinterpret_cast<void*&>(ptr));
+    deallocate(reinterpret_cast<void*&>(ptr));
 }
 
 template<typename T> auto Allocator<T>::allocate(std::size_t count) const noexcept -> T*
@@ -60,7 +60,7 @@ template<typename T> auto Allocator<T>::allocate(std::size_t count) const noexce
 
 template<typename T> auto Allocator<T>::deallocate(T* ptr, [[maybe_unused]] std::size_t count) const noexcept -> void
 {
-    memory::free(ptr);
+    memory::deallocate(ptr);
 }
 
 } // namespace zth::memory
