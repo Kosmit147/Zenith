@@ -3,7 +3,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/memory/alloc.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 Buffer::Buffer(usize size)
 {
@@ -133,7 +133,7 @@ auto Buffer::resize(usize size_bytes) -> void
 auto Buffer::free() -> void
 {
     _size = 0;
-    zth::free(_data);
+    memory::free(_data);
 }
 
 auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
@@ -145,13 +145,13 @@ auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) 
 
 auto Buffer::allocate(usize size_bytes) -> void
 {
-    _data = static_cast<byte*>(zth::allocate(size_bytes));
+    _data = static_cast<byte*>(memory::allocate(size_bytes));
     _size = size_bytes;
 }
 
 auto Buffer::reallocate(usize size_bytes) -> void
 {
-    zth::reallocate(_data, size_bytes, _size);
+    memory::reallocate(_data, size_bytes, _size);
     _size = size_bytes;
 }
 
@@ -302,7 +302,7 @@ auto DynamicBuffer::free() -> void
 {
     _size = 0;
     _capacity = 0;
-    zth::free(_data);
+    memory::free(_data);
 }
 
 auto DynamicBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
@@ -325,13 +325,13 @@ auto DynamicBuffer::resize_to_at_least(usize min_size_bytes) -> void
 
 auto DynamicBuffer::allocate(usize capacity_bytes) -> void
 {
-    _data = static_cast<byte*>(zth::allocate(capacity_bytes));
+    _data = static_cast<byte*>(memory::allocate(capacity_bytes));
     _capacity = capacity_bytes;
 }
 
 auto DynamicBuffer::reallocate_exactly(usize new_capacity_bytes) -> void
 {
-    zth::reallocate(_data, new_capacity_bytes, _size);
+    memory::reallocate(_data, new_capacity_bytes, _size);
     _capacity = new_capacity_bytes;
 }
 
@@ -349,4 +349,4 @@ auto DynamicBuffer::reallocate_at_least(usize min_capacity_bytes) -> void
     reallocate_exactly(new_capacity);
 }
 
-} // namespace zth
+} // namespace zth::memory

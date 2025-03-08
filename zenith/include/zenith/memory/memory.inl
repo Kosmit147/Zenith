@@ -3,7 +3,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/math/number.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 template<typename T> constexpr auto is_aligned(T* ptr, usize alignment) -> bool
 {
@@ -68,7 +68,7 @@ constexpr auto gigabytes(usize n) -> usize
     return megabytes(n) * 1024u;
 }
 
-namespace memory_size_literals {
+namespace size_literals {
 
 constexpr auto operator""_kb(usize n) -> usize
 {
@@ -85,6 +85,6 @@ constexpr auto operator""_gb(usize n) -> usize
     return gigabytes(n);
 }
 
-} // namespace memory_size_literals
+} // namespace size_literals
 
-} // namespace zth
+} // namespace zth::memory

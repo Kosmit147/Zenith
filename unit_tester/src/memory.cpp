@@ -43,16 +43,16 @@ TEST_CASE("pointer alignment functions", "[Memory]")
         for (std::size_t i = 0; i < int_pointers.size(); i++)
         {
             auto ptr = int_pointers[i];
-            REQUIRE(zth::aligned(ptr) == expected_aligned_int_pointers[i]);
-            zth::align(ptr);
+            REQUIRE(zth::memory::aligned(ptr) == expected_aligned_int_pointers[i]);
+            zth::memory::align(ptr);
             REQUIRE(ptr == expected_aligned_int_pointers[i]);
         }
 
         for (std::size_t i = 0; i < byte_pointers.size(); i++)
         {
             auto ptr = byte_pointers[i];
-            REQUIRE(zth::aligned(ptr) == expected_aligned_byte_pointers[i]);
-            zth::align(ptr);
+            REQUIRE(zth::memory::aligned(ptr) == expected_aligned_byte_pointers[i]);
+            zth::memory::align(ptr);
             REQUIRE(ptr == expected_aligned_byte_pointers[i]);
         }
     }
@@ -62,16 +62,16 @@ TEST_CASE("pointer alignment functions", "[Memory]")
         for (std::size_t i = 0; i < int_pointers.size(); i++)
         {
             auto ptr = int_pointers[i];
-            REQUIRE(zth::aligned_down(ptr) == expected_aligned_down_int_pointers[i]);
-            zth::align_down(ptr);
+            REQUIRE(zth::memory::aligned_down(ptr) == expected_aligned_down_int_pointers[i]);
+            zth::memory::align_down(ptr);
             REQUIRE(ptr == expected_aligned_down_int_pointers[i]);
         }
 
         for (std::size_t i = 0; i < byte_pointers.size(); i++)
         {
             auto ptr = byte_pointers[i];
-            REQUIRE(zth::aligned_down(ptr) == expected_aligned_down_byte_pointers[i]);
-            zth::align_down(ptr);
+            REQUIRE(zth::memory::aligned_down(ptr) == expected_aligned_down_byte_pointers[i]);
+            zth::memory::align_down(ptr);
             REQUIRE(ptr == expected_aligned_down_byte_pointers[i]);
         }
     }

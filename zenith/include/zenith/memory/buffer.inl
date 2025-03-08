@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace zth {
+namespace zth::memory {
 
 Buffer::Buffer(std::ranges::contiguous_range auto&& data)
     : Buffer(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>))
@@ -56,4 +56,4 @@ auto DynamicBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize
     return buffer_data(std::data(data), data_size_bytes, offset);
 }
 
-} // namespace zth
+} // namespace zth::memory

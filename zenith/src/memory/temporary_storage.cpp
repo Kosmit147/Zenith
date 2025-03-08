@@ -8,7 +8,7 @@
 
 namespace zth {
 
-Buffer TemporaryStorage::_buffer{ initial_capacity };
+memory::Buffer TemporaryStorage::_buffer{ initial_capacity };
 std::vector<void*> TemporaryStorage::_overflow_allocations;
 
 auto TemporaryStorage::init() -> void
@@ -51,7 +51,7 @@ auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
     ZTH_ASSERT(size_bytes != 0);
     ZTH_ASSERT(is_power_of_2(alignment));
 
-    align(_buffer_ptr, alignment);
+    memory::align(_buffer_ptr, alignment);
     return allocate_unaligned(size_bytes);
 }
 
@@ -87,7 +87,7 @@ auto TemporaryStorage::space_used() -> usize
 
 auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 {
-    auto ptr = zth::allocate(size_bytes);
+    auto ptr = memory::allocate(size_bytes);
     _overflow_allocations.push_back(ptr);
     return ptr;
 }
@@ -95,7 +95,7 @@ auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 auto TemporaryStorage::free_overflow_allocations() -> void
 {
     for (auto memory_ptr : _overflow_allocations)
-        zth::free(memory_ptr);
+        memory::free(memory_ptr);
 
     _overflow_allocations.clear();
     _overflow_allocations.shrink_to_fit();
