@@ -2,7 +2,7 @@
 
 #include "zenith/core/assert.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 auto allocate(usize size_bytes) noexcept -> void*
 {
@@ -50,4 +50,4 @@ template<> auto free(void*& ptr) noexcept -> void
     ptr = nullptr;
 }
 
-} // namespace zth
+} // namespace zth::memory

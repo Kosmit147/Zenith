@@ -4,7 +4,7 @@
 
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 constexpr usize minimal_alignment = alignof(std::max_align_t);
 constexpr usize default_alignment = 16; // @speed: maybe default alignment should be minimal_alignment instead of 16
@@ -23,7 +23,7 @@ template<typename T> constexpr auto align_down(T*& ptr, usize alignment = aligno
 [[nodiscard]] constexpr auto megabytes(usize n) -> usize;
 [[nodiscard]] constexpr auto gigabytes(usize n) -> usize;
 
-namespace memory_size_literals {
+namespace size_literals {
 
 [[nodiscard]] constexpr auto operator""_kb(usize n) -> usize;
 [[nodiscard]] constexpr auto operator""_mb(usize n) -> usize;
@@ -31,6 +31,6 @@ namespace memory_size_literals {
 
 } // namespace memory_size_literals
 
-} // namespace zth
+} // namespace zth::memory
 
 #include "memory.inl"

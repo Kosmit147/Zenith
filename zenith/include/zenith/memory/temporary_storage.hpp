@@ -13,7 +13,7 @@ namespace zth {
 class TemporaryStorage
 {
 public:
-    static constexpr usize initial_capacity = megabytes(10);
+    static constexpr usize initial_capacity = memory::megabytes(10);
 
 public:
     TemporaryStorage() = delete;
@@ -25,7 +25,7 @@ public:
     static auto reset() -> void;
     static auto reset_with_new_capacity(usize new_capacity) -> void;
 
-    [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = default_alignment) -> void*;
+    [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = memory::default_alignment) -> void*;
     [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> void*;
 
     [[nodiscard]] static auto capacity() { return _buffer.size(); }
@@ -36,7 +36,7 @@ public:
     [[nodiscard]] static auto end() -> byte* { return _buffer.cend(); }
 
 private:
-    static Buffer _buffer;
+    static memory::Buffer _buffer;
     static inline byte* _buffer_ptr = nullptr;
     static std::vector<void*> _overflow_allocations;
 

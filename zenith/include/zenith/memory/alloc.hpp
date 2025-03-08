@@ -2,7 +2,7 @@
 
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 [[nodiscard]] auto allocate(usize size_bytes) noexcept -> void*;
 
@@ -38,4 +38,4 @@ template<typename T> auto free(T*& ptr) noexcept -> void
     free(reinterpret_cast<void*&>(ptr));
 }
 
-} // namespace zth
+} // namespace zth::memory

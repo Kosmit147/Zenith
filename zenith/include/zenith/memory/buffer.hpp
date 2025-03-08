@@ -6,7 +6,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/memory.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 template<usize Size, usize Alignment = default_alignment> class alignas(Alignment) StaticBuffer
 {
@@ -159,6 +159,6 @@ private:
     auto reallocate_at_least(usize min_capacity_bytes) -> void;
 };
 
-} // namespace zth
+} // namespace zth::memory
 
 #include "buffer.inl"
