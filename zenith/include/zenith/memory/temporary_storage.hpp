@@ -47,8 +47,7 @@ private:
 
 template<typename T> struct TemporaryStorageAllocator
 {
-    // This is a minimal allocator implementation. Because of that, the standard library will automatically provide
-    // efficient construct() and destruct() methods
+    // A minimal allocator implementation.
 
     using value_type = T;
 
@@ -57,14 +56,19 @@ template<typename T> struct TemporaryStorageAllocator
     template<typename U> auto operator==(const TemporaryStorageAllocator<U>&) const noexcept -> bool { return true; }
     template<typename U> auto operator!=(const TemporaryStorageAllocator<U>&) const noexcept -> bool { return false; }
 
-    auto allocate(std::size_t count) const -> T*;
-    auto deallocate([[maybe_unused]] T* ptr, [[maybe_unused]] std::size_t count) const noexcept -> void {}
+    auto allocate(std::size_t count) const noexcept -> T*;
+    auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
-template<typename T> auto TemporaryStorageAllocator<T>::allocate(std::size_t count) const -> T*
+template<typename T> auto TemporaryStorageAllocator<T>::allocate(std::size_t count) const noexcept -> T*
 {
     return static_cast<T*>(TemporaryStorage::allocate(count * sizeof(T), alignof(T)));
 }
+
+template<typename T>
+auto TemporaryStorageAllocator<T>::deallocate([[maybe_unused]] T* ptr,
+                                              [[maybe_unused]] std::size_t count) const noexcept -> void
+{}
 
 using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 
