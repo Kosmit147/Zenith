@@ -6,7 +6,8 @@ namespace zth {
 
 auto allocate(usize size_bytes) noexcept -> void*
 {
-    ZTH_ASSERT(size_bytes != 0);
+    if (size_bytes == 0)
+        return nullptr;
 
     auto ptr = std::malloc(size_bytes);
     ZTH_ASSERT(ptr != nullptr);
@@ -16,15 +17,23 @@ auto allocate(usize size_bytes) noexcept -> void*
 
 template<> auto reallocate(void*& ptr, usize new_size_bytes) noexcept -> void
 {
-    ZTH_ASSERT(new_size_bytes != 0);
+    if (new_size_bytes == 0)
+    {
+        free(ptr);
+        return;
+    }
 
     ptr = std::realloc(ptr, new_size_bytes);
     ZTH_ASSERT(ptr != nullptr);
 }
 
-template<> auto reallocate<void>(void*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void
+template<> auto reallocate(void*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void
 {
-    ZTH_ASSERT(new_size_bytes != 0);
+    if (new_size_bytes == 0)
+    {
+        free(ptr);
+        return;
+    }
 
     // @speed: maybe using std::realloc would be faster
     // the rationale for what we're doing right now is that buffer_size_bytes could potentially be a lot smaller than
@@ -35,9 +44,10 @@ template<> auto reallocate<void>(void*& ptr, usize new_size_bytes, usize buffer_
     free(old_ptr);
 }
 
-auto free(void* ptr) noexcept -> void
+template<> auto free(void*& ptr) noexcept -> void
 {
     std::free(ptr);
+    ptr = nullptr;
 }
 
 } // namespace zth
