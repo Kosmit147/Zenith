@@ -64,8 +64,6 @@ class Buffer
 public:
     using BufferId = GLuint;
 
-    static constexpr u32 growth_factor = 2;
-
 public:
     explicit Buffer();
 
@@ -128,6 +126,8 @@ private:
     auto destroy() -> void;
 
     auto reserve(u32 min_size_bytes) -> void;
+
+    [[nodiscard]] static auto calculate_growth(u32 old_size) -> u32;
 };
 
 class VertexBuffer
