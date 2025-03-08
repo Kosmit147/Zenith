@@ -35,7 +35,7 @@ auto Buffer::operator=(const Buffer& other) -> Buffer&
     if (this == &other)
         return *this;
 
-    if (_size < other._size)
+    if (_size != other._size)
     {
         free();
         allocate(other._size);
@@ -220,9 +220,9 @@ DynamicBuffer::~DynamicBuffer()
 
 auto DynamicBuffer::data() && -> byte*
 {
-    auto data = _data;
-    free();
-    return data;
+    _size = 0;
+    _capacity = 0;
+    return std::exchange(_data, nullptr);
 }
 
 auto DynamicBuffer::operator[](usize offset) -> byte&
