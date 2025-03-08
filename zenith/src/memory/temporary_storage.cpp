@@ -49,7 +49,7 @@ auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 {
     ZTH_ASSERT(_buffer_ptr != nullptr);
     ZTH_ASSERT(size_bytes != 0);
-    ZTH_ASSERT(is_power_of_2(alignment));
+    ZTH_ASSERT(math::is_power_of_2(alignment));
 
     memory::align(_buffer_ptr, alignment);
     return allocate_unaligned(size_bytes);
