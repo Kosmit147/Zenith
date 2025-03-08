@@ -4,11 +4,11 @@
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/memory/memory.hpp"
+#include "zenith/memory/fwd.hpp"
 
 namespace zth::memory {
 
-template<usize Size, usize Alignment = default_alignment> class alignas(Alignment) StaticBuffer
+template<usize Size, usize Alignment> class alignas(Alignment) StaticBuffer
 {
 public:
     alignas(Alignment) std::array<byte, Size> data;
