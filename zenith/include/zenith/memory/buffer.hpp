@@ -20,7 +20,7 @@ class Buffer
 {
 public:
     explicit Buffer() = default;
-    explicit Buffer(usize size);
+    explicit Buffer(usize size_bytes);
     explicit Buffer(const void* data, usize data_size_bytes);
     explicit Buffer(std::ranges::contiguous_range auto&& data);
 
@@ -57,10 +57,10 @@ public:
     [[nodiscard]] auto cend() const -> const byte*;
 
     // --- Size and capacity
-    [[nodiscard]] auto empty() const { return _size == 0; }
-    [[nodiscard]] auto size() const { return _size; }
-    [[nodiscard]] auto size_bytes() const { return _size; }
-    [[nodiscard]] auto capacity() const { return _size; }
+    [[nodiscard]] auto empty() const { return _size_bytes == 0; }
+    [[nodiscard]] auto size() const { return _size_bytes; }
+    [[nodiscard]] auto size_bytes() const { return _size_bytes; }
+    [[nodiscard]] auto capacity() const { return _size_bytes; }
 
     auto resize(usize size_bytes) -> void;
     auto free() -> void;
@@ -74,7 +74,7 @@ public:
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
 private:
-    usize _size = 0;
+    usize _size_bytes = 0;
     byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
 
 private:
@@ -86,7 +86,7 @@ class DynamicBuffer
 {
 public:
     explicit DynamicBuffer() = default;
-    explicit DynamicBuffer(usize size);
+    explicit DynamicBuffer(usize size_bytes);
     explicit DynamicBuffer(const void* data, usize data_size_bytes);
     explicit DynamicBuffer(std::ranges::contiguous_range auto&& data);
 
@@ -123,10 +123,10 @@ public:
     [[nodiscard]] auto cend() const -> const byte*;
 
     // --- Size and capacity
-    [[nodiscard]] auto empty() const { return _size == 0; }
-    [[nodiscard]] auto size() const { return _size; }
-    [[nodiscard]] auto size_bytes() const { return _size; }
-    [[nodiscard]] auto capacity() const { return _capacity; }
+    [[nodiscard]] auto empty() const { return _size_bytes == 0; }
+    [[nodiscard]] auto size() const { return _size_bytes; }
+    [[nodiscard]] auto size_bytes() const { return _size_bytes; }
+    [[nodiscard]] auto capacity() const { return _capacity_bytes; }
 
     auto resize(usize size_bytes) -> void;
     auto reserve(usize min_capacity_bytes) -> void;
@@ -144,8 +144,8 @@ public:
     auto clear() -> void;
 
 private:
-    usize _size = 0;
-    usize _capacity = 0;
+    usize _size_bytes = 0;
+    usize _capacity_bytes = 0;
     byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
 
 private:
@@ -155,7 +155,7 @@ private:
     auto reallocate_exactly(usize new_capacity_bytes) -> void;
     auto reallocate_at_least(usize min_capacity_bytes) -> void;
 
-    [[nodiscard]] static auto calculate_growth(usize old_size) -> usize;
+    [[nodiscard]] static auto calculate_growth(usize old_size_bytes) -> usize;
 };
 
 } // namespace zth::memory

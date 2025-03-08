@@ -139,6 +139,27 @@ auto Buffer::buffer_data(const void* data, u32 data_size_bytes, u32 offset) -> u
     return data_size_bytes;
 }
 
+auto Buffer::reserve(u32 min_size_bytes) -> void
+{
+    ZTH_ASSERT(_state == BufferState::InitializedDynamic);
+
+    if (_size_bytes >= min_size_bytes)
+        return;
+
+    auto new_size = std::max(calculate_growth(_size_bytes), min_size_bytes);
+    resize(new_size);
+}
+
+auto Buffer::resize(u32 size_bytes) -> void
+{
+    ZTH_ASSERT(_state == BufferState::InitializedDynamic);
+
+    if (_size_bytes == size_bytes)
+        return;
+
+    reallocate(size_bytes);
+}
+
 auto Buffer::create() -> void
 {
     glCreateBuffers(1, &_id);
@@ -149,47 +170,44 @@ auto Buffer::destroy() -> void
     glDeleteBuffers(1, &_id);
 }
 
-auto Buffer::reserve(u32 min_size_bytes) -> void
+auto Buffer::reallocate(u32 new_size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::InitializedDynamic);
 
-    if (_size_bytes >= min_size_bytes)
-        return;
-
-    auto old_size = _size_bytes;
-    auto new_size = std::max(calculate_growth(old_size), min_size_bytes);
-
-    if (old_size != 0)
+    if (_size_bytes != 0)
     {
         // need to copy the buffer's contents to newly allocated memory
+        // we can't just create a new buffer and free the old one because the id of this buffer needs to stay the same
+        // @speed: we could probably some kind of temporary buffer here instead of always creating a new one
 
-        Buffer tmp_buffer = create_static_with_size(old_size);
-        glCopyNamedBufferSubData(_id, tmp_buffer._id, 0, 0, old_size);
+        auto bytes_to_copy = std::min(_size_bytes, new_size_bytes);
+        Buffer tmp_buffer = create_static_with_size(bytes_to_copy);
+        glCopyNamedBufferSubData(_id, tmp_buffer._id, 0, 0, bytes_to_copy);
 
         ZTH_ASSERT(_usage.has_value());
-        glNamedBufferData(_id, new_size, nullptr, to_gl_enum(*_usage));
-        glCopyNamedBufferSubData(tmp_buffer._id, _id, 0, 0, old_size);
+        glNamedBufferData(_id, new_size_bytes, nullptr, to_gl_enum(*_usage));
+        glCopyNamedBufferSubData(tmp_buffer._id, _id, 0, 0, bytes_to_copy);
     }
     else
     {
         ZTH_ASSERT(_usage.has_value());
-        glNamedBufferData(_id, new_size, nullptr, to_gl_enum(*_usage));
+        glNamedBufferData(_id, new_size_bytes, nullptr, to_gl_enum(*_usage));
     }
 
-    _size_bytes = new_size;
+    _size_bytes = new_size_bytes;
 }
 
-auto Buffer::calculate_growth(u32 old_size) -> u32
+auto Buffer::calculate_growth(u32 old_size_bytes) -> u32
 {
-    return old_size + old_size / 2;
+    return old_size_bytes + old_size_bytes / 2;
 }
 
 // --------------------------- VertexBuffer ---------------------------
 
-auto VertexBuffer::create_static_with_size(u32 size) -> VertexBuffer
+auto VertexBuffer::create_static_with_size(u32 size_bytes) -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_static_with_size(size);
+    buffer.init_static_with_size(size_bytes);
     return buffer;
 }
 
@@ -207,10 +225,10 @@ auto VertexBuffer::create_dynamic(BufferUsage usage) -> VertexBuffer
     return buffer;
 }
 
-auto VertexBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) -> VertexBuffer
+auto VertexBuffer::create_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_dynamic_with_size(size, usage);
+    buffer.init_dynamic_with_size(size_bytes, usage);
     return buffer;
 }
 
@@ -222,19 +240,19 @@ auto VertexBuffer::create_dynamic_with_data(const void* data, u32 data_size_byte
 }
 
 VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
-    : _buffer(std::move(other._buffer)), _stride(std::exchange(other._stride, 0))
+    : _buffer(std::move(other._buffer)), _stride_bytes(std::exchange(other._stride_bytes, 0))
 {}
 
 auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
 {
     _buffer = std::move(other._buffer);
-    _stride = std::exchange(other._stride, 0);
+    _stride_bytes = std::exchange(other._stride_bytes, 0);
     return *this;
 }
 
-auto VertexBuffer::init_static_with_size(u32 size) -> void
+auto VertexBuffer::init_static_with_size(u32 size_bytes) -> void
 {
-    _buffer.init_static_with_size(size);
+    _buffer.init_static_with_size(size_bytes);
 }
 
 auto VertexBuffer::init_static_with_data(const void* data, u32 data_size_bytes) -> void
@@ -247,9 +265,9 @@ auto VertexBuffer::init_dynamic(BufferUsage usage) -> void
     _buffer.init_dynamic(usage);
 }
 
-auto VertexBuffer::init_dynamic_with_size(u32 size, BufferUsage usage) -> void
+auto VertexBuffer::init_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> void
 {
-    _buffer.init_dynamic_with_size(size, usage);
+    _buffer.init_dynamic_with_size(size_bytes, usage);
 }
 
 auto VertexBuffer::init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage) -> void
@@ -272,17 +290,17 @@ auto VertexBuffer::unbind() -> void
     glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 }
 
-auto VertexBuffer::set_stride(u32 stride) -> void
+auto VertexBuffer::set_stride(u32 stride_bytes) -> void
 {
-    _stride = stride;
+    _stride_bytes = stride_bytes;
 }
 
 // --------------------------- IndexBuffer ---------------------------
 
-auto IndexBuffer::create_static_with_size(u32 size) -> IndexBuffer
+auto IndexBuffer::create_static_with_size(u32 size_bytes) -> IndexBuffer
 {
     IndexBuffer buffer;
-    buffer.init_static_with_size(size);
+    buffer.init_static_with_size(size_bytes);
     return buffer;
 }
 
@@ -300,10 +318,10 @@ auto IndexBuffer::create_dynamic(BufferUsage usage) -> IndexBuffer
     return buffer;
 }
 
-auto IndexBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) -> IndexBuffer
+auto IndexBuffer::create_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> IndexBuffer
 {
     IndexBuffer buffer;
-    buffer.init_dynamic_with_size(size, usage);
+    buffer.init_dynamic_with_size(size_bytes, usage);
     return buffer;
 }
 
@@ -327,9 +345,9 @@ auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
     return *this;
 }
 
-auto IndexBuffer::init_static_with_size(u32 size) -> void
+auto IndexBuffer::init_static_with_size(u32 size_bytes) -> void
 {
-    _buffer.init_static_with_size(size);
+    _buffer.init_static_with_size(size_bytes);
 }
 
 auto IndexBuffer::init_static_with_data(const void* data, u32 data_size_bytes) -> void
@@ -342,9 +360,9 @@ auto IndexBuffer::init_dynamic(BufferUsage usage) -> void
     _buffer.init_dynamic(usage);
 }
 
-auto IndexBuffer::init_dynamic_with_size(u32 size, BufferUsage usage) -> void
+auto IndexBuffer::init_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> void
 {
-    _buffer.init_dynamic_with_size(size, usage);
+    _buffer.init_dynamic_with_size(size_bytes, usage);
 }
 
 auto IndexBuffer::init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage) -> void
@@ -379,10 +397,10 @@ auto IndexBuffer::set_size(u32 size) -> void
 
 // --------------------------- InstanceBuffer ---------------------------
 
-auto InstanceBuffer::create_static_with_size(u32 size) -> InstanceBuffer
+auto InstanceBuffer::create_static_with_size(u32 size_bytes) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_static_with_size(size);
+    buffer.init_static_with_size(size_bytes);
     return buffer;
 }
 
@@ -400,10 +418,10 @@ auto InstanceBuffer::create_dynamic(BufferUsage usage) -> InstanceBuffer
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic_with_size(size, usage);
+    buffer.init_dynamic_with_size(size_bytes, usage);
     return buffer;
 }
 
@@ -417,17 +435,17 @@ auto InstanceBuffer::create_dynamic_with_data(const void* data, u32 data_size_by
 
 // --------------------------- UniformBuffer ---------------------------
 
-auto UniformBuffer::create_static_with_size(u32 size) -> UniformBuffer
+auto UniformBuffer::create_static_with_size(u32 size_bytes) -> UniformBuffer
 {
     UniformBuffer buffer;
-    buffer.init_static_with_size(size);
+    buffer.init_static_with_size(size_bytes);
     return buffer;
 }
 
-auto UniformBuffer::create_static_with_size(u32 size, u32 binding_point) -> UniformBuffer
+auto UniformBuffer::create_static_with_size(u32 size_bytes, u32 binding_point) -> UniformBuffer
 {
     UniformBuffer buffer;
-    buffer.init_static_with_size(size, binding_point);
+    buffer.init_static_with_size(size_bytes, binding_point);
     return buffer;
 }
 
@@ -445,14 +463,14 @@ auto UniformBuffer::create_static_with_data(const void* data, u32 data_size_byte
     return buffer;
 }
 
-auto UniformBuffer::init_static_with_size(u32 size) -> void
+auto UniformBuffer::init_static_with_size(u32 size_bytes) -> void
 {
-    _buffer.init_static_with_size(size);
+    _buffer.init_static_with_size(size_bytes);
 }
 
-auto UniformBuffer::init_static_with_size(u32 size, u32 binding_point) -> void
+auto UniformBuffer::init_static_with_size(u32 size_bytes, u32 binding_point) -> void
 {
-    init_static_with_size(size);
+    init_static_with_size(size_bytes);
     bind(binding_point);
 }
 
@@ -489,17 +507,17 @@ auto UniformBuffer::unbind() -> void
 
 // --------------------------- ShaderStorageBuffer ---------------------------
 
-auto ShaderStorageBuffer::create_static_with_size(u32 size) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_static_with_size(u32 size_bytes) -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
-    buffer.init_static_with_size(size);
+    buffer.init_static_with_size(size_bytes);
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_static_with_size(u32 size, u32 binding_point) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_static_with_size(u32 size_bytes, u32 binding_point) -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
-    buffer.init_static_with_size(size, binding_point);
+    buffer.init_static_with_size(size_bytes, binding_point);
     return buffer;
 }
 
@@ -532,18 +550,18 @@ auto ShaderStorageBuffer::create_dynamic(u32 binding_point, BufferUsage usage) -
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_size(u32 size, BufferUsage usage) -> ShaderStorageBuffer
+auto ShaderStorageBuffer::create_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
-    buffer.init_dynamic_with_size(size, usage);
+    buffer.init_dynamic_with_size(size_bytes, usage);
     return buffer;
 }
 
-auto ShaderStorageBuffer::create_dynamic_with_size(u32 size, u32 binding_point, BufferUsage usage)
+auto ShaderStorageBuffer::create_dynamic_with_size(u32 size_bytes, u32 binding_point, BufferUsage usage)
     -> ShaderStorageBuffer
 {
     ShaderStorageBuffer buffer;
-    buffer.init_dynamic_with_size(size, binding_point, usage);
+    buffer.init_dynamic_with_size(size_bytes, binding_point, usage);
     return buffer;
 }
 
@@ -563,14 +581,14 @@ auto ShaderStorageBuffer::create_dynamic_with_data(const void* data, u32 data_si
     return buffer;
 }
 
-auto ShaderStorageBuffer::init_static_with_size(u32 size) -> void
+auto ShaderStorageBuffer::init_static_with_size(u32 size_bytes) -> void
 {
-    _buffer.init_static_with_size(size);
+    _buffer.init_static_with_size(size_bytes);
 }
 
-auto ShaderStorageBuffer::init_static_with_size(u32 size, u32 binding_point) -> void
+auto ShaderStorageBuffer::init_static_with_size(u32 size_bytes, u32 binding_point) -> void
 {
-    init_static_with_size(size);
+    init_static_with_size(size_bytes);
     bind(binding_point);
 }
 
@@ -596,14 +614,14 @@ auto ShaderStorageBuffer::init_dynamic(u32 binding_point, BufferUsage usage) -> 
     bind(binding_point);
 }
 
-auto ShaderStorageBuffer::init_dynamic_with_size(u32 size, BufferUsage usage) -> void
+auto ShaderStorageBuffer::init_dynamic_with_size(u32 size_bytes, BufferUsage usage) -> void
 {
-    _buffer.init_dynamic_with_size(size, usage);
+    _buffer.init_dynamic_with_size(size_bytes, usage);
 }
 
-auto ShaderStorageBuffer::init_dynamic_with_size(u32 size, u32 binding_point, BufferUsage usage) -> void
+auto ShaderStorageBuffer::init_dynamic_with_size(u32 size_bytes, u32 binding_point, BufferUsage usage) -> void
 {
-    init_dynamic_with_size(size, usage);
+    init_dynamic_with_size(size_bytes, usage);
     bind(binding_point);
 }
 

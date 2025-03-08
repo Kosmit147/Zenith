@@ -109,6 +109,9 @@ public:
     // returns the number of bytes written
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
+    auto reserve(u32 min_size_bytes) -> void;
+    auto resize(u32 size_bytes) -> void;
+
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto size_bytes() const { return _size_bytes; }
     [[nodiscard]] auto is_static() const { return _state == BufferState::InitializedStatic; }
@@ -125,9 +128,9 @@ private:
     auto create() -> void;
     auto destroy() -> void;
 
-    auto reserve(u32 min_size_bytes) -> void;
+    auto reallocate(u32 new_size_bytes) -> void;
 
-    [[nodiscard]] static auto calculate_growth(u32 old_size) -> u32;
+    [[nodiscard]] static auto calculate_growth(u32 old_size_bytes) -> u32;
 };
 
 class VertexBuffer
@@ -135,12 +138,12 @@ class VertexBuffer
 public:
     explicit VertexBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size) -> VertexBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> VertexBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> VertexBuffer;
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> VertexBuffer;
 
     [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> VertexBuffer;
     [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
@@ -154,12 +157,12 @@ public:
 
     ~VertexBuffer() = default;
 
-    auto init_static_with_size(u32 size) -> void;
+    auto init_static_with_size(u32 size_bytes) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
     auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
 
     auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
-    auto init_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
     auto init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> void;
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
@@ -171,18 +174,18 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
-    auto set_stride(u32 stride) -> void;
+    auto set_stride(u32 stride_bytes) -> void;
 
     [[nodiscard]] auto native_handle() const { return _buffer.native_handle(); }
     [[nodiscard]] auto size_bytes() const { return _buffer.size_bytes(); }
     [[nodiscard]] auto is_static() const { return _buffer.is_static(); }
     [[nodiscard]] auto is_dynamic() const { return _buffer.is_dynamic(); }
     [[nodiscard]] auto is_initialized() const { return _buffer.is_initialized(); }
-    [[nodiscard]] auto stride() const { return _stride; }
+    [[nodiscard]] auto stride() const { return _stride_bytes; }
 
 private:
     Buffer _buffer;
-    u32 _stride = 0;
+    u32 _stride_bytes = 0;
 };
 
 class IndexBuffer
@@ -190,12 +193,12 @@ class IndexBuffer
 public:
     explicit IndexBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size) -> IndexBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> IndexBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> IndexBuffer;
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
 
     [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> IndexBuffer;
     [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
@@ -209,12 +212,12 @@ public:
 
     ~IndexBuffer() = default;
 
-    auto init_static_with_size(u32 size) -> void;
+    auto init_static_with_size(u32 size_bytes) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
     auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
 
     auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
-    auto init_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
     auto init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> void;
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
@@ -249,12 +252,12 @@ class InstanceBuffer : public VertexBuffer
 public:
     explicit InstanceBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size) -> InstanceBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> InstanceBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> InstanceBuffer;
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> InstanceBuffer;
 
     [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> InstanceBuffer;
     [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
@@ -272,8 +275,8 @@ class UniformBuffer
 public:
     explicit UniformBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size) -> UniformBuffer;
-    [[nodiscard]] static auto create_static_with_size(u32 size, u32 binding_point) -> UniformBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> UniformBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 binding_point) -> UniformBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> UniformBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point)
         -> UniformBuffer;
@@ -288,8 +291,8 @@ public:
 
     ~UniformBuffer() = default;
 
-    auto init_static_with_size(u32 size) -> void;
-    auto init_static_with_size(u32 size, u32 binding_point) -> void;
+    auto init_static_with_size(u32 size_bytes) -> void;
+    auto init_static_with_size(u32 size_bytes, u32 binding_point) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point) -> void;
     auto init_static_with_data(auto&& data) -> void;
@@ -320,8 +323,8 @@ class ShaderStorageBuffer
 public:
     explicit ShaderStorageBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size) -> ShaderStorageBuffer;
-    [[nodiscard]] static auto create_static_with_size(u32 size, u32 binding_point) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 binding_point) -> ShaderStorageBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> ShaderStorageBuffer;
     [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point)
         -> ShaderStorageBuffer;
@@ -334,9 +337,9 @@ public:
     [[nodiscard]] static auto create_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> ShaderStorageBuffer;
     [[nodiscard]] static auto create_dynamic(u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size, u32 binding_point,
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, u32 binding_point,
                                                        BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
     [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
@@ -362,8 +365,8 @@ public:
 
     ~ShaderStorageBuffer() = default;
 
-    auto init_static_with_size(u32 size) -> void;
-    auto init_static_with_size(u32 size, u32 binding_point) -> void;
+    auto init_static_with_size(u32 size_bytes) -> void;
+    auto init_static_with_size(u32 size_bytes, u32 binding_point) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
     auto init_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point) -> void;
     auto init_static_with_data(auto&& data) -> void;
@@ -373,8 +376,9 @@ public:
 
     auto init_dynamic(BufferUsage usage = BufferUsage::dynamic_draw) -> void;
     auto init_dynamic(u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
-    auto init_dynamic_with_size(u32 size, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
-    auto init_dynamic_with_size(u32 size, u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic_with_size(u32 size_bytes, u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw)
+        -> void;
     auto init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> void;
     auto init_dynamic_with_data(const void* data, u32 data_size_bytes, u32 binding_point,
