@@ -92,14 +92,14 @@ auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&&
 auto VertexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    _stride = sizeof(T);
+    _stride_bytes = sizeof(T);
     _buffer.init_static_with_data(data);
 }
 
 auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
     using T = std::ranges::range_value_t<decltype(data)>;
-    _stride = sizeof(T);
+    _stride_bytes = sizeof(T);
     _buffer.init_dynamic_with_data(data, usage);
 }
 

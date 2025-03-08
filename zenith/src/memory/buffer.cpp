@@ -5,9 +5,9 @@
 
 namespace zth::memory {
 
-Buffer::Buffer(usize size)
+Buffer::Buffer(usize size_bytes)
 {
-    allocate(size);
+    allocate(size_bytes);
 }
 
 Buffer::Buffer(const void* data, usize data_size_bytes) : Buffer(data_size_bytes)
@@ -25,9 +25,9 @@ auto Buffer::with_data(const void* data, usize data_size_bytes) -> Buffer
     return Buffer{ data, data_size_bytes };
 }
 
-Buffer::Buffer(const Buffer& other) : Buffer(other._size)
+Buffer::Buffer(const Buffer& other) : Buffer(other._size_bytes)
 {
-    std::memcpy(_data, other._data, _size);
+    std::memcpy(_data, other._data, _size_bytes);
 }
 
 auto Buffer::operator=(const Buffer& other) -> Buffer&
@@ -35,25 +35,25 @@ auto Buffer::operator=(const Buffer& other) -> Buffer&
     if (this == &other)
         return *this;
 
-    if (_size != other._size)
+    if (_size_bytes != other._size_bytes)
     {
         free();
-        allocate(other._size);
+        allocate(other._size_bytes);
     }
 
-    std::memcpy(_data, other._data, _size);
+    std::memcpy(_data, other._data, _size_bytes);
     return *this;
 }
 
 Buffer::Buffer(Buffer&& other) noexcept
-    : _size(std::exchange(other._size, 0)), _data(std::exchange(other._data, nullptr))
+    : _size_bytes(std::exchange(other._size_bytes, 0)), _data(std::exchange(other._data, nullptr))
 {}
 
 auto Buffer::operator=(Buffer&& other) noexcept -> Buffer&
 {
     free();
 
-    _size = std::exchange(other._size, 0);
+    _size_bytes = std::exchange(other._size_bytes, 0);
     _data = std::exchange(other._data, nullptr);
 
     return *this;
@@ -66,19 +66,19 @@ Buffer::~Buffer()
 
 auto Buffer::data() && -> byte*
 {
-    _size = 0;
+    _size_bytes = 0;
     return std::exchange(_data, nullptr);
 }
 
 auto Buffer::operator[](usize offset) -> byte&
 {
-    ZTH_ASSERT(offset < _size);
+    ZTH_ASSERT(offset < _size_bytes);
     return _data[offset];
 }
 
 auto Buffer::operator[](usize offset) const -> const byte&
 {
-    ZTH_ASSERT(offset < _size);
+    ZTH_ASSERT(offset < _size_bytes);
     return _data[offset];
 }
 
@@ -114,17 +114,17 @@ auto Buffer::end() const -> const byte*
 
 auto Buffer::cend() -> byte*
 {
-    return cbegin() + _size;
+    return cbegin() + _size_bytes;
 }
 
 auto Buffer::cend() const -> const byte*
 {
-    return cbegin() + _size;
+    return cbegin() + _size_bytes;
 }
 
 auto Buffer::resize(usize size_bytes) -> void
 {
-    if (_size == size_bytes)
+    if (_size_bytes == size_bytes)
         return;
 
     reallocate(size_bytes);
@@ -132,13 +132,13 @@ auto Buffer::resize(usize size_bytes) -> void
 
 auto Buffer::free() -> void
 {
-    _size = 0;
+    _size_bytes = 0;
     memory::free(_data);
 }
 
 auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
 {
-    ZTH_ASSERT(offset + data_size_bytes <= _size);
+    ZTH_ASSERT(offset + data_size_bytes <= _size_bytes);
     std::memcpy(_data + offset, data, data_size_bytes);
     return data_size_bytes;
 }
@@ -146,18 +146,18 @@ auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) 
 auto Buffer::allocate(usize size_bytes) -> void
 {
     _data = static_cast<byte*>(memory::allocate(size_bytes));
-    _size = size_bytes;
+    _size_bytes = size_bytes;
 }
 
 auto Buffer::reallocate(usize size_bytes) -> void
 {
-    memory::reallocate(_data, size_bytes, _size);
-    _size = size_bytes;
+    memory::reallocate(_data, size_bytes, _size_bytes);
+    _size_bytes = size_bytes;
 }
 
-DynamicBuffer::DynamicBuffer(usize size)
+DynamicBuffer::DynamicBuffer(usize size_bytes)
 {
-    resize(size);
+    resize(size_bytes);
 }
 
 DynamicBuffer::DynamicBuffer(const void* data, usize data_size_bytes) : DynamicBuffer(data_size_bytes)
@@ -175,9 +175,9 @@ auto DynamicBuffer::with_data(const void* data, usize data_size_bytes) -> Dynami
     return DynamicBuffer{ data, data_size_bytes };
 }
 
-DynamicBuffer::DynamicBuffer(const DynamicBuffer& other) : DynamicBuffer(other._size)
+DynamicBuffer::DynamicBuffer(const DynamicBuffer& other) : DynamicBuffer(other._size_bytes)
 {
-    std::memcpy(_data, other._data, _size);
+    std::memcpy(_data, other._data, _size_bytes);
 }
 
 auto DynamicBuffer::operator=(const DynamicBuffer& other) -> DynamicBuffer&
@@ -185,20 +185,20 @@ auto DynamicBuffer::operator=(const DynamicBuffer& other) -> DynamicBuffer&
     if (this == &other)
         return *this;
 
-    if (_size < other._size)
+    if (_size_bytes < other._size_bytes)
     {
         free();
-        allocate(other._size);
+        allocate(other._size_bytes);
     }
 
-    _size = other._size;
-    std::memcpy(_data, other._data, _size);
+    _size_bytes = other._size_bytes;
+    std::memcpy(_data, other._data, _size_bytes);
 
     return *this;
 }
 
 DynamicBuffer::DynamicBuffer(DynamicBuffer&& other) noexcept
-    : _size(std::exchange(other._size, 0)), _capacity(std::exchange(other._capacity, 0)),
+    : _size_bytes(std::exchange(other._size_bytes, 0)), _capacity_bytes(std::exchange(other._capacity_bytes, 0)),
       _data(std::exchange(other._data, nullptr))
 {}
 
@@ -206,8 +206,8 @@ auto DynamicBuffer::operator=(DynamicBuffer&& other) noexcept -> DynamicBuffer&
 {
     free();
 
-    _size = std::exchange(other._size, 0);
-    _capacity = std::exchange(other._capacity, 0);
+    _size_bytes = std::exchange(other._size_bytes, 0);
+    _capacity_bytes = std::exchange(other._capacity_bytes, 0);
     _data = std::exchange(other._data, nullptr);
 
     return *this;
@@ -220,20 +220,20 @@ DynamicBuffer::~DynamicBuffer()
 
 auto DynamicBuffer::data() && -> byte*
 {
-    _size = 0;
-    _capacity = 0;
+    _size_bytes = 0;
+    _capacity_bytes = 0;
     return std::exchange(_data, nullptr);
 }
 
 auto DynamicBuffer::operator[](usize offset) -> byte&
 {
-    ZTH_ASSERT(offset < _size);
+    ZTH_ASSERT(offset < _size_bytes);
     return _data[offset];
 }
 
 auto DynamicBuffer::operator[](usize offset) const -> const byte&
 {
-    ZTH_ASSERT(offset < _size);
+    ZTH_ASSERT(offset < _size_bytes);
     return _data[offset];
 }
 
@@ -269,18 +269,18 @@ auto DynamicBuffer::end() const -> const byte*
 
 auto DynamicBuffer::cend() -> byte*
 {
-    return cbegin() + _size;
+    return cbegin() + _size_bytes;
 }
 
 auto DynamicBuffer::cend() const -> const byte*
 {
-    return cbegin() + _size;
+    return cbegin() + _size_bytes;
 }
 
 auto DynamicBuffer::resize(usize size_bytes) -> void
 {
     reserve(size_bytes);
-    _size = size_bytes;
+    _size_bytes = size_bytes;
 }
 
 auto DynamicBuffer::reserve(usize min_capacity_bytes) -> void
@@ -290,18 +290,18 @@ auto DynamicBuffer::reserve(usize min_capacity_bytes) -> void
 
 auto DynamicBuffer::shrink_to_fit() -> void
 {
-    ZTH_ASSERT(_size <= _capacity);
+    ZTH_ASSERT(_size_bytes <= _capacity_bytes);
 
-    if (_size == _capacity)
+    if (_size_bytes == _capacity_bytes)
         return;
 
-    reallocate_exactly(_size);
+    reallocate_exactly(_size_bytes);
 }
 
 auto DynamicBuffer::free() -> void
 {
-    _size = 0;
-    _capacity = 0;
+    _size_bytes = 0;
+    _capacity_bytes = 0;
     memory::free(_data);
 }
 
@@ -314,39 +314,39 @@ auto DynamicBuffer::buffer_data(const void* data, usize data_size_bytes, usize o
 
 auto DynamicBuffer::clear() -> void
 {
-    _size = 0;
+    _size_bytes = 0;
 }
 
 auto DynamicBuffer::resize_to_at_least(usize min_size_bytes) -> void
 {
     reserve(min_size_bytes);
-    _size = std::max(_size, min_size_bytes);
+    _size_bytes = std::max(_size_bytes, min_size_bytes);
 }
 
 auto DynamicBuffer::allocate(usize capacity_bytes) -> void
 {
     _data = static_cast<byte*>(memory::allocate(capacity_bytes));
-    _capacity = capacity_bytes;
+    _capacity_bytes = capacity_bytes;
 }
 
 auto DynamicBuffer::reallocate_exactly(usize new_capacity_bytes) -> void
 {
-    memory::reallocate(_data, new_capacity_bytes, _size);
-    _capacity = new_capacity_bytes;
+    memory::reallocate(_data, new_capacity_bytes, _size_bytes);
+    _capacity_bytes = new_capacity_bytes;
 }
 
 auto DynamicBuffer::reallocate_at_least(usize min_capacity_bytes) -> void
 {
-    if (_capacity >= min_capacity_bytes)
+    if (_capacity_bytes >= min_capacity_bytes)
         return;
 
-    auto new_capacity = std::max(calculate_growth(_capacity), min_capacity_bytes);
+    auto new_capacity = std::max(calculate_growth(_capacity_bytes), min_capacity_bytes);
     reallocate_exactly(new_capacity);
 }
 
-auto DynamicBuffer::calculate_growth(usize old_size) -> usize
+auto DynamicBuffer::calculate_growth(usize old_size_bytes) -> usize
 {
-    return old_size * 2;
+    return old_size_bytes * 2;
 }
 
 } // namespace zth::memory
