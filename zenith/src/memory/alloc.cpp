@@ -19,7 +19,7 @@ template<> auto reallocate(void*& ptr, usize new_size_bytes) noexcept -> void
 {
     if (new_size_bytes == 0)
     {
-        free(ptr);
+        deallocate(ptr);
         return;
     }
 
@@ -31,7 +31,7 @@ template<> auto reallocate(void*& ptr, usize new_size_bytes, usize buffer_size_b
 {
     if (new_size_bytes == 0)
     {
-        free(ptr);
+        deallocate(ptr);
         return;
     }
 
@@ -41,10 +41,10 @@ template<> auto reallocate(void*& ptr, usize new_size_bytes, usize buffer_size_b
     auto old_ptr = ptr;
     ptr = allocate(new_size_bytes);
     std::memcpy(ptr, old_ptr, std::min(new_size_bytes, buffer_size_bytes));
-    free(old_ptr);
+    deallocate(old_ptr);
 }
 
-template<> auto free(void*& ptr) noexcept -> void
+template<> auto deallocate(void*& ptr) noexcept -> void
 {
     std::free(ptr);
     ptr = nullptr;

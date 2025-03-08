@@ -133,7 +133,7 @@ auto Buffer::resize(usize size_bytes) -> void
 auto Buffer::free() -> void
 {
     _size_bytes = 0;
-    memory::free(_data);
+    memory::deallocate(_data);
 }
 
 auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
@@ -302,7 +302,7 @@ auto DynamicBuffer::free() -> void
 {
     _size_bytes = 0;
     _capacity_bytes = 0;
-    memory::free(_data);
+    memory::deallocate(_data);
 }
 
 auto DynamicBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize

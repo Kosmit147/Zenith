@@ -95,7 +95,7 @@ auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 auto TemporaryStorage::free_overflow_allocations() -> void
 {
     for (auto memory_ptr : _overflow_allocations)
-        memory::free(memory_ptr);
+        memory::deallocate(memory_ptr);
 
     _overflow_allocations.clear();
     _overflow_allocations.shrink_to_fit();
