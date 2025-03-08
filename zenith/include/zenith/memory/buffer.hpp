@@ -85,9 +85,6 @@ private:
 class DynamicBuffer
 {
 public:
-    static constexpr usize growth_factor = 2;
-
-public:
     explicit DynamicBuffer() = default;
     explicit DynamicBuffer(usize size);
     explicit DynamicBuffer(const void* data, usize data_size_bytes);
@@ -157,6 +154,8 @@ private:
     auto allocate(usize capacity_bytes) -> void;
     auto reallocate_exactly(usize new_capacity_bytes) -> void;
     auto reallocate_at_least(usize min_capacity_bytes) -> void;
+
+    [[nodiscard]] static auto calculate_growth(usize old_size) -> usize;
 };
 
 } // namespace zth::memory

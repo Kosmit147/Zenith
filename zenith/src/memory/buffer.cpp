@@ -340,13 +340,13 @@ auto DynamicBuffer::reallocate_at_least(usize min_capacity_bytes) -> void
     if (_capacity >= min_capacity_bytes)
         return;
 
-    auto new_capacity = _capacity * growth_factor + 1u;
-
-    // @cleanup: could maybe do this a cleaner way
-    while (new_capacity < min_capacity_bytes)
-        new_capacity *= growth_factor;
-
+    auto new_capacity = std::max(calculate_growth(_capacity), min_capacity_bytes);
     reallocate_exactly(new_capacity);
+}
+
+auto DynamicBuffer::calculate_growth(usize old_size) -> usize
+{
+    return old_size * 2;
 }
 
 } // namespace zth::memory

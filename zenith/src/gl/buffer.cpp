@@ -157,11 +157,7 @@ auto Buffer::reserve(u32 min_size_bytes) -> void
         return;
 
     auto old_size = _size_bytes;
-    auto new_size = old_size * growth_factor + 1u;
-
-    // @cleanup: could maybe do this a cleaner way
-    while (new_size < min_size_bytes)
-        new_size *= growth_factor;
+    auto new_size = std::max(calculate_growth(old_size), min_size_bytes);
 
     if (old_size != 0)
     {
@@ -181,6 +177,11 @@ auto Buffer::reserve(u32 min_size_bytes) -> void
     }
 
     _size_bytes = new_size;
+}
+
+auto Buffer::calculate_growth(u32 old_size) -> u32
+{
+    return old_size + old_size / 2;
 }
 
 // --------------------------- VertexBuffer ---------------------------
