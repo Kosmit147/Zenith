@@ -132,9 +132,8 @@ auto Buffer::resize(usize size_bytes) -> void
 
 auto Buffer::free() -> void
 {
-    zth::free(_data);
     _size = 0;
-    _data = nullptr;
+    zth::free(_data);
 }
 
 auto Buffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
@@ -301,10 +300,9 @@ auto DynamicBuffer::shrink_to_fit() -> void
 
 auto DynamicBuffer::free() -> void
 {
-    zth::free(_data);
     _size = 0;
     _capacity = 0;
-    _data = nullptr;
+    zth::free(_data);
 }
 
 auto DynamicBuffer::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
