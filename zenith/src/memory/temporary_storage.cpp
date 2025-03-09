@@ -84,7 +84,7 @@ auto TemporaryStorage::space_used() -> usize
 
 auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 {
-    _overflow_allocations.push_back(std::make_unique<byte[]>(size_bytes));
+    _overflow_allocations.push_back(std::make_unique_for_overwrite<byte[]>(size_bytes));
     return _overflow_allocations.back().get();
 }
 
