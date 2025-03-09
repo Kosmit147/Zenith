@@ -3,13 +3,11 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/number.hpp"
-#include "zenith/memory/alloc.hpp"
-#include "zenith/util/macros.hpp"
 
 namespace zth {
 
 memory::Buffer TemporaryStorage::_buffer{ initial_capacity };
-std::vector<void*> TemporaryStorage::_overflow_allocations;
+std::vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
 
 auto TemporaryStorage::init() -> void
 {
@@ -67,7 +65,6 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
 
     if (_buffer_ptr > end())
     {
-        ZTH_DEBUG_BREAK;
         _buffer_ptr = end();
         return allocate_if_overflowed(size_bytes);
     }
@@ -87,16 +84,12 @@ auto TemporaryStorage::space_used() -> usize
 
 auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 {
-    auto ptr = memory::allocate(size_bytes);
-    _overflow_allocations.push_back(ptr);
-    return ptr;
+    _overflow_allocations.push_back(std::make_unique<byte[]>(size_bytes));
+    return _overflow_allocations.back().get();
 }
 
 auto TemporaryStorage::free_overflow_allocations() -> void
 {
-    for (auto memory_ptr : _overflow_allocations)
-        memory::deallocate(memory_ptr);
-
     _overflow_allocations.clear();
     _overflow_allocations.shrink_to_fit();
 }
