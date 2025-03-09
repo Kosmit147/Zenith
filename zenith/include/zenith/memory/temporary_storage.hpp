@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -38,7 +39,7 @@ public:
 private:
     static memory::Buffer _buffer;
     static inline byte* _buffer_ptr = nullptr;
-    static std::vector<void*> _overflow_allocations;
+    static std::vector<std::unique_ptr<byte[]>> _overflow_allocations;
 
 private:
     [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> void*;

@@ -76,6 +76,7 @@ public:
 private:
     usize _size_bytes = 0;
     byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
+    // we're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data
 
 private:
     auto allocate(usize size_bytes) -> void;
@@ -147,6 +148,7 @@ private:
     usize _size_bytes = 0;
     usize _capacity_bytes = 0;
     byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
+    // we're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data
 
 private:
     auto resize_to_at_least(usize min_size_bytes) -> void;
