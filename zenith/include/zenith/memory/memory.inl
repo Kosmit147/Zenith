@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <ranges>
+
 #include "zenith/core/assert.hpp"
 #include "zenith/math/number.hpp"
 
@@ -86,5 +89,10 @@ constexpr auto operator""_gb(usize n) -> usize
 }
 
 } // namespace size_literals
+
+template<std::destructible T> constexpr auto DestroyingDeleter<T>::operator()(T* ptr) const noexcept -> void
+{
+    std::ranges::destroy_at(ptr);
+}
 
 } // namespace zth::memory

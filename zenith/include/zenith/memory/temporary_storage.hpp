@@ -2,7 +2,10 @@
 
 #include <cstddef>
 #include <memory>
+#include <ranges>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "zenith/core/typedefs.hpp"
@@ -61,6 +64,50 @@ template<typename T> struct TemporaryStorageAllocator
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
+template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;
+using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
+template<typename T> using TemporaryVector = std::vector<T, TemporaryStorageAllocator<T>>;
+
+template<typename T, typename... Args>
+[[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
+    requires(!std::is_array_v<T>)
+{
+    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
+    std::construct_at(ptr, std::forward<decltype(args)>(args)...);
+    return Temporary<T>{ ptr };
+}
+
+// specialization for array types
+template<typename T>
+[[nodiscard]] constexpr auto make_temporary() -> Temporary<T>
+    requires(std::is_bounded_array_v<T>)
+{
+    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
+    std::ranges::uninitialized_default_construct(*ptr);
+    return Temporary<T>{ ptr };
+}
+
+// specialization for array types
+template<typename T, typename... Args>
+[[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
+    requires(std::is_bounded_array_v<T>)
+{
+    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
+
+    for (auto& elem : *ptr)
+        std::construct_at(std::addressof(elem), std::forward<decltype(args)>(args)...);
+
+    return Temporary<T>{ ptr };
+}
+
+// We can't have a Temporary pointing to a T[], like a unique_ptr can, because then we don't know how many Ts we have to
+// destruct. If we wanted to support that, we would have to store additional metadata containing information about the
+// number of constructed Ts.
+template<typename T, typename... Args>
+[[nodiscard]] constexpr auto make_temporary(Args&&...) -> Temporary<T>
+    requires(std::is_unbounded_array_v<T>)
+= delete;
+
 template<typename T> auto TemporaryStorageAllocator<T>::allocate(std::size_t count) const noexcept -> T*
 {
     return static_cast<T*>(TemporaryStorage::allocate(count * sizeof(T), alignof(T)));
@@ -70,7 +117,5 @@ template<typename T>
 auto TemporaryStorageAllocator<T>::deallocate([[maybe_unused]] T* ptr,
                                               [[maybe_unused]] std::size_t count) const noexcept -> void
 {}
-
-using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 
 } // namespace zth

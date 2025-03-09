@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <cstddef>
 
 #include "zenith/core/typedefs.hpp"
@@ -29,7 +30,22 @@ namespace size_literals {
 [[nodiscard]] constexpr auto operator""_mb(usize n) -> usize;
 [[nodiscard]] constexpr auto operator""_gb(usize n) -> usize;
 
-} // namespace memory_size_literals
+} // namespace size_literals
+
+// handles pointers to arrays as well
+template<std::destructible T> struct DestroyingDeleter
+{
+public:
+    constexpr DestroyingDeleter() noexcept = default;
+
+    template<typename U>
+    constexpr DestroyingDeleter(const DestroyingDeleter<U>&) noexcept
+        requires(std::convertible_to<U*, T*>)
+    {}
+
+    // std::destructible ensures that T's destructor doesn't throw
+    constexpr auto operator()(T* ptr) const noexcept -> void;
+};
 
 } // namespace zth::memory
 
