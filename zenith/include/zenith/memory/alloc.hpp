@@ -27,7 +27,8 @@ template<typename T> auto deallocate(T*& ptr) noexcept -> void;
 // this function sets ptr to nullptr
 template<> auto deallocate(void*& ptr) noexcept -> void;
 
-// handles pointers to arrays, but not arrays of dynamic size (T[])
+// Destructs an object and deallocates the memory using our custom allocation functions.
+// Handles pointers to arrays, but not arrays of dynamic size (T[]).
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
 // because then we don't have to actually store the additional metadata nor call any destructors
 template<std::destructible T>

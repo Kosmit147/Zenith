@@ -17,8 +17,8 @@ auto substr_between_with_offset(std::string_view text, usize offset, char delim)
     return substr_between_with_offset(text, offset, delim, delim);
 }
 
-auto substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                char closing_delim) -> std::optional<std::string_view>
+auto substr_between_with_offset(std::string_view text, usize offset, char opening_delim, char closing_delim)
+    -> std::optional<std::string_view>
 {
     auto start = text.find(opening_delim, offset);
 
@@ -50,8 +50,8 @@ auto find_substr_between_with_offset(std::string_view text, usize offset, char d
     return find_substr_between_with_offset(text, offset, delim, delim);
 }
 
-auto find_substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                     char closing_delim) -> std::optional<FindResult>
+auto find_substr_between_with_offset(std::string_view text, usize offset, char opening_delim, char closing_delim)
+    -> std::optional<FindResult>
 {
     auto start = text.find(opening_delim, offset);
 

@@ -224,8 +224,8 @@ constexpr auto InPlaceVector<T, Capacity>::emplace_back(Args&&... args)
 }
 
 template<std::movable T, usize Capacity>
-constexpr auto InPlaceVector<T, Capacity>::push_back(const T& value)
-    noexcept(std::is_nothrow_copy_constructible_v<T>) -> T&
+constexpr auto InPlaceVector<T, Capacity>::push_back(const T& value) noexcept(std::is_nothrow_copy_constructible_v<T>)
+    -> T&
 {
     ZTH_ASSERT(_size < capacity());
     std::construct_at(cbegin() + _size, value);

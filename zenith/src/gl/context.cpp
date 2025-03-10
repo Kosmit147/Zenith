@@ -13,8 +13,8 @@ namespace gl {
 namespace {
 
 auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]] GLuint id, GLenum severity,
-                    [[maybe_unused]] GLsizei length, const GLchar* message,
-                    [[maybe_unused]] const void* userParam) -> void
+                    [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
+    -> void
 {
     auto type_str = [=] {
         switch (type)

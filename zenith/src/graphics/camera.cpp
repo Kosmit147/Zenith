@@ -87,8 +87,8 @@ auto PerspectiveCamera::set_rotation(math::EulerAngles rotation) -> PerspectiveC
     return set_rotation(rotation.pitch, rotation.yaw, rotation.roll);
 }
 
-auto PerspectiveCamera::set_translation_and_rotation(glm::vec3 translation,
-                                                     math::EulerAngles rotation) -> PerspectiveCamera&
+auto PerspectiveCamera::set_translation_and_rotation(glm::vec3 translation, math::EulerAngles rotation)
+    -> PerspectiveCamera&
 {
     _translation = translation;
     _pitch = rotation.pitch;

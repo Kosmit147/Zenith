@@ -37,8 +37,8 @@ auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> std
     return shader_ref;
 }
 
-auto AssetManager::add_shader_from_sources(std::string_view name,
-                                           const gl::ShaderSources& sources) -> std::optional<ShaderRef>
+auto AssetManager::add_shader_from_sources(std::string_view name, const gl::ShaderSources& sources)
+    -> std::optional<ShaderRef>
 {
     auto [kv, success] = _shaders.try_emplace(std::string{ name }, sources);
 
@@ -52,8 +52,8 @@ auto AssetManager::add_shader_from_sources(std::string_view name,
     return shader;
 }
 
-auto AssetManager::add_shader_from_files(std::string_view name,
-                                         const gl::ShaderSourcePaths& paths) -> std::optional<ShaderRef>
+auto AssetManager::add_shader_from_files(std::string_view name, const gl::ShaderSourcePaths& paths)
+    -> std::optional<ShaderRef>
 {
     auto [kv, success] = _shaders.try_emplace(std::string{ name }, paths);
 
@@ -96,8 +96,8 @@ auto AssetManager::add_texture_from_memory(std::string_view name, const void* da
     return texture;
 }
 
-auto AssetManager::add_texture_from_file(const std::filesystem::path& path,
-                                         const gl::TextureParams& params) -> std::optional<TextureRef>
+auto AssetManager::add_texture_from_file(const std::filesystem::path& path, const gl::TextureParams& params)
+    -> std::optional<TextureRef>
 {
     auto filename = fs::extract_filename(path);
 
