@@ -68,6 +68,9 @@ template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDele
 using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = std::vector<T, TemporaryStorageAllocator<T>>;
 
+// @cleanup: these make_temporary functions could probably be generalized and could take in an allocator with which to
+// construct the object as a template parameter
+
 template<typename T, typename... Args>
 [[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
     requires(!std::is_array_v<T>)
@@ -100,9 +103,11 @@ template<typename T, typename... Args>
     return Temporary<T>{ ptr };
 }
 
-// We can't have a Temporary pointing to a T[], like a unique_ptr can, because then we don't know how many Ts we have to
+// We don't have a Temporary pointing to a T[], like a unique_ptr can, because then we don't know how many Ts we have to
 // destruct. If we wanted to support that, we would have to store additional metadata containing information about the
 // number of constructed Ts.
+// @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
+// because then we don't have to actually store the additional metadata
 template<typename T, typename... Args>
 [[nodiscard]] constexpr auto make_temporary(Args&&...) -> Temporary<T>
     requires(std::is_unbounded_array_v<T>)
