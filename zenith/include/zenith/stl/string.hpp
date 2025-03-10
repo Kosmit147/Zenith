@@ -17,20 +17,20 @@ struct FindResult
 };
 
 [[nodiscard]] auto substr_between(std::string_view text, char delim) -> std::optional<std::string_view>;
-[[nodiscard]] auto substr_between(std::string_view text, char opening_delim,
-                                  char closing_delim) -> std::optional<std::string_view>;
+[[nodiscard]] auto substr_between(std::string_view text, char opening_delim, char closing_delim)
+    -> std::optional<std::string_view>;
 
-[[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset,
-                                              char delim) -> std::optional<std::string_view>;
+[[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char delim)
+    -> std::optional<std::string_view>;
 [[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
                                               char closing_delim) -> std::optional<std::string_view>;
 
 [[nodiscard]] auto find_substr_between(std::string_view text, char delim) -> std::optional<FindResult>;
-[[nodiscard]] auto find_substr_between(std::string_view text, char opening_delim,
-                                       char closing_delim) -> std::optional<FindResult>;
+[[nodiscard]] auto find_substr_between(std::string_view text, char opening_delim, char closing_delim)
+    -> std::optional<FindResult>;
 
-[[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset,
-                                                   char delim) -> std::optional<FindResult>;
+[[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char delim)
+    -> std::optional<FindResult>;
 [[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
                                                    char closing_delim) -> std::optional<FindResult>;
 

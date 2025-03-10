@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <functional>
 #include <type_traits>
 #include <utility>
 
@@ -24,7 +25,7 @@ public:
     constexpr auto release() noexcept(std::is_nothrow_invocable_v<Func>) -> void
     {
         if (!_dismissed)
-            _func();
+            std::invoke(_func);
 
         dismiss();
     }

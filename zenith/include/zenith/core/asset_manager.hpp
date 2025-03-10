@@ -26,18 +26,18 @@ public:
     static auto shut_down() -> void;
 
     static auto add_shader(std::string_view name, gl::Shader&& shader) -> std::optional<ShaderRef>;
-    static auto add_shader_from_sources(std::string_view name,
-                                        const gl::ShaderSources& sources) -> std::optional<ShaderRef>;
-    static auto add_shader_from_files(std::string_view name,
-                                      const gl::ShaderSourcePaths& paths) -> std::optional<ShaderRef>;
+    static auto add_shader_from_sources(std::string_view name, const gl::ShaderSources& sources)
+        -> std::optional<ShaderRef>;
+    static auto add_shader_from_files(std::string_view name, const gl::ShaderSourcePaths& paths)
+        -> std::optional<ShaderRef>;
 
     static auto add_texture(std::string_view name, gl::Texture2D&& texture) -> std::optional<TextureRef>;
     static auto add_texture_from_memory(std::string_view name, const void* data, usize data_size_bytes,
                                         const gl::TextureParams& params = {}) -> std::optional<TextureRef>;
     static auto add_texture_from_memory(std::string_view name, std::ranges::contiguous_range auto&& data,
                                         const gl::TextureParams& params = {}) -> std::optional<TextureRef>;
-    static auto add_texture_from_file(const std::filesystem::path& path,
-                                      const gl::TextureParams& params = {}) -> std::optional<TextureRef>;
+    static auto add_texture_from_file(const std::filesystem::path& path, const gl::TextureParams& params = {})
+        -> std::optional<TextureRef>;
     static auto add_texture_from_file(std::string_view name, const std::filesystem::path& path,
                                       const gl::TextureParams& params = {}) -> std::optional<TextureRef>;
 

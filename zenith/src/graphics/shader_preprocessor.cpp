@@ -113,8 +113,8 @@ ShaderPreprocessor::ShaderPreprocessor(std::string_view source, u16 recursion_de
     update_rest_in_line();
 }
 
-auto ShaderPreprocessor::preprocess_impl(std::string_view source,
-                                         u16 recursion_depth) -> std::expected<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess_impl(std::string_view source, u16 recursion_depth)
+    -> std::expected<std::string, PreprocessShaderError>
 {
     ShaderPreprocessor preprocessor(source, recursion_depth);
     return preprocessor.preprocess();

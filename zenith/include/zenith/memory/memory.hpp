@@ -32,7 +32,8 @@ namespace size_literals {
 
 } // namespace size_literals
 
-// handles pointers to arrays, but not arrays of dynamic size (T[])
+// Destructs an object without freeing the memory.
+// Handles pointers to arrays, but not arrays of dynamic size (T[]).
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
 // because then we don't have to actually store the additional metadata nor call any destructors
 template<std::destructible T>

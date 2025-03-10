@@ -87,12 +87,12 @@ public:
     explicit Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params = {});
     explicit Texture2D(const std::filesystem::path& path, const TextureParams& params = {});
 
-    [[nodiscard]] static auto from_memory(const void* data, usize data_size_bytes,
-                                          const TextureParams& params = {}) -> Texture2D;
-    [[nodiscard]] static auto from_memory(std::ranges::contiguous_range auto&& data,
-                                          const TextureParams& params = {}) -> Texture2D;
-    [[nodiscard]] static auto from_file(const std::filesystem::path& path,
-                                        const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_memory(const void* data, usize data_size_bytes, const TextureParams& params = {})
+        -> Texture2D;
+    [[nodiscard]] static auto from_memory(std::ranges::contiguous_range auto&& data, const TextureParams& params = {})
+        -> Texture2D;
+    [[nodiscard]] static auto from_file(const std::filesystem::path& path, const TextureParams& params = {})
+        -> Texture2D;
 
     ZTH_NO_COPY(Texture2D)
 
