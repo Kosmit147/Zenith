@@ -9,7 +9,7 @@
 namespace zth::memory {
 
 // @refactor: Use std::is_sufficiently_aligned once we're on C++26.
-template<typename T> constexpr auto is_aligned(T* ptr, usize alignment) -> bool
+template<typename T> auto is_aligned(T* ptr, usize alignment) -> bool
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
@@ -17,7 +17,7 @@ template<typename T> constexpr auto is_aligned(T* ptr, usize alignment) -> bool
     return !(address & mask);
 }
 
-template<typename T> constexpr auto aligned(T* ptr, usize alignment) -> T*
+template<typename T> auto aligned(T* ptr, usize alignment) -> T*
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
@@ -25,7 +25,7 @@ template<typename T> constexpr auto aligned(T* ptr, usize alignment) -> T*
     return aligned_down(reinterpret_cast<T*>(address), alignment);
 }
 
-template<typename T> constexpr auto aligned_down(T* ptr, usize alignment) -> T*
+template<typename T> auto aligned_down(T* ptr, usize alignment) -> T*
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
@@ -33,7 +33,7 @@ template<typename T> constexpr auto aligned_down(T* ptr, usize alignment) -> T*
     return reinterpret_cast<T*>(address & ~mask);
 }
 
-template<typename T> constexpr auto align(T*& ptr, usize alignment) -> usize
+template<typename T> auto align(T*& ptr, usize alignment) -> usize
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
@@ -47,7 +47,7 @@ template<typename T> constexpr auto align(T*& ptr, usize alignment) -> usize
     return offset;
 }
 
-template<typename T> constexpr auto align_down(T*& ptr, usize alignment) -> usize
+template<typename T> auto align_down(T*& ptr, usize alignment) -> usize
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);

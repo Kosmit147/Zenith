@@ -8,13 +8,13 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/macros.hpp"
 
-// @cleanup: buffers implementation
+// @cleanup: Buffers implementation.
 
 namespace zth::gl {
 
 enum class BufferAccessFrequency : u8
 {
-    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value
+    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value.
 
     Stream = 0,  // The data store contents will be modified once and used at most a few times.
     Static = 4,  // The data store contents will be modified once and used many times.
@@ -23,7 +23,7 @@ enum class BufferAccessFrequency : u8
 
 enum class BufferAccessType : u8
 {
-    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value
+    // @volatile: These numbers are chosen for converting BufferUsage to an OpenGL value.
 
     Draw = 0, // The data store contents are modified by the application, and used as the source for GL drawing and
               // image specification commands. The user will be writing data to the buffer, but will not read it.
@@ -55,8 +55,8 @@ struct BufferUsage
 enum class BufferState : u8
 {
     Uninitialized,
-    InitializedStatic,  // buffer cannot be reinitialized, size cannot be changed
-    InitializedDynamic, // buffer can be reinitialized, size can be changed
+    InitializedStatic,  // Buffer cannot be reinitialized, size cannot be changed and cannot be 0.
+    InitializedDynamic, // Buffer can be reinitialized, size can be changed.
 };
 
 class Buffer
@@ -102,11 +102,11 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(auto&& data, u32 offset = 0) -> u32;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
     auto reserve(u32 min_size_bytes) -> void;

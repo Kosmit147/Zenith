@@ -42,14 +42,14 @@ struct RenderBatch
     std::vector<const glm::mat4*> transforms;
 };
 
-// @test: multiple directional lights
-// @test: multiple spot lights
-// @test: multiple ambient lights
+// @test: Multiple directional lights.
+// @test: Multiple spot lights.
+// @test: Multiple ambient lights.
 
 class Renderer
 {
 public:
-    // @volatile: keep these constants in sync with zth_defines.glsl
+    // @volatile: Keep these constants in sync with zth_defines.glsl.
 
     static constexpr u32 diffuse_map_slot = 0;
     static constexpr u32 specular_map_slot = 1;
