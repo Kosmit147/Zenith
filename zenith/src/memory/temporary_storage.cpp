@@ -46,8 +46,10 @@ auto TemporaryStorage::reset_with_new_capacity(usize new_capacity) -> void
 auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 {
     ZTH_ASSERT(_buffer_ptr != nullptr);
-    ZTH_ASSERT(size_bytes != 0);
     ZTH_ASSERT(math::is_power_of_2(alignment));
+
+    if (size_bytes == 0)
+        return nullptr;
 
     memory::align(_buffer_ptr, alignment);
     return allocate_unaligned(size_bytes);
@@ -56,7 +58,9 @@ auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
 {
     ZTH_ASSERT(_buffer_ptr != nullptr);
-    ZTH_ASSERT(size_bytes != 0);
+
+    if (size_bytes == 0)
+        return nullptr;
 
     auto result = _buffer_ptr;
     _buffer_ptr += size_bytes;
