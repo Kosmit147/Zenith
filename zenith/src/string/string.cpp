@@ -1,4 +1,4 @@
-#include "zenith/stl/string.hpp"
+#include "zenith/string/string.hpp"
 
 namespace zth::string {
 
