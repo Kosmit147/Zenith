@@ -8,6 +8,7 @@ add_executable(
 	unit_tester
 	"src/graphics/shader_preprocessor.cpp"
 	"src/memory/memory.cpp"
+	"src/meta/type.cpp"
 	"src/stl/inplace_vector.cpp"
 	"src/stl/string_hasher.cpp"
 	"src/string/string.cpp"
