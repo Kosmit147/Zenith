@@ -115,9 +115,13 @@ TEST_CASE("can access elements inside an InPlaceVector", "[InPlaceVector]")
 {
     const zth::InPlaceVector<int, 5> vec = { 1, 2, 3, 4, 5 };
 
-    REQUIRE_THROWS(vec.at(static_cast<zth::usize>(-1)));
-    REQUIRE_THROWS(vec.at(5));
-    REQUIRE_THROWS(vec.at(100));
+    REQUIRE_FALSE(vec.at(static_cast<zth::usize>(-1)));
+    REQUIRE_FALSE(vec.at(5));
+    REQUIRE_FALSE(vec.at(100));
+
+    REQUIRE(vec.at(0));
+    REQUIRE(vec.at(2));
+    REQUIRE(vec.at(4));
 
     REQUIRE(vec.at(0) == 1);
     REQUIRE(vec.at(2) == 3);
@@ -164,7 +168,7 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
 
     SECTION("can use at() or operator[] to modify")
     {
-        vec.at(0) = 100;
+        vec.at(0)->get() = 100;
         REQUIRE(vec.at(0) == 100);
 
         vec[1] = 200;
