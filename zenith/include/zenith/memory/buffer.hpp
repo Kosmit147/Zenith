@@ -40,7 +40,7 @@ public:
     // --- Data access
     [[nodiscard]] auto data() & { return _data; }
     [[nodiscard]] auto data() const& -> const auto* { return _data; }
-    [[nodiscard]] auto data() && -> byte*; // the returned pointer must be freed!
+    [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
 
     [[nodiscard]] auto operator[](usize offset) -> byte&;
     [[nodiscard]] auto operator[](usize offset) const -> const byte&;
@@ -66,17 +66,17 @@ public:
     auto free() -> void;
 
     // --- Modifiers
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(auto&& data, usize offset = 0) -> usize;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
 private:
     usize _size_bytes = 0;
-    byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
-    // we're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data
+    byte* _data = nullptr; // We assume that _data is always properly aligned to point to any type.
+    // We're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data.
 
 private:
     auto allocate(usize size_bytes) -> void;
@@ -107,7 +107,7 @@ public:
     // --- Data access
     [[nodiscard]] auto data() & { return _data; }
     [[nodiscard]] auto data() const& -> const auto* { return _data; }
-    [[nodiscard]] auto data() && -> byte*; // the returned pointer must be freed!
+    [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
 
     [[nodiscard]] auto operator[](usize offset) -> byte&;
     [[nodiscard]] auto operator[](usize offset) const -> const byte&;
@@ -135,11 +135,11 @@ public:
     auto free() -> void;
 
     // --- Modifiers
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(auto&& data, usize offset = 0) -> usize;
-    // returns the number of bytes written
+    // Returns the number of bytes written.
     auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 
     auto clear() -> void;
@@ -147,8 +147,8 @@ public:
 private:
     usize _size_bytes = 0;
     usize _capacity_bytes = 0;
-    byte* _data = nullptr; // we assume that _data is always properly aligned to point to any type
-    // we're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data
+    byte* _data = nullptr; // We assume that _data is always properly aligned to point to any type.
+    // We're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data.
 
 private:
     auto resize_to_at_least(usize min_size_bytes) -> void;

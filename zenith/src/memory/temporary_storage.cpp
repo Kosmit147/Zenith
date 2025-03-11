@@ -61,6 +61,7 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
     auto result = _buffer_ptr;
     _buffer_ptr += size_bytes;
 
+    // Make sure _buffer_ptr didn't overflow.
     ZTH_ASSERT(_buffer_ptr >= begin());
 
     if (_buffer_ptr > end())

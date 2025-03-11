@@ -19,6 +19,9 @@ struct VertexArrayLayout
     [[nodiscard]] constexpr static auto from_vertex_data() -> VertexArrayLayout;
 };
 
+// We're using separate attribute format from OpenGL 4.3 and newer, which means that vertex layouts are bound to vertex
+// arrays instead of vertex buffers. Therefore, you can use the same vertex array with different vertex buffers without
+// having to specify the layout again as long as the layouts of the vertex buffers are the same.
 class VertexArray
 {
 public:

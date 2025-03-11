@@ -6,8 +6,8 @@ namespace zth::fs {
 
 auto load_to_string(const std::filesystem::path& path) -> std::optional<std::string>
 {
-    // @speed: optimization pass
-    // @robustness: std::filesystem::exists and std::filesystem::path::string() throw, should we handle that?
+    // @speed: Do an optimization pass.
+    // @robustness: std::filesystem::exists and std::filesystem::path::string() throw.
 
     if (!std::filesystem::exists(path))
     {
@@ -37,7 +37,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
 
     if (!std::filesystem::exists(path))
     {
-        // @speed: string() throws
+        // @robustness: string() throws.
         ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
@@ -46,7 +46,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
 
     if (!file.is_open())
     {
-        // @speed: string() throws
+        // @robustness: string() throws.
         ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return {};
     }
@@ -60,7 +60,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
 
 auto extract_filename(const std::filesystem::path& path) -> std::optional<std::string>
 {
-    // @robustness: string() throws. Should we handle that?
+    // @robustness: string() throws.
     auto filename = path.filename().string();
     return filename.empty() ? std::nullopt : std::make_optional(filename);
 }

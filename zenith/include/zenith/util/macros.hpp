@@ -25,6 +25,7 @@
     ZTH_DEFAULT_MOVE(type)
 
 // ZTH_DEBUG_BREAK
+// @refactor: Replace with std::breakpoint once we're on C++26.
 
 #if defined(_MSC_VER)
 

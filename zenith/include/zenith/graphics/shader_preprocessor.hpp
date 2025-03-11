@@ -33,7 +33,7 @@ public:
     using StringRef = std::reference_wrapper<std::string>;
     using ConstStringRef = std::reference_wrapper<const std::string>;
 
-    // @test which recursion depth would be the best
+    // @test: Which recursion depth would be best.
     static constexpr u16 max_recursion_depth = 30;
 
 public:

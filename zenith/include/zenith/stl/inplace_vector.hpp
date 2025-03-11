@@ -9,6 +9,8 @@
 
 namespace zth {
 
+// A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
+// @refactor: Replace with std::inplace_vector once we're on C++26.
 template<std::movable T, usize Capacity> class InPlaceVector
 {
 public:
@@ -69,6 +71,8 @@ public:
     constexpr auto clear() noexcept(std::is_nothrow_destructible_v<T>) -> void;
 
 private:
+    // @speed: We could determine what the smallest unsigned integer type capable of storing the values between 0 and
+    // Capacity is and use it instead of usize (or maybe even forgo it completely if Capacity is 0).
     usize _size = 0;
     alignas(T) std::array<byte, sizeof(T) * Capacity> _data;
 };

@@ -16,6 +16,7 @@ using i64 = std::int64_t;
 using isize = std::intmax_t;
 using usize = std::uintmax_t;
 
+// @refactor: Use types from <stdfloat> when they become available.
 using f32 = float;
 using f64 = double;
 

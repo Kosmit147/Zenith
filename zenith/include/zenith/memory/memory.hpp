@@ -8,16 +8,16 @@
 namespace zth::memory {
 
 constexpr usize minimal_alignment = alignof(std::max_align_t);
-constexpr usize default_alignment = 16; // @speed: maybe default alignment should be minimal_alignment instead of 16
+constexpr usize default_alignment = 16; // @speed: Maybe default alignment should be minimal_alignment instead of 16.
 
 template<typename T> [[nodiscard]] constexpr auto is_aligned(T* ptr, usize alignment = alignof(T)) -> bool;
 
 template<typename T> [[nodiscard]] constexpr auto aligned(T* ptr, usize alignment = alignof(T)) -> T*;
 template<typename T> [[nodiscard]] constexpr auto aligned_down(T* ptr, usize alignment = alignof(T)) -> T*;
 
-// returns the number of bytes ptr was shifted by
+// Returns the number ptr was incremented by.
 template<typename T> constexpr auto align(T*& ptr, usize alignment = alignof(T)) -> usize;
-// returns the number of bytes ptr was shifted by
+// Returns the number ptr was decremented by.
 template<typename T> constexpr auto align_down(T*& ptr, usize alignment = alignof(T)) -> usize;
 
 [[nodiscard]] constexpr auto kilobytes(usize n) -> usize;
@@ -48,7 +48,7 @@ public:
         requires(std::convertible_to<U*, T*>)
     {}
 
-    // std::destructible ensures that T's destructor doesn't throw
+    // std::destructible ensures that T's destructor doesn't throw.
     constexpr auto operator()(T* ptr) const noexcept -> void;
 };
 

@@ -32,7 +32,7 @@ Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& par
 
     if (!data)
     {
-        // @robustness: .string() throws
+        // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Texture] Failed to load texture from file {}.", path.string());
         ZTH_DEBUG_BREAK;
         return;

@@ -22,7 +22,7 @@ StringHashMap<std::string> ShaderPreprocessor::_sources;
 auto ShaderPreprocessor::init() -> void
 {
     ZTH_CORE_INFO("Initializing shader preprocessor...");
-    // @todo: remove test_glsl
+    // @todo: Remove test_glsl.
     add_source("test.glsl", embedded::shaders::test_glsl);
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
     ZTH_CORE_INFO("Shader preprocessor initialized.");
@@ -66,7 +66,7 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
 
     if (!filename)
     {
-        // @robustness: string() throws
+        // @robustness: string() throws.
         ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source from file \"{}\".", path.string());
         return false;
     }
@@ -80,7 +80,7 @@ auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::
 
     if (!data)
     {
-        // @speed: string() throws
+        // @robustness: string() throws.
         ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\" from file \"{}\".", name,
                        path.string());
         return false;
@@ -128,7 +128,7 @@ auto ShaderPreprocessor::preprocess() -> std::expected<std::string, PreprocessSh
 
     while (advance_until_directive_or_comment())
     {
-        // we're at "//" or '#'
+        // We're at "//" or '#'.
         auto result = process_directive_or_comment();
 
         if (!result)
@@ -140,7 +140,7 @@ auto ShaderPreprocessor::preprocess() -> std::expected<std::string, PreprocessSh
 
 auto ShaderPreprocessor::process_directive_or_comment() -> std::expected<Success, PreprocessShaderError>
 {
-    // we're at "//" or '#'
+    // We're at "//" or '#'.
 
     auto character = _rest_in_line.front();
 
@@ -165,7 +165,7 @@ auto ShaderPreprocessor::process_directive_or_comment() -> std::expected<Success
 
 auto ShaderPreprocessor::resolve_preprocessor_directive() -> std::expected<Success, PreprocessShaderError>
 {
-    // we're at '#'
+    // We're at '#'.
 
     if (_rest_in_line.find(include_str) != std::string_view::npos)
     {
@@ -173,7 +173,7 @@ auto ShaderPreprocessor::resolve_preprocessor_directive() -> std::expected<Succe
     }
     else
     {
-        // a directive other than #include; leave it be
+        // A directive other than #include; leave it be.
         advance_line();
         return Success{};
     }
@@ -181,9 +181,9 @@ auto ShaderPreprocessor::resolve_preprocessor_directive() -> std::expected<Succe
 
 auto ShaderPreprocessor::resolve_include_directive() -> std::expected<Success, PreprocessShaderError>
 {
-    // we're at '#'
+    // We're at '#'.
 
-    // skip until we're at the source name
+    // Skip until we're at the source name.
     skip(include_str.size());
     skip_whitespace();
 
@@ -251,7 +251,7 @@ auto ShaderPreprocessor::advance_line() -> void
     advance_by(_rest_in_line.size());
 }
 
-// returns true if we managed to get to a directive or a comment
+// Returns true if we managed to get to a directive or a comment.
 auto ShaderPreprocessor::advance_until_directive_or_comment() -> bool
 {
     usize i = 0;
@@ -316,7 +316,6 @@ auto ShaderPreprocessor::skip_whitespace() -> void
     skip(count);
 }
 
-// pushes count characters into _result_buffer
 auto ShaderPreprocessor::push(usize count) -> void
 {
     _result_buffer << _rest.substr(0, count);
@@ -328,7 +327,7 @@ auto ShaderPreprocessor::update_rest_in_line() -> void
     auto endline_pos = _rest.find('\n');
 
     if (endline_pos != std::string_view::npos)
-        endline_pos++; // don't skip the '\n'
+        endline_pos++; // Don't skip the '\n'.
 
     _rest_in_line = _rest.substr(0, endline_pos);
 }
@@ -343,7 +342,7 @@ auto ShaderPreprocessor::update_rest_in_line_after_advancing_or_skipping(usize a
 
 auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<std::string_view>
 {
-    // at this point _rest_in_line should contain only the source name i.e. "src.glsl" or <src.glsl>
+    // At this point _rest_in_line should contain only the source name i.e. "src.glsl" or <src.glsl>.
 
     if (_rest_in_line.size() < 2)
         return {};

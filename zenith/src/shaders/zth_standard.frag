@@ -125,8 +125,8 @@ Light convert_point_light(PointLight point_light)
     return Light(point_light_direction, point_light.properties, strength);
 }
 
-// dist is the distance from frag position to spot light
-// angle is the dot product of the direction from spot light to frag position and spot light direction
+// dist is the distance from frag position to spot light.
+// angle is the dot product of the direction from spot light to frag position and spot light direction.
 Light convert_spot_light(SpotLight spot_light, float dist, float angle)
 {
     float strength = calc_strength(spot_light.attenuation, dist);
