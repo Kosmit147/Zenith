@@ -70,6 +70,22 @@ auto Buffer::data() && -> byte*
     return std::exchange(_data, nullptr);
 }
 
+auto Buffer::at(usize offset) -> std::optional<ByteRef>
+{
+    if (offset >= _size_bytes)
+        return {};
+
+    return operator[](offset);
+}
+
+auto Buffer::at(usize offset) const -> std::optional<ConstByteRef>
+{
+    if (offset >= _size_bytes)
+        return {};
+
+    return operator[](offset);
+}
+
 auto Buffer::operator[](usize offset) -> byte&
 {
     ZTH_ASSERT(offset < _size_bytes);
@@ -223,6 +239,22 @@ auto DynamicBuffer::data() && -> byte*
     _size_bytes = 0;
     _capacity_bytes = 0;
     return std::exchange(_data, nullptr);
+}
+
+auto DynamicBuffer::at(usize offset) -> std::optional<ByteRef>
+{
+    if (offset >= _size_bytes)
+        return {};
+
+    return operator[](offset);
+}
+
+auto DynamicBuffer::at(usize offset) const -> std::optional<ConstByteRef>
+{
+    if (offset >= _size_bytes)
+        return {};
+
+    return operator[](offset);
 }
 
 auto DynamicBuffer::operator[](usize offset) -> byte&
