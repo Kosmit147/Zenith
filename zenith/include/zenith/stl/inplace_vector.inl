@@ -93,7 +93,7 @@ constexpr auto InPlaceVector<T, Capacity>::at(usize index) noexcept -> std::opti
     if (index >= _size)
         return {};
 
-    return data()[index];
+    return operator[](index);
 }
 
 template<std::movable T, usize Capacity>
@@ -102,7 +102,7 @@ constexpr auto InPlaceVector<T, Capacity>::at(usize index) const noexcept -> std
     if (index >= _size)
         return {};
 
-    return data()[index];
+    return operator[](index);
 }
 
 template<std::movable T, usize Capacity>

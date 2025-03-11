@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <functional>
+#include <optional>
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
@@ -19,6 +21,9 @@ public:
 class Buffer
 {
 public:
+    using ByteRef = std::reference_wrapper<byte>;
+    using ConstByteRef = std::reference_wrapper<const byte>;
+
     explicit Buffer() = default;
     explicit Buffer(usize size_bytes);
     explicit Buffer(const void* data, usize data_size_bytes);
@@ -41,6 +46,9 @@ public:
     [[nodiscard]] auto data() & { return _data; }
     [[nodiscard]] auto data() const& -> const auto* { return _data; }
     [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
+
+    [[nodiscard]] auto at(usize offset) -> std::optional<ByteRef>;
+    [[nodiscard]] auto at(usize offset) const -> std::optional<ConstByteRef>;
 
     [[nodiscard]] auto operator[](usize offset) -> byte&;
     [[nodiscard]] auto operator[](usize offset) const -> const byte&;
@@ -86,6 +94,9 @@ private:
 class DynamicBuffer
 {
 public:
+    using ByteRef = std::reference_wrapper<byte>;
+    using ConstByteRef = std::reference_wrapper<const byte>;
+
     explicit DynamicBuffer() = default;
     explicit DynamicBuffer(usize size_bytes);
     explicit DynamicBuffer(const void* data, usize data_size_bytes);
@@ -108,6 +119,9 @@ public:
     [[nodiscard]] auto data() & { return _data; }
     [[nodiscard]] auto data() const& -> const auto* { return _data; }
     [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
+
+    [[nodiscard]] auto at(usize offset) -> std::optional<ByteRef>;
+    [[nodiscard]] auto at(usize offset) const -> std::optional<ConstByteRef>;
 
     [[nodiscard]] auto operator[](usize offset) -> byte&;
     [[nodiscard]] auto operator[](usize offset) const -> const byte&;
