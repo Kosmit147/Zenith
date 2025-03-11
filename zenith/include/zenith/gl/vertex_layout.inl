@@ -6,7 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "zenith/util/reflection.hpp"
+#include "zenith/meta/reflection.hpp"
 
 namespace zth::gl {
 
@@ -61,7 +61,7 @@ constexpr auto VertexLayout::clear() -> void
 template<typename VertexType> constexpr auto VertexLayout::from_vertex() -> VertexLayout
 {
     constexpr auto dummy_vertex = VertexType{};
-    constexpr auto arity = get_struct_arity<VertexType>();
+    constexpr auto arity = meta::struct_arity<VertexType>();
 
     if constexpr (arity == 0)
     {

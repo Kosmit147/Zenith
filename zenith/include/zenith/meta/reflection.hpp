@@ -4,7 +4,7 @@
 
 #include "zenith/core/typedefs.hpp"
 
-namespace zth {
+namespace zth::meta {
 
 template<usize N> struct Anything
 {
@@ -14,7 +14,7 @@ template<usize N> struct Anything
 template<typename T, usize... Ints>
 concept ConstructibleFromNInitializers = requires { T{ Anything<Ints>{}... }; };
 
-template<typename T, usize N> [[nodiscard]] constexpr auto is_constructible_from_n_initializers() -> bool
+template<typename T, usize N> [[nodiscard]] constexpr auto constructible_from_n_initializers() -> bool
 {
     constexpr auto unpack = [&]<usize... Ints>(std::index_sequence<Ints...>) {
         return ConstructibleFromNInitializers<T, Ints...>;
@@ -24,14 +24,14 @@ template<typename T, usize N> [[nodiscard]] constexpr auto is_constructible_from
 }
 
 // returns the number of fields in a struct
-template<typename T, usize N = 0> [[nodiscard]] constexpr auto get_struct_arity() -> usize
+template<typename T, usize N = 0> [[nodiscard]] constexpr auto struct_arity() -> usize
 {
-    constexpr auto constructible = is_constructible_from_n_initializers<T, N>();
+    constexpr auto constructible = constructible_from_n_initializers<T, N>();
 
     if constexpr (!constructible)
         return N - 1;
     else
-        return get_struct_arity<T, N + 1>();
+        return struct_arity<T, N + 1>();
 }
 
-} // namespace zth
+} // namespace zth::meta
