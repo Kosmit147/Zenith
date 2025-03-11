@@ -217,7 +217,7 @@ auto MaterialList::operator[](usize index) const -> const Material&
 
 auto MaterialList::size() const -> usize
 {
-    return std::ranges::distance(*this);
+    return std::distance(begin(), end());
 }
 
 auto load_materials() -> void
