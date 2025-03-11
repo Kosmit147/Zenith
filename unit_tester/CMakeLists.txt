@@ -6,18 +6,19 @@ include(Catch)
 
 add_executable(
 	unit_tester
-	"src/defer.cpp"
-	"src/inplace_vector.cpp"
-	"src/memory.cpp"
-	"src/shader_preprocessor.cpp"
-	"src/string.cpp"
-	"src/string_hasher.cpp"
+	"src/graphics/shader_preprocessor.cpp"
+	"src/memory/memory.cpp"
+	"src/stl/inplace_vector.cpp"
+	"src/stl/string.cpp"
+	"src/stl/string_hasher.cpp"
+	"src/util/defer.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
 	target_link_libraries(unit_tester PRIVATE -lstdc++exp)
 endif()
 
+target_include_directories(unit_tester PRIVATE "src")
 target_compile_features(unit_tester PRIVATE cxx_std_23)
 target_compile_options(unit_tester PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(unit_tester PRIVATE "src/pch.hpp")
