@@ -2,7 +2,9 @@
 
 #include <array>
 #include <concepts>
+#include <functional>
 #include <initializer_list>
+#include <optional>
 #include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
@@ -14,6 +16,9 @@ namespace zth {
 template<std::movable T, usize Capacity> class InPlaceVector
 {
 public:
+    using TRef = std::reference_wrapper<T>;
+    using ConstTRef = std::reference_wrapper<const T>;
+
     constexpr InPlaceVector() noexcept = default;
     constexpr explicit InPlaceVector(usize count) noexcept(std::is_nothrow_default_constructible_v<T>);
     constexpr InPlaceVector(usize count, const T& value) noexcept(std::is_nothrow_copy_constructible_v<T>);
@@ -30,8 +35,8 @@ public:
     constexpr ~InPlaceVector() noexcept(std::is_nothrow_destructible_v<T>);
 
     // --- Data access
-    [[nodiscard]] constexpr auto at(usize index) -> T&;
-    [[nodiscard]] constexpr auto at(usize index) const -> const T&;
+    [[nodiscard]] constexpr auto at(usize index) noexcept -> std::optional<TRef>;
+    [[nodiscard]] constexpr auto at(usize index) const noexcept -> std::optional<ConstTRef>;
 
     [[nodiscard]] constexpr auto operator[](usize index) noexcept -> T&;
     [[nodiscard]] constexpr auto operator[](usize index) const noexcept -> const T&;

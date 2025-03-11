@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/core/exception.hpp"
 
 namespace zth {
 
@@ -88,18 +87,20 @@ constexpr InPlaceVector<T, Capacity>::~InPlaceVector() noexcept(std::is_nothrow_
     clear();
 }
 
-template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::at(usize index) -> T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::at(usize index) noexcept -> std::optional<TRef>
 {
     if (index >= _size)
-        throw Exception{ "Index out of range." };
+        return {};
 
     return data()[index];
 }
 
-template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::at(usize index) const -> const T&
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::at(usize index) const noexcept -> std::optional<ConstTRef>
 {
     if (index >= _size)
-        throw Exception{ "Index out of range." };
+        return {};
 
     return data()[index];
 }
