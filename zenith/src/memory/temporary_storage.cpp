@@ -12,7 +12,9 @@ std::vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
 auto TemporaryStorage::init() -> void
 {
     ZTH_CORE_INFO("Initializing temporary storage...");
+
     reset();
+
     ZTH_CORE_INFO("Temporary storage initialized.");
 }
 
@@ -39,6 +41,7 @@ auto TemporaryStorage::reset() -> void
 
 auto TemporaryStorage::reset_with_new_capacity(usize new_capacity) -> void
 {
+    _buffer.free();
     _buffer.resize(new_capacity);
     reset();
 }

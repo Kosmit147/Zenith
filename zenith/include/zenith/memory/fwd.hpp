@@ -15,7 +15,7 @@ template<std::destructible T>
 struct CustomDeleter;
 template<typename T> struct CustomAllocator;
 
-template<usize Size, usize Alignment = default_alignment> class alignas(Alignment) StaticBuffer;
+template<usize Size, usize Alignment = minimal_alignment> class alignas(Alignment) StaticBuffer;
 class Buffer;
 class DynamicBuffer;
 

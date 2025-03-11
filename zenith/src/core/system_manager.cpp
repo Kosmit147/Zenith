@@ -13,9 +13,8 @@
 #include "zenith/system/input.hpp"
 #include "zenith/system/time.hpp"
 
-// list of which systems depend on which other systems
-// we need to make sure that they're initialized in the right order
-// nearly every system depends on Logger and on TemporaryStorage, so we don't list those in the dependencies list
+// A list describing which systems depend on which other systems. We need to make sure that they're initialized in the
+// right order. Nearly every system depends on Logger and on TemporaryStorage, so we don't list those.
 //
 // Logger -> {}
 // TemporaryStorage -> {}
@@ -79,11 +78,11 @@ auto SystemManager::on_event(const Event& event) -> void
 
 auto SystemManager::on_update() -> void
 {
-    // clear temporary storage before updating other systems
-    TemporaryStorage::on_update();
-
-    // start ImGui's next frame before updating other systems
+    // Start ImGui's next frame before updating other systems.
     ImGuiRenderer::on_update();
+
+    // Clear temporary storage before updating other systems.
+    TemporaryStorage::on_update();
 
     Time::on_update();
     Input::on_update();

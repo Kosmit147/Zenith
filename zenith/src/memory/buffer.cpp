@@ -201,7 +201,7 @@ auto DynamicBuffer::operator=(const DynamicBuffer& other) -> DynamicBuffer&
     if (this == &other)
         return *this;
 
-    if (_size_bytes < other._size_bytes)
+    if (_capacity_bytes < other._size_bytes)
     {
         free();
         allocate(other._size_bytes);

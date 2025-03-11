@@ -88,7 +88,7 @@ auto Buffer::init_static_with_size(u32 size_bytes) -> void
 auto Buffer::init_static_with_data(const void* data, u32 data_size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::Uninitialized);
-    ZTH_ASSERT(data_size_bytes != 0); // can't initialize a static buffer with size 0
+    ZTH_ASSERT(data_size_bytes != 0); // Can't initialize a static buffer with size 0.
 
     _size_bytes = data_size_bytes;
     glNamedBufferStorage(_id, _size_bytes, data, GL_DYNAMIC_STORAGE_BIT);
@@ -174,11 +174,13 @@ auto Buffer::reallocate(u32 new_size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::InitializedDynamic);
 
-    if (_size_bytes != 0)
+    if (_size_bytes != 0) // Can't create a static temporary buffer with size 0.
     {
-        // need to copy the buffer's contents to newly allocated memory
-        // we can't just create a new buffer and free the old one because the id of this buffer needs to stay the same
-        // @speed: we could probably some kind of temporary buffer here instead of always creating a new one
+        // We need to copy the buffer's contents to newly allocated memory. We can't just create a new buffer and free
+        // the old one because the id of this buffer needs to remain unchanged.
+
+        // @speed: We could probably some kind of globally available temporary buffer here instead of always creating a
+        // new one.
 
         auto bytes_to_copy = std::min(_size_bytes, new_size_bytes);
         Buffer tmp_buffer = create_static_with_size(bytes_to_copy);

@@ -75,7 +75,7 @@ template<typename T> using TemporaryVector = std::vector<T, TemporaryStorageAllo
 // @todo: Implement make_temporary_for_overwrite (analogous to std::make_unique_for_overwrite).
 
 template<typename T, typename... Args>
-[[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
+[[nodiscard]] auto make_temporary(Args&&... args) -> Temporary<T>
     requires(!std::is_array_v<T>)
 {
     auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
@@ -85,7 +85,7 @@ template<typename T, typename... Args>
 
 // Specialization for array types.
 template<typename T>
-[[nodiscard]] constexpr auto make_temporary() -> Temporary<T>
+[[nodiscard]] auto make_temporary() -> Temporary<T>
     requires(std::is_bounded_array_v<T>)
 {
     auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
@@ -95,7 +95,7 @@ template<typename T>
 
 // Specialization for array types.
 template<typename T, typename... Args>
-[[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
+[[nodiscard]] auto make_temporary(Args&&... args) -> Temporary<T>
     requires(std::is_bounded_array_v<T>)
 {
     auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
@@ -112,7 +112,7 @@ template<typename T, typename... Args>
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
 // because then we don't have to actually store the additional metadata.
 template<typename T, typename... Args>
-[[nodiscard]] constexpr auto make_temporary(Args&&...) -> Temporary<T>
+[[nodiscard]] auto make_temporary(Args&&...) -> Temporary<T>
     requires(std::is_unbounded_array_v<T>)
 = delete;
 

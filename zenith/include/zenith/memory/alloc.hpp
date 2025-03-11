@@ -30,24 +30,26 @@ template<typename T> auto deallocate(T*& ptr) noexcept -> void;
 // This function sets ptr to nullptr.
 template<> auto deallocate(void*& ptr) noexcept -> void;
 
-// Destructs an object and deallocates the memory using our custom allocation functions.
-// Handles pointers to arrays, but not arrays of dynamic size (T[]).
+// Destructs an object and deallocates the memory using our custom allocation functions. Handles pointers to arrays, but
+// not arrays of dynamic size (T[]).
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
-// because then we don't have to actually store the additional metadata nor call any destructors
+// because then we don't have to actually store the additional metadata nor call any destructors. We could either store
+// the information about the number of objects to destruct the same way the standard operator delete[] does, or store
+// the number of allocated objects as part of the state of the deleter.
 template<std::destructible T>
     requires(!std::is_unbounded_array_v<T>)
 struct CustomDeleter
 {
 public:
-    constexpr CustomDeleter() noexcept = default;
+    CustomDeleter() noexcept = default;
 
     template<typename U>
-    constexpr CustomDeleter(const CustomDeleter<U>&) noexcept
+    CustomDeleter(const CustomDeleter<U>&) noexcept
         requires(std::convertible_to<U*, T*>)
     {}
 
     // std::destructible ensures that T's destructor doesn't throw.
-    constexpr auto operator()(T* ptr) const noexcept -> void;
+    auto operator()(T* ptr) const noexcept -> void;
 };
 
 template<typename T> struct CustomAllocator
@@ -82,7 +84,7 @@ template<typename T> auto deallocate(T*& ptr) noexcept -> void
 
 template<std::destructible T>
     requires(!std::is_unbounded_array_v<T>)
-constexpr auto CustomDeleter<T>::operator()(T* ptr) const noexcept -> void
+auto CustomDeleter<T>::operator()(T* ptr) const noexcept -> void
 {
     std::destroy_at(ptr);
     deallocate(ptr);

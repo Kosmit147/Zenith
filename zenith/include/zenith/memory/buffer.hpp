@@ -10,7 +10,7 @@
 
 namespace zth::memory {
 
-template<usize Size, usize Alignment> class alignas(Alignment) StaticBuffer
+template<usize Size, usize Alignment /* = minimal_alignment */> class alignas(Alignment) StaticBuffer
 {
 public:
     alignas(Alignment) std::array<byte, Size> data;
