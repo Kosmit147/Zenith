@@ -31,19 +31,19 @@ std::unique_ptr<Renderer> renderer;
 
 auto DrawCommand::operator==(const DrawCommand& other) const -> bool
 {
-    // ignore transform
+    // Ignore transform.
     return vertex_array == other.vertex_array && material == other.material;
 }
 
 auto DrawCommand::operator<(const DrawCommand& other) const -> bool
 {
-    // sort by vertex array first
+    // Sort by vertex array first.
     if (vertex_array < other.vertex_array)
         return true;
     else if (vertex_array > other.vertex_array)
         return false;
 
-    // sort by material second
+    // Sort by material second.
     if (material < other.material)
         return true;
 
@@ -52,13 +52,13 @@ auto DrawCommand::operator<(const DrawCommand& other) const -> bool
 
 auto DrawCommand::operator>(const DrawCommand& other) const -> bool
 {
-    // sort by vertex array first
+    // Sort by vertex array first.
     if (vertex_array > other.vertex_array)
         return true;
     else if (vertex_array < other.vertex_array)
         return false;
 
-    // sort by material second
+    // Sort by material second.
     if (material > other.material)
         return true;
 
@@ -96,7 +96,12 @@ auto Renderer::init() -> void
     set_clear_color(colors::transparent);
 
     shaders::load_shaders();
+
+    // We need to pass in the instance buffer as every vertex array needs to be bound to it because we're always doing
+    // instanced rendering. As the vertex arrays in meshes are constant, they need to be initialized with the instance
+    // buffer in this call.
     meshes::load_meshes(renderer->_instance_buffer);
+
     materials::load_materials();
 
     ZTH_CORE_INFO("Renderer initialized.");
@@ -126,7 +131,7 @@ auto Renderer::shut_down() -> void
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
-// @temporary: this function should probably be deleted once we have entity component system
+// @temporary: This function should probably be deleted once we have entity component system.
 auto Renderer::clear_scene_data() -> void
 {
     clear_directional_lights();
@@ -318,16 +323,16 @@ auto Renderer::ambient_lights() -> std::vector<std::shared_ptr<const AmbientLigh
 
 auto Renderer::batch_draw_commands() -> void
 {
-    // @speed: we could batch draw commands more efficiently
-    // it would probably also be more optimal to copy the transforms rather than storing pointers to them for better
-    // cache efficiency
+    // @speed: We should look into how we could batch draw commands more efficiently.
+    // It would probably also be more optimal to copy the transforms rather than storing pointers to them for better
+    // cache efficiency.
 
     auto& draw_commands = renderer->_draw_commands;
     auto& batches = renderer->_batches;
 
     std::ranges::sort(draw_commands);
 
-    // @cleanup: this shouldn't be static
+    // @cleanup: This shouldn't be static.
     static std::vector<const glm::mat4*> transforms;
     transforms.clear();
 
@@ -350,7 +355,7 @@ auto Renderer::batch_draw_commands() -> void
             .transforms = {},
         };
 
-        // @speed: we could probably do something better here than copying all the pointers
+        // @speed: We could probably do something better here than copying all the pointers.
         std::ranges::move(transforms, std::back_inserter(batch.transforms));
         batches.push_back(std::move(batch));
         transforms.clear();
@@ -394,7 +399,7 @@ auto Renderer::bind_material(const Material& material) -> void
         material.emission_map->bind(emission_map_slot);
 }
 
-// @cleanup: send data to buffers in a cleaner, less error-prone way
+// @cleanup: Send data to buffers in a cleaner, less error-prone way.
 
 auto Renderer::upload_camera_data() -> void
 {
@@ -427,8 +432,8 @@ auto Renderer::upload_material_data(const Material& material) -> void
 
 auto Renderer::upload_light_data() -> void
 {
-    // @speed: maybe we should collect all the data first and then buffer it all at once in these functions?
-    // @speed: we probably shouldn't buffer all this data every frame, but only when it changes
+    // @speed: Maybe we should collect all the data first and then buffer it all at once in these functions?
+    // Also: we probably shouldn't buffer all this data every frame, but only when it changes.
 
     upload_directional_lights_data();
     upload_point_lights_data();

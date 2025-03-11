@@ -8,6 +8,7 @@
 
 namespace zth::memory {
 
+// @refactor: Use std::is_sufficiently_aligned once we're on C++26.
 template<typename T> constexpr auto is_aligned(T* ptr, usize alignment) -> bool
 {
     ZTH_ASSERT(math::is_power_of_2(alignment));

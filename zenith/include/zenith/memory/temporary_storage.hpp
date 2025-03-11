@@ -14,6 +14,8 @@
 
 namespace zth {
 
+// A linear memory allocator which gets reset every frame. If we exceed the capacity, we resort to a regular allocation
+// using new.
 class TemporaryStorage
 {
 public:
@@ -68,9 +70,9 @@ template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDele
 using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = std::vector<T, TemporaryStorageAllocator<T>>;
 
-// @cleanup: these make_temporary functions could probably be generalized and could take in an allocator with which to
-// construct the object as a template parameter
-// @todo: implement make_temporary_for_overwrite
+// @cleanup: These make_temporary functions could probably be generalized and could take in an allocator with which to
+// construct the object as a template parameter.
+// @todo: Implement make_temporary_for_overwrite (analogous to std::make_unique_for_overwrite).
 
 template<typename T, typename... Args>
 [[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
@@ -81,7 +83,7 @@ template<typename T, typename... Args>
     return Temporary<T>{ ptr };
 }
 
-// specialization for array types
+// Specialization for array types.
 template<typename T>
 [[nodiscard]] constexpr auto make_temporary() -> Temporary<T>
     requires(std::is_bounded_array_v<T>)
@@ -91,7 +93,7 @@ template<typename T>
     return Temporary<T>{ ptr };
 }
 
-// specialization for array types
+// Specialization for array types.
 template<typename T, typename... Args>
 [[nodiscard]] constexpr auto make_temporary(Args&&... args) -> Temporary<T>
     requires(std::is_bounded_array_v<T>)
@@ -108,7 +110,7 @@ template<typename T, typename... Args>
 // destruct. If we wanted to support that, we would have to store additional metadata containing information about the
 // number of constructed Ts.
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
-// because then we don't have to actually store the additional metadata
+// because then we don't have to actually store the additional metadata.
 template<typename T, typename... Args>
 [[nodiscard]] constexpr auto make_temporary(Args&&...) -> Temporary<T>
     requires(std::is_unbounded_array_v<T>)

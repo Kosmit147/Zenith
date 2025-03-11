@@ -26,7 +26,7 @@ struct DrawCommand
     const Material* material;
     const glm::mat4* transform;
 
-    // comparison operators are used to sort draw commands into batches
+    // Comparison operators are used to sort draw commands into batches.
     [[nodiscard]] auto operator==(const DrawCommand& other) const -> bool;
     [[nodiscard]] auto operator<(const DrawCommand& other) const -> bool;
     [[nodiscard]] auto operator>(const DrawCommand& other) const -> bool;
@@ -34,6 +34,7 @@ struct DrawCommand
     [[nodiscard]] auto operator>=(const DrawCommand& other) const -> bool;
 };
 
+// Draw commands which use the same vertex array get merged into a render batch in order to utilize instanced rendering.
 struct RenderBatch
 {
     const gl::VertexArray* vertex_array;
@@ -131,8 +132,8 @@ private:
     gl::UniformBuffer _material_ubo =
         gl::UniformBuffer::create_static_with_size(sizeof(MaterialUboData), material_ubo_binding_point);
 
-    // @speed: it might be better to fit all lights into single buffer instead of creating a separate one for every kind
-    // of light
+    // @speed: It might be better to fit all lights into single buffer instead of creating a separate one for every kind
+    // of light.
 
     gl::ShaderStorageBuffer _directional_lights_ssbo = gl::ShaderStorageBuffer::create_dynamic_with_size(
         initial_directional_lights_ssbo_size, directional_lights_ssbo_binding_point);
@@ -143,6 +144,9 @@ private:
     gl::ShaderStorageBuffer _ambient_lights_ssbo =
         gl::ShaderStorageBuffer::create_dynamic(ambient_lights_ssbo_binding_point);
 
+    // Right now we're drawing everything using instanced rendering, even if the number of objects to draw is only 1 as
+    // there doesn't appear to be any drawback to doing so. Crucially, this means that every vertex array needs to be
+    // bound to the renderer's instance buffer before issuing the draw call.
     std::vector<InstanceVertex> _instance_data;
     gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size);
 

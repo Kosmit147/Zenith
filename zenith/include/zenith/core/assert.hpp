@@ -8,15 +8,15 @@
 
 #if !defined(ZTH_DIST_BUILD)
 
-#define ZTH_ASSERT(expr)                                                                                               \
+#define ZTH_ASSERT(...)                                                                                                \
     {                                                                                                                  \
-        if ((expr)) [[likely]]                                                                                         \
+        if ((__VA_ARGS__)) [[likely]]                                                                                  \
         {}                                                                                                             \
         else [[unlikely]]                                                                                              \
         {                                                                                                              \
             std::source_location location = std::source_location::current();                                           \
             std::cerr << location.file_name() << '(' << location.line() << ':' << location.column() << ") `"           \
-                      << location.function_name() << "`:\nAssertion failed: (" << #expr << ")\n";                      \
+                      << location.function_name() << "`:\nAssertion failed: (" << #__VA_ARGS__ << ")\n";               \
             ZTH_DEBUG_BREAK;                                                                                           \
             std::abort();                                                                                              \
         }                                                                                                              \
@@ -25,6 +25,6 @@
 
 #else
 
-#define ZTH_ASSERT(expr) ZTH_NOP
+#define ZTH_ASSERT(...) ZTH_NOP
 
 #endif

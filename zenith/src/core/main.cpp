@@ -7,7 +7,8 @@
 
 namespace zth {
 
-[[nodiscard]] auto create_application() -> Application*;
+// This function must be defined in the user's project using the ZTH_IMPLEMENT_APP macro.
+[[nodiscard]] extern auto create_application() -> std::unique_ptr<Application>;
 
 } // namespace zth
 
@@ -17,7 +18,7 @@ auto main() -> int
 
     try
     {
-        std::unique_ptr<Application> app{ create_application() };
+        auto app = create_application();
         app->run();
     }
     catch (const spdlog::spdlog_ex& e)
@@ -37,6 +38,6 @@ auto main() -> int
         std::println(std::cerr, "CRITICAL ERROR: Unrecognized exception thrown.");
     }
 
-    // this should be called before main finishes if using asynchronous loggers
+    // This should be called before main finishes if using asynchronous loggers (an MSVC workaround).
     spdlog::drop_all();
 }

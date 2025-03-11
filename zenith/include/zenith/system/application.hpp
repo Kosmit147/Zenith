@@ -1,16 +1,19 @@
 #pragma once
 
+#include <memory>
+
 #include "zenith/log/logger.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/macros.hpp"
 
-#define ZTH_IMPLEMENT_APP(user_app)                                                                                    \
+// This macro must be used in a single .cpp file (create_application() must be defined only once).
+// user_application is the class derived from zth::Application defined by the user.
+#define ZTH_IMPLEMENT_APP(user_application)                                                                            \
     namespace zth {                                                                                                    \
-                                                                                                                       \
-    [[nodiscard]] auto create_application() -> Application*                                                            \
+    [[nodiscard]] auto create_application() -> std::unique_ptr<Application>                                            \
     {                                                                                                                  \
-        return new user_app;                                                                                           \
+        return std::make_unique<user_application>();                                                                   \
     }                                                                                                                  \
     }
 
