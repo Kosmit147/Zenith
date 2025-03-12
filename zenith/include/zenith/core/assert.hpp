@@ -6,9 +6,10 @@
 
 #include "zenith/util/macros.hpp"
 
-#if !defined(ZTH_DIST_BUILD)
+// We're using <iostream> instead of <print> to print assertion messages because it's more efficient and generates less
+// code.
 
-#define ZTH_ASSERT(...)                                                                                                \
+#define ZTH_INTERNAL_ASSERT_IMPL(...)                                                                                  \
     {                                                                                                                  \
         if ((__VA_ARGS__)) [[likely]]                                                                                  \
         {}                                                                                                             \
@@ -22,6 +23,12 @@
         }                                                                                                              \
     }                                                                                                                  \
     ZTH_NOP
+
+#define ZTH_RUNTIME_ASSERT(...) ZTH_INTERNAL_ASSERT_IMPL(__VA_ARGS__)
+
+#if !defined(ZTH_DIST_BUILD)
+
+#define ZTH_ASSERT(...) ZTH_INTERNAL_ASSERT_IMPL(__VA_ARGS__)
 
 #else
 

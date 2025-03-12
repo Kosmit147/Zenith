@@ -70,11 +70,11 @@
 
 // ZTH_UNIQUE_NAME
 
-#define ZTH_UNIQUE_NAME_INTERNAL2(name, counter) name##counter
+#define ZTH_INTERNAL_UNIQUE_NAME_INNER(name, counter) name##counter
 
-#define ZTH_UNIQUE_NAME_INTERNAL(name, counter) ZTH_UNIQUE_NAME_INTERNAL2(name, counter)
+#define ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, counter) ZTH_INTERNAL_UNIQUE_NAME_INNER(name, counter)
 
-#define ZTH_UNIQUE_NAME(name) ZTH_UNIQUE_NAME_INTERNAL(name, __COUNTER__)
+#define ZTH_UNIQUE_NAME(name) ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, __COUNTER__)
 
 // ZTH_NOP
 
