@@ -7,11 +7,20 @@
 #include <optional>
 #include <type_traits>
 
+// @cleanup: Remove this include if it's not used once SmallVector is implemented.
+#include <vector>
+
 #include "zenith/core/typedefs.hpp"
 
 namespace zth {
 
 // @refactor: Implement iterators.
+
+// A vector which stores its data on the stack, if the number of stored objects is not greater than Capacity, or on the
+// heap otherwise.
+// Not currently implemented.
+// @todo: Implement SmallVector.
+template<typename T, usize Capacity> using SmallVector = std::vector<T>;
 
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
 // @refactor: Replace with std::inplace_vector once we're on C++26.
@@ -86,4 +95,4 @@ private:
 
 } // namespace zth
 
-#include "inplace_vector.inl"
+#include "vector.inl"

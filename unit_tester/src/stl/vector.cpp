@@ -1,7 +1,7 @@
 #include <array>
 #include <utility>
 
-#include <zenith/stl/inplace_vector.hpp>
+#include <zenith/stl/vector.hpp>
 
 #include "lifetime_helper.hpp"
 #include "matchers.hpp"
