@@ -11,6 +11,8 @@
 
 namespace zth {
 
+// @refactor: Implement iterators.
+
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
 // @refactor: Replace with std::inplace_vector once we're on C++26.
 template<std::movable T, usize Capacity> class InPlaceVector

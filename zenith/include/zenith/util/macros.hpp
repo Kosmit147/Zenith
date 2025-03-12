@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #define ZTH_NO_COPY(type)                                                                                              \
     type(const type&) = delete;                                                                                        \
     auto operator=(const type&) = delete;
@@ -24,8 +26,25 @@
     ZTH_DEFAULT_COPY(type)                                                                                             \
     ZTH_DEFAULT_MOVE(type)
 
+// ZTH_NOP
+
+#define ZTH_NOP ((void)0)
+
+// ZTH_ASSUME
+
+// @test: ZTH_ASSUME
+// @refactor: Use [[assume]] instead once MSVC supports it.
+
+#define ZTH_ASSUME(...)                                                                                                \
+    {                                                                                                                  \
+        if (!(__VA_ARGS__))                                                                                            \
+            std::unreachable();                                                                                        \
+    }                                                                                                                  \
+    ZTH_NOP
+
 // ZTH_DEBUG_BREAK
-// @refactor: Replace with std::breakpoint once we're on C++26.
+
+// @refactor: Use std::breakpoint instead once we're on C++26.
 
 #if defined(_MSC_VER)
 
@@ -48,7 +67,7 @@
 #if defined(ZTH_DIST_BUILD)
 
 #undef ZTH_DEBUG_BREAK
-#define ZTH_DEBUG_BREAK
+#define ZTH_DEBUG_BREAK ZTH_NOP
 
 #endif
 
@@ -75,7 +94,3 @@
 #define ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, counter) ZTH_INTERNAL_UNIQUE_NAME_INNER(name, counter)
 
 #define ZTH_UNIQUE_NAME(name) ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, __COUNTER__)
-
-// ZTH_NOP
-
-#define ZTH_NOP ((void)0)
