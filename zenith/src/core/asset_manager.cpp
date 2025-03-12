@@ -17,11 +17,14 @@ auto AssetManager::init() -> void
 auto AssetManager::shut_down() -> void
 {
     ZTH_CORE_INFO("Shutting down asset manager...");
+
     _shaders.clear();
+    _textures.clear();
+
     ZTH_CORE_INFO("Asset manager shut down.");
 }
 
-// @cleanup: could probably remove some code duplication in add_* functions
+// @cleanup: Could probably remove some code duplication in add_* functions.
 
 auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> std::optional<ShaderRef>
 {
@@ -103,7 +106,7 @@ auto AssetManager::add_texture_from_file(const std::filesystem::path& path, cons
 
     if (!filename)
     {
-        // @robustness: string() throws
+        // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture from file \"{}\".", path.string());
         return {};
     }
@@ -118,7 +121,7 @@ auto AssetManager::add_texture_from_file(std::string_view name, const std::files
 
     if (!success)
     {
-        // @robustness: .string() throws
+        // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture \"{}\" from file {}.", name, path.string());
         return {};
     }

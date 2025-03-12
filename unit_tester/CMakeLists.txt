@@ -9,8 +9,8 @@ add_executable(
 	"src/graphics/shader_preprocessor.cpp"
 	"src/memory/memory.cpp"
 	"src/meta/type.cpp"
-	"src/stl/inplace_vector.cpp"
 	"src/stl/string_hasher.cpp"
+	"src/stl/vector.cpp"
 	"src/string/string.cpp"
 	"src/util/defer.cpp"
 )

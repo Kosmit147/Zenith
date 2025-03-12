@@ -14,8 +14,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
-#include "zenith/stl/inplace_vector.hpp"
 #include "zenith/stl/string_map.hpp"
+#include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth {

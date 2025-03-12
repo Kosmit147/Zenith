@@ -28,9 +28,9 @@ Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParam
 
 Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& params)
 {
-    auto data = fs::load_raw(path);
+    auto maybe_data = fs::load_raw(path);
 
-    if (!data)
+    if (!maybe_data)
     {
         // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Texture] Failed to load texture from file {}.", path.string());
@@ -38,8 +38,8 @@ Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& par
         return;
     }
 
-    auto data_size_bytes = data->size() * sizeof(u8);
-    init_from_memory(data->data(), data_size_bytes, params);
+    std::span data{ *maybe_data };
+    init_from_memory(data.data(), data.size_bytes(), params);
 }
 
 auto Texture2D::from_memory(const void* data, usize data_size_bytes, const TextureParams& params) -> Texture2D

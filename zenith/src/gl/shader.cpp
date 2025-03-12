@@ -13,7 +13,7 @@ namespace zth {
 
 namespace gl {
 
-// @test: all shader types (tess control, tess evaluation, geometry) and loading them from files
+// @test: All shader types (tess control, tess evaluation, geometry) and loading them from files.
 
 Shader::Shader(const ShaderSources& sources)
 {
@@ -235,7 +235,7 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
 
         std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
 
-        // glGetShaderInfoLog returns a null-terminated string
+        // glGetShaderInfoLog returns a null-terminated string.
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
 
         ZTH_CORE_ERROR("[Shader] Failed to compile {} shader: {}", type, info_log.data());
@@ -261,8 +261,8 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> std::o
         return {};
 
 #if !defined(ZTH_DIST_BUILD)
-    // we're not deleting the shaders in non-distribution builds because that lets us look at their source code when
-    // using api debugging tools
+    // We're not deleting the shaders in non-distribution builds because that lets us look at their source code when
+    // using api debugging tools.
     shaders_cleanup.dismiss();
 #endif
 
@@ -274,7 +274,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
     auto vertex_source = fs::load_to_string(paths.vertex_path);
     auto fragment_source = fs::load_to_string(paths.fragment_path);
 
-    // @robustness: .string() function on std::filesystem::filepath can throw
+    // @robustness: .string() throws.
 
     if (!vertex_source)
     {
@@ -293,8 +293,8 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
         .fragment_source = *fragment_source,
     };
 
-    // these variables cannot be moved to inner scope as we need them to live until the call to
-    // create_shader_program_from_sources
+    // These variables cannot be moved to inner scope as we need them to live until the call to
+    // create_shader_program_from_sources.
     std::optional<std::string> tess_control_source;
     std::optional<std::string> tess_evaluation_source;
     std::optional<std::string> geometry_source;
@@ -382,7 +382,7 @@ auto Shader::link_program(ProgramId id) -> bool
 
         std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
 
-        // glGetProgramInfoLog returns a null-terminated string
+        // glGetProgramInfoLog returns a null-terminated string.
         glGetProgramInfoLog(id, max_length, &max_length, info_log.data());
 
         ZTH_CORE_ERROR("[Shader] Failed to link shader: {}", info_log.data());
@@ -474,9 +474,8 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
 
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
 {
-    // @test
-
-    // @robustness: .string() throws
+    // @test: This function.
+    // @robustness: .string() throws.
 
     std::string result = ZTH_FORMAT("{{\n"
                                     "\t.vertex_path = \"{}\",\n"
