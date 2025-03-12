@@ -10,6 +10,8 @@
 
 namespace zth::memory {
 
+// @refactor: Implement iterators.
+
 template<usize Size, usize Alignment /* = minimal_alignment */> class alignas(Alignment) StaticBuffer
 {
 public:
