@@ -2,6 +2,8 @@
 
 #include <string_view>
 
+// @refactor: Use #embed from C23 once MSVC supports it.
+
 namespace zth::embedded::shaders {
 
 extern const std::string_view defines_glsl;

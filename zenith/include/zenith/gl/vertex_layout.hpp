@@ -11,6 +11,8 @@ namespace zth::gl {
 
 enum class VertexLayoutElement : u8
 {
+    // @todo: Add all remaining types.
+
     Float,
 
     Vec2,
