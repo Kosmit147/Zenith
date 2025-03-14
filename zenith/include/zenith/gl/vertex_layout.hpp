@@ -46,11 +46,8 @@ public:
 
     [[nodiscard]] constexpr auto size() const { return _elements.size(); }
 
-    [[nodiscard]] constexpr auto begin() const { return _elements.begin(); }
-    [[nodiscard]] constexpr auto end() const { return _elements.end(); }
-
-    [[nodiscard]] constexpr auto begin() { return _elements.begin(); }
-    [[nodiscard]] constexpr auto end() { return _elements.end(); }
+    [[nodiscard]] constexpr auto begin(this auto&& self) -> decltype(auto) { return self._elements.begin(); }
+    [[nodiscard]] constexpr auto end(this auto&& self) -> decltype(auto) { return self._elements.end(); }
 
 private:
     InPlaceVector<VertexLayoutElement, max_element_count> _elements;

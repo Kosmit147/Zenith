@@ -11,7 +11,7 @@ public:
     ~ContainersScene() override = default;
 
 private:
-    std::vector<zth::CubeShape> _containers;
+    zth::Vector<zth::CubeShape> _containers;
     zth::SphereShape _light_marker;
 
     zth::gl::Texture2D _diffuse_map;

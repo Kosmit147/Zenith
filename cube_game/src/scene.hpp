@@ -15,7 +15,7 @@ private:
     zth::Material _block_material;
     std::shared_ptr<zth::DirectionalLight> _light;
 
-    std::vector<Block> _blocks;
+    zth::Vector<Block> _blocks;
     Player _player;
 
 private:

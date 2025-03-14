@@ -5,7 +5,6 @@
 #include <glm/vec4.hpp>
 
 #include <memory>
-#include <vector>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
@@ -16,6 +15,7 @@
 #include "zenith/graphics/shader_data.hpp"
 #include "zenith/graphics/vertex.hpp"
 #include "zenith/math/vector.hpp"
+#include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
 
 namespace zth {
@@ -39,7 +39,7 @@ struct RenderBatch
 {
     const gl::VertexArray* vertex_array;
     const Material* material;
-    std::vector<const glm::mat4*> transforms;
+    Vector<const glm::mat4*> transforms;
 };
 
 // @test: Multiple directional lights.
@@ -110,22 +110,22 @@ public:
     [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
 
     [[nodiscard]] static auto directional_light_count() -> usize;
-    [[nodiscard]] static auto directional_lights() -> std::vector<std::shared_ptr<const DirectionalLight>>&;
+    [[nodiscard]] static auto directional_lights() -> Vector<std::shared_ptr<const DirectionalLight>>&;
     [[nodiscard]] static auto point_light_count() -> usize;
-    [[nodiscard]] static auto point_lights() -> std::vector<std::shared_ptr<const PointLight>>&;
+    [[nodiscard]] static auto point_lights() -> Vector<std::shared_ptr<const PointLight>>&;
     [[nodiscard]] static auto spot_light_count() -> usize;
-    [[nodiscard]] static auto spot_lights() -> std::vector<std::shared_ptr<const SpotLight>>&;
+    [[nodiscard]] static auto spot_lights() -> Vector<std::shared_ptr<const SpotLight>>&;
     [[nodiscard]] static auto ambient_light_count() -> usize;
-    [[nodiscard]] static auto ambient_lights() -> std::vector<std::shared_ptr<const AmbientLight>>&;
+    [[nodiscard]] static auto ambient_lights() -> Vector<std::shared_ptr<const AmbientLight>>&;
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
         std::make_shared<PerspectiveCamera>(glm::vec3{ 0.0f }, math::world_forward, 1.0f);
 
-    std::vector<std::shared_ptr<const DirectionalLight>> _directional_lights;
-    std::vector<std::shared_ptr<const PointLight>> _point_lights;
-    std::vector<std::shared_ptr<const SpotLight>> _spot_lights;
-    std::vector<std::shared_ptr<const AmbientLight>> _ambient_lights;
+    Vector<std::shared_ptr<const DirectionalLight>> _directional_lights;
+    Vector<std::shared_ptr<const PointLight>> _point_lights;
+    Vector<std::shared_ptr<const SpotLight>> _spot_lights;
+    Vector<std::shared_ptr<const AmbientLight>> _ambient_lights;
 
     gl::UniformBuffer _camera_ubo =
         gl::UniformBuffer::create_static_with_size(sizeof(CameraUboData), camera_ubo_binding_point);
@@ -147,11 +147,11 @@ private:
     // Right now we're drawing everything using instanced rendering, even if the number of objects to draw is only 1 as
     // there doesn't appear to be any drawback to doing so. Crucially, this means that every vertex array needs to be
     // bound to the renderer's instance buffer before issuing the draw call.
-    std::vector<InstanceVertex> _instance_data;
+    Vector<InstanceVertex> _instance_data;
     gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size);
 
-    std::vector<DrawCommand> _draw_commands;
-    std::vector<RenderBatch> _batches;
+    Vector<DrawCommand> _draw_commands;
+    Vector<RenderBatch> _batches;
 
     static inline bool _wireframe_mode_enabled = false;
 

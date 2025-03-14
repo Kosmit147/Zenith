@@ -6,11 +6,11 @@
 #include <string>
 #include <type_traits>
 #include <utility>
-#include <vector>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/memory/memory.hpp"
+#include "zenith/stl/vector.hpp"
 
 namespace zth {
 
@@ -44,7 +44,7 @@ public:
 private:
     static memory::Buffer _buffer;
     static inline byte* _buffer_ptr = nullptr;
-    static std::vector<std::unique_ptr<byte[]>> _overflow_allocations;
+    static Vector<std::unique_ptr<byte[]>> _overflow_allocations;
 
 private:
     [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> void*;
@@ -69,7 +69,7 @@ template<typename T> struct TemporaryStorageAllocator
 // @cleanup: We should move these aliases somewhere also because they force us to include a lot of headers in this file.
 template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;
 using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
-template<typename T> using TemporaryVector = std::vector<T, TemporaryStorageAllocator<T>>;
+template<typename T> using TemporaryVector = Vector<T, TemporaryStorageAllocator<T>>;
 
 // @cleanup: These make_temporary functions could probably be generalized and could take in an allocator with which to
 // construct the object as a template parameter.

@@ -286,7 +286,7 @@ auto Renderer::directional_light_count() -> usize
     return renderer->_directional_lights.size();
 }
 
-auto Renderer::directional_lights() -> std::vector<std::shared_ptr<const DirectionalLight>>&
+auto Renderer::directional_lights() -> Vector<std::shared_ptr<const DirectionalLight>>&
 {
     return renderer->_directional_lights;
 }
@@ -296,7 +296,7 @@ auto Renderer::point_light_count() -> usize
     return renderer->_point_lights.size();
 }
 
-auto Renderer::point_lights() -> std::vector<std::shared_ptr<const PointLight>>&
+auto Renderer::point_lights() -> Vector<std::shared_ptr<const PointLight>>&
 {
     return renderer->_point_lights;
 }
@@ -306,7 +306,7 @@ auto Renderer::spot_light_count() -> usize
     return renderer->_spot_lights.size();
 }
 
-auto Renderer::spot_lights() -> std::vector<std::shared_ptr<const SpotLight>>&
+auto Renderer::spot_lights() -> Vector<std::shared_ptr<const SpotLight>>&
 {
     return renderer->_spot_lights;
 }
@@ -316,7 +316,7 @@ auto Renderer::ambient_light_count() -> usize
     return renderer->_ambient_lights.size();
 }
 
-auto Renderer::ambient_lights() -> std::vector<std::shared_ptr<const AmbientLight>>&
+auto Renderer::ambient_lights() -> Vector<std::shared_ptr<const AmbientLight>>&
 {
     return renderer->_ambient_lights;
 }
@@ -333,7 +333,7 @@ auto Renderer::batch_draw_commands() -> void
     std::ranges::sort(draw_commands);
 
     // @cleanup: This shouldn't be static.
-    static std::vector<const glm::mat4*> transforms;
+    static Vector<const glm::mat4*> transforms;
     transforms.clear();
 
     for (usize i = 0; i < draw_commands.size(); i++)
