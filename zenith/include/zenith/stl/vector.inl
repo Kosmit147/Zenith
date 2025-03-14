@@ -8,6 +8,11 @@
 
 namespace zth {
 
+template<std::movable T, usize Capacity> constexpr InPlaceVector<T, Capacity>::InPlaceVector() noexcept
+{
+    _end = reinterpret_cast<pointer>(_data.data());
+}
+
 template<std::movable T, usize Capacity>
 constexpr InPlaceVector<T, Capacity>::InPlaceVector(size_type count)
     noexcept(std::is_nothrow_default_constructible_v<value_type>)
