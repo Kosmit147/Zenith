@@ -3,7 +3,9 @@
 #include <array>
 #include <concepts>
 #include <initializer_list>
+#include <memory>
 #include <type_traits>
+#include <vector>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/stl/range.hpp"
@@ -13,11 +15,16 @@ namespace zth {
 // @todo: Implement iterators.
 // @todo: Implement reverse iterators (rbegin, rend).
 
+// A resizable array.
+// @todo: Implement Vector.
+template<std::movable T, typename Allocator = std::allocator<T>> using Vector = std::vector<T, Allocator>;
+
 // A vector which stores its data on the stack, if the number of stored objects is not greater than Capacity, or on the
 // heap otherwise. Implements contiguous range interface.
 // Not currently implemented.
 // @todo: Implement SmallVector.
-template<std::movable T, usize Capacity> using SmallVector = std::vector<T>;
+template<std::movable T, usize Capacity, typename Allocator = std::allocator<T>>
+using SmallVector = Vector<T, Allocator>;
 
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
 // Implements contiguous range interface.
@@ -75,7 +82,7 @@ public:
 private:
     // @speed: We could determine what the smallest unsigned integer type capable of storing the values between 0 and
     // Capacity is and use it instead of end pointer (or maybe even forgo it completely if Capacity is 0).
-    pointer _end = reinterpret_cast<pointer>(_data.data());
+    pointer _end = nullptr;
     // @refactor: Use StaticBuffer instead.
     alignas(value_type) std::array<byte, sizeof(value_type) * Capacity> _data;
 };

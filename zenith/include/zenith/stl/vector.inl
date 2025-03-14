@@ -95,6 +95,8 @@ constexpr auto InPlaceVector<T, Capacity>::cbegin(this auto&& self) noexcept -> 
 template<std::movable T, usize Capacity>
 constexpr auto InPlaceVector<T, Capacity>::cend(this auto&& self) noexcept -> decltype(auto)
 {
+    ZTH_ASSERT(self._end != nullptr);
+
     using return_type =
         std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
 

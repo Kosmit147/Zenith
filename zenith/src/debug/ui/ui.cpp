@@ -198,7 +198,7 @@ auto MaterialUi::on_update() -> void
 
     ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
 
-    auto map_picker = [](std::string_view label, i16 selected_idx, const std::vector<std::string>& map_names) {
+    auto map_picker = [](std::string_view label, i16 selected_idx, const Vector<std::string>& map_names) {
         constexpr auto none_selected_label = "None";
         std::optional<i16> pick = std::nullopt;
 

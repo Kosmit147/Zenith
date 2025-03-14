@@ -30,7 +30,7 @@ auto load_to_string(const std::filesystem::path& path) -> std::optional<std::str
     return std::make_optional(result);
 }
 
-auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8>>
+auto load_raw(const std::filesystem::path& path) -> std::optional<Vector<u8>>
 {
     // @speed: Do an optimization pass.
     // @robustness: std::filesystem::exists and std::filesystem::path::string() throw.
@@ -51,7 +51,7 @@ auto load_raw(const std::filesystem::path& path) -> std::optional<std::vector<u8
         return {};
     }
 
-    std::vector<u8> result;
+    Vector<u8> result;
     result.reserve(std::filesystem::file_size(path));
     result.insert(result.end(), std::istreambuf_iterator{ file }, {});
 

@@ -233,7 +233,7 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
         GLint max_length = 0;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
+        Vector<GLchar> info_log(max_length);
 
         // glGetShaderInfoLog returns a null-terminated string.
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
@@ -380,7 +380,7 @@ auto Shader::link_program(ProgramId id) -> bool
         GLint max_length = 0;
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        std::vector<GLchar> info_log(static_cast<std::size_t>(max_length));
+        Vector<GLchar> info_log(max_length);
 
         // glGetProgramInfoLog returns a null-terminated string.
         glGetProgramInfoLog(id, max_length, &max_length, info_log.data());

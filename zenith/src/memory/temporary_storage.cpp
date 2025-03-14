@@ -7,7 +7,7 @@
 namespace zth {
 
 memory::Buffer TemporaryStorage::_buffer{ initial_capacity };
-std::vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
+Vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
 
 auto TemporaryStorage::init() -> void
 {

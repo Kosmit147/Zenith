@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-
+#include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
 
 namespace zth {
@@ -20,7 +19,7 @@ public:
 private:
     using SystemShutdownFunc = void (*)();
 
-    static std::vector<SystemShutdownFunc> _system_shutdown_funcs;
+    static Vector<SystemShutdownFunc> _system_shutdown_funcs;
 };
 
 } // namespace zth

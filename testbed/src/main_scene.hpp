@@ -13,9 +13,9 @@ private:
     zth::SphereShape _light_marker2;
     zth::SphereShape _light_marker3;
 
-    std::vector<zth::gl::Texture2D> _diffuse_maps;
-    std::vector<zth::gl::Texture2D> _specular_maps;
-    std::vector<zth::gl::Texture2D> _emission_maps;
+    zth::Vector<zth::gl::Texture2D> _diffuse_maps;
+    zth::Vector<zth::gl::Texture2D> _specular_maps;
+    zth::Vector<zth::gl::Texture2D> _emission_maps;
 
     zth::Material _material;
     zth::Material _light_marker_material;

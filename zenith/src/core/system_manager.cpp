@@ -29,7 +29,7 @@
 
 namespace zth {
 
-std::vector<SystemManager::SystemShutdownFunc> SystemManager::_system_shutdown_funcs;
+Vector<SystemManager::SystemShutdownFunc> SystemManager::_system_shutdown_funcs;
 
 auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
 {

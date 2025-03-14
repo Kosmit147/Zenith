@@ -8,13 +8,13 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/input.hpp"
 #include "zenith/util/macros.hpp"
@@ -105,12 +105,12 @@ private:
     i16 _specular_map_selected_idx = _no_map_selected;
     i16 _emission_map_selected_idx = _no_map_selected;
 
-    std::vector<std::string> _diffuse_map_names;
-    std::vector<const gl::Texture2D*> _diffuse_maps;
-    std::vector<std::string> _specular_map_names;
-    std::vector<const gl::Texture2D*> _specular_maps;
-    std::vector<std::string> _emission_map_names;
-    std::vector<const gl::Texture2D*> _emission_maps;
+    Vector<std::string> _diffuse_map_names;
+    Vector<const gl::Texture2D*> _diffuse_maps;
+    Vector<std::string> _specular_map_names;
+    Vector<const gl::Texture2D*> _specular_maps;
+    Vector<std::string> _emission_map_names;
+    Vector<const gl::Texture2D*> _emission_maps;
 
 private:
     auto set_diffuse_map(i16 idx) -> void;
@@ -186,8 +186,8 @@ private:
     usize _selected_scene_idx = 0;
     usize _scene_count = 0;
 
-    std::vector<std::string> _scene_names;
-    std::vector<std::function<std::unique_ptr<Scene>()>> _scene_constructors;
+    Vector<std::string> _scene_names;
+    Vector<std::function<std::unique_ptr<Scene>()>> _scene_constructors;
 
 private:
     auto load_scene(usize idx) const -> void;
