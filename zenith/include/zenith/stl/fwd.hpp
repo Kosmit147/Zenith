@@ -6,8 +6,10 @@
 
 namespace zth {
 
-template<std::movable T, usize Capacity> class InPlaceVector;
+class ContiguousRangeInterface;
 
 struct StringHasher;
+
+template<std::movable T, usize Capacity> class InPlaceVector;
 
 } // namespace zth
