@@ -10,14 +10,15 @@
 
 namespace zth::memory {
 
-// @refactor: Implement iterators.
+// @todo: Implement iterators.
+// @todo: Implement reverse iterators (rbegin, rend).
 
 template<usize Size, usize Alignment /* = minimal_alignment */> class alignas(Alignment) StaticBuffer
 {
 public:
     alignas(Alignment) std::array<byte, Size> data;
 
-    // @todo
+    // @todo: Implement StaticBuffer
 };
 
 class Buffer
