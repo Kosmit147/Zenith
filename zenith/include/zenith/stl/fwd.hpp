@@ -8,6 +8,12 @@ namespace zth {
 
 class ContiguousRangeInterface;
 
+namespace string {
+
+struct FindResult;
+
+} // namespace string
+
 struct StringHasher;
 
 template<std::movable T, usize Capacity> class InPlaceVector;
