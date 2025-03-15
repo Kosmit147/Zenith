@@ -40,12 +40,22 @@ template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::data(t
     return self.bytes.data();
 }
 
-template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cbegin(this auto&& self) -> decltype(auto)
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::begin(this auto&& self) -> decltype(auto)
+{
+    return self.bytes.begin();
+}
+
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::end(this auto&& self) -> decltype(auto)
+{
+    return self.bytes.end();
+}
+
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cbegin(this auto&& self) -> const_iterator
 {
     return self.bytes.cbegin();
 }
 
-template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cend(this auto&& self) -> decltype(auto)
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cend(this auto&& self) -> const_iterator
 {
     return self.bytes.cend();
 }
