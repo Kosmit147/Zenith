@@ -26,14 +26,14 @@ auto AssetManager::shut_down() -> void
 
 // @cleanup: Could probably remove some code duplication in add_* functions.
 
-auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> std::optional<ShaderRef>
+auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>
 {
     auto [kv, success] = _shaders.emplace(name, std::move(shader));
 
     if (!success)
     {
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add shader \"{}\".", name);
-        return {};
+        return nil;
     }
 
     auto& [_, shader_ref] = *kv;
@@ -41,14 +41,14 @@ auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> std
 }
 
 auto AssetManager::add_shader_from_sources(std::string_view name, const gl::ShaderSources& sources)
-    -> std::optional<ShaderRef>
+    -> Optional<Reference<gl::Shader>>
 {
     auto [kv, success] = _shaders.try_emplace(std::string{ name }, sources);
 
     if (!success)
     {
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add shader \"{}\" from sources.", name);
-        return {};
+        return nil;
     }
 
     auto& [_, shader] = *kv;
@@ -56,28 +56,28 @@ auto AssetManager::add_shader_from_sources(std::string_view name, const gl::Shad
 }
 
 auto AssetManager::add_shader_from_files(std::string_view name, const gl::ShaderSourcePaths& paths)
-    -> std::optional<ShaderRef>
+    -> Optional<Reference<gl::Shader>>
 {
     auto [kv, success] = _shaders.try_emplace(std::string{ name }, paths);
 
     if (!success)
     {
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add shader \"{}\" from files {}.", name, paths);
-        return {};
+        return nil;
     }
 
     auto& [_, shader] = *kv;
     return shader;
 }
 
-auto AssetManager::add_texture(std::string_view name, gl::Texture2D&& texture) -> std::optional<TextureRef>
+auto AssetManager::add_texture(std::string_view name, gl::Texture2D&& texture) -> Optional<Reference<gl::Texture2D>>
 {
     auto [kv, success] = _textures.emplace(name, std::move(texture));
 
     if (!success)
     {
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture \"{}\".", name);
-        return {};
+        return nil;
     }
 
     auto& [_, texture_ref] = *kv;
@@ -85,14 +85,14 @@ auto AssetManager::add_texture(std::string_view name, gl::Texture2D&& texture) -
 }
 
 auto AssetManager::add_texture_from_memory(std::string_view name, const void* data, usize data_size_bytes,
-                                           const gl::TextureParams& params) -> std::optional<TextureRef>
+                                           const gl::TextureParams& params) -> Optional<Reference<gl::Texture2D>>
 {
     auto [kv, success] = _textures.try_emplace(std::string{ name }, data, data_size_bytes, params);
 
     if (!success)
     {
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture \"{}\" from memory.", name);
-        return {};
+        return nil;
     }
 
     auto& [_, texture] = *kv;
@@ -100,7 +100,7 @@ auto AssetManager::add_texture_from_memory(std::string_view name, const void* da
 }
 
 auto AssetManager::add_texture_from_file(const std::filesystem::path& path, const gl::TextureParams& params)
-    -> std::optional<TextureRef>
+    -> Optional<Reference<gl::Texture2D>>
 {
     auto filename = fs::extract_filename(path);
 
@@ -108,14 +108,14 @@ auto AssetManager::add_texture_from_file(const std::filesystem::path& path, cons
     {
         // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture from file \"{}\".", path.string());
-        return {};
+        return nil;
     }
 
     return add_texture_from_file(*filename, path, params);
 }
 
 auto AssetManager::add_texture_from_file(std::string_view name, const std::filesystem::path& path,
-                                         const gl::TextureParams& params) -> std::optional<TextureRef>
+                                         const gl::TextureParams& params) -> Optional<Reference<gl::Texture2D>>
 {
     auto [kv, success] = _textures.try_emplace(std::string{ name }, path, params);
 
@@ -123,14 +123,14 @@ auto AssetManager::add_texture_from_file(std::string_view name, const std::files
     {
         // @robustness: .string() throws.
         ZTH_CORE_ERROR("[Asset Manager] Couldn't add texture \"{}\" from file {}.", name, path.string());
-        return {};
+        return nil;
     }
 
     auto& [_, texture] = *kv;
     return texture;
 }
 
-auto AssetManager::get_shader(std::string_view name) -> std::optional<ShaderRef>
+auto AssetManager::get_shader(std::string_view name) -> Optional<Reference<gl::Shader>>
 {
     if (auto kv = _shaders.find(name); kv != _shaders.end())
     {
@@ -139,10 +139,10 @@ auto AssetManager::get_shader(std::string_view name) -> std::optional<ShaderRef>
     }
 
     ZTH_CORE_ERROR("[Asset Manager] Couldn't get shader \"{}\".", name);
-    return {};
+    return nil;
 }
 
-auto AssetManager::get_texture(std::string_view name) -> std::optional<TextureRef>
+auto AssetManager::get_texture(std::string_view name) -> Optional<Reference<gl::Texture2D>>
 {
     if (auto kv = _textures.find(name); kv != _textures.end())
     {
@@ -151,7 +151,7 @@ auto AssetManager::get_texture(std::string_view name) -> std::optional<TextureRe
     }
 
     ZTH_CORE_ERROR("[Asset Manager] Couldn't get texture \"{}\".", name);
-    return {};
+    return nil;
 }
 
 auto AssetManager::remove_shader(std::string_view name) -> bool

@@ -1,14 +1,14 @@
 #pragma once
 
 #include <concepts>
-#include <functional>
 #include <iterator>
-#include <optional>
 #include <span>
 #include <type_traits>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/util/optional.hpp"
+#include "zenith/util/reference.hpp"
 
 // @todo: Implement iterators (use iterator concepts from standard library).
 // @todo: Implement reverse iterators (rbegin, rend).
@@ -114,17 +114,16 @@ constexpr auto ContiguousRangeInterface::operator[](this auto&& self, std::integ
 
 constexpr auto ContiguousRangeInterface::at(this auto&& self, std::integral auto index) -> auto
 {
-    using value_type = typename std::remove_reference_t<decltype(self)>::value_type;
-    using reference_wrapper = std::reference_wrapper<value_type>;
-    using const_reference_wrapper = std::reference_wrapper<const value_type>;
+    using Self = std::remove_cvref_t<decltype(self)>;
+    using value_type = typename Self::value_type;
 
     using return_type = std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>,
-                                           const_reference_wrapper, reference_wrapper>;
+                                           Reference<const value_type>, Reference<value_type>>;
 
     if (index >= self.size())
-        return std::optional<return_type>{ std::nullopt };
+        return Optional<return_type>{ nil };
 
-    return std::make_optional<return_type>(self[index]);
+    return zth::make_optional<return_type>(self[index]);
 }
 
 } // namespace zth

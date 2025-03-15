@@ -18,7 +18,7 @@ const zth::ApplicationSpec app_spec = {
         .maximized = true,
         .cursor_enabled = false,
         .transparent_framebuffer = false,
-        .forced_aspect_ratio = std::nullopt,
+        .forced_aspect_ratio = zth::nil,
     },
     .logger_spec = {
         .client_logger_label = "SANDBOX",

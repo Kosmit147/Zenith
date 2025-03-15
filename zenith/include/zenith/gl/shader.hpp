@@ -8,7 +8,6 @@
 
 #include <array>
 #include <filesystem>
-#include <optional>
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
@@ -17,6 +16,7 @@
 #include "zenith/stl/string_map.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/optional.hpp"
 
 namespace zth {
 
@@ -41,18 +41,18 @@ struct ShaderSources
 {
     std::string_view vertex_source;
     std::string_view fragment_source;
-    std::optional<std::string_view> tess_control_source = std::nullopt;
-    std::optional<std::string_view> tess_evaluation_source = std::nullopt;
-    std::optional<std::string_view> geometry_source = std::nullopt;
+    Optional<std::string_view> tess_control_source = nil;
+    Optional<std::string_view> tess_evaluation_source = nil;
+    Optional<std::string_view> geometry_source = nil;
 };
 
 struct ShaderSourcePaths
 {
     std::filesystem::path vertex_path;
     std::filesystem::path fragment_path;
-    std::optional<std::filesystem::path> tess_control_path = std::nullopt;
-    std::optional<std::filesystem::path> tess_evaluation_path = std::nullopt;
-    std::optional<std::filesystem::path> geometry_path = std::nullopt;
+    Optional<std::filesystem::path> tess_control_path = nil;
+    Optional<std::filesystem::path> tess_evaluation_path = nil;
+    Optional<std::filesystem::path> geometry_path = nil;
 };
 
 struct UniformInfo
@@ -99,7 +99,7 @@ private:
 
 private:
     auto retrieve_unif_info() -> void;
-    [[nodiscard]] auto get_unif_info(std::string_view name) const -> std::optional<UniformInfo>;
+    [[nodiscard]] auto get_unif_info(std::string_view name) const -> Optional<UniformInfo>;
 
     static auto set_unif(GLint location, GLint val) -> void;
     static auto set_unif(GLint location, GLfloat val) -> void;
@@ -109,18 +109,18 @@ private:
     static auto set_unif(GLint location, const glm::mat4& val) -> void;
 
     [[nodiscard]] static auto create_shaders_from_sources(const ShaderSources& sources)
-        -> std::optional<InPlaceVector<ShaderId, 5>>;
-    [[nodiscard]] static auto create_shader(std::string_view source, ShaderType type) -> std::optional<ShaderId>;
+        -> Optional<InPlaceVector<ShaderId, 5>>;
+    [[nodiscard]] static auto create_shader(std::string_view source, ShaderType type) -> Optional<ShaderId>;
     [[nodiscard]] static auto compile_shader(ShaderId id, ShaderType type) -> bool;
 
-    [[nodiscard]] static auto create_program_from_sources(const ShaderSources& sources) -> std::optional<ProgramId>;
-    [[nodiscard]] static auto create_program_from_files(const ShaderSourcePaths& paths) -> std::optional<ProgramId>;
-    [[nodiscard]] static auto create_program(const InPlaceVector<ShaderId, 5>& shaders) -> std::optional<ProgramId>;
+    [[nodiscard]] static auto create_program_from_sources(const ShaderSources& sources) -> Optional<ProgramId>;
+    [[nodiscard]] static auto create_program_from_files(const ShaderSourcePaths& paths) -> Optional<ProgramId>;
+    [[nodiscard]] static auto create_program(const InPlaceVector<ShaderId, 5>& shaders) -> Optional<ProgramId>;
     [[nodiscard]] static auto link_program(ProgramId id) -> bool;
 
     static auto delete_shaders(const InPlaceVector<ShaderId, 5>& shaders) -> void;
 
-    [[nodiscard]] static auto create_fallback_program() -> std::optional<ProgramId>;
+    [[nodiscard]] static auto create_fallback_program() -> Optional<ProgramId>;
 };
 
 [[nodiscard]] auto to_gl_enum(ShaderType shader_type) -> GLenum;

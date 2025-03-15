@@ -70,18 +70,18 @@ auto Buffer::data() && -> byte*
     return std::exchange(_data, nullptr);
 }
 
-auto Buffer::at(usize offset) -> std::optional<ByteRef>
+auto Buffer::at(usize offset) -> Optional<Reference<byte>>
 {
     if (offset >= _size_bytes)
-        return {};
+        return nil;
 
     return operator[](offset);
 }
 
-auto Buffer::at(usize offset) const -> std::optional<ConstByteRef>
+auto Buffer::at(usize offset) const -> Optional<Reference<const byte>>
 {
     if (offset >= _size_bytes)
-        return {};
+        return nil;
 
     return operator[](offset);
 }
@@ -241,18 +241,18 @@ auto DynamicBuffer::data() && -> byte*
     return std::exchange(_data, nullptr);
 }
 
-auto DynamicBuffer::at(usize offset) -> std::optional<ByteRef>
+auto DynamicBuffer::at(usize offset) -> Optional<Reference<byte>>
 {
     if (offset >= _size_bytes)
-        return {};
+        return nil;
 
     return operator[](offset);
 }
 
-auto DynamicBuffer::at(usize offset) const -> std::optional<ConstByteRef>
+auto DynamicBuffer::at(usize offset) const -> Optional<Reference<const byte>>
 {
     if (offset >= _size_bytes)
-        return {};
+        return nil;
 
     return operator[](offset);
 }

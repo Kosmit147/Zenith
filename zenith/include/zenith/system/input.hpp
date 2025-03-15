@@ -5,12 +5,12 @@
 #include <glm/vec2.hpp>
 
 #include <array>
-#include <optional>
 #include <unordered_map>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/util/optional.hpp"
 
 namespace zth {
 
@@ -310,8 +310,8 @@ constexpr std::array mouse_button_enumerations = {
     MouseButton::Right,
 };
 
-[[nodiscard]] auto glfw_key_to_key(int key) -> std::optional<Key>;
-[[nodiscard]] auto glfw_mouse_button_to_mouse_button(int button) -> std::optional<MouseButton>;
+[[nodiscard]] auto glfw_key_to_key(int key) -> Optional<Key>;
+[[nodiscard]] auto glfw_mouse_button_to_mouse_button(int button) -> Optional<MouseButton>;
 
 [[nodiscard]] auto to_string(Key key) -> const char*;
 [[nodiscard]] auto to_string(MouseButton button) -> const char*;

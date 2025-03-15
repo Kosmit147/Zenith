@@ -200,7 +200,7 @@ auto MaterialUi::on_update() -> void
 
     auto map_picker = [](std::string_view label, i16 selected_idx, const Vector<std::string>& map_names) {
         constexpr auto none_selected_label = "None";
-        std::optional<i16> pick = std::nullopt;
+        Optional<i16> pick = nil;
 
         std::string_view selected_map_name = none_selected_label;
 

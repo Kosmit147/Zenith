@@ -39,9 +39,6 @@ public:
     using pointer = value_type*;
     using const_pointer = const value_type*;
 
-    using iterator = pointer;
-    using const_iterator = const_pointer;
-
     constexpr InPlaceVector() noexcept;
     constexpr explicit InPlaceVector(size_type count) noexcept(std::is_nothrow_default_constructible_v<value_type>);
     constexpr explicit InPlaceVector(size_type count, const value_type& value)
