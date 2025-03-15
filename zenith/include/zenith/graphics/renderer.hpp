@@ -49,7 +49,7 @@ struct RenderBatch
 class Renderer
 {
 public:
-    // @volatile: Keep these constants in sync with zth_defines.glsl.
+    // @volatile: Keep in sync with constants declared in zth_defines.glsl.
 
     static constexpr u32 diffuse_map_slot = 0;
     static constexpr u32 specular_map_slot = 1;

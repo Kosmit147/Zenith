@@ -163,7 +163,7 @@ auto Window::swap_buffers() -> void
 
     auto frame_time = time() - _last_frame_time;
 
-    // @todo: sleep instead if spinning
+    // @todo: Sleep instead if spinning.
     while (frame_time < _target_frame_time)
         frame_time = time() - _last_frame_time;
 

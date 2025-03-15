@@ -23,8 +23,6 @@ auto ShaderPreprocessor::init() -> void
 {
     ZTH_CORE_INFO("Initializing shader preprocessor...");
 
-    // @todo: Remove test_glsl.
-    add_source("test.glsl", embedded::shaders::test_glsl);
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
 
     ZTH_CORE_INFO("Shader preprocessor initialized.");

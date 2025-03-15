@@ -42,7 +42,6 @@ add_library(
 	"src/system/window.cpp"
 )
 
-b_embed(zenith_core "src/shaders/test.glsl")
 b_embed(zenith_core "src/shaders/zth_defines.glsl")
 b_embed(zenith_core "src/shaders/zth_fallback.vert")
 b_embed(zenith_core "src/shaders/zth_fallback.frag")

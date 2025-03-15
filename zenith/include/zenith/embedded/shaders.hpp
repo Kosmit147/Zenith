@@ -15,7 +15,4 @@ extern const std::string_view flat_color_frag;
 extern const std::string_view standard_vert;
 extern const std::string_view standard_frag;
 
-// @todo: remove test_glsl
-extern const std::string_view test_glsl;
-
 } // namespace zth::embedded::shaders
