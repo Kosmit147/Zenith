@@ -5,6 +5,8 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/fwd.hpp"
+#include "zenith/stl/range.hpp"
+#include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
 
@@ -13,12 +15,49 @@ namespace zth::memory {
 // @todo: Implement iterators.
 // @todo: Implement reverse iterators (rbegin, rend).
 
-template<usize Size, usize Alignment /* = minimal_alignment */> class alignas(Alignment) StaticBuffer
+template<usize Size, usize Alignment /* = minimal_alignment */>
+class alignas(Alignment) StaticBuffer : public ContiguousRangeInterface
 {
 public:
-    alignas(Alignment) std::array<byte, Size> data;
+    using value_type = byte;
+    using size_type = usize;
+    using difference_type = isize;
 
-    // @todo: Implement StaticBuffer
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
+    using iterator = pointer;
+    using const_iterator = const_pointer;
+
+    alignas(Alignment) std::array<byte, Size> bytes; // The data is uninitialized.
+
+public:
+    explicit StaticBuffer() = default;
+    explicit StaticBuffer(const void* data, usize data_size_bytes);
+    explicit StaticBuffer(std::ranges::contiguous_range auto&& data);
+
+    [[nodiscard]] static auto with_data(const void* data, usize data_size_bytes) -> StaticBuffer;
+    [[nodiscard]] static auto with_data(auto&& data) -> StaticBuffer;
+    [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) -> StaticBuffer;
+
+    ZTH_DEFAULT_COPY_DEFAULT_MOVE(StaticBuffer)
+
+    ~StaticBuffer() = default;
+
+    // --- ContiguousRange implementation
+    [[nodiscard]] auto data(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto cbegin(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto cend(this auto&& self) -> decltype(auto);
+    [[nodiscard]] static auto size() -> size_type { return Size; }
+    [[nodiscard]] static auto capacity() -> size_type { return Size; }
+
+    // --- StaticBuffer implementation
+    // Returns the number of bytes written.
+    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    // Returns the number of bytes written.
+    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    // Returns the number of bytes written.
+    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
 };
 
 class Buffer
