@@ -13,7 +13,4 @@ const std::string_view flat_color_frag = b::embed<"src/shaders/zth_flat_color.fr
 const std::string_view standard_vert = b::embed<"src/shaders/zth_standard.vert">().str();
 const std::string_view standard_frag = b::embed<"src/shaders/zth_standard.frag">().str();
 
-// @todo: remove test_glsl
-const std::string_view test_glsl = b::embed<"src/shaders/test.glsl">().str();
-
 } // namespace zth::embedded::shaders

@@ -25,7 +25,7 @@ out vec2 UV;
 
 void main()
 {
-    // transform matrix's last row is always (0, 0, 0, 1)
+    // Transform matrix's last row is always (0, 0, 0, 1).
     mat4 transform = mat4(
         vec4(in_transform_col_0, 0.0),
         vec4(in_transform_col_1, 0.0),

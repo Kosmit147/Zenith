@@ -1,4 +1,4 @@
-// @volatile: keep in sync with constants declared in Renderer
+// @volatile: Keep in sync with constants declared in Renderer.
 
 #define ZTH_DIFFUSE_MAP_SLOT 0
 #define ZTH_SPECULAR_MAP_SLOT 1
