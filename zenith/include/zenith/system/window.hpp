@@ -2,10 +2,10 @@
 
 #include <glm/vec2.hpp>
 
-#include <optional>
 #include <string>
 
 #include "zenith/gl/context.hpp"
+#include "zenith/util/optional.hpp"
 
 struct GLFWwindow;
 
@@ -25,12 +25,12 @@ struct WindowSpec
     gl::Profile gl_profile = gl::Profile::Core;
     bool fullscreen = false;
     bool vsync = true;
-    std::optional<u32> frame_rate_limit = std::nullopt;
+    Optional<u32> frame_rate_limit = nil;
     bool resizable = true;
     bool maximized = false;
     bool cursor_enabled = false;
     bool transparent_framebuffer = false;
-    std::optional<WindowAspectRatio> forced_aspect_ratio = std::nullopt;
+    Optional<WindowAspectRatio> forced_aspect_ratio = nil;
 };
 
 class Window
@@ -67,14 +67,14 @@ public:
     [[nodiscard]] static auto glfw_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
-    [[nodiscard]] static auto frame_rate_limit() -> std::optional<u32>;
+    [[nodiscard]] static auto frame_rate_limit() -> Optional<u32>;
     [[nodiscard]] static auto cursor_enabled() -> bool;
 
 private:
     static inline GLFWwindow* _window = nullptr;
     static inline double _target_frame_time = 0.0;
     static inline double _last_frame_time = 0.0;
-    static inline std::optional<u32> _frame_rate_limit = std::nullopt;
+    static inline Optional<u32> _frame_rate_limit = nil;
 
 private:
     [[nodiscard]] static auto create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*;

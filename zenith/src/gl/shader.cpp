@@ -107,7 +107,7 @@ auto Shader::retrieve_unif_info() -> void
     }
 }
 
-auto Shader::get_unif_info(std::string_view name) const -> std::optional<UniformInfo>
+auto Shader::get_unif_info(std::string_view name) const -> Optional<UniformInfo>
 {
     if (auto kv = _uniform_map.find(name); kv != _uniform_map.end())
     {
@@ -116,7 +116,7 @@ auto Shader::get_unif_info(std::string_view name) const -> std::optional<Uniform
     }
     else [[unlikely]]
     {
-        return {};
+        return nil;
     }
 }
 
@@ -153,7 +153,7 @@ auto Shader::set_unif(GLint location, const glm::mat4& val) -> void
     glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
 }
 
-auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> std::optional<InPlaceVector<ShaderId, 5>>
+auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> Optional<InPlaceVector<ShaderId, 5>>
 {
     InPlaceVector<ShaderId, 5> shaders;
     Defer shaders_cleanup{ [&] { delete_shaders(shaders); } };
@@ -169,34 +169,34 @@ auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> std::o
     };
 
     if (!add_shader(sources.vertex_source, ShaderType::Vertex))
-        return {};
+        return nil;
 
     if (!add_shader(sources.fragment_source, ShaderType::Fragment))
-        return {};
+        return nil;
 
     if (sources.tess_control_source)
     {
         if (!add_shader(*sources.tess_control_source, ShaderType::TessControl))
-            return {};
+            return nil;
     }
 
     if (sources.tess_evaluation_source)
     {
         if (!add_shader(*sources.tess_evaluation_source, ShaderType::TessEvaluation))
-            return {};
+            return nil;
     }
 
     if (sources.geometry_source)
     {
         if (!add_shader(*sources.geometry_source, ShaderType::Geometry))
-            return {};
+            return nil;
     }
 
     shaders_cleanup.dismiss();
     return shaders;
 }
 
-auto Shader::create_shader(const std::string_view source, ShaderType type) -> std::optional<ShaderId>
+auto Shader::create_shader(const std::string_view source, ShaderType type) -> Optional<ShaderId>
 {
     auto preprocessed_source = ShaderPreprocessor::preprocess(source);
 
@@ -204,7 +204,7 @@ auto Shader::create_shader(const std::string_view source, ShaderType type) -> st
     {
         ZTH_CORE_ERROR("[Shader] Failed to preprocess shader source: {}", preprocessed_source.error());
         ZTH_DEBUG_BREAK;
-        return {};
+        return nil;
     }
 
     auto shader = glCreateShader(to_gl_enum(type));
@@ -215,7 +215,7 @@ auto Shader::create_shader(const std::string_view source, ShaderType type) -> st
     glShaderSource(shader, static_cast<GLsizei>(sources.size()), sources.data(), sources_lengths.data());
 
     if (!compile_shader(shader, type))
-        return {};
+        return nil;
 
     delete_shader.dismiss();
     return shader;
@@ -246,19 +246,19 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
     return true;
 }
 
-auto Shader::create_program_from_sources(const ShaderSources& sources) -> std::optional<ProgramId>
+auto Shader::create_program_from_sources(const ShaderSources& sources) -> Optional<ProgramId>
 {
     auto shaders = create_shaders_from_sources(sources);
 
     if (!shaders)
-        return {};
+        return nil;
 
     Defer shaders_cleanup{ [&] { delete_shaders(*shaders); } };
 
     auto program = create_program(*shaders);
 
     if (!program)
-        return {};
+        return nil;
 
 #if !defined(ZTH_DIST_BUILD)
     // We're not deleting the shaders in non-distribution builds because that lets us look at their source code when
@@ -269,7 +269,7 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> std::o
     return program;
 }
 
-auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::optional<ProgramId>
+auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Optional<ProgramId>
 {
     auto vertex_source = fs::load_to_string(paths.vertex_path);
     auto fragment_source = fs::load_to_string(paths.fragment_path);
@@ -279,13 +279,13 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
     if (!vertex_source)
     {
         ZTH_CORE_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_path.string());
-        return {};
+        return nil;
     }
 
     if (!fragment_source)
     {
         ZTH_CORE_ERROR("[Shader] Failed to load fragment shader source from file {}.", paths.fragment_path.string());
-        return {};
+        return nil;
     }
 
     ShaderSources sources = {
@@ -295,9 +295,9 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
 
     // These variables cannot be moved to inner scope as we need them to live until the call to
     // create_shader_program_from_sources.
-    std::optional<std::string> tess_control_source;
-    std::optional<std::string> tess_evaluation_source;
-    std::optional<std::string> geometry_source;
+    Optional<std::string> tess_control_source;
+    Optional<std::string> tess_evaluation_source;
+    Optional<std::string> geometry_source;
 
     if (paths.tess_control_path)
     {
@@ -307,7 +307,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
         {
             ZTH_CORE_ERROR("[Shader] Failed to load tesselation control shader source from file {}.",
                            paths.tess_control_path->string());
-            return {};
+            return nil;
         }
 
         sources.tess_control_source = *tess_control_source;
@@ -321,7 +321,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
         {
             ZTH_CORE_ERROR("[Shader] Failed to load tesselation evaluation shader source from file {}.",
                            paths.tess_evaluation_path->string());
-            return {};
+            return nil;
         }
 
         sources.tess_evaluation_source = *tess_evaluation_source;
@@ -335,7 +335,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
         {
             ZTH_CORE_ERROR("[Shader] Failed to load geometry shader source from file {}.",
                            paths.geometry_path->string());
-            return {};
+            return nil;
         }
 
         sources.geometry_source = *geometry_source;
@@ -344,7 +344,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> std::o
     return create_program_from_sources(sources);
 }
 
-auto Shader::create_program(const InPlaceVector<ShaderId, 5>& shaders) -> std::optional<ProgramId>
+auto Shader::create_program(const InPlaceVector<ShaderId, 5>& shaders) -> Optional<ProgramId>
 {
     auto program = glCreateProgram();
     Defer delete_program{ [&] { glDeleteProgram(program); } };
@@ -364,7 +364,7 @@ auto Shader::create_program(const InPlaceVector<ShaderId, 5>& shaders) -> std::o
     }
     else
     {
-        return {};
+        return nil;
     }
 }
 
@@ -399,7 +399,7 @@ auto Shader::delete_shaders(const InPlaceVector<ShaderId, 5>& shaders) -> void
         glDeleteShader(shader);
 }
 
-auto Shader::create_fallback_program() -> std::optional<ProgramId>
+auto Shader::create_fallback_program() -> Optional<ProgramId>
 {
     const ShaderSources fallback_program_sources = {
         .vertex_source = embedded::shaders::fallback_vert,
@@ -411,7 +411,7 @@ auto Shader::create_fallback_program() -> std::optional<ProgramId>
     if (!program)
     {
         ZTH_CORE_CRITICAL("[Shader] Failed to compile fallback shader.");
-        return {};
+        return nil;
     }
 
     return program;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <optional>
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/util/optional.hpp"
 
 namespace zth::string {
 
@@ -16,23 +16,23 @@ struct FindResult
     [[nodiscard]] auto operator==(const FindResult&) const -> bool = default;
 };
 
-[[nodiscard]] auto substr_between(std::string_view text, char delim) -> std::optional<std::string_view>;
+[[nodiscard]] auto substr_between(std::string_view text, char delim) -> Optional<std::string_view>;
 [[nodiscard]] auto substr_between(std::string_view text, char opening_delim, char closing_delim)
-    -> std::optional<std::string_view>;
+    -> Optional<std::string_view>;
 
 [[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char delim)
-    -> std::optional<std::string_view>;
+    -> Optional<std::string_view>;
 [[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                              char closing_delim) -> std::optional<std::string_view>;
+                                              char closing_delim) -> Optional<std::string_view>;
 
-[[nodiscard]] auto find_substr_between(std::string_view text, char delim) -> std::optional<FindResult>;
+[[nodiscard]] auto find_substr_between(std::string_view text, char delim) -> Optional<FindResult>;
 [[nodiscard]] auto find_substr_between(std::string_view text, char opening_delim, char closing_delim)
-    -> std::optional<FindResult>;
+    -> Optional<FindResult>;
 
 [[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char delim)
-    -> std::optional<FindResult>;
+    -> Optional<FindResult>;
 [[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                                   char closing_delim) -> std::optional<FindResult>;
+                                                   char closing_delim) -> Optional<FindResult>;
 
 } // namespace zth::string
 

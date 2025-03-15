@@ -5,7 +5,6 @@
 #include "core/assert.hpp"
 #include "core/asset_manager.hpp"
 #include "core/camera_controller.hpp"
-#include "core/error.hpp"
 #include "core/exception.hpp"
 #include "core/scene.hpp"
 #include "core/scene_manager.hpp"

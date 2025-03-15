@@ -188,7 +188,7 @@ auto Window::set_frame_rate_limit(u32 limit) -> void
 
 auto Window::disable_frame_rate_limit() -> void
 {
-    _frame_rate_limit = std::nullopt;
+    _frame_rate_limit = nil;
     _target_frame_time = 0.0;
 }
 
@@ -235,7 +235,7 @@ auto Window::mouse_pos() -> glm::vec2
     return glm::vec2{ static_cast<float>(x_pos), static_cast<float>(y_pos) };
 }
 
-auto Window::frame_rate_limit() -> std::optional<u32>
+auto Window::frame_rate_limit() -> Optional<u32>
 {
     return _frame_rate_limit;
 }

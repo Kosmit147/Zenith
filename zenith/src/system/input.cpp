@@ -140,7 +140,7 @@ auto Input::set_mouse_scroll_delta(glm::vec2 value) -> void
     _mouse_scroll_delta_updated = true;
 }
 
-auto glfw_key_to_key(int key) -> std::optional<Key>
+auto glfw_key_to_key(int key) -> Optional<Key>
 {
     switch (key)
     {
@@ -389,10 +389,10 @@ auto glfw_key_to_key(int key) -> std::optional<Key>
         break;
     }
 
-    return std::nullopt;
+    return nil;
 }
 
-auto glfw_mouse_button_to_mouse_button(int button) -> std::optional<MouseButton>
+auto glfw_mouse_button_to_mouse_button(int button) -> Optional<MouseButton>
 {
     switch (button)
     {
@@ -407,7 +407,7 @@ auto glfw_mouse_button_to_mouse_button(int button) -> std::optional<MouseButton>
         break;
     }
 
-    return std::nullopt;
+    return nil;
 }
 
 auto to_string(Key key) -> const char*

@@ -2,11 +2,11 @@
 
 #include <glad/glad.h>
 
-#include <optional>
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/optional.hpp"
 
 // @cleanup: Buffers implementation.
 
@@ -122,7 +122,7 @@ private:
     BufferId _id = GL_NONE;
     u32 _size_bytes = 0;
     BufferState _state = BufferState::Uninitialized;
-    std::optional<BufferUsage> _usage = std::nullopt;
+    Optional<BufferUsage> _usage = nil;
 
 private:
     auto create() -> void;

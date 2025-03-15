@@ -60,7 +60,7 @@ auto Buffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, Buf
 
 Buffer::Buffer(Buffer&& other) noexcept
     : _id(std::exchange(other._id, GL_NONE)), _size_bytes(std::exchange(other._size_bytes, 0)),
-      _state(std::exchange(other._state, BufferState::Uninitialized)), _usage(std::exchange(other._usage, std::nullopt))
+      _state(std::exchange(other._state, BufferState::Uninitialized)), _usage(std::exchange(other._usage, nil))
 {}
 
 auto Buffer::operator=(Buffer&& other) noexcept -> Buffer&
@@ -70,7 +70,7 @@ auto Buffer::operator=(Buffer&& other) noexcept -> Buffer&
     _id = std::exchange(other._id, GL_NONE);
     _size_bytes = std::exchange(other._size_bytes, 0);
     _state = std::exchange(other._state, BufferState::Uninitialized);
-    _usage = std::exchange(other._usage, std::nullopt);
+    _usage = std::exchange(other._usage, nil);
 
     return *this;
 }

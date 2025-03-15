@@ -22,20 +22,24 @@ StringHashMap<std::string> ShaderPreprocessor::_sources;
 auto ShaderPreprocessor::init() -> void
 {
     ZTH_CORE_INFO("Initializing shader preprocessor...");
+
     // @todo: Remove test_glsl.
     add_source("test.glsl", embedded::shaders::test_glsl);
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
+
     ZTH_CORE_INFO("Shader preprocessor initialized.");
 }
 
 auto ShaderPreprocessor::shut_down() -> void
 {
     ZTH_CORE_INFO("Shutting down shader preprocessor...");
+
     _sources.clear();
+
     ZTH_CORE_INFO("Shader preprocessor shut down.");
 }
 
-auto ShaderPreprocessor::preprocess(std::string_view source) -> std::expected<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess(std::string_view source) -> Result<std::string, PreprocessShaderError>
 {
     return preprocess_impl(source);
 }
@@ -89,7 +93,7 @@ auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::
     return add_source(name, *data);
 }
 
-auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<ConstStringRef>
+auto ShaderPreprocessor::get_source(std::string_view name) -> Optional<Reference<const std::string>>
 {
     if (auto kv = _sources.find(name); kv != _sources.end())
     {
@@ -98,7 +102,7 @@ auto ShaderPreprocessor::get_source(std::string_view name) -> std::optional<Cons
     }
 
     ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't get shader source \"{}\".", name);
-    return {};
+    return nil;
 }
 
 auto ShaderPreprocessor::remove_source(std::string_view name) -> bool
@@ -114,17 +118,16 @@ ShaderPreprocessor::ShaderPreprocessor(std::string_view source, u16 recursion_de
 }
 
 auto ShaderPreprocessor::preprocess_impl(std::string_view source, u16 recursion_depth)
-    -> std::expected<std::string, PreprocessShaderError>
+    -> Result<std::string, PreprocessShaderError>
 {
     ShaderPreprocessor preprocessor(source, recursion_depth);
     return preprocessor.preprocess();
 }
 
-auto ShaderPreprocessor::preprocess() -> std::expected<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess() -> Result<std::string, PreprocessShaderError>
 {
     if (_current_recursion_depth >= max_recursion_depth)
-        return std::unexpected{ PreprocessShaderError{ .line_info = std::nullopt,
-                                                       .description = "Circular dependency detected" } };
+        return Error{ PreprocessShaderError{ .line_info = nil, .description = "Circular dependency detected." } };
 
     while (advance_until_directive_or_comment())
     {
@@ -132,13 +135,13 @@ auto ShaderPreprocessor::preprocess() -> std::expected<std::string, PreprocessSh
         auto result = process_directive_or_comment();
 
         if (!result)
-            return std::unexpected{ std::move(result).error() };
+            return Error{ std::move(result).error() };
     }
 
     return std::move(_result_buffer).str();
 }
 
-auto ShaderPreprocessor::process_directive_or_comment() -> std::expected<Success, PreprocessShaderError>
+auto ShaderPreprocessor::process_directive_or_comment() -> Result<Success, PreprocessShaderError>
 {
     // We're at "//" or '#'.
 
@@ -163,7 +166,7 @@ auto ShaderPreprocessor::process_directive_or_comment() -> std::expected<Success
     return Success{};
 }
 
-auto ShaderPreprocessor::resolve_preprocessor_directive() -> std::expected<Success, PreprocessShaderError>
+auto ShaderPreprocessor::resolve_preprocessor_directive() -> Result<Success, PreprocessShaderError>
 {
     // We're at '#'.
 
@@ -179,7 +182,7 @@ auto ShaderPreprocessor::resolve_preprocessor_directive() -> std::expected<Succe
     }
 }
 
-auto ShaderPreprocessor::resolve_include_directive() -> std::expected<Success, PreprocessShaderError>
+auto ShaderPreprocessor::resolve_include_directive() -> Result<Success, PreprocessShaderError>
 {
     // We're at '#'.
 
@@ -192,7 +195,7 @@ auto ShaderPreprocessor::resolve_include_directive() -> std::expected<Success, P
     if (!source_name)
     {
         constexpr auto message = "Invalid #include directive";
-        return std::unexpected{ PreprocessShaderError{ .line_info = line_info(), .description = message } };
+        return Error{ PreprocessShaderError{ .line_info = line_info(), .description = message } };
     }
 
     auto included_source = get_source(*source_name);
@@ -200,23 +203,23 @@ auto ShaderPreprocessor::resolve_include_directive() -> std::expected<Success, P
     if (!included_source)
     {
         auto message = ZTH_FORMAT("Source {} not present in shader preprocessor's source list", *source_name);
-        return std::unexpected{ PreprocessShaderError{ .line_info = line_info(), .description = std::move(message) } };
+        return Error{ PreprocessShaderError{ .line_info = line_info(), .description = std::move(message) } };
     }
 
     auto preprocessed_included_source = preprocess_impl(included_source->get(), _current_recursion_depth + 1);
 
     if (!preprocessed_included_source)
-        return std::unexpected{ std::move(preprocessed_included_source).error() };
+        return Error{ std::move(preprocessed_included_source).error() };
 
     _result_buffer << *preprocessed_included_source;
     skip(source_name->size() + 2);
     return Success{};
 }
 
-auto ShaderPreprocessor::at(usize index) const -> std::optional<char>
+auto ShaderPreprocessor::at(usize index) const -> Optional<char>
 {
     if (index >= _rest.size())
-        return {};
+        return nil;
 
     return _rest[index];
 }
@@ -340,12 +343,12 @@ auto ShaderPreprocessor::update_rest_in_line_after_advancing_or_skipping(usize a
         _rest_in_line = _rest_in_line.substr(advanced_or_skipped_count);
 }
 
-auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<std::string_view>
+auto ShaderPreprocessor::extract_source_name_from_line() const -> Optional<std::string_view>
 {
     // At this point _rest_in_line should contain only the source name i.e. "src.glsl" or <src.glsl>.
 
     if (_rest_in_line.size() < 2)
-        return {};
+        return nil;
 
     std::size_t source_name_end_pos = std::string_view::npos;
 
@@ -355,7 +358,7 @@ auto ShaderPreprocessor::extract_source_name_from_line() const -> std::optional<
         source_name_end_pos = _rest_in_line.find('>', 1);
 
     if (source_name_end_pos == std::string_view::npos)
-        return {};
+        return nil;
 
     auto source_name_length = source_name_end_pos - 1;
     return _rest_in_line.substr(1, source_name_length);

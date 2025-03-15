@@ -1,17 +1,16 @@
 #pragma once
 
-#include <expected>
 #include <filesystem>
-#include <functional>
-#include <optional>
 #include <sstream>
 #include <string>
 #include <string_view>
 
-#include "zenith/core/error.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/stl/string_map.hpp"
+#include "zenith/util/optional.hpp"
+#include "zenith/util/reference.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -23,17 +22,13 @@ struct LineInfo
 
 struct PreprocessShaderError
 {
-    std::optional<LineInfo> line_info;
+    Optional<LineInfo> line_info;
     std::string description;
 };
 
 class ShaderPreprocessor
 {
 public:
-    using StringRef = std::reference_wrapper<std::string>;
-    using ConstStringRef = std::reference_wrapper<const std::string>;
-
-    // @test: Which recursion depth would be best.
     static constexpr u16 max_recursion_depth = 30;
 
 public:
@@ -42,14 +37,14 @@ public:
     static auto init() -> void;
     static auto shut_down() -> void;
 
-    [[nodiscard]] static auto preprocess(std::string_view source) -> std::expected<std::string, PreprocessShaderError>;
+    [[nodiscard]] static auto preprocess(std::string_view source) -> Result<std::string, PreprocessShaderError>;
 
     static auto add_source(std::string_view name, std::string_view source) -> bool;
     static auto add_source(std::string_view name, std::string&& source) -> bool;
     static auto add_source_from_file(const std::filesystem::path& path) -> bool;
     static auto add_source_from_file(std::string_view name, const std::filesystem::path& path) -> bool;
 
-    [[nodiscard]] static auto get_source(std::string_view name) -> std::optional<ConstStringRef>;
+    [[nodiscard]] static auto get_source(std::string_view name) -> Optional<Reference<const std::string>>;
 
     static auto remove_source(std::string_view name) -> bool;
 
@@ -70,14 +65,14 @@ private:
     explicit ShaderPreprocessor(std::string_view source, u16 recursion_depth = 0);
 
     [[nodiscard]] static auto preprocess_impl(std::string_view source, u16 recursion_depth = 0)
-        -> std::expected<std::string, PreprocessShaderError>;
-    [[nodiscard]] auto preprocess() -> std::expected<std::string, PreprocessShaderError>;
+        -> Result<std::string, PreprocessShaderError>;
+    [[nodiscard]] auto preprocess() -> Result<std::string, PreprocessShaderError>;
 
-    [[nodiscard]] auto process_directive_or_comment() -> std::expected<Success, PreprocessShaderError>;
-    [[nodiscard]] auto resolve_preprocessor_directive() -> std::expected<Success, PreprocessShaderError>;
-    [[nodiscard]] auto resolve_include_directive() -> std::expected<Success, PreprocessShaderError>;
+    [[nodiscard]] auto process_directive_or_comment() -> Result<Success, PreprocessShaderError>;
+    [[nodiscard]] auto resolve_preprocessor_directive() -> Result<Success, PreprocessShaderError>;
+    [[nodiscard]] auto resolve_include_directive() -> Result<Success, PreprocessShaderError>;
 
-    [[nodiscard]] auto at(usize index) const -> std::optional<char>;
+    [[nodiscard]] auto at(usize index) const -> Optional<char>;
     [[nodiscard]] auto line_info() const -> LineInfo;
 
     auto advance_by(usize count) -> void;
@@ -92,7 +87,7 @@ private:
     auto update_rest_in_line() -> void;
     auto update_rest_in_line_after_advancing_or_skipping(usize advanced_or_skipped_count) -> void;
 
-    [[nodiscard]] auto extract_source_name_from_line() const -> std::optional<std::string_view>;
+    [[nodiscard]] auto extract_source_name_from_line() const -> Optional<std::string_view>;
 };
 
 } // namespace zth
