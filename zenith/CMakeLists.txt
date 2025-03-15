@@ -33,7 +33,7 @@ add_library(
 	"src/memory/alloc.cpp"
 	"src/memory/buffer.cpp"
 	"src/memory/temporary_storage.cpp"
-	"src/string/string.cpp"
+	"src/stl/string.cpp"
 	"src/system/application.cpp"
 	"src/system/event.cpp"
 	"src/system/event_queue.cpp"

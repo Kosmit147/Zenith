@@ -13,6 +13,5 @@
 #include "zenith/memory.hpp"
 #include "zenith/meta.hpp"
 #include "zenith/stl.hpp"
-#include "zenith/string.hpp"
 #include "zenith/system.hpp"
 #include "zenith/util.hpp"
