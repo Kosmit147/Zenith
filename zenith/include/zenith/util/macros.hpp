@@ -94,3 +94,15 @@
 #define ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, counter) ZTH_INTERNAL_UNIQUE_NAME_INNER(name, counter)
 
 #define ZTH_UNIQUE_NAME(name) ZTH_INTERNAL_UNIQUE_NAME_OUTER(name, __COUNTER__)
+
+// ZTH_NO_UNIQUE_ADDRESS
+
+#if defined(_MSC_VER)
+
+#define ZTH_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
+
+#else
+
+#define ZTH_NO_UNIQUE_ADDRESS [[no_unique_address]]
+
+#endif
