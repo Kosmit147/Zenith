@@ -63,8 +63,10 @@ public:
 
     // --- ContiguousRange implementation
     [[nodiscard]] constexpr auto data(this auto&& self) noexcept -> decltype(auto);
-    [[nodiscard]] constexpr auto cbegin(this auto&& self) noexcept -> decltype(auto);
-    [[nodiscard]] constexpr auto cend(this auto&& self) noexcept -> decltype(auto);
+    [[nodiscard]] constexpr auto begin(this auto&& self) noexcept -> decltype(auto);
+    [[nodiscard]] constexpr auto end(this auto&& self) noexcept -> decltype(auto);
+    [[nodiscard]] constexpr auto cbegin(this auto&& self) noexcept -> const_iterator;
+    [[nodiscard]] constexpr auto cend(this auto&& self) noexcept -> const_iterator;
     [[nodiscard]] constexpr auto size() const noexcept -> size_type;
     [[nodiscard]] static constexpr auto capacity() noexcept -> size_type;
 

@@ -19,6 +19,8 @@ namespace zth {
 //
 // # Requires:
 // - data()
+// - begin()
+// - end()
 // - cbegin()
 // - cend()
 // - size()
@@ -26,8 +28,6 @@ namespace zth {
 // - value_type
 //
 // # Provides:
-// - begin()
-// - end()
 // - empty()
 // - ssize()
 // - size_bytes()
@@ -39,9 +39,6 @@ namespace zth {
 class ContiguousRangeInterface
 {
 public:
-    [[nodiscard]] constexpr auto begin(this auto&& self) -> decltype(auto);
-    [[nodiscard]] constexpr auto end(this auto&& self) -> decltype(auto);
-
     [[nodiscard]] constexpr auto empty(this auto&& self) -> bool;
     [[nodiscard]] constexpr auto ssize(this auto&& self) -> auto;
     [[nodiscard]] constexpr auto size_bytes(this auto&& self) -> usize;
@@ -56,16 +53,6 @@ public:
 protected:
     explicit ContiguousRangeInterface() = default;
 };
-
-constexpr auto ContiguousRangeInterface::begin(this auto&& self) -> decltype(auto)
-{
-    return self.cbegin();
-}
-
-constexpr auto ContiguousRangeInterface::end(this auto&& self) -> decltype(auto)
-{
-    return self.cend();
-}
 
 constexpr auto ContiguousRangeInterface::empty(this auto&& self) -> bool
 {

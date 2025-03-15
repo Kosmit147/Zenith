@@ -19,6 +19,8 @@ template<usize Size, usize Alignment /* = minimal_alignment */>
 class alignas(Alignment) StaticBuffer : public ContiguousRangeInterface
 {
 public:
+    using UnderlyingStorage = std::array<byte, Size>;
+
     using value_type = byte;
     using size_type = usize;
     using difference_type = isize;
@@ -26,10 +28,10 @@ public:
     using pointer = value_type*;
     using const_pointer = const value_type*;
 
-    using iterator = pointer;
-    using const_iterator = const_pointer;
+    using iterator = typename UnderlyingStorage::iterator;
+    using const_iterator = typename UnderlyingStorage::const_iterator;
 
-    alignas(Alignment) std::array<byte, Size> bytes; // The data is uninitialized.
+    alignas(Alignment) UnderlyingStorage bytes; // The data is uninitialized.
 
 public:
     explicit StaticBuffer() = default;
@@ -46,8 +48,10 @@ public:
 
     // --- ContiguousRange implementation
     [[nodiscard]] auto data(this auto&& self) -> decltype(auto);
-    [[nodiscard]] auto cbegin(this auto&& self) -> decltype(auto);
-    [[nodiscard]] auto cend(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto begin(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto end(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto cbegin(this auto&& self) -> const_iterator;
+    [[nodiscard]] auto cend(this auto&& self) -> const_iterator;
     [[nodiscard]] static auto size() -> size_type { return Size; }
     [[nodiscard]] static auto capacity() -> size_type { return Size; }
 
