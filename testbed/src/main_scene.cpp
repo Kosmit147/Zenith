@@ -34,6 +34,11 @@ constexpr auto point_light3 = zth::PointLight{ .position = glm::vec3{ -1.7f, 0.0
                                                    .quadratic = 0.032f,
                                                } };
 
+const auto cobble_diffuse_map_params = zth::gl::TextureParams{
+    .min_filter = zth::gl::TextureMinFilter::nearest_mipmap_linear,
+    .mag_filter = zth::gl::TextureMagFilter::nearest,
+};
+
 } // namespace
 
 MainScene::MainScene()
@@ -50,11 +55,6 @@ MainScene::MainScene()
     _light_marker.set_translation(_point_light->position).set_scale(0.1f);
     _light_marker2.set_translation(_point_light2->position).set_scale(0.1f);
     _light_marker3.set_translation(_point_light3->position).set_scale(0.1f);
-
-    const auto cobble_diffuse_map_params = zth::gl::TextureParams{
-        .min_filter = zth::gl::TextureMinFilter::nearest_mipmap_linear,
-        .mag_filter = zth::gl::TextureMagFilter::nearest,
-    };
 
     _diffuse_maps.emplace_back(embedded::cobble_diffuse_map_data, cobble_diffuse_map_params);
     _diffuse_maps.emplace_back(embedded::container_diffuse_map_data);

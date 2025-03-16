@@ -2,9 +2,8 @@
 
 #include <glm/vec2.hpp>
 
-#include <string>
-
 #include "zenith/gl/context.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/util/optional.hpp"
 
 struct GLFWwindow;
@@ -20,7 +19,7 @@ struct WindowAspectRatio
 struct WindowSpec
 {
     glm::uvec2 size = { 800, 600 };
-    std::string title = "Title";
+    String title = "Title";
     gl::Version gl_version = { 4, 6 };
     gl::Profile gl_profile = gl::Profile::Core;
     bool fullscreen = false;

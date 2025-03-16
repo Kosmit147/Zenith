@@ -9,17 +9,17 @@
 
 namespace zth::gl {
 
-const TextureMinFilter TextureMinFilter::nearest_mipmap_nearest = { TextureFilteringMode::Nearest,
-                                                                    MipmapFilteringMode::Nearest };
-const TextureMinFilter TextureMinFilter::linear_mipmap_nearest = { TextureFilteringMode::Linear,
-                                                                   MipmapFilteringMode::Nearest };
-const TextureMinFilter TextureMinFilter::nearest_mipmap_linear = { TextureFilteringMode::Nearest,
-                                                                   MipmapFilteringMode::Linear };
-const TextureMinFilter TextureMinFilter::linear_mipmap_linear = { TextureFilteringMode::Linear,
-                                                                  MipmapFilteringMode::Linear };
+constinit const TextureMinFilter TextureMinFilter::nearest_mipmap_nearest = { TextureFilteringMode::Nearest,
+                                                                              MipmapFilteringMode::Nearest };
+constinit const TextureMinFilter TextureMinFilter::linear_mipmap_nearest = { TextureFilteringMode::Linear,
+                                                                             MipmapFilteringMode::Nearest };
+constinit const TextureMinFilter TextureMinFilter::nearest_mipmap_linear = { TextureFilteringMode::Nearest,
+                                                                             MipmapFilteringMode::Linear };
+constinit const TextureMinFilter TextureMinFilter::linear_mipmap_linear = { TextureFilteringMode::Linear,
+                                                                            MipmapFilteringMode::Linear };
 
-const TextureMagFilter TextureMagFilter::nearest = { TextureFilteringMode::Nearest };
-const TextureMagFilter TextureMagFilter::linear = { TextureFilteringMode::Linear };
+constinit const TextureMagFilter TextureMagFilter::nearest = { TextureFilteringMode::Nearest };
+constinit const TextureMagFilter TextureMagFilter::linear = { TextureFilteringMode::Linear };
 
 Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParams& params)
 {

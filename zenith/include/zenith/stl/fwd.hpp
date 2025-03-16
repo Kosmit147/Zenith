@@ -8,11 +8,7 @@ namespace zth {
 
 class ContiguousRangeInterface;
 
-namespace string {
-
-struct FindResult;
-
-} // namespace string
+struct FindSubstrResult;
 
 struct StringHasher;
 

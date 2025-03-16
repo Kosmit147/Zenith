@@ -55,18 +55,18 @@ struct TextureMinFilter
     TextureFilteringMode texture_filtering;
     MipmapFilteringMode mipmap_filtering;
 
-    static const TextureMinFilter nearest_mipmap_nearest;
-    static const TextureMinFilter linear_mipmap_nearest;
-    static const TextureMinFilter nearest_mipmap_linear;
-    static const TextureMinFilter linear_mipmap_linear;
+    static constinit const TextureMinFilter nearest_mipmap_nearest;
+    static constinit const TextureMinFilter linear_mipmap_nearest;
+    static constinit const TextureMinFilter nearest_mipmap_linear;
+    static constinit const TextureMinFilter linear_mipmap_linear;
 };
 
 struct TextureMagFilter
 {
     TextureFilteringMode texture_filtering;
 
-    static const TextureMagFilter nearest;
-    static const TextureMagFilter linear;
+    static constinit const TextureMagFilter nearest;
+    static constinit const TextureMagFilter linear;
 };
 
 struct TextureParams

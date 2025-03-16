@@ -26,7 +26,7 @@ auto AssetManager::shut_down() -> void
 
 // @cleanup: Could probably remove some code duplication in add_* functions.
 
-auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>
+auto AssetManager::add_shader(StringView name, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>
 {
     auto [kv, success] = _shaders.emplace(name, std::move(shader));
 
@@ -40,10 +40,10 @@ auto AssetManager::add_shader(std::string_view name, gl::Shader&& shader) -> Opt
     return shader_ref;
 }
 
-auto AssetManager::add_shader_from_sources(std::string_view name, const gl::ShaderSources& sources)
+auto AssetManager::add_shader_from_sources(StringView name, const gl::ShaderSources& sources)
     -> Optional<Reference<gl::Shader>>
 {
-    auto [kv, success] = _shaders.try_emplace(std::string{ name }, sources);
+    auto [kv, success] = _shaders.try_emplace(String{ name }, sources);
 
     if (!success)
     {
@@ -55,10 +55,10 @@ auto AssetManager::add_shader_from_sources(std::string_view name, const gl::Shad
     return shader;
 }
 
-auto AssetManager::add_shader_from_files(std::string_view name, const gl::ShaderSourcePaths& paths)
+auto AssetManager::add_shader_from_files(StringView name, const gl::ShaderSourcePaths& paths)
     -> Optional<Reference<gl::Shader>>
 {
-    auto [kv, success] = _shaders.try_emplace(std::string{ name }, paths);
+    auto [kv, success] = _shaders.try_emplace(String{ name }, paths);
 
     if (!success)
     {
@@ -70,7 +70,7 @@ auto AssetManager::add_shader_from_files(std::string_view name, const gl::Shader
     return shader;
 }
 
-auto AssetManager::add_texture(std::string_view name, gl::Texture2D&& texture) -> Optional<Reference<gl::Texture2D>>
+auto AssetManager::add_texture(StringView name, gl::Texture2D&& texture) -> Optional<Reference<gl::Texture2D>>
 {
     auto [kv, success] = _textures.emplace(name, std::move(texture));
 
@@ -84,10 +84,10 @@ auto AssetManager::add_texture(std::string_view name, gl::Texture2D&& texture) -
     return texture_ref;
 }
 
-auto AssetManager::add_texture_from_memory(std::string_view name, const void* data, usize data_size_bytes,
+auto AssetManager::add_texture_from_memory(StringView name, const void* data, usize data_size_bytes,
                                            const gl::TextureParams& params) -> Optional<Reference<gl::Texture2D>>
 {
-    auto [kv, success] = _textures.try_emplace(std::string{ name }, data, data_size_bytes, params);
+    auto [kv, success] = _textures.try_emplace(String{ name }, data, data_size_bytes, params);
 
     if (!success)
     {
@@ -114,10 +114,10 @@ auto AssetManager::add_texture_from_file(const std::filesystem::path& path, cons
     return add_texture_from_file(*filename, path, params);
 }
 
-auto AssetManager::add_texture_from_file(std::string_view name, const std::filesystem::path& path,
+auto AssetManager::add_texture_from_file(StringView name, const std::filesystem::path& path,
                                          const gl::TextureParams& params) -> Optional<Reference<gl::Texture2D>>
 {
-    auto [kv, success] = _textures.try_emplace(std::string{ name }, path, params);
+    auto [kv, success] = _textures.try_emplace(String{ name }, path, params);
 
     if (!success)
     {
@@ -130,7 +130,7 @@ auto AssetManager::add_texture_from_file(std::string_view name, const std::files
     return texture;
 }
 
-auto AssetManager::get_shader(std::string_view name) -> Optional<Reference<gl::Shader>>
+auto AssetManager::get_shader(StringView name) -> Optional<Reference<gl::Shader>>
 {
     if (auto kv = _shaders.find(name); kv != _shaders.end())
     {
@@ -142,7 +142,7 @@ auto AssetManager::get_shader(std::string_view name) -> Optional<Reference<gl::S
     return nil;
 }
 
-auto AssetManager::get_texture(std::string_view name) -> Optional<Reference<gl::Texture2D>>
+auto AssetManager::get_texture(StringView name) -> Optional<Reference<gl::Texture2D>>
 {
     if (auto kv = _textures.find(name); kv != _textures.end())
     {
@@ -154,13 +154,13 @@ auto AssetManager::get_texture(std::string_view name) -> Optional<Reference<gl::
     return nil;
 }
 
-auto AssetManager::remove_shader(std::string_view name) -> bool
+auto AssetManager::remove_shader(StringView name) -> bool
 {
     auto elems_erased = _shaders.erase(name);
     return elems_erased != 0;
 }
 
-auto AssetManager::remove_texture(std::string_view name) -> bool
+auto AssetManager::remove_texture(StringView name) -> bool
 {
     auto elems_erased = _textures.erase(name);
     return elems_erased != 0;

@@ -38,7 +38,7 @@ public:
     static auto set_mouse_scroll_delta(glm::vec2 value) -> void;
 
 private:
-    // @speed: these shouldn't be hash maps
+    // @speed: These shouldn't be hash maps.
     static std::unordered_map<Key, bool> _key_states;
     static std::unordered_map<MouseButton, bool> _mouse_button_states;
 

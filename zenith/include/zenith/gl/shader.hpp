@@ -8,11 +8,11 @@
 
 #include <array>
 #include <filesystem>
-#include <string_view>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/stl/string_map.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
@@ -39,11 +39,11 @@ constexpr std::array shader_type_enumerations = {
 
 struct ShaderSources
 {
-    std::string_view vertex_source;
-    std::string_view fragment_source;
-    Optional<std::string_view> tess_control_source = nil;
-    Optional<std::string_view> tess_evaluation_source = nil;
-    Optional<std::string_view> geometry_source = nil;
+    StringView vertex_source;
+    StringView fragment_source;
+    Optional<StringView> tess_control_source = nil;
+    Optional<StringView> tess_evaluation_source = nil;
+    Optional<StringView> geometry_source = nil;
 };
 
 struct ShaderSourcePaths
@@ -83,7 +83,7 @@ public:
     auto bind() const -> void { glUseProgram(_id); }
     static auto unbind() -> void { glUseProgram(GL_NONE); }
 
-    template<typename T> auto set_unif(std::string_view name, const T& val) const -> void
+    template<typename T> auto set_unif(StringView name, const T& val) const -> void
     {
         if (auto info = get_unif_info(name))
             set_unif(info->location, val);
@@ -99,7 +99,7 @@ private:
 
 private:
     auto retrieve_unif_info() -> void;
-    [[nodiscard]] auto get_unif_info(std::string_view name) const -> Optional<UniformInfo>;
+    [[nodiscard]] auto get_unif_info(StringView name) const -> Optional<UniformInfo>;
 
     static auto set_unif(GLint location, GLint val) -> void;
     static auto set_unif(GLint location, GLfloat val) -> void;
@@ -110,7 +110,7 @@ private:
 
     [[nodiscard]] static auto create_shaders_from_sources(const ShaderSources& sources)
         -> Optional<InPlaceVector<ShaderId, 5>>;
-    [[nodiscard]] static auto create_shader(std::string_view source, ShaderType type) -> Optional<ShaderId>;
+    [[nodiscard]] static auto create_shader(StringView source, ShaderType type) -> Optional<ShaderId>;
     [[nodiscard]] static auto compile_shader(ShaderId id, ShaderType type) -> bool;
 
     [[nodiscard]] static auto create_program_from_sources(const ShaderSources& sources) -> Optional<ProgramId>;

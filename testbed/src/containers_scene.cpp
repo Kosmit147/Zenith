@@ -39,7 +39,7 @@ const auto spot_light = zth::SpotLight{
     },
 };
 
-const auto ambient_light = zth::AmbientLight{
+constexpr auto ambient_light = zth::AmbientLight{
     .ambient = glm::vec3{ 0.05f, 0.05f, 0.05f },
 };
 

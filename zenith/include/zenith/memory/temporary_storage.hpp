@@ -3,13 +3,13 @@
 #include <cstddef>
 #include <memory>
 #include <ranges>
-#include <string>
 #include <type_traits>
 #include <utility>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/memory/memory.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 
 namespace zth {
@@ -68,7 +68,7 @@ template<typename T> struct TemporaryStorageAllocator
 
 // @cleanup: We should move these aliases somewhere also because they force us to include a lot of headers in this file.
 template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;
-using TemporaryString = std::basic_string<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
+using TemporaryString = GenericString<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = Vector<T, TemporaryStorageAllocator<T>>;
 
 // @cleanup: These make_temporary functions could probably be generalized and could take in an allocator with which to

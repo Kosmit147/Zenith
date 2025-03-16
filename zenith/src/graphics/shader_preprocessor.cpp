@@ -7,17 +7,17 @@
 #include "zenith/log/logger.hpp"
 #include "zenith/util/defer.hpp"
 
-using namespace std::string_view_literals;
+using namespace zth::string_view_literals;
 
 namespace zth {
 
 namespace {
 
-constexpr auto include_str = "#include"sv;
+constexpr auto include_str = "#include"_sv;
 
 } // namespace
 
-StringHashMap<std::string> ShaderPreprocessor::_sources;
+StringHashMap<String> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> void
 {
@@ -37,12 +37,12 @@ auto ShaderPreprocessor::shut_down() -> void
     ZTH_CORE_INFO("Shader preprocessor shut down.");
 }
 
-auto ShaderPreprocessor::preprocess(std::string_view source) -> Result<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess(StringView source) -> Result<String, PreprocessShaderError>
 {
     return preprocess_impl(source);
 }
 
-auto ShaderPreprocessor::add_source(std::string_view name, std::string_view source) -> bool
+auto ShaderPreprocessor::add_source(StringView name, StringView source) -> bool
 {
     auto [_, success] = _sources.emplace(name, source);
 
@@ -52,7 +52,7 @@ auto ShaderPreprocessor::add_source(std::string_view name, std::string_view sour
     return success;
 }
 
-auto ShaderPreprocessor::add_source(std::string_view name, std::string&& source) -> bool
+auto ShaderPreprocessor::add_source(StringView name, String&& source) -> bool
 {
     auto [_, success] = _sources.emplace(name, std::move(source));
 
@@ -76,7 +76,7 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
     return add_source_from_file(*filename, path);
 }
 
-auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::filesystem::path& path) -> bool
+auto ShaderPreprocessor::add_source_from_file(StringView name, const std::filesystem::path& path) -> bool
 {
     auto data = fs::load_to_string(path);
 
@@ -91,7 +91,7 @@ auto ShaderPreprocessor::add_source_from_file(std::string_view name, const std::
     return add_source(name, *data);
 }
 
-auto ShaderPreprocessor::get_source(std::string_view name) -> Optional<Reference<const std::string>>
+auto ShaderPreprocessor::get_source(StringView name) -> Optional<Reference<const String>>
 {
     if (auto kv = _sources.find(name); kv != _sources.end())
     {
@@ -103,26 +103,26 @@ auto ShaderPreprocessor::get_source(std::string_view name) -> Optional<Reference
     return nil;
 }
 
-auto ShaderPreprocessor::remove_source(std::string_view name) -> bool
+auto ShaderPreprocessor::remove_source(StringView name) -> bool
 {
     auto elems_erased = _sources.erase(name);
     return elems_erased != 0;
 }
 
-ShaderPreprocessor::ShaderPreprocessor(std::string_view source, u16 recursion_depth)
+ShaderPreprocessor::ShaderPreprocessor(StringView source, u16 recursion_depth)
     : _rest(source), _current_recursion_depth(recursion_depth)
 {
     update_rest_in_line();
 }
 
-auto ShaderPreprocessor::preprocess_impl(std::string_view source, u16 recursion_depth)
-    -> Result<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess_impl(StringView source, u16 recursion_depth)
+    -> Result<String, PreprocessShaderError>
 {
     ShaderPreprocessor preprocessor(source, recursion_depth);
     return preprocessor.preprocess();
 }
 
-auto ShaderPreprocessor::preprocess() -> Result<std::string, PreprocessShaderError>
+auto ShaderPreprocessor::preprocess() -> Result<String, PreprocessShaderError>
 {
     if (_current_recursion_depth >= max_recursion_depth)
         return Error{ PreprocessShaderError{ .line_info = nil, .description = "Circular dependency detected." } };
@@ -168,7 +168,7 @@ auto ShaderPreprocessor::resolve_preprocessor_directive() -> Result<Success, Pre
 {
     // We're at '#'.
 
-    if (_rest_in_line.find(include_str) != std::string_view::npos)
+    if (_rest_in_line.find(include_str) != StringView::npos)
     {
         return resolve_include_directive();
     }
@@ -327,7 +327,7 @@ auto ShaderPreprocessor::update_rest_in_line() -> void
 {
     auto endline_pos = _rest.find('\n');
 
-    if (endline_pos != std::string_view::npos)
+    if (endline_pos != StringView::npos)
         endline_pos++; // Don't skip the '\n'.
 
     _rest_in_line = _rest.substr(0, endline_pos);
@@ -341,21 +341,21 @@ auto ShaderPreprocessor::update_rest_in_line_after_advancing_or_skipping(usize a
         _rest_in_line = _rest_in_line.substr(advanced_or_skipped_count);
 }
 
-auto ShaderPreprocessor::extract_source_name_from_line() const -> Optional<std::string_view>
+auto ShaderPreprocessor::extract_source_name_from_line() const -> Optional<StringView>
 {
     // At this point _rest_in_line should contain only the source name i.e. "src.glsl" or <src.glsl>.
 
     if (_rest_in_line.size() < 2)
         return nil;
 
-    std::size_t source_name_end_pos = std::string_view::npos;
+    auto source_name_end_pos = StringView::npos;
 
     if (auto first_char = _rest_in_line.front(); first_char == '\"')
         source_name_end_pos = _rest_in_line.find('\"', 1);
     else if (first_char == '<')
         source_name_end_pos = _rest_in_line.find('>', 1);
 
-    if (source_name_end_pos == std::string_view::npos)
+    if (source_name_end_pos == StringView::npos)
         return nil;
 
     auto source_name_length = source_name_end_pos - 1;

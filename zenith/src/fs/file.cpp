@@ -4,7 +4,7 @@
 
 namespace zth::fs {
 
-auto load_to_string(const std::filesystem::path& path) -> Optional<std::string>
+auto load_to_string(const std::filesystem::path& path) -> Optional<String>
 {
     // @speed: Do an optimization pass.
     // @robustness: std::filesystem::exists and std::filesystem::path::string() throw.
@@ -23,7 +23,7 @@ auto load_to_string(const std::filesystem::path& path) -> Optional<std::string>
         return nil;
     }
 
-    std::string result;
+    String result;
     result.reserve(std::filesystem::file_size(path));
     result.insert(result.end(), std::istreambuf_iterator{ file }, {});
 
@@ -58,7 +58,7 @@ auto load_raw(const std::filesystem::path& path) -> Optional<Vector<u8>>
     return zth::make_optional(result);
 }
 
-auto extract_filename(const std::filesystem::path& path) -> Optional<std::string>
+auto extract_filename(const std::filesystem::path& path) -> Optional<String>
 {
     // @robustness: string() throws.
     auto filename = path.filename().string();
