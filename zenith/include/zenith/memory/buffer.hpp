@@ -35,10 +35,10 @@ public:
 
 public:
     explicit StaticBuffer() = default;
-    explicit StaticBuffer(const void* data, usize data_size_bytes);
+    explicit StaticBuffer(const void* data, size_type data_size_bytes);
     explicit StaticBuffer(std::ranges::contiguous_range auto&& data);
 
-    [[nodiscard]] static auto with_data(const void* data, usize data_size_bytes) -> StaticBuffer;
+    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) -> StaticBuffer;
     [[nodiscard]] static auto with_data(auto&& data) -> StaticBuffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) -> StaticBuffer;
 
@@ -47,33 +47,43 @@ public:
     ~StaticBuffer() = default;
 
     // --- ContiguousRange implementation
-    [[nodiscard]] auto data(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto data(this auto&& self) -> auto*;
     [[nodiscard]] auto begin(this auto&& self) -> decltype(auto);
     [[nodiscard]] auto end(this auto&& self) -> decltype(auto);
-    [[nodiscard]] auto cbegin(this auto&& self) -> const_iterator;
-    [[nodiscard]] auto cend(this auto&& self) -> const_iterator;
+    [[nodiscard]] auto cbegin() const -> const_iterator;
+    [[nodiscard]] auto cend() const -> const_iterator;
     [[nodiscard]] static auto size() -> size_type { return Size; }
     [[nodiscard]] static auto capacity() -> size_type { return Size; }
 
     // --- StaticBuffer implementation
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(auto&& data, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, size_type offset = 0) -> size_type;
 };
 
-class Buffer
+class Buffer : public ContiguousRangeInterface
 {
 public:
+    using value_type = byte;
+    using size_type = usize;
+    using difference_type = isize;
+
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
+    using iterator = pointer;
+    using const_iterator = const_pointer;
+
     explicit Buffer() = default;
-    explicit Buffer(usize size_bytes);
-    explicit Buffer(const void* data, usize data_size_bytes);
+    explicit Buffer(size_type size_bytes);
+    explicit Buffer(const void* data, size_type data_size_bytes);
     explicit Buffer(std::ranges::contiguous_range auto&& data);
 
-    [[nodiscard]] static auto with_size(usize size_bytes) -> Buffer;
-    [[nodiscard]] static auto with_data(const void* data, usize data_size_bytes) -> Buffer;
+    [[nodiscard]] static auto with_size(size_type size_bytes) -> Buffer;
+    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) -> Buffer;
     [[nodiscard]] static auto with_data(auto&& data) -> Buffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) -> Buffer;
 
@@ -85,65 +95,56 @@ public:
 
     ~Buffer();
 
-    // --- Data access
-    [[nodiscard]] auto data() & { return _data; }
-    [[nodiscard]] auto data() const& -> const auto* { return _data; }
-    [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
+    // --- ContiguousRange implementation
+    [[nodiscard]] auto data(this auto&& self) -> auto*;
+    [[nodiscard]] auto begin(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto end(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto cbegin() const -> const_iterator;
+    [[nodiscard]] auto cend() const -> const_iterator;
+    [[nodiscard]] auto size() const -> size_type { return _size_bytes; }
+    [[nodiscard]] auto capacity() const -> size_type { return _size_bytes; }
 
-    [[nodiscard]] auto at(usize offset) -> Optional<Reference<byte>>;
-    [[nodiscard]] auto at(usize offset) const -> Optional<Reference<const byte>>;
-
-    [[nodiscard]] auto operator[](usize offset) -> byte&;
-    [[nodiscard]] auto operator[](usize offset) const -> const byte&;
-
-    // --- Iterators
-    [[nodiscard]] auto begin() -> byte*;
-    [[nodiscard]] auto begin() const -> const byte*;
-    [[nodiscard]] auto cbegin() -> byte*;
-    [[nodiscard]] auto cbegin() const -> const byte*;
-
-    [[nodiscard]] auto end() -> byte*;
-    [[nodiscard]] auto end() const -> const byte*;
-    [[nodiscard]] auto cend() -> byte*;
-    [[nodiscard]] auto cend() const -> const byte*;
-
-    // --- Size and capacity
-    [[nodiscard]] auto empty() const { return _size_bytes == 0; }
-    [[nodiscard]] auto size() const { return _size_bytes; }
-    [[nodiscard]] auto size_bytes() const { return _size_bytes; }
-    [[nodiscard]] auto capacity() const { return _size_bytes; }
-
-    auto resize(usize size_bytes) -> void;
+    // --- Buffer implementation
+    auto resize(size_type size_bytes) -> void;
     auto free() -> void;
 
-    // --- Modifiers
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(auto&& data, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, size_type offset = 0) -> size_type;
 
 private:
-    usize _size_bytes = 0;
+    size_type _size_bytes = 0;
     byte* _data = nullptr; // We assume that _data is always properly aligned to point to any type.
     // We're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data.
 
 private:
-    auto allocate(usize size_bytes) -> void;
-    auto reallocate(usize size_bytes) -> void;
+    auto allocate(size_type size_bytes) -> void;
+    auto reallocate(size_type size_bytes) -> void;
 };
 
-class DynamicBuffer
+class DynamicBuffer : public ContiguousRangeInterface
 {
 public:
+    using value_type = byte;
+    using size_type = usize;
+    using difference_type = isize;
+
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
+    using iterator = pointer;
+    using const_iterator = const_pointer;
+
     explicit DynamicBuffer() = default;
-    explicit DynamicBuffer(usize size_bytes);
-    explicit DynamicBuffer(const void* data, usize data_size_bytes);
+    explicit DynamicBuffer(size_type size_bytes);
+    explicit DynamicBuffer(const void* data, size_type data_size_bytes);
     explicit DynamicBuffer(std::ranges::contiguous_range auto&& data);
 
-    [[nodiscard]] static auto with_size(usize size_bytes) -> DynamicBuffer;
-    [[nodiscard]] static auto with_data(const void* data, usize data_size_bytes) -> DynamicBuffer;
+    [[nodiscard]] static auto with_size(size_type size_bytes) -> DynamicBuffer;
+    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) -> DynamicBuffer;
     [[nodiscard]] static auto with_data(auto&& data) -> DynamicBuffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) -> DynamicBuffer;
 
@@ -155,63 +156,44 @@ public:
 
     ~DynamicBuffer();
 
-    // --- Data access
-    [[nodiscard]] auto data() & { return _data; }
-    [[nodiscard]] auto data() const& -> const auto* { return _data; }
-    [[nodiscard]] auto data() && -> byte*; // The returned pointer must be freed!
+    // --- ContiguousRange implementation
+    [[nodiscard]] auto data(this auto&& self) -> auto*;
+    [[nodiscard]] auto begin(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto end(this auto&& self) -> decltype(auto);
+    [[nodiscard]] auto cbegin() const -> const_iterator;
+    [[nodiscard]] auto cend() const -> const_iterator;
+    [[nodiscard]] auto size() const -> size_type { return _size_bytes; }
+    [[nodiscard]] auto capacity() const -> size_type { return _capacity_bytes; }
 
-    [[nodiscard]] auto at(usize offset) -> Optional<Reference<byte>>;
-    [[nodiscard]] auto at(usize offset) const -> Optional<Reference<const byte>>;
-
-    [[nodiscard]] auto operator[](usize offset) -> byte&;
-    [[nodiscard]] auto operator[](usize offset) const -> const byte&;
-
-    // --- Iterators
-    [[nodiscard]] auto begin() -> byte*;
-    [[nodiscard]] auto begin() const -> const byte*;
-    [[nodiscard]] auto cbegin() -> byte*;
-    [[nodiscard]] auto cbegin() const -> const byte*;
-
-    [[nodiscard]] auto end() -> byte*;
-    [[nodiscard]] auto end() const -> const byte*;
-    [[nodiscard]] auto cend() -> byte*;
-    [[nodiscard]] auto cend() const -> const byte*;
-
-    // --- Size and capacity
-    [[nodiscard]] auto empty() const { return _size_bytes == 0; }
-    [[nodiscard]] auto size() const { return _size_bytes; }
-    [[nodiscard]] auto size_bytes() const { return _size_bytes; }
-    [[nodiscard]] auto capacity() const { return _capacity_bytes; }
-
-    auto resize(usize size_bytes) -> void;
-    auto reserve(usize min_capacity_bytes) -> void;
+    // --- DynamicBuffer implementation
+    auto resize(size_type size_bytes) -> void;
+    auto reserve(size_type min_capacity_bytes) -> void;
     auto shrink_to_fit() -> void;
     auto free() -> void;
 
-    // --- Modifiers
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, usize data_size_bytes, usize offset = 0) -> usize;
+    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(auto&& data, size_type offset = 0) -> size_type;
     // Returns the number of bytes written.
-    auto buffer_data(std::ranges::contiguous_range auto&& data, usize offset = 0) -> usize;
+    auto buffer_data(std::ranges::contiguous_range auto&& data, size_type offset = 0) -> size_type;
 
     auto clear() -> void;
 
 private:
-    usize _size_bytes = 0;
-    usize _capacity_bytes = 0;
+    size_type _size_bytes = 0;
+    size_type _capacity_bytes = 0;
     byte* _data = nullptr; // We assume that _data is always properly aligned to point to any type.
     // We're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data.
 
 private:
-    auto resize_to_at_least(usize min_size_bytes) -> void;
+    auto resize_to_at_least(size_type min_size_bytes) -> void;
 
-    auto allocate(usize capacity_bytes) -> void;
-    auto reallocate_exactly(usize new_capacity_bytes) -> void;
-    auto reallocate_at_least(usize min_capacity_bytes) -> void;
+    auto allocate(size_type capacity_bytes) -> void;
+    auto reallocate_exactly(size_type new_capacity_bytes) -> void;
+    auto reallocate_at_least(size_type min_capacity_bytes) -> void;
 
-    [[nodiscard]] static auto calculate_growth(usize old_size_bytes) -> usize;
+    [[nodiscard]] static auto calculate_growth(size_type old_size_bytes) -> size_type;
 };
 
 } // namespace zth::memory

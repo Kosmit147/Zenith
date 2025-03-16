@@ -44,10 +44,10 @@ public:
     [[nodiscard]] constexpr auto size_bytes(this auto&& self) -> usize;
     [[nodiscard]] constexpr auto span(this auto&& self) -> auto;
 
-    [[nodiscard]] constexpr auto front(this auto&& self) -> decltype(auto);
-    [[nodiscard]] constexpr auto back(this auto&& self) -> decltype(auto);
+    [[nodiscard]] constexpr auto front(this auto&& self) -> auto&;
+    [[nodiscard]] constexpr auto back(this auto&& self) -> auto&;
 
-    [[nodiscard]] constexpr auto operator[](this auto&& self, std::integral auto index) -> decltype(auto);
+    [[nodiscard]] constexpr auto operator[](this auto&& self, std::integral auto index) -> auto&;
     [[nodiscard]] constexpr auto at(this auto&& self, std::integral auto index) -> auto;
 
 protected:
@@ -81,19 +81,19 @@ constexpr auto ContiguousRangeInterface::span(this auto&& self) -> auto
     return std::span{ self.begin(), self.end() };
 }
 
-constexpr auto ContiguousRangeInterface::front(this auto&& self) -> decltype(auto)
+constexpr auto ContiguousRangeInterface::front(this auto&& self) -> auto&
 {
     ZTH_ASSERT(!self.empty());
     return *self.begin();
 }
 
-constexpr auto ContiguousRangeInterface::back(this auto&& self) -> decltype(auto)
+constexpr auto ContiguousRangeInterface::back(this auto&& self) -> auto&
 {
     ZTH_ASSERT(!self.empty());
     return *std::prev(self.end());
 }
 
-constexpr auto ContiguousRangeInterface::operator[](this auto&& self, std::integral auto index) -> decltype(auto)
+constexpr auto ContiguousRangeInterface::operator[](this auto&& self, std::integral auto index) -> auto&
 {
     ZTH_ASSERT(index < self.size());
     return *std::next(self.begin(), index);

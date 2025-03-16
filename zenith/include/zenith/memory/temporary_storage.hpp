@@ -34,12 +34,12 @@ public:
     [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = memory::default_alignment) -> void*;
     [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> void*;
 
-    [[nodiscard]] static auto capacity() { return _buffer.size(); }
+    [[nodiscard]] static auto capacity() -> usize { return _buffer.size(); }
     [[nodiscard]] static auto space_left() -> usize;
     [[nodiscard]] static auto space_used() -> usize;
 
-    [[nodiscard]] static auto begin() -> byte* { return _buffer.cbegin(); }
-    [[nodiscard]] static auto end() -> byte* { return _buffer.cend(); }
+    [[nodiscard]] static auto begin() -> decltype(auto) { return _buffer.begin(); }
+    [[nodiscard]] static auto end() -> decltype(auto) { return _buffer.end(); }
 
 private:
     static memory::Buffer _buffer;

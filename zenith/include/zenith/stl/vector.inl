@@ -83,7 +83,7 @@ constexpr InPlaceVector<T, Capacity>::~InPlaceVector() noexcept(std::is_nothrow_
 }
 
 template<std::movable T, usize Capacity>
-constexpr auto InPlaceVector<T, Capacity>::data(this auto&& self) noexcept -> decltype(auto)
+constexpr auto InPlaceVector<T, Capacity>::data(this auto&& self) noexcept -> auto*
 {
     using return_type =
         std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
@@ -109,16 +109,15 @@ constexpr auto InPlaceVector<T, Capacity>::end(this auto&& self) noexcept -> dec
 }
 
 template<std::movable T, usize Capacity>
-constexpr auto InPlaceVector<T, Capacity>::cbegin(this auto&& self) noexcept -> const_iterator
+constexpr auto InPlaceVector<T, Capacity>::cbegin() const noexcept -> const_iterator
 {
-    return static_cast<const_pointer>(self.data());
+    return begin();
 }
 
 template<std::movable T, usize Capacity>
-constexpr auto InPlaceVector<T, Capacity>::cend(this auto&& self) noexcept -> const_iterator
+constexpr auto InPlaceVector<T, Capacity>::cend() const noexcept -> const_iterator
 {
-    ZTH_ASSERT(self._end != nullptr);
-    return static_cast<const_pointer>(self._end);
+    return end();
 }
 
 template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::size() const noexcept -> size_type

@@ -1,14 +1,16 @@
 #pragma once
 
 #include <cstring>
+#include <iterator>
 #include <memory>
+#include <type_traits>
 
 #include "zenith/core/assert.hpp"
 
 namespace zth::memory {
 
 template<usize Size, usize Alignment>
-StaticBuffer<Size, Alignment>::StaticBuffer(const void* data, usize data_size_bytes)
+StaticBuffer<Size, Alignment>::StaticBuffer(const void* data, size_type data_size_bytes)
 {
     buffer_data(data, data_size_bytes);
 }
@@ -19,7 +21,7 @@ StaticBuffer<Size, Alignment>::StaticBuffer(std::ranges::contiguous_range auto&&
 {}
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::with_data(const void* data, usize data_size_bytes) -> StaticBuffer
+auto StaticBuffer<Size, Alignment>::with_data(const void* data, size_type data_size_bytes) -> StaticBuffer
 {
     return StaticBuffer{ data, data_size_bytes };
 }
@@ -35,7 +37,7 @@ auto StaticBuffer<Size, Alignment>::with_data(std::ranges::contiguous_range auto
     return StaticBuffer{ data };
 }
 
-template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::data(this auto&& self) -> decltype(auto)
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::data(this auto&& self) -> auto*
 {
     return self.bytes.data();
 }
@@ -50,18 +52,19 @@ template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::end(th
     return self.bytes.end();
 }
 
-template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cbegin(this auto&& self) -> const_iterator
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cbegin() const -> const_iterator
 {
-    return self.bytes.cbegin();
+    return bytes.cbegin();
 }
 
-template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cend(this auto&& self) -> const_iterator
+template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cend() const -> const_iterator
 {
-    return self.bytes.cend();
+    return bytes.cend();
 }
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::buffer_data(const void* data, usize data_size_bytes, usize offset) -> usize
+auto StaticBuffer<Size, Alignment>::buffer_data(const void* data, size_type data_size_bytes, size_type offset)
+    -> size_type
 {
     ZTH_ASSERT(offset + data_size_bytes <= Size);
     std::memcpy(this->data() + offset, data, data_size_bytes);
@@ -69,13 +72,14 @@ auto StaticBuffer<Size, Alignment>::buffer_data(const void* data, usize data_siz
 }
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::buffer_data(auto&& data, usize offset) -> usize
+auto StaticBuffer<Size, Alignment>::buffer_data(auto&& data, size_type offset) -> size_type
 {
     return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto StaticBuffer<Size, Alignment>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset)
+    -> size_type
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = std::size(data) * sizeof(T);
@@ -96,12 +100,30 @@ auto Buffer::with_data(std::ranges::contiguous_range auto&& data) -> Buffer
     return Buffer{ data };
 }
 
-auto Buffer::buffer_data(auto&& data, usize offset) -> usize
+auto Buffer::data(this auto&& self) -> auto*
+{
+    using return_type =
+        std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
+
+    return static_cast<return_type>(self._data);
+}
+
+auto Buffer::begin(this auto&& self) -> decltype(auto)
+{
+    return self.data();
+}
+
+auto Buffer::end(this auto&& self) -> decltype(auto)
+{
+    return std::next(self.begin(), self.size());
+}
+
+auto Buffer::buffer_data(auto&& data, size_type offset) -> size_type
 {
     return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
-auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) -> size_type
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = std::size(data) * sizeof(T);
@@ -122,12 +144,30 @@ auto DynamicBuffer::with_data(std::ranges::contiguous_range auto&& data) -> Dyna
     return DynamicBuffer{ data };
 }
 
-auto DynamicBuffer::buffer_data(auto&& data, usize offset) -> usize
+auto DynamicBuffer::data(this auto&& self) -> auto*
+{
+    using return_type =
+        std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
+
+    return static_cast<return_type>(self._data);
+}
+
+auto DynamicBuffer::begin(this auto&& self) -> decltype(auto)
+{
+    return self.data();
+}
+
+auto DynamicBuffer::end(this auto&& self) -> decltype(auto)
+{
+    return std::next(self.begin(), self.size());
+}
+
+auto DynamicBuffer::buffer_data(auto&& data, size_type offset) -> size_type
 {
     return buffer_data(std::addressof(data), sizeof(data), offset);
 }
 
-auto DynamicBuffer::buffer_data(std::ranges::contiguous_range auto&& data, usize offset) -> usize
+auto DynamicBuffer::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) -> size_type
 {
     using T = std::ranges::range_value_t<decltype(data)>;
     auto data_size_bytes = std::size(data) * sizeof(T);

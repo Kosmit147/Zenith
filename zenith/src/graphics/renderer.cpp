@@ -177,7 +177,7 @@ auto Renderer::remove_directional_light(usize index) -> void
 {
     auto& lights = renderer->_directional_lights;
     ZTH_ASSERT(index < lights.size());
-    lights.erase(lights.begin() + static_cast<isize>(index));
+    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
 }
 
 auto Renderer::clear_directional_lights() -> void
@@ -194,7 +194,7 @@ auto Renderer::remove_point_light(usize index) -> void
 {
     auto& lights = renderer->_point_lights;
     ZTH_ASSERT(index < lights.size());
-    lights.erase(lights.begin() + static_cast<isize>(index));
+    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
 }
 
 auto Renderer::clear_point_lights() -> void
@@ -211,7 +211,7 @@ auto Renderer::remove_spot_light(usize index) -> void
 {
     auto& lights = renderer->_spot_lights;
     ZTH_ASSERT(index < lights.size());
-    lights.erase(lights.begin() + static_cast<isize>(index));
+    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
 }
 
 auto Renderer::clear_spot_lights() -> void
@@ -228,7 +228,7 @@ auto Renderer::remove_ambient_light(usize index) -> void
 {
     auto& lights = renderer->_ambient_lights;
     ZTH_ASSERT(index < lights.size());
-    lights.erase(lights.begin() + static_cast<isize>(index));
+    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
 }
 
 auto Renderer::clear_ambient_lights() -> void

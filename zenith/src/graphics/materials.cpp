@@ -211,8 +211,7 @@ MaterialList::MaterialList()
 auto MaterialList::operator[](usize index) const -> const Material&
 {
     ZTH_ASSERT(index < size());
-    const auto* materials = begin();
-    return materials[index];
+    return *std::next(begin(), static_cast<isize>(index));
 }
 
 auto MaterialList::size() const -> usize
