@@ -26,12 +26,9 @@ public:
 
     ~Mesh() = default;
 
-    [[nodiscard]] auto vertex_array() -> auto& { return _vertex_array; }
-    [[nodiscard]] auto vertex_array() const -> auto& { return _vertex_array; }
-    [[nodiscard]] auto vertex_buffer() -> auto& { return _vertex_buffer; }
-    [[nodiscard]] auto vertex_buffer() const -> auto& { return _vertex_buffer; }
-    [[nodiscard]] auto index_buffer() -> auto& { return _index_buffer; }
-    [[nodiscard]] auto index_buffer() const -> auto& { return _index_buffer; }
+    [[nodiscard]] auto vertex_array(this auto&& self) -> auto& { return self._vertex_array; }
+    [[nodiscard]] auto vertex_buffer(this auto&& self) -> auto& { return self._vertex_buffer; }
+    [[nodiscard]] auto index_buffer(this auto&& self) -> auto& { return self._index_buffer; }
 
 private:
     gl::VertexBuffer _vertex_buffer;

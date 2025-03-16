@@ -366,13 +366,13 @@ auto ShaderPreprocessor::extract_source_name_from_line() const -> Optional<Strin
 
 ZTH_DEFINE_FORMATTER(zth::LineInfo, line_info)
 {
-    ZTH_FORMAT_OUT("({}:{})", line_info.line, line_info.col);
+    return ZTH_FORMAT_OUT("({}:{})", line_info.line, line_info.col);
 }
 
 ZTH_DEFINE_FORMATTER(zth::PreprocessShaderError, error)
 {
     if (error.line_info)
-        ZTH_FORMAT_OUT("{}: {}", *error.line_info, error.description);
+        return ZTH_FORMAT_OUT("{}: {}", *error.line_info, error.description);
     else
-        ZTH_FORMAT_OUT("{}", error.description);
+        return ZTH_FORMAT_OUT("{}", error.description);
 }

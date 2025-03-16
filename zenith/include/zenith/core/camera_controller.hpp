@@ -34,8 +34,7 @@ public:
 
     auto set_camera(std::shared_ptr<PerspectiveCamera> camera) -> void;
 
-    [[nodiscard]] auto camera() -> auto& { return _camera; }
-    [[nodiscard]] auto camera() const -> auto& { return _camera; }
+    [[nodiscard]] auto camera(this auto&& self) -> auto& { return self._camera; }
 
 private:
     std::shared_ptr<PerspectiveCamera> _camera;

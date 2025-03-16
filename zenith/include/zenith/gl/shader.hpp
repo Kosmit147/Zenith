@@ -83,13 +83,7 @@ public:
     auto bind() const -> void { glUseProgram(_id); }
     static auto unbind() -> void { glUseProgram(GL_NONE); }
 
-    template<typename T> auto set_unif(StringView name, const T& val) const -> void
-    {
-        if (auto info = get_unif_info(name))
-            set_unif(info->location, val);
-        else [[unlikely]]
-            ZTH_CORE_DEBUG("Uniform with name {} not present in shader {}.", name, _id);
-    }
+    auto set_unif(StringView name, const auto& val) const -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
 
@@ -100,6 +94,7 @@ private:
 private:
     auto retrieve_unif_info() -> void;
     [[nodiscard]] auto get_unif_info(StringView name) const -> Optional<UniformInfo>;
+    [[nodiscard]] auto get_unif_location(StringView name) const -> Optional<GLint>;
 
     static auto set_unif(GLint location, GLint val) -> void;
     static auto set_unif(GLint location, GLfloat val) -> void;
@@ -122,6 +117,14 @@ private:
 
     [[nodiscard]] static auto create_fallback_program() -> Optional<ProgramId>;
 };
+
+auto Shader::set_unif(StringView name, const auto& val) const -> void
+{
+    if (auto location = get_unif_location(name))
+        set_unif(location, val);
+    else [[unlikely]]
+        ZTH_CORE_DEBUG("Uniform with name {} not present in shader {}.", name, _id);
+}
 
 [[nodiscard]] auto to_gl_enum(ShaderType shader_type) -> GLenum;
 
