@@ -2,6 +2,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/util/optional.hpp"
 
 namespace zth {

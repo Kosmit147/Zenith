@@ -4,7 +4,7 @@
 
 using namespace zth::string_view_literals;
 
-TEST_CASE("substr_between", "[string]")
+TEST_CASE("substr_between", "[string_algorithm]")
 {
     auto result = zth::substr_between("<example>", '<', '>');
 
@@ -23,7 +23,7 @@ TEST_CASE("substr_between", "[string]")
     REQUIRE_FALSE(result.has_value());
 }
 
-TEST_CASE("substr_between_with_offset", "[string]")
+TEST_CASE("substr_between_with_offset", "[string_algorithm]")
 {
     auto result = zth::substr_between_at_offset("<1>  <2>", 1, '<', '>');
 
@@ -56,7 +56,7 @@ TEST_CASE("substr_between_with_offset", "[string]")
     REQUIRE_FALSE(result.has_value());
 }
 
-TEST_CASE("find_substr_between", "[string]")
+TEST_CASE("find_substr_between", "[string_algorithm]")
 {
     auto result = zth::find_substr_between("  <example>", '<', '>');
 
@@ -75,7 +75,7 @@ TEST_CASE("find_substr_between", "[string]")
     REQUIRE_FALSE(result.has_value());
 }
 
-TEST_CASE("find_substr_between_with_offset", "[string]")
+TEST_CASE("find_substr_between_with_offset", "[string_algorithm]")
 {
     auto result = zth::find_substr_between_at_offset("<1>  <2>", 1, '<', '>');
 

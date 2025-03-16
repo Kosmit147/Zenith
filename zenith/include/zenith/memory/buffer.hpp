@@ -196,6 +196,12 @@ private:
     [[nodiscard]] static auto calculate_growth(size_type old_size_bytes) -> size_type;
 };
 
+// @todo: Implement SmallBuffer.
+template<usize StackCapacity> using SmallBuffer = Buffer;
+
+// @todo: Implement SmallDynamicBuffer.
+template<usize StackCapacity> using SmallDynamicBuffer = DynamicBuffer;
+
 } // namespace zth::memory
 
 #include "buffer.inl"
