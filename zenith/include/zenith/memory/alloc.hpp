@@ -4,7 +4,9 @@
 #include <memory>
 #include <type_traits>
 
+#include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/util/defer.hpp"
 
 namespace zth::memory {
 
@@ -12,23 +14,13 @@ namespace zth::memory {
 // exhibit any implementation-defined behavior.
 
 [[nodiscard]] auto allocate(usize size_bytes) noexcept -> void*;
-
 // Modifies ptr to point to the new location.
-template<typename T> auto reallocate(T*& ptr, usize new_size_bytes) noexcept -> void;
-// Modifies ptr to point to the new location.
-template<> auto reallocate(void*& ptr, usize new_size_bytes) noexcept -> void;
-
+auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void;
 // Modifies ptr to point to the new location. buffer_size_bytes determines how many bytes will be copied to the new
 // destination.
-template<typename T> auto reallocate(T*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void;
-// Modifies ptr to point to the new location. buffer_size_bytes determines how many bytes will be copied to the new
-// destination.
-template<> auto reallocate(void*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void;
-
+auto reallocate(auto*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void;
 // This function sets ptr to nullptr.
-template<typename T> auto deallocate(T*& ptr) noexcept -> void;
-// This function sets ptr to nullptr.
-template<> auto deallocate(void*& ptr) noexcept -> void;
+auto deallocate(auto*& ptr) noexcept -> void;
 
 // Destructs an object and deallocates the memory using our custom allocation functions. Handles pointers to arrays, but
 // not arrays of dynamic size (T[]).
@@ -67,19 +59,40 @@ template<typename T> struct CustomAllocator
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
-template<typename T> auto reallocate(T*& ptr, usize new_size_bytes) noexcept -> void
+auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 {
-    reallocate(reinterpret_cast<void*&>(ptr), new_size_bytes);
+    if (new_size_bytes == 0)
+    {
+        deallocate(ptr);
+        return;
+    }
+
+    ptr = std::realloc(ptr, new_size_bytes);
+    ZTH_ASSERT(ptr != nullptr);
 }
 
-template<typename T> auto reallocate(T*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void
+auto reallocate(auto*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void
 {
-    reallocate(reinterpret_cast<void*&>(ptr), new_size_bytes, buffer_size_bytes);
+#if !defined(ZTH_DIST_BUILD)
+    if (ptr == nullptr)
+        ZTH_ASSERT(buffer_size_bytes == 0);
+#endif
+
+    auto old_ptr = ptr;
+    Defer deallocate_old_ptr{ [&] { deallocate(old_ptr); } };
+
+    // @speed: Maybe using std::realloc would be faster.
+    // The rationale for what we're doing right now is that buffer_size_bytes could potentially be a lot smaller than
+    // the old size of the allocated block, and therefore we avoid unnecessarily copying memory.
+    using PointerType = std::remove_reference_t<decltype(ptr)>;
+    ptr = static_cast<PointerType>(allocate(new_size_bytes));
+    std::memcpy(ptr, old_ptr, std::min(new_size_bytes, buffer_size_bytes));
 }
 
-template<typename T> auto deallocate(T*& ptr) noexcept -> void
+auto deallocate(auto*& ptr) noexcept -> void
 {
-    deallocate(reinterpret_cast<void*&>(ptr));
+    std::free(ptr);
+    ptr = nullptr;
 }
 
 template<std::destructible T>

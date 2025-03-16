@@ -23,7 +23,7 @@ template<std::movable T, typename Allocator = std::allocator<T>> using Vector = 
 // heap otherwise. Implements contiguous range interface.
 // Not currently implemented.
 // @todo: Implement SmallVector.
-template<std::movable T, usize Capacity, typename Allocator = std::allocator<T>>
+template<std::movable T, usize StackCapacity, typename Allocator = std::allocator<T>>
 using SmallVector = Vector<T, Allocator>;
 
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
@@ -71,8 +71,7 @@ public:
     [[nodiscard]] static constexpr auto capacity() noexcept -> size_type;
 
     // --- InPlaceVector implementation
-    template<typename... Args>
-    constexpr auto emplace_back(Args&&... args) noexcept(std::is_nothrow_constructible_v<value_type, Args...>)
+    constexpr auto emplace_back(auto&&... args) noexcept(std::is_nothrow_constructible_v<value_type, decltype(args)...>)
         -> value_type&;
     constexpr auto push_back(const value_type& value) noexcept(std::is_nothrow_copy_constructible_v<value_type>)
         -> value_type&;

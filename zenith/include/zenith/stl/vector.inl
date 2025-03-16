@@ -132,9 +132,8 @@ template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacit
 }
 
 template<std::movable T, usize Capacity>
-template<typename... Args>
-constexpr auto InPlaceVector<T, Capacity>::emplace_back(Args&&... args)
-    noexcept(std::is_nothrow_constructible_v<value_type, Args...>) -> value_type&
+constexpr auto InPlaceVector<T, Capacity>::emplace_back(auto&&... args)
+    noexcept(std::is_nothrow_constructible_v<value_type, decltype(args)...>) -> value_type&
 {
     ZTH_ASSERT(size() < capacity());
     auto last = std::construct_at(end(), std::forward<decltype(args)>(args)...);

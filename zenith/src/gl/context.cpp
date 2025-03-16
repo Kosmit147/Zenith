@@ -109,10 +109,10 @@ auto to_string(gl::Profile gl_profile) -> const char*
 
 ZTH_DEFINE_FORMATTER(zth::gl::Version, version)
 {
-    ZTH_FORMAT_OUT("{}.{}", version.major, version.minor);
+    return ZTH_FORMAT_OUT("{}.{}", version.major, version.minor);
 }
 
 ZTH_DEFINE_FORMATTER(zth::gl::Profile, profile)
 {
-    ZTH_FORMAT_OUT("{}", zth::to_string(profile));
+    return ZTH_FORMAT_OUT("{}", zth::to_string(profile));
 }

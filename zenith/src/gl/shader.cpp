@@ -121,6 +121,11 @@ auto Shader::get_unif_info(StringView name) const -> Optional<UniformInfo>
     }
 }
 
+auto Shader::get_unif_location(StringView name) const -> Optional<GLint>
+{
+    return get_unif_info(name).transform([](auto unif_info) { return unif_info.location; });
+}
+
 auto Shader::set_unif(GLint location, GLint val) -> void
 {
     glUniform1i(location, val);
@@ -470,7 +475,7 @@ auto to_string(gl::ShaderType shader_type) -> const char*
 
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
 {
-    ZTH_FORMAT_OUT("{}", zth::to_string(type));
+    return ZTH_FORMAT_OUT("{}", zth::to_string(type));
 }
 
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
@@ -510,5 +515,5 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
             result += "null,\n";
     }
 
-    ZTH_FORMAT_OUT("{}}}", result);
+    return ZTH_FORMAT_OUT("{}}}", result);
 }
