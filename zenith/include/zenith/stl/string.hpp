@@ -1,39 +1,27 @@
 #pragma once
 
+#include <memory>
+#include <string>
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/log/format.hpp"
-#include "zenith/util/optional.hpp"
 
-namespace zth::string {
+namespace zth {
 
-struct FindResult
+template<typename Char = char, typename CharTraits = std::char_traits<Char>, typename Allocator = std::allocator<Char>>
+using GenericString = std::basic_string<Char, CharTraits, Allocator>;
+template<typename Char = char> using GenericStringView = std::basic_string_view<Char>;
+
+using String = GenericString<char, std::char_traits<char>, std::allocator<char>>;
+using StringView = GenericStringView<char>;
+
+namespace string_view_literals {
+
+[[nodiscard]] constexpr auto operator""_sv(const char* text, usize length) -> StringView
 {
-    usize found_at;
-    std::string_view result;
+    return StringView{ text, length };
+}
 
-    [[nodiscard]] auto operator==(const FindResult&) const -> bool = default;
-};
+} // namespace string_view_literals
 
-[[nodiscard]] auto substr_between(std::string_view text, char delim) -> Optional<std::string_view>;
-[[nodiscard]] auto substr_between(std::string_view text, char opening_delim, char closing_delim)
-    -> Optional<std::string_view>;
-
-[[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char delim)
-    -> Optional<std::string_view>;
-[[nodiscard]] auto substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                              char closing_delim) -> Optional<std::string_view>;
-
-[[nodiscard]] auto find_substr_between(std::string_view text, char delim) -> Optional<FindResult>;
-[[nodiscard]] auto find_substr_between(std::string_view text, char opening_delim, char closing_delim)
-    -> Optional<FindResult>;
-
-[[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char delim)
-    -> Optional<FindResult>;
-[[nodiscard]] auto find_substr_between_with_offset(std::string_view text, usize offset, char opening_delim,
-                                                   char closing_delim) -> Optional<FindResult>;
-
-} // namespace zth::string
-
-ZTH_DECLARE_FORMATTER(zth::string::FindResult);
+} // namespace zth

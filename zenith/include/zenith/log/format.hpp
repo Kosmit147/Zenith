@@ -2,12 +2,12 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include <string>
+#include "zenith/stl/string.hpp"
 
 #define ZTH_FORMAT(...) ::fmt::format(__VA_ARGS__)
 
 #define ZTH_DECLARE_FORMATTER(type)                                                                                    \
-    template<> struct ::fmt::formatter<type> : formatter<::std::string>                                                \
+    template<> struct ::fmt::formatter<type> : formatter<::zth::String>                                                \
     {                                                                                                                  \
         static auto format(const type&, format_context& ctx) -> decltype(ctx.out());                                   \
     }

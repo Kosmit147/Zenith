@@ -5,9 +5,9 @@
 #include <glm/vec4.hpp>
 #include <spdlog/fmt/fmt.h>
 
-#include <string>
+#include "zenith/stl/string.hpp"
 
-template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<std::string>
+template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<zth::String>
 {
     static auto format(const glm::vec<2, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {
@@ -15,7 +15,7 @@ template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<std::stri
     }
 };
 
-template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<std::string>
+template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<zth::String>
 {
     static auto format(const glm::vec<3, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {
@@ -23,7 +23,7 @@ template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<std::stri
     }
 };
 
-template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<std::string>
+template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<zth::String>
 {
     static auto format(const glm::vec<4, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {

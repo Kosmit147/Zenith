@@ -39,17 +39,17 @@ struct BufferUsage
     BufferAccessFrequency access_frequency;
     BufferAccessType access_type;
 
-    static const BufferUsage stream_draw;
-    static const BufferUsage static_draw;
-    static const BufferUsage dynamic_draw;
+    static constinit const BufferUsage stream_draw;
+    static constinit const BufferUsage static_draw;
+    static constinit const BufferUsage dynamic_draw;
 
-    static const BufferUsage stream_read;
-    static const BufferUsage static_read;
-    static const BufferUsage dynamic_read;
+    static constinit const BufferUsage stream_read;
+    static constinit const BufferUsage static_read;
+    static constinit const BufferUsage dynamic_read;
 
-    static const BufferUsage stream_copy;
-    static const BufferUsage static_copy;
-    static const BufferUsage dynamic_copy;
+    static constinit const BufferUsage stream_copy;
+    static constinit const BufferUsage static_copy;
+    static constinit const BufferUsage dynamic_copy;
 };
 
 enum class BufferState : u8

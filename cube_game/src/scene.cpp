@@ -21,7 +21,7 @@ Scene::Scene()
       _light(std::make_shared<zth::DirectionalLight>(light_direction))
 {
     {
-        // platform
+        // Platform.
 
         constexpr auto xs = std::views::iota(-20, 20);
         constexpr auto ys = std::views::iota(-20, 0);
@@ -33,7 +33,7 @@ Scene::Scene()
     }
 
     {
-        // wall
+        // Wall.
 
         constexpr auto xs = std::views::iota(-5, 6);
         constexpr auto ys = std::views::iota(0, 5);

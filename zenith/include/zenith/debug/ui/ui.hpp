@@ -6,14 +6,13 @@
 #include <concepts>
 #include <functional>
 #include <memory>
-#include <string>
-#include <string_view>
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/input.hpp"
@@ -27,7 +26,7 @@ public:
     Key toggle_wireframe_mode_key = Key::F1;
 
 public:
-    explicit DebugToolsUi(std::string_view label = "Debug Tools");
+    explicit DebugToolsUi(StringView label = "Debug Tools");
     ZTH_NO_COPY_NO_MOVE(DebugToolsUi)
     ~DebugToolsUi() = default;
 
@@ -35,21 +34,21 @@ public:
     auto on_update() -> void;
 
 private:
-    std::string _label;
+    String _label;
     u32 _frame_rate_limit = 60;
 };
 
 class TransformUi
 {
 public:
-    explicit TransformUi(Transformable3D& transformable, std::string_view label = "Transform");
+    explicit TransformUi(Transformable3D& transformable, StringView label = "Transform");
     ZTH_NO_COPY_NO_MOVE(TransformUi)
     ~TransformUi() = default;
 
     auto on_update() -> void;
 
 private:
-    std::string _label;
+    String _label;
     Transformable3D& _transformable;
 
     math::Rotation _rotation{};
@@ -85,18 +84,18 @@ private:
 class MaterialUi
 {
 public:
-    explicit MaterialUi(Material& material, std::string_view label = "Material");
+    explicit MaterialUi(Material& material, StringView label = "Material");
     ZTH_NO_COPY_NO_MOVE(MaterialUi)
     ~MaterialUi() = default;
 
     auto on_update() -> void;
 
-    auto add_diffuse_map(std::string_view name, const gl::Texture2D& diffuse_map) -> void;
-    auto add_specular_map(std::string_view name, const gl::Texture2D& specular_map) -> void;
-    auto add_emission_map(std::string_view name, const gl::Texture2D& emission_map) -> void;
+    auto add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void;
+    auto add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void;
+    auto add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void;
 
 private:
-    std::string _label;
+    String _label;
     Material& _material;
     usize _material_selected_idx = 0;
 
@@ -105,11 +104,11 @@ private:
     i16 _specular_map_selected_idx = _no_map_selected;
     i16 _emission_map_selected_idx = _no_map_selected;
 
-    Vector<std::string> _diffuse_map_names;
+    Vector<String> _diffuse_map_names;
     Vector<const gl::Texture2D*> _diffuse_maps;
-    Vector<std::string> _specular_map_names;
+    Vector<String> _specular_map_names;
     Vector<const gl::Texture2D*> _specular_maps;
-    Vector<std::string> _emission_map_names;
+    Vector<String> _emission_map_names;
     Vector<const gl::Texture2D*> _emission_maps;
 
 private:
@@ -121,42 +120,42 @@ private:
 class DirectionalLightUi
 {
 public:
-    explicit DirectionalLightUi(DirectionalLight& light, std::string_view label = "Directional Light");
+    explicit DirectionalLightUi(DirectionalLight& light, StringView label = "Directional Light");
     ZTH_NO_COPY_NO_MOVE(DirectionalLightUi)
     ~DirectionalLightUi() = default;
 
     auto on_update() -> void;
 
 private:
-    std::string _label;
+    StringView _label;
     DirectionalLight& _light;
 };
 
 class PointLightUi
 {
 public:
-    explicit PointLightUi(PointLight& light, std::string_view label = "Point Light");
+    explicit PointLightUi(PointLight& light, StringView label = "Point Light");
     ZTH_NO_COPY_NO_MOVE(PointLightUi)
     ~PointLightUi() = default;
 
     auto on_update() -> void;
 
 private:
-    std::string _label;
+    String _label;
     PointLight& _light;
 };
 
 class SpotLightUi
 {
 public:
-    explicit SpotLightUi(SpotLight& light, std::string_view label = "Spot Light");
+    explicit SpotLightUi(SpotLight& light, StringView label = "Spot Light");
     ZTH_NO_COPY_NO_MOVE(SpotLightUi)
     ~SpotLightUi() = default;
 
     auto on_update() -> void;
 
 private:
-    std::string _label;
+    String _label;
     SpotLight& _light;
 };
 
@@ -167,7 +166,7 @@ public:
     Key next_scene_key = Key::Right;
 
 public:
-    explicit ScenePickerUi(std::string_view label = "Scene");
+    explicit ScenePickerUi(StringView label = "Scene");
     ZTH_NO_COPY_NO_MOVE(ScenePickerUi)
     ~ScenePickerUi() = default;
 
@@ -175,18 +174,18 @@ public:
     auto on_key_pressed_event(const KeyPressedEvent& event) -> void;
 
     template<typename T>
-    auto add_scene(std::string_view name)
+    auto add_scene(StringView name)
         requires(std::derived_from<T, Scene>);
 
     auto prev() -> void;
     auto next() -> void;
 
 private:
-    std::string _label;
+    String _label;
     usize _selected_scene_idx = 0;
     usize _scene_count = 0;
 
-    Vector<std::string> _scene_names;
+    Vector<String> _scene_names;
     Vector<std::function<std::unique_ptr<Scene>()>> _scene_constructors;
 
 private:
@@ -194,7 +193,7 @@ private:
 };
 
 template<typename T>
-auto ScenePickerUi::add_scene(std::string_view name)
+auto ScenePickerUi::add_scene(StringView name)
     requires(std::derived_from<T, Scene>)
 {
     _scene_names.emplace_back(name);

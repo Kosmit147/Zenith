@@ -24,7 +24,7 @@ constexpr auto slider_drag_speed = 0.01f;
 
 } // namespace
 
-DebugToolsUi::DebugToolsUi(std::string_view label) : _label(label) {}
+DebugToolsUi::DebugToolsUi(StringView label) : _label(label) {}
 
 auto DebugToolsUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
 {
@@ -70,7 +70,7 @@ auto DebugToolsUi::on_update() -> void
     ImGui::End();
 }
 
-TransformUi::TransformUi(Transformable3D& transformable, std::string_view label)
+TransformUi::TransformUi(Transformable3D& transformable, StringView label)
     : _label(label), _transformable(transformable)
 {}
 
@@ -165,7 +165,7 @@ auto TransformGizmo::on_key_pressed_event(const KeyPressedEvent& event) -> void
     }
 }
 
-MaterialUi::MaterialUi(Material& material, std::string_view label) : _label(label), _material(material) {}
+MaterialUi::MaterialUi(Material& material, StringView label) : _label(label), _material(material) {}
 
 auto MaterialUi::on_update() -> void
 {
@@ -198,11 +198,11 @@ auto MaterialUi::on_update() -> void
 
     ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
 
-    auto map_picker = [](std::string_view label, i16 selected_idx, const Vector<std::string>& map_names) {
+    auto map_picker = [](StringView label, i16 selected_idx, const Vector<String>& map_names) {
         constexpr auto none_selected_label = "None";
         Optional<i16> pick = nil;
 
-        std::string_view selected_map_name = none_selected_label;
+        StringView selected_map_name = none_selected_label;
 
         if (selected_idx >= 0)
             selected_map_name = map_names[selected_idx];
@@ -253,19 +253,19 @@ auto MaterialUi::on_update() -> void
     ImGui::End();
 }
 
-auto MaterialUi::add_diffuse_map(std::string_view name, const gl::Texture2D& diffuse_map) -> void
+auto MaterialUi::add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void
 {
     _diffuse_map_names.emplace_back(name);
     _diffuse_maps.push_back(&diffuse_map);
 }
 
-auto MaterialUi::add_specular_map(std::string_view name, const gl::Texture2D& specular_map) -> void
+auto MaterialUi::add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void
 {
     _specular_map_names.emplace_back(name);
     _specular_maps.push_back(&specular_map);
 }
 
-auto MaterialUi::add_emission_map(std::string_view name, const gl::Texture2D& emission_map) -> void
+auto MaterialUi::add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void
 {
     _emission_map_names.emplace_back(name);
     _emission_maps.push_back(&emission_map);
@@ -289,10 +289,9 @@ auto MaterialUi::set_emission_map(i16 idx) -> void
     _material.emission_map = idx >= 0 ? _emission_maps[idx] : nullptr;
 }
 
-// @cleanup: move sliders for light properties and attenuation into separate functions
+// @cleanup: Move sliders for light properties and attenuation into separate functions.
 
-DirectionalLightUi::DirectionalLightUi(DirectionalLight& light, std::string_view label) : _label(label), _light(light)
-{}
+DirectionalLightUi::DirectionalLightUi(DirectionalLight& light, StringView label) : _label(label), _light(light) {}
 
 auto DirectionalLightUi::on_update() -> void
 {
@@ -301,7 +300,7 @@ auto DirectionalLightUi::on_update() -> void
     if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
         _light.direction = glm::normalize(_light.direction);
 
-    // @cleanup: duplicated code
+    // @cleanup: Duplicated code.
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
@@ -310,13 +309,13 @@ auto DirectionalLightUi::on_update() -> void
     ImGui::End();
 }
 
-PointLightUi::PointLightUi(PointLight& light, std::string_view label) : _label(label), _light(light) {}
+PointLightUi::PointLightUi(PointLight& light, StringView label) : _label(label), _light(light) {}
 
 auto PointLightUi::on_update() -> void
 {
     ImGui::Begin(_label.data());
 
-    // @cleanup: duplicated code
+    // @cleanup: Duplicated code.
     ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
@@ -329,7 +328,7 @@ auto PointLightUi::on_update() -> void
     ImGui::End();
 }
 
-SpotLightUi::SpotLightUi(SpotLight& light, std::string_view label) : _label(label), _light(light) {}
+SpotLightUi::SpotLightUi(SpotLight& light, StringView label) : _label(label), _light(light) {}
 
 auto SpotLightUi::on_update() -> void
 {
@@ -349,7 +348,7 @@ auto SpotLightUi::on_update() -> void
     if (ImGui::SliderAngle("Outer Cutoff", &outer_cutoff, 0.0f, 180.0f))
         _light.outer_cutoff = glm::cos(outer_cutoff);
 
-    // @cleanup: duplicated code
+    // @cleanup: Duplicated code.
     ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
     ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
     ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
@@ -361,7 +360,7 @@ auto SpotLightUi::on_update() -> void
     ImGui::End();
 }
 
-ScenePickerUi::ScenePickerUi(std::string_view label) : _label(label) {}
+ScenePickerUi::ScenePickerUi(StringView label) : _label(label) {}
 
 auto ScenePickerUi::on_update() -> void
 {

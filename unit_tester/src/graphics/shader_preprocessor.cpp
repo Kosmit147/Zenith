@@ -1,25 +1,24 @@
-#include <string_view>
-
 #include <zenith/graphics/shader_preprocessor.hpp>
+#include <zenith/stl/string.hpp>
 
 #include "matchers.hpp"
 
 TEST_CASE("ShaderPreprocessor", "[ShaderPreprocessor]")
 {
-    using namespace std::string_view_literals;
+    using namespace zth::string_view_literals;
 
     // clang-format off
 
     constexpr auto source1 = 
-R"(// This is from source1)"sv;
+R"(// This is from source1)"_sv;
 
     constexpr auto source2 = 
 R"(// This is from source2
 // source2 includes source3
-   #include<source3.glsl>)"sv;
+   #include<source3.glsl>)"_sv;
 
     constexpr auto source3 = 
-R"(// This is from source3)"sv;
+R"(// This is from source3)"_sv;
 
     constexpr auto input = 
 R"(// This is a comment
@@ -32,7 +31,7 @@ void someFunc() {}
 
 #include <source2.glsl>
 
-void main() {})"sv;
+void main() {})"_sv;
 
     constexpr auto expected_output = 
 R"(// This is a comment
@@ -47,7 +46,7 @@ void someFunc() {}
 // source2 includes source3
    // This is from source3
 
-void main() {})"sv;
+void main() {})"_sv;
 
     // clang-format on
 

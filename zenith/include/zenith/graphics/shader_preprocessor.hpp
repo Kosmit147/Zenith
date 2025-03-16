@@ -2,11 +2,10 @@
 
 #include <filesystem>
 #include <sstream>
-#include <string>
-#include <string_view>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/stl/string_map.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
@@ -23,7 +22,7 @@ struct LineInfo
 struct PreprocessShaderError
 {
     Optional<LineInfo> line_info;
-    std::string description;
+    String description;
 };
 
 class ShaderPreprocessor
@@ -37,20 +36,20 @@ public:
     static auto init() -> void;
     static auto shut_down() -> void;
 
-    [[nodiscard]] static auto preprocess(std::string_view source) -> Result<std::string, PreprocessShaderError>;
+    [[nodiscard]] static auto preprocess(StringView source) -> Result<String, PreprocessShaderError>;
 
-    static auto add_source(std::string_view name, std::string_view source) -> bool;
-    static auto add_source(std::string_view name, std::string&& source) -> bool;
+    static auto add_source(StringView name, StringView source) -> bool;
+    static auto add_source(StringView name, String&& source) -> bool;
     static auto add_source_from_file(const std::filesystem::path& path) -> bool;
-    static auto add_source_from_file(std::string_view name, const std::filesystem::path& path) -> bool;
+    static auto add_source_from_file(StringView name, const std::filesystem::path& path) -> bool;
 
-    [[nodiscard]] static auto get_source(std::string_view name) -> Optional<Reference<const std::string>>;
+    [[nodiscard]] static auto get_source(StringView name) -> Optional<Reference<const String>>;
 
-    static auto remove_source(std::string_view name) -> bool;
+    static auto remove_source(StringView name) -> bool;
 
 private:
-    std::string_view _rest;
-    std::string_view _rest_in_line;
+    StringView _rest;
+    StringView _rest_in_line;
 
     u32 _current_col = 0;
     u32 _current_line = 0;
@@ -59,14 +58,14 @@ private:
 
     std::ostringstream _result_buffer;
 
-    static StringHashMap<std::string> _sources;
+    static StringHashMap<String> _sources;
 
 private:
-    explicit ShaderPreprocessor(std::string_view source, u16 recursion_depth = 0);
+    explicit ShaderPreprocessor(StringView source, u16 recursion_depth = 0);
 
-    [[nodiscard]] static auto preprocess_impl(std::string_view source, u16 recursion_depth = 0)
-        -> Result<std::string, PreprocessShaderError>;
-    [[nodiscard]] auto preprocess() -> Result<std::string, PreprocessShaderError>;
+    [[nodiscard]] static auto preprocess_impl(StringView source, u16 recursion_depth = 0)
+        -> Result<String, PreprocessShaderError>;
+    [[nodiscard]] auto preprocess() -> Result<String, PreprocessShaderError>;
 
     [[nodiscard]] auto process_directive_or_comment() -> Result<Success, PreprocessShaderError>;
     [[nodiscard]] auto resolve_preprocessor_directive() -> Result<Success, PreprocessShaderError>;
@@ -87,7 +86,7 @@ private:
     auto update_rest_in_line() -> void;
     auto update_rest_in_line_after_advancing_or_skipping(usize advanced_or_skipped_count) -> void;
 
-    [[nodiscard]] auto extract_source_name_from_line() const -> Optional<std::string_view>;
+    [[nodiscard]] auto extract_source_name_from_line() const -> Optional<StringView>;
 };
 
 } // namespace zth

@@ -3,17 +3,17 @@
 #include <spdlog/spdlog.h>
 
 #include <memory>
-#include <string>
 
+#include "zenith/stl/string.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth {
 
 struct LoggerSpec
 {
-    std::string core_logger_label = "ZENITH";
-    std::string client_logger_label = "APP";
-    std::string log_file_path = "log/log.txt";
+    String core_logger_label = "ZENITH";
+    String client_logger_label = "APP";
+    String log_file_path = "log/log.txt";
 };
 
 class Logger

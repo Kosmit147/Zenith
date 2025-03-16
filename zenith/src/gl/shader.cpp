@@ -88,6 +88,7 @@ auto Shader::retrieve_unif_info() -> void
     GLint max_unif_name_len = 0;
     glGetProgramiv(_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_unif_name_len);
 
+    // @speed: Use temporary storage.
     auto uniform_name = std::make_unique<char[]>(static_cast<std::size_t>(max_unif_name_len));
 
     for (GLint i = 0; i < uniform_count; i++)
@@ -107,7 +108,7 @@ auto Shader::retrieve_unif_info() -> void
     }
 }
 
-auto Shader::get_unif_info(std::string_view name) const -> Optional<UniformInfo>
+auto Shader::get_unif_info(StringView name) const -> Optional<UniformInfo>
 {
     if (auto kv = _uniform_map.find(name); kv != _uniform_map.end())
     {
@@ -158,7 +159,7 @@ auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> Option
     InPlaceVector<ShaderId, 5> shaders;
     Defer shaders_cleanup{ [&] { delete_shaders(shaders); } };
 
-    auto add_shader = [&](std::string_view source, ShaderType type) {
+    auto add_shader = [&](StringView source, ShaderType type) {
         auto shader = create_shader(source, type);
 
         if (!shader)
@@ -196,7 +197,7 @@ auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> Option
     return shaders;
 }
 
-auto Shader::create_shader(const std::string_view source, ShaderType type) -> Optional<ShaderId>
+auto Shader::create_shader(const StringView source, ShaderType type) -> Optional<ShaderId>
 {
     auto preprocessed_source = ShaderPreprocessor::preprocess(source);
 
@@ -295,9 +296,9 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     // These variables cannot be moved to inner scope as we need them to live until the call to
     // create_shader_program_from_sources.
-    Optional<std::string> tess_control_source;
-    Optional<std::string> tess_evaluation_source;
-    Optional<std::string> geometry_source;
+    Optional<String> tess_control_source;
+    Optional<String> tess_evaluation_source;
+    Optional<String> geometry_source;
 
     if (paths.tess_control_path)
     {
@@ -477,7 +478,7 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
     // @test: This function.
     // @robustness: .string() throws.
 
-    std::string result = ZTH_FORMAT("{{\n"
+    zth::String result = ZTH_FORMAT("{{\n"
                                     "\t.vertex_path = \"{}\",\n"
                                     "\t.fragment_path = \"{}\",\n",
                                     paths.vertex_path.string(), paths.fragment_path.string());
