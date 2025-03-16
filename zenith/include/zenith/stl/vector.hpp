@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <concepts>
 #include <initializer_list>
 #include <memory>
@@ -8,6 +7,7 @@
 #include <vector>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/memory/buffer.hpp"
 #include "zenith/stl/range.hpp"
 
 namespace zth {
@@ -84,8 +84,7 @@ private:
     // @speed: We could determine what the smallest unsigned integer type capable of storing the values between 0 and
     // Capacity is and use it instead of end pointer (or maybe even forgo it completely if Capacity is 0).
     pointer _end = nullptr;
-    // @refactor: Use StaticBuffer instead.
-    alignas(value_type) std::array<byte, sizeof(value_type) * Capacity> _data;
+    memory::StaticBuffer<sizeof(value_type) * Capacity, alignof(value_type)> _data;
 };
 
 } // namespace zth

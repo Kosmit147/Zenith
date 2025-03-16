@@ -15,7 +15,7 @@
 namespace zth {
 
 // A linear memory allocator which gets reset every frame. If we exceed the capacity, we resort to a regular allocation
-// using new.
+// using new. The preferred way of interacting with TemporaryStorage is via make_temporary function.
 class TemporaryStorage
 {
 public:
