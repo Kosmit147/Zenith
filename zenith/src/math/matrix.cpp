@@ -44,15 +44,15 @@ auto has_uniform_scale(const glm::mat4& transform, float epsilon) -> bool
 
 auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3
 {
-    // we can tolerate fairly big errors
-    // @speed: test what epsilon value would be the best
-    static constexpr auto epsilon = 1e-5f;
+    // We can tolerate fairly big errors.
+    // @speed: Test what epsilon value would be best.
+    constexpr auto epsilon = 1e-5f;
 
     if (has_uniform_scale(transform, epsilon))
         return glm::mat3{ transform };
 
-    // the transpose of the inverse of the upper-left 3x3 part of the transform matrix
-    // @speed: investigate whether caching these matrices is worth it
+    // The transpose of the inverse of the upper-left 3x3 part of the transform matrix.
+    // @speed: Investigate whether caching these matrices is worth it.
     return glm::inverseTranspose(glm::mat3{ transform });
 }
 

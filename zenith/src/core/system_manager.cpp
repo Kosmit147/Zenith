@@ -1,8 +1,8 @@
 #include "zenith/core/system_manager.hpp"
 
 #include "zenith/core/asset_manager.hpp"
+#include "zenith/core/random.hpp"
 #include "zenith/core/scene_manager.hpp"
-#include "zenith/core/typedefs.hpp"
 #include "zenith/graphics/imgui_renderer.hpp"
 #include "zenith/graphics/renderer.hpp"
 #include "zenith/graphics/shader_preprocessor.hpp"
@@ -20,6 +20,7 @@
 // TemporaryStorage -> {}
 // Time -> {}
 // Window -> {}
+// Random -> {}
 // Input -> { Window }
 // ShaderPreprocessor -> {}
 // AssetManager -> { ShaderPreprocessor }
@@ -44,6 +45,7 @@ auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
         add_system([&] { TemporaryStorage::init(); }, TemporaryStorage::shut_down);
         add_system([&] { Time::init(); }, Time::shut_down);
         add_system([&] { Window::init(spec.window_spec); }, Window::shut_down);
+        add_system([&] { Random::init(); }, Random::shut_down);
         add_system([&] { Input::init(); }, Input::shut_down);
         add_system([&] { ShaderPreprocessor::init(); }, ShaderPreprocessor::shut_down);
         add_system([&] { AssetManager::init(); }, AssetManager::shut_down);

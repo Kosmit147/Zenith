@@ -6,6 +6,7 @@ add_library(
 	"src/core/asset_manager.cpp"
 	"src/core/camera_controller.cpp"
 	"src/core/exception.cpp"
+	"src/core/random.cpp"
 	"src/core/scene_manager.cpp"
 	"src/core/system_manager.cpp"
 	"src/core/transform.cpp"
