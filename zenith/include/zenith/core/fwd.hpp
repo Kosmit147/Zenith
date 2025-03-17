@@ -8,6 +8,8 @@ class FpsCameraController;
 
 class Exception;
 
+class Random;
+
 class Scene;
 
 class SceneManager;
