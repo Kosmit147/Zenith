@@ -30,3 +30,7 @@
 	path = dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
 	branch = master
+[submodule "dependencies/entt"]
+	path = dependencies/entt
+	url = https://github.com/skypjack/entt.git
+	branch = master
