@@ -1,17 +1,24 @@
 #pragma once
 
+#include "zenith/core/typedefs.hpp"
+
 namespace zth {
 
 class PerspectiveCamera;
 
 class ImGuiRenderer;
 
+enum class LightType : u8;
 struct LightProperties;
 struct LightAttenuation;
 struct DirectionalLight;
 struct PointLight;
 struct SpotLight;
 struct AmbientLight;
+struct DirectionalLightRenderData;
+struct PointLightRenderData;
+struct SpotLightRenderData;
+struct AmbientLightRenderData;
 
 struct Material;
 
@@ -39,27 +46,22 @@ struct ShaderList;
 
 } // namespace shaders
 
-struct LightPropertiesData;
-struct LightAttenuationData;
+struct LightPropertiesShaderData;
+struct LightAttenuationShaderData;
 struct CameraUboData;
-struct DirectionalLightData;
+struct DirectionalLightShaderData;
 struct DirectionalLightsSsboData;
-struct PointLightData;
+struct PointLightShaderData;
 struct PointLightsSsboData;
-struct SpotLightData;
+struct SpotLightShaderData;
 struct SpotLightsSsboData;
-struct AmbientLightData;
+struct AmbientLightShaderData;
 struct AmbientLightsSsboData;
 struct MaterialUboData;
 
 struct LineInfo;
 struct PreprocessShaderError;
 class ShaderPreprocessor;
-
-class Shape3D;
-class CubeShape;
-class PyramidShape;
-class SphereShape;
 
 struct InstanceVertex;
 struct StandardVertex;

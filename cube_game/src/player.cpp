@@ -17,7 +17,8 @@ Player::Player()
 
 auto Player::on_update() -> void
 {
-    _camera_controller.on_update();
+    if (!zth::Window::cursor_enabled())
+        _camera_controller.on_update();
 }
 
 auto Player::on_event(const zth::Event& event) -> void

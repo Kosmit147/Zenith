@@ -13,7 +13,7 @@ public:
     Time() = delete;
 
     static auto init() -> void;
-    static auto on_update() -> void;
+    static auto update() -> void;
     static auto shut_down() -> void;
 
     template<std::floating_point T = double> [[nodiscard]] static auto time() -> T { return static_cast<T>(_time); }

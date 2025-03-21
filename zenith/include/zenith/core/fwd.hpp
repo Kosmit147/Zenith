@@ -16,6 +16,4 @@ class SceneManager;
 
 class SystemManager;
 
-class Transformable3D;
-
 } // namespace zth

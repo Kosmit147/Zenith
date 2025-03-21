@@ -11,40 +11,42 @@ auto SceneManager::init() -> void
     ZTH_CORE_INFO("Scene manager initialized.");
 }
 
-auto SceneManager::on_update() -> void
+auto SceneManager::update() -> void
 {
     if (_queued_scene)
     {
         if (_scene)
             _scene->on_unload();
 
-        // @temporary
-        Renderer::clear_scene_data();
-
         _scene = std::move(_queued_scene);
         _scene->on_load();
     }
 
-    if (!_scene) [[unlikely]]
+    if (!_scene)
     {
         ZTH_CORE_WARN("[Scene Manager] No scene loaded.");
         return;
     }
 
-    _scene->on_update();
+    _scene->update();
 }
 
-auto SceneManager::on_event(const Event& event) -> void
+auto SceneManager::dispatch_event(const Event& event) -> void
 {
-    if (!_scene) [[unlikely]]
+    if (!_scene)
         return;
 
-    _scene->on_event(event);
+    _scene->dispatch_event(event);
+}
+
+auto SceneManager::render_scene() -> void
+{
+    _scene->render();
 }
 
 auto SceneManager::on_render() -> void
 {
-    if (!_scene) [[unlikely]]
+    if (!_scene)
         return;
 
     _scene->on_render();

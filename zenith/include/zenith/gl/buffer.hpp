@@ -59,6 +59,8 @@ enum class BufferState : u8
     InitializedDynamic, // Buffer can be reinitialized, size can be changed.
 };
 
+// --------------------------- Buffer ---------------------------
+
 class Buffer
 {
 public:
@@ -133,6 +135,8 @@ private:
     [[nodiscard]] static auto calculate_growth(u32 old_size_bytes) -> u32;
 };
 
+// --------------------------- VertexBuffer ---------------------------
+
 class VertexBuffer
 {
 public:
@@ -187,6 +191,8 @@ private:
     Buffer _buffer;
     u32 _stride_bytes = 0;
 };
+
+// --------------------------- IndexBuffer ---------------------------
 
 class IndexBuffer
 {
@@ -247,6 +253,8 @@ private:
     u32 _size = 0;
 };
 
+// --------------------------- InstanceBuffer ---------------------------
+
 class InstanceBuffer : public VertexBuffer
 {
 public:
@@ -269,6 +277,8 @@ public:
 
     ~InstanceBuffer() = default;
 };
+
+// --------------------------- UniformBuffer ---------------------------
 
 class UniformBuffer
 {
@@ -317,6 +327,8 @@ public:
 private:
     Buffer _buffer;
 };
+
+// --------------------------- ShaderStorageBuffer ---------------------------
 
 class ShaderStorageBuffer
 {

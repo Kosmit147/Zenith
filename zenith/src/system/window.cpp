@@ -195,25 +195,19 @@ auto Window::disable_frame_rate_limit() -> void
 auto Window::set_cursor_enabled(bool enabled) -> void
 {
     if (enabled)
-        enable_cursor();
+    {
+        glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+    }
     else
-        disable_cursor();
-}
+    {
+        glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-auto Window::enable_cursor() -> void
-{
-    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-    if (glfwRawMouseMotionSupported())
-        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
-}
-
-auto Window::disable_cursor() -> void
-{
-    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    if (glfwRawMouseMotionSupported())
-        glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
 }
 
 auto Window::glfw_handle() -> GLFWwindow*

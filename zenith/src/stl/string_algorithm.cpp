@@ -72,5 +72,9 @@ auto find_substr_between_at_offset(StringView text, usize offset, char opening_d
 
 ZTH_DEFINE_FORMATTER(zth::FindSubstrResult, result)
 {
-    return ZTH_FORMAT_OUT("{{ .found_at = {}, .result = {} }}", result.found_at, result.result);
+    return ZTH_FORMAT_OUT("FindSubstrResult {{\n"
+                          "\t.found_at = {},\n"
+                          "\t.result = {},\n"
+                          "}}",
+                          result.found_at, result.result);
 }

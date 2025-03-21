@@ -2,6 +2,8 @@
 
 #include <imgui.h>
 #include <ImGuizmo.h>
+#include <entt/entity/entity.hpp>
+#include <entt/fwd.hpp>
 
 #include <concepts>
 #include <functional>
@@ -9,9 +11,9 @@
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
-#include "zenith/math/quaternion.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
@@ -20,75 +22,66 @@
 
 namespace zth::debug {
 
-class DebugToolsUi
+struct TransformGizmo
+{
+    ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
+    ImGuizmo::MODE mode = ImGuizmo::WORLD;
+
+    auto draw(TransformComponent& transform, const PerspectiveCamera& camera) const -> void;
+};
+
+struct EntityInspectorPanel
+{
+    TransformGizmo gizmo;
+
+    auto draw(entt::entity entity, entt::registry& registry) const -> void;
+};
+
+class SceneHierarchyPanel
 {
 public:
-    Key toggle_wireframe_mode_key = Key::F1;
+    EntityInspectorPanel inspector;
 
 public:
-    explicit DebugToolsUi(StringView label = "Debug Tools");
-    ZTH_NO_COPY_NO_MOVE(DebugToolsUi)
-    ~DebugToolsUi() = default;
+    explicit SceneHierarchyPanel(entt::registry& registry);
+    ZTH_NO_COPY_NO_MOVE(SceneHierarchyPanel)
+    ~SceneHierarchyPanel() = default;
 
-    auto on_key_pressed_event(const KeyPressedEvent& event) -> void;
-    auto on_update() -> void;
+    auto draw() -> void;
+
+private:
+    entt::registry& _registry;
+    entt::entity _selected_entity = entt::null;
+};
+
+// @todo: Replace / improve.
+class DebugToolsPanel
+{
+public:
+    Key toggle_wireframe_mode_key = Key::F2;
+
+public:
+    explicit DebugToolsPanel(StringView label = "Debug Tools");
+    ZTH_NO_COPY_NO_MOVE(DebugToolsPanel)
+    ~DebugToolsPanel() = default;
+
+    auto draw() -> void;
+    auto on_key_pressed_event(const KeyPressedEvent& event) const -> void;
 
 private:
     String _label;
     u32 _frame_rate_limit = 60;
 };
 
-class TransformUi
+// @todo: Replace / improve.
+class MaterialPanel
 {
 public:
-    explicit TransformUi(Transformable3D& transformable, StringView label = "Transform");
-    ZTH_NO_COPY_NO_MOVE(TransformUi)
-    ~TransformUi() = default;
+    explicit MaterialPanel(Material& material, StringView label = "Material");
+    ZTH_NO_COPY_NO_MOVE(MaterialPanel)
+    ~MaterialPanel() = default;
 
-    auto on_update() -> void;
-
-private:
-    String _label;
-    Transformable3D& _transformable;
-
-    math::Rotation _rotation{};
-    bool _uniform_scale = true;
-};
-
-class TransformGizmo
-{
-public:
-    Key toggle_key = Key::LeftControl;
-    Key switch_to_translate_mode_key = Key::Q;
-    Key switch_to_rotate_mode_key = Key::E;
-    Key switch_to_scale_mode_key = Key::R;
-
-    bool enabled = false;
-
-public:
-    explicit TransformGizmo(Transformable3D& transformable, const PerspectiveCamera& camera);
-    ZTH_NO_COPY_NO_MOVE(TransformGizmo)
-    ~TransformGizmo() = default;
-
-    auto on_update() -> void;
-    auto on_key_pressed_event(const KeyPressedEvent& event) -> void;
-
-private:
-    Transformable3D& _transformable;
-    const PerspectiveCamera& _camera;
-
-    ImGuizmo::OPERATION _current_gizmo_operation = ImGuizmo::TRANSLATE;
-    ImGuizmo::MODE _current_gizmo_mode = ImGuizmo::WORLD;
-};
-
-class MaterialUi
-{
-public:
-    explicit MaterialUi(Material& material, StringView label = "Material");
-    ZTH_NO_COPY_NO_MOVE(MaterialUi)
-    ~MaterialUi() = default;
-
-    auto on_update() -> void;
+    auto draw() -> void;
 
     auto add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void;
     auto add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void;
@@ -117,68 +110,27 @@ private:
     auto set_emission_map(i16 idx) -> void;
 };
 
-class DirectionalLightUi
-{
-public:
-    explicit DirectionalLightUi(DirectionalLight& light, StringView label = "Directional Light");
-    ZTH_NO_COPY_NO_MOVE(DirectionalLightUi)
-    ~DirectionalLightUi() = default;
-
-    auto on_update() -> void;
-
-private:
-    StringView _label;
-    DirectionalLight& _light;
-};
-
-class PointLightUi
-{
-public:
-    explicit PointLightUi(PointLight& light, StringView label = "Point Light");
-    ZTH_NO_COPY_NO_MOVE(PointLightUi)
-    ~PointLightUi() = default;
-
-    auto on_update() -> void;
-
-private:
-    String _label;
-    PointLight& _light;
-};
-
-class SpotLightUi
-{
-public:
-    explicit SpotLightUi(SpotLight& light, StringView label = "Spot Light");
-    ZTH_NO_COPY_NO_MOVE(SpotLightUi)
-    ~SpotLightUi() = default;
-
-    auto on_update() -> void;
-
-private:
-    String _label;
-    SpotLight& _light;
-};
-
-class ScenePickerUi
+// @todo: Replace / improve.
+class ScenePicker
 {
 public:
     Key prev_scene_key = Key::Left;
     Key next_scene_key = Key::Right;
 
 public:
-    explicit ScenePickerUi(StringView label = "Scene");
-    ZTH_NO_COPY_NO_MOVE(ScenePickerUi)
-    ~ScenePickerUi() = default;
+    explicit ScenePicker(StringView label = "Scene");
+    ZTH_NO_COPY_NO_MOVE(ScenePicker)
+    ~ScenePicker() = default;
 
-    auto on_update() -> void;
+    auto draw() -> void;
     auto on_key_pressed_event(const KeyPressedEvent& event) -> void;
 
     template<typename T>
     auto add_scene(StringView name)
         requires(std::derived_from<T, Scene>);
 
-    auto prev() -> void;
-    auto next() -> void;
+    auto prev_scene() -> void;
+    auto next_scene() -> void;
 
 private:
     String _label;
@@ -193,7 +145,7 @@ private:
 };
 
 template<typename T>
-auto ScenePickerUi::add_scene(StringView name)
+auto ScenePicker::add_scene(StringView name)
     requires(std::derived_from<T, Scene>)
 {
     _scene_names.emplace_back(name);

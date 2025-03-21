@@ -27,7 +27,7 @@ auto Input::init() -> void
     ZTH_CORE_INFO("Input system initialized.");
 }
 
-auto Input::on_update() -> void
+auto Input::update() -> void
 {
     _mouse_pos_delta = _mouse_pos - _prev_mouse_pos;
     _prev_mouse_pos = _mouse_pos;

@@ -39,9 +39,9 @@ private:
     virtual auto on_update() -> void {}
     virtual auto on_render() -> void {}
 
-    auto handle_event(const Event& event) -> void;
-    auto handle_update() -> void;
-    auto handle_render() -> void;
+    auto dispatch_event(const Event& event) -> void;
+    auto update() -> void;
+    auto render() -> void;
 };
 
 } // namespace zth

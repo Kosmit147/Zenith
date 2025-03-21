@@ -156,7 +156,7 @@ auto Shader::set_unif(GLint location, glm::vec4 val) -> void
 
 auto Shader::set_unif(GLint location, const glm::mat4& val) -> void
 {
-    glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(val));
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(val));
 }
 
 auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> Optional<InPlaceVector<ShaderId, 5>>
@@ -268,7 +268,7 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> Option
 
 #if !defined(ZTH_DIST_BUILD)
     // We're not deleting the shaders in non-distribution builds because that lets us look at their source code when
-    // using api debugging tools.
+    // using API debugging tools.
     shaders_cleanup.dismiss();
 #endif
 
@@ -458,9 +458,9 @@ auto to_string(gl::ShaderType shader_type) -> const char*
     case Vertex:
         return "Vertex";
     case TessControl:
-        return "Tesselation Control";
+        return "TessControl";
     case TessEvaluation:
-        return "Tesselation Evaluation";
+        return "TessEvaluation";
     case Geometry:
         return "Geometry";
     case Fragment:
@@ -473,9 +473,9 @@ auto to_string(gl::ShaderType shader_type) -> const char*
 
 } // namespace zth
 
-ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, type)
+ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, shader_type)
 {
-    return ZTH_FORMAT_OUT("{}", zth::to_string(type));
+    return ZTH_FORMAT_OUT("{}", zth::to_string(shader_type));
 }
 
 ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
@@ -483,10 +483,10 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
     // @test: This function.
     // @robustness: .string() throws.
 
-    zth::String result = ZTH_FORMAT("{{\n"
-                                    "\t.vertex_path = \"{}\",\n"
-                                    "\t.fragment_path = \"{}\",\n",
-                                    paths.vertex_path.string(), paths.fragment_path.string());
+    auto result = ZTH_FORMAT("ShaderSourcePaths {{\n"
+                             "\t.vertex_path = \"{}\",\n"
+                             "\t.fragment_path = \"{}\",\n",
+                             paths.vertex_path.string(), paths.fragment_path.string());
 
     {
         result += "\t.tess_control_path = ";
@@ -494,7 +494,7 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
         if (paths.tess_control_path)
             result += ZTH_FORMAT("\"{}\",\n", paths.tess_control_path->string());
         else
-            result += "null,\n";
+            result += "nil,\n";
     }
 
     {
@@ -503,7 +503,7 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
         if (paths.tess_evaluation_path)
             result += ZTH_FORMAT("\"{}\",\n", paths.tess_evaluation_path->string());
         else
-            result += "null,\n";
+            result += "nil,\n";
     }
 
     {
@@ -512,7 +512,7 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
         if (paths.geometry_path)
             result += ZTH_FORMAT("\"{}\",\n", paths.geometry_path->string());
         else
-            result += "null,\n";
+            result += "nil,\n";
     }
 
     return ZTH_FORMAT_OUT("{}}}", result);

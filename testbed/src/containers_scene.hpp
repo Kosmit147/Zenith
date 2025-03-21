@@ -11,26 +11,23 @@ public:
     ~ContainersScene() override = default;
 
 private:
-    zth::Vector<zth::CubeShape> _containers;
-    zth::SphereShape _light_marker;
+    zth::Vector<zth::Entity> _containers;
 
     zth::gl::Texture2D _diffuse_map;
     zth::gl::Texture2D _specular_map;
 
     zth::Material _container_material;
-    zth::Material _light_marker_material;
+    zth::Material _point_light_material;
 
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;
-    std::shared_ptr<zth::DirectionalLight> _directional_light;
-    std::shared_ptr<zth::PointLight> _point_light;
-    std::shared_ptr<zth::SpotLight> _spot_light;
-    std::shared_ptr<zth::AmbientLight> _ambient_light;
-    bool _spot_light_on = true;
 
-    zth::debug::DirectionalLightUi _directional_light_ui{ *_directional_light };
-    zth::debug::PointLightUi _point_light_ui{ *_point_light };
-    zth::debug::SpotLightUi _spot_light_ui{ *_spot_light };
+    zth::Entity _directional_light = create_entity("Directional Light");
+    zth::Entity _point_light = create_entity("Point Light");
+    zth::Entity _spot_light = create_entity("Spot Light");
+    zth::Entity _ambient_light = create_entity("Ambient Light");
+
+    bool _spot_light_on = true;
 
 private:
     auto on_load() -> void override;
@@ -39,6 +36,4 @@ private:
 
     auto on_window_resized_event(const zth::WindowResizedEvent& event) -> void;
     auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
-
-    auto update_ui() -> void;
 };

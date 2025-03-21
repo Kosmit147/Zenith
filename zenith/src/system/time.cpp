@@ -10,7 +10,7 @@ auto Time::init() -> void
     ZTH_CORE_INFO("Time system initialized.");
 }
 
-auto Time::on_update() -> void
+auto Time::update() -> void
 {
     auto new_time = Window::time();
     _delta_time = std::min(new_time - _time, delta_time_limit);

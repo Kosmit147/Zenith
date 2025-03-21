@@ -11,15 +11,22 @@ const zth::gl::TextureParams cobble_texture_params = {
     .mag_filter = zth::gl::TextureMagFilter::nearest,
 };
 
-const auto light_direction = glm::normalize(glm::vec3{ 1.0f, -1.0f, 0.2f });
+const auto directional_light_direction = glm::normalize(glm::vec3{ 1.0f, -1.0f, 0.2f });
 
 } // namespace
 
 Scene::Scene()
     : _block_texture(cobble_texture_data, cobble_texture_params),
-      _block_material{ .diffuse_map = &_block_texture, .specular = glm::vec3{ 0.1f } },
-      _light(std::make_shared<zth::DirectionalLight>(light_direction))
+      _block_material{ .diffuse_map = &_block_texture, .specular = glm::vec3{ 0.1f } }
 {
+    auto& registry = Scene::registry();
+
+    auto& light_transform = registry.get<zth::TransformComponent>(_directional_light);
+    light_transform.set_direction(directional_light_direction);
+    registry.emplace_or_replace<zth::LightComponent>(_directional_light, zth::DirectionalLight{});
+
+    std::size_t counter = 0;
+
     {
         // Platform.
 
@@ -29,7 +36,16 @@ Scene::Scene()
         constexpr auto coords = std::views::cartesian_product(xs, ys, zs);
 
         for (const auto [x, y, z] : coords)
-            _blocks.emplace_back(glm::ivec3{ x, y, z });
+        {
+            auto name = ZTH_FORMAT("Block {}", counter++);
+            auto& block = _blocks.emplace_back(create_entity(name));
+
+            auto& block_transform = registry.get<zth::TransformComponent>(block);
+            block_transform.set_translation(glm::ivec3{ x, y, z });
+
+            registry.emplace<zth::MeshComponent>(block, &zth::meshes::cube_mesh());
+            registry.emplace<zth::MaterialComponent>(block, &_block_material);
+        }
     }
 
     {
@@ -41,7 +57,16 @@ Scene::Scene()
         constexpr auto coords = std::views::cartesian_product(xs, ys, zs);
 
         for (const auto [x, y, z] : coords)
-            _blocks.emplace_back(glm::ivec3{ x, y, z });
+        {
+            auto name = ZTH_FORMAT("Block {}", counter++);
+            auto& block = _blocks.emplace_back(create_entity(name));
+
+            auto& block_transform = registry.get<zth::TransformComponent>(block);
+            block_transform.set_translation(glm::ivec3{ x, y, z });
+
+            registry.emplace<zth::MeshComponent>(block, &zth::meshes::cube_mesh());
+            registry.emplace<zth::MaterialComponent>(block, &_block_material);
+        }
     }
 }
 
@@ -50,15 +75,11 @@ auto Scene::on_load() -> void
     auto light_blue = glm::vec4{ 0.643f, 0.816f, 0.91f, 1.0f };
     zth::Renderer::set_clear_color(light_blue);
     zth::Renderer::set_camera(_player.camera());
-    zth::Renderer::add_directional_light(_light);
 }
 
 auto Scene::on_update() -> void
 {
     _player.on_update();
-
-    for (const auto& block : _blocks)
-        zth::Renderer::draw(block, _block_material);
 }
 
 auto Scene::on_event(const zth::Event& event) -> void

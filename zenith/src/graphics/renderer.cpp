@@ -16,7 +16,6 @@
 #include "zenith/graphics/mesh.hpp"
 #include "zenith/graphics/meshes.hpp"
 #include "zenith/graphics/shaders.hpp"
-#include "zenith/graphics/shape.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/system/event.hpp"
@@ -131,15 +130,6 @@ auto Renderer::shut_down() -> void
     ZTH_CORE_INFO("Renderer shut down.");
 }
 
-// @temporary: This function should probably be deleted once we have entity component system.
-auto Renderer::clear_scene_data() -> void
-{
-    clear_directional_lights();
-    clear_point_lights();
-    clear_spot_lights();
-    clear_ambient_lights();
-}
-
 auto Renderer::set_wireframe_mode(bool enabled) -> void
 {
     _wireframe_mode_enabled = enabled;
@@ -162,93 +152,64 @@ auto Renderer::clear() -> void
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+auto Renderer::begin_scene() -> void
+{
+    renderer->_draw_commands.clear();
+    renderer->_batches.clear();
+
+    renderer->_directional_lights.clear();
+    renderer->_point_lights.clear();
+    renderer->_spot_lights.clear();
+    renderer->_ambient_lights.clear();
+
+    clear();
+}
+
+auto Renderer::end_scene() -> void
+{
+    render();
+}
+
 auto Renderer::set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void
 {
     ZTH_ASSERT(camera != nullptr);
     renderer->_camera = std::move(camera);
 }
 
-auto Renderer::add_directional_light(std::shared_ptr<const DirectionalLight> light) -> void
+auto Renderer::submit_directional_light(const DirectionalLightRenderData& data) -> void
 {
-    renderer->_directional_lights.push_back(std::move(light));
+    renderer->_directional_lights.push_back(data);
 }
 
-auto Renderer::remove_directional_light(usize index) -> void
+auto Renderer::submit_point_light(const PointLightRenderData& data) -> void
 {
-    auto& lights = renderer->_directional_lights;
-    ZTH_ASSERT(index < lights.size());
-    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
+    renderer->_point_lights.push_back(data);
 }
 
-auto Renderer::clear_directional_lights() -> void
+auto Renderer::submit_spot_light(const SpotLightRenderData& data) -> void
 {
-    renderer->_directional_lights.clear();
+    renderer->_spot_lights.push_back(data);
 }
 
-auto Renderer::add_point_light(std::shared_ptr<const PointLight> light) -> void
+auto Renderer::submit_ambient_light(const AmbientLightRenderData& data) -> void
 {
-    renderer->_point_lights.push_back(std::move(light));
+    renderer->_ambient_lights.push_back(data);
 }
 
-auto Renderer::remove_point_light(usize index) -> void
+auto Renderer::submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
 {
-    auto& lights = renderer->_point_lights;
-    ZTH_ASSERT(index < lights.size());
-    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
+    submit(mesh.vertex_array(), transform, material);
 }
 
-auto Renderer::clear_point_lights() -> void
-{
-    renderer->_point_lights.clear();
-}
-
-auto Renderer::add_spot_light(std::shared_ptr<const SpotLight> light) -> void
-{
-    renderer->_spot_lights.push_back(std::move(light));
-}
-
-auto Renderer::remove_spot_light(usize index) -> void
-{
-    auto& lights = renderer->_spot_lights;
-    ZTH_ASSERT(index < lights.size());
-    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
-}
-
-auto Renderer::clear_spot_lights() -> void
-{
-    renderer->_spot_lights.clear();
-}
-
-auto Renderer::add_ambient_light(std::shared_ptr<const AmbientLight> light) -> void
-{
-    renderer->_ambient_lights.push_back(std::move(light));
-}
-
-auto Renderer::remove_ambient_light(usize index) -> void
-{
-    auto& lights = renderer->_ambient_lights;
-    ZTH_ASSERT(index < lights.size());
-    lights.erase(std::next(lights.begin(), static_cast<isize>(index)));
-}
-
-auto Renderer::clear_ambient_lights() -> void
-{
-    renderer->_ambient_lights.clear();
-}
-
-auto Renderer::draw(const Shape3D& shape, const Material& material) -> void
-{
-    draw(shape.mesh(), shape.transform(), material);
-}
-
-auto Renderer::draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
-{
-    draw(mesh.vertex_array(), transform, material);
-}
-
-auto Renderer::draw(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
+auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
+}
+
+auto Renderer::camera() -> const PerspectiveCamera&
+{
+    ZTH_ASSERT(renderer->_camera != nullptr);
+    return *renderer->_camera;
 }
 
 auto Renderer::render() -> void
@@ -259,9 +220,6 @@ auto Renderer::render() -> void
 
     for (const auto& batch : renderer->_batches)
         render_batch(batch);
-
-    renderer->_draw_commands.clear();
-    renderer->_batches.clear();
 }
 
 auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void
@@ -281,51 +239,10 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
                             nullptr, static_cast<GLsizei>(instances));
 }
 
-auto Renderer::directional_light_count() -> usize
-{
-    return renderer->_directional_lights.size();
-}
-
-auto Renderer::directional_lights() -> Vector<std::shared_ptr<const DirectionalLight>>&
-{
-    return renderer->_directional_lights;
-}
-
-auto Renderer::point_light_count() -> usize
-{
-    return renderer->_point_lights.size();
-}
-
-auto Renderer::point_lights() -> Vector<std::shared_ptr<const PointLight>>&
-{
-    return renderer->_point_lights;
-}
-
-auto Renderer::spot_light_count() -> usize
-{
-    return renderer->_spot_lights.size();
-}
-
-auto Renderer::spot_lights() -> Vector<std::shared_ptr<const SpotLight>>&
-{
-    return renderer->_spot_lights;
-}
-
-auto Renderer::ambient_light_count() -> usize
-{
-    return renderer->_ambient_lights.size();
-}
-
-auto Renderer::ambient_lights() -> Vector<std::shared_ptr<const AmbientLight>>&
-{
-    return renderer->_ambient_lights;
-}
-
 auto Renderer::batch_draw_commands() -> void
 {
-    // @speed: We should look into how we could batch draw commands more efficiently.
-    // It would probably also be more optimal to copy the transforms rather than storing pointers to them for better
-    // cache efficiency.
+    // @speed: We should look into how we could batch draw commands more efficiently. It would probably also be more
+    // optimal to copy the transforms rather than storing pointers to them for better cache efficiency.
 
     auto& draw_commands = renderer->_draw_commands;
     auto& batches = renderer->_batches;
@@ -399,8 +316,6 @@ auto Renderer::bind_material(const Material& material) -> void
         material.emission_map->bind(emission_map_slot);
 }
 
-// @cleanup: Send data to buffers in a cleaner, less error-prone way.
-
 auto Renderer::upload_camera_data() -> void
 {
     ZTH_ASSERT(renderer->_camera != nullptr);
@@ -450,15 +365,15 @@ auto Renderer::upload_directional_lights_data() -> void
     u32 offset = 0;
     offset += renderer->_directional_lights_ssbo.buffer_data(directional_lights_ssbo_data);
 
-    for (const auto& light : renderer->_directional_lights)
+    for (const auto& [direction, properties] : renderer->_directional_lights)
     {
-        DirectionalLightData data = {
-            .direction = light->direction,
+        DirectionalLightShaderData data = {
+            .direction = direction,
             .properties = {
-                .color = light->properties.color,
-                .ambient = light->properties.ambient,
-                .diffuse = light->properties.diffuse,
-                .specular = light->properties.specular,
+                .color = properties.color,
+                .ambient = properties.ambient,
+                .diffuse = properties.diffuse,
+                .specular = properties.specular,
             },
         };
 
@@ -475,20 +390,20 @@ auto Renderer::upload_point_lights_data() -> void
     u32 offset = 0;
     offset += renderer->_point_lights_ssbo.buffer_data(point_lights_ssbo_data);
 
-    for (const auto& light : renderer->_point_lights)
+    for (const auto& [position, properties, attenuation] : renderer->_point_lights)
     {
-        PointLightData data = {
-            .position = light->position,
+        PointLightShaderData data = {
+            .position = position,
             .properties = {
-                .color = light->properties.color,
-                .ambient = light->properties.ambient,
-                .diffuse = light->properties.diffuse,
-                .specular = light->properties.specular,
+                .color = properties.color,
+                .ambient = properties.ambient,
+                .diffuse = properties.diffuse,
+                .specular = properties.specular,
             },
             .attenuation = {
-                .constant = light->attenuation.constant,
-                .linear = light->attenuation.linear,
-                .quadratic = light->attenuation.quadratic,
+                .constant = attenuation.constant,
+                .linear = attenuation.linear,
+                .quadratic = attenuation.quadratic,
             },
         };
 
@@ -505,23 +420,24 @@ auto Renderer::upload_spot_lights_data() -> void
     u32 offset = 0;
     offset += renderer->_spot_lights_ssbo.buffer_data(spot_lights_ssbo_data);
 
-    for (const auto& light : renderer->_spot_lights)
+    for (const auto& [position, direction, inner_cutoff_cosine, outer_cutoff_cosine, properties, attenuation] :
+         renderer->_spot_lights)
     {
-        SpotLightData data = {
-            .position = light->position,
-            .direction = light->direction,
-            .inner_cutoff = light->inner_cutoff,
-            .outer_cutoff = light->outer_cutoff,
+        SpotLightShaderData data = {
+            .position = position,
+            .direction = direction,
+            .inner_cutoff_cosine = inner_cutoff_cosine,
+            .outer_cutoff_cosine = outer_cutoff_cosine,
             .properties = {
-                .color = light->properties.color,
-                .ambient = light->properties.ambient,
-                .diffuse = light->properties.diffuse,
-                .specular = light->properties.specular,
+                .color = properties.color,
+                .ambient = properties.ambient,
+                .diffuse = properties.diffuse,
+                .specular = properties.specular,
             },
             .attenuation = {
-                .constant = light->attenuation.constant,
-                .linear = light->attenuation.linear,
-                .quadratic = light->attenuation.quadratic,
+                .constant = attenuation.constant,
+                .linear = attenuation.linear,
+                .quadratic = attenuation.quadratic,
             },
         };
 
@@ -538,10 +454,10 @@ auto Renderer::upload_ambient_lights_data() -> void
     u32 offset = 0;
     offset += renderer->_ambient_lights_ssbo.buffer_data(ambient_lights_ssbo_data);
 
-    for (const auto& light : renderer->_ambient_lights)
+    for (const auto& [ambient] : renderer->_ambient_lights)
     {
-        AmbientLightData data = {
-            .ambient = light->ambient,
+        AmbientLightShaderData data = {
+            .ambient = ambient,
         };
 
         offset += renderer->_ambient_lights_ssbo.buffer_data(data, offset);

@@ -17,7 +17,7 @@ namespace zth {
 
 using GlslBool = gl::GlslBool;
 
-struct LightPropertiesData
+struct LightPropertiesShaderData
 {
     ZTH_SSBO_FIELD(glm::vec3, color);
     ZTH_SSBO_FIELD(glm::vec3, ambient);
@@ -25,7 +25,7 @@ struct LightPropertiesData
     ZTH_SSBO_FIELD(glm::vec3, specular);
 };
 
-struct LightAttenuationData
+struct LightAttenuationShaderData
 {
     ZTH_SSBO_FIELD(GLfloat, constant);
     ZTH_SSBO_FIELD(GLfloat, linear);
@@ -38,10 +38,10 @@ struct CameraUboData
     ZTH_UBO_FIELD(glm::vec3, camera_position);
 };
 
-struct DirectionalLightData
+struct DirectionalLightShaderData
 {
     ZTH_SSBO_FIELD(glm::vec3, direction);
-    ZTH_SSBO_FIELD(LightPropertiesData, properties);
+    ZTH_SSBO_FIELD(LightPropertiesShaderData, properties);
 };
 
 struct DirectionalLightsSsboData
@@ -51,11 +51,11 @@ struct DirectionalLightsSsboData
     // here goes a variable-length array of DirectionalLightData (aligned at 16 bytes)
 };
 
-struct PointLightData
+struct PointLightShaderData
 {
     ZTH_SSBO_FIELD(glm::vec3, position);
-    ZTH_SSBO_FIELD(LightPropertiesData, properties);
-    ZTH_SSBO_FIELD(LightAttenuationData, attenuation);
+    ZTH_SSBO_FIELD(LightPropertiesShaderData, properties);
+    ZTH_SSBO_FIELD(LightAttenuationShaderData, attenuation);
 };
 
 struct PointLightsSsboData
@@ -65,14 +65,14 @@ struct PointLightsSsboData
     // here goes a variable-length array of PointLightData (aligned at 16 bytes)
 };
 
-struct SpotLightData
+struct SpotLightShaderData
 {
     ZTH_SSBO_FIELD(glm::vec3, position);
     ZTH_SSBO_FIELD(glm::vec3, direction);
-    ZTH_SSBO_FIELD(GLfloat, inner_cutoff);
-    ZTH_SSBO_FIELD(GLfloat, outer_cutoff);
-    ZTH_SSBO_FIELD(LightPropertiesData, properties);
-    ZTH_SSBO_FIELD(LightAttenuationData, attenuation);
+    ZTH_SSBO_FIELD(GLfloat, inner_cutoff_cosine);
+    ZTH_SSBO_FIELD(GLfloat, outer_cutoff_cosine);
+    ZTH_SSBO_FIELD(LightPropertiesShaderData, properties);
+    ZTH_SSBO_FIELD(LightAttenuationShaderData, attenuation);
 };
 
 struct SpotLightsSsboData
@@ -82,7 +82,7 @@ struct SpotLightsSsboData
     // here goes a variable-length array of SpotLightData (aligned at 16 bytes)
 };
 
-struct AmbientLightData
+struct AmbientLightShaderData
 {
     ZTH_SSBO_FIELD(glm::vec3, ambient);
 };

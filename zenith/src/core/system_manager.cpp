@@ -62,7 +62,7 @@ auto SystemManager::init_systems(const ApplicationSpec& spec) -> void
     }
 }
 
-auto SystemManager::on_event(const Event& event) -> void
+auto SystemManager::dispatch_event(const Event& event) -> void
 {
     switch (event.category())
     {
@@ -75,20 +75,20 @@ auto SystemManager::on_event(const Event& event) -> void
         break;
     }
 
-    SceneManager::on_event(event);
+    SceneManager::dispatch_event(event);
 }
 
-auto SystemManager::on_update() -> void
+auto SystemManager::update() -> void
 {
     // Start ImGui's next frame before updating other systems.
-    ImGuiRenderer::on_update();
+    ImGuiRenderer::update();
 
     // Clear temporary storage before updating other systems.
-    TemporaryStorage::on_update();
+    TemporaryStorage::update();
 
-    Time::on_update();
-    Input::on_update();
-    SceneManager::on_update();
+    Time::update();
+    Input::update();
+    SceneManager::update();
 }
 
 auto SystemManager::on_render() -> void

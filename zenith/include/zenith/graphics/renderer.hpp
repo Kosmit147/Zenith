@@ -64,9 +64,11 @@ public:
     static constexpr u32 ambient_lights_ssbo_binding_point = 3;
 
     static constexpr usize initial_directional_lights_ssbo_size =
-        sizeof(DirectionalLightsSsboData) + sizeof(DirectionalLightData) * 3;
-    static constexpr usize initial_point_lights_ssbo_size = sizeof(PointLightsSsboData) + sizeof(PointLightData) * 10;
-    static constexpr usize initial_spot_lights_ssbo_size = sizeof(SpotLightsSsboData) + sizeof(SpotLightData) * 10;
+        sizeof(DirectionalLightsSsboData) + sizeof(DirectionalLightShaderData) * 3;
+    static constexpr usize initial_point_lights_ssbo_size =
+        sizeof(PointLightsSsboData) + sizeof(PointLightShaderData) * 10;
+    static constexpr usize initial_spot_lights_ssbo_size =
+        sizeof(SpotLightsSsboData) + sizeof(SpotLightShaderData) * 10;
 
     static constexpr usize initial_instance_buffer_size = sizeof(InstanceVertex) * 1000;
 
@@ -75,57 +77,39 @@ public:
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 
-    static auto clear_scene_data() -> void;
-
     static auto set_wireframe_mode(bool enabled) -> void;
     static auto toggle_wireframe_mode() -> void;
 
     static auto set_clear_color(glm::vec4 color) -> void;
     static auto clear() -> void;
 
+    static auto begin_scene() -> void;
+    static auto end_scene() -> void;
+
     static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
 
-    static auto add_directional_light(std::shared_ptr<const DirectionalLight> light) -> void;
-    static auto remove_directional_light(usize index) -> void;
-    static auto clear_directional_lights() -> void;
-    static auto add_point_light(std::shared_ptr<const PointLight> light) -> void;
-    static auto remove_point_light(usize index) -> void;
-    static auto clear_point_lights() -> void;
-    static auto add_spot_light(std::shared_ptr<const SpotLight> light) -> void;
-    static auto remove_spot_light(usize index) -> void;
-    static auto clear_spot_lights() -> void;
-    static auto add_ambient_light(std::shared_ptr<const AmbientLight> light) -> void;
-    static auto remove_ambient_light(usize index) -> void;
-    static auto clear_ambient_lights() -> void;
+    static auto submit_directional_light(const DirectionalLightRenderData& data) -> void;
+    static auto submit_point_light(const PointLightRenderData& data) -> void;
+    static auto submit_spot_light(const SpotLightRenderData& data) -> void;
+    static auto submit_ambient_light(const AmbientLightRenderData& data) -> void;
 
-    static auto draw(const Shape3D& shape, const Material& material) -> void;
-    static auto draw(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
-    static auto draw(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void;
+    // The submitted references must all be valid until the renderer finishes rendering the scene.
+    static auto submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
+    // The submitted references must all be valid until the renderer finishes rendering the scene.
+    static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
+        -> void;
 
-    static auto render() -> void;
-
-    static auto draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void;
-    static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void;
-
+    [[nodiscard]] static auto camera() -> const PerspectiveCamera&;
     [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
-
-    [[nodiscard]] static auto directional_light_count() -> usize;
-    [[nodiscard]] static auto directional_lights() -> Vector<std::shared_ptr<const DirectionalLight>>&;
-    [[nodiscard]] static auto point_light_count() -> usize;
-    [[nodiscard]] static auto point_lights() -> Vector<std::shared_ptr<const PointLight>>&;
-    [[nodiscard]] static auto spot_light_count() -> usize;
-    [[nodiscard]] static auto spot_lights() -> Vector<std::shared_ptr<const SpotLight>>&;
-    [[nodiscard]] static auto ambient_light_count() -> usize;
-    [[nodiscard]] static auto ambient_lights() -> Vector<std::shared_ptr<const AmbientLight>>&;
 
 private:
     std::shared_ptr<const PerspectiveCamera> _camera =
         std::make_shared<PerspectiveCamera>(glm::vec3{ 0.0f }, math::world_forward, 1.0f);
 
-    Vector<std::shared_ptr<const DirectionalLight>> _directional_lights;
-    Vector<std::shared_ptr<const PointLight>> _point_lights;
-    Vector<std::shared_ptr<const SpotLight>> _spot_lights;
-    Vector<std::shared_ptr<const AmbientLight>> _ambient_lights;
+    Vector<DirectionalLightRenderData> _directional_lights;
+    Vector<PointLightRenderData> _point_lights;
+    Vector<SpotLightRenderData> _spot_lights;
+    Vector<AmbientLightRenderData> _ambient_lights;
 
     gl::UniformBuffer _camera_ubo =
         gl::UniformBuffer::create_static_with_size(sizeof(CameraUboData), camera_ubo_binding_point);
@@ -157,6 +141,11 @@ private:
 
 private:
     explicit Renderer() = default;
+
+    static auto render() -> void;
+
+    static auto draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void;
+    static auto draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void;
 
     static auto batch_draw_commands() -> void;
     static auto render_batch(const RenderBatch& batch) -> void;

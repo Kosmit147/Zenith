@@ -16,7 +16,7 @@ constinit const BufferUsage BufferUsage::stream_copy{ BufferAccessFrequency::Str
 constinit const BufferUsage BufferUsage::static_copy{ BufferAccessFrequency::Static, BufferAccessType::Copy };
 constinit const BufferUsage BufferUsage::dynamic_copy{ BufferAccessFrequency::Dynamic, BufferAccessType::Copy };
 
-// --------------------------- GlBuffer ---------------------------
+// --------------------------- Buffer ---------------------------
 
 Buffer::Buffer()
 {

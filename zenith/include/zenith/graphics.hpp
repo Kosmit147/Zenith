@@ -14,5 +14,4 @@
 #include "graphics/shader_data.hpp"
 #include "graphics/shader_preprocessor.hpp"
 #include "graphics/shaders.hpp"
-#include "graphics/shape.hpp"
 #include "graphics/vertex.hpp"
