@@ -8,7 +8,8 @@ public:
     ~Sandbox() override = default;
 
 private:
-    zth::debug::DebugToolsUi _debug_tools_ui;
+    // @todo: Move to debug layer.
+    zth::debug::DebugToolsPanel _debug_tools_panel;
 
 private:
     auto on_update() -> void override;

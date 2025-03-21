@@ -10,7 +10,7 @@ namespace zth::materials {
 
 struct MaterialList
 {
-    // @volatile: Keep this list consistent with the material_names array.
+    // @volatile: Keep in sync with material_names array.
     // @volatile: Make sure to update materials_start and materials_end after modifying this list.
 
     Material plain;
@@ -54,6 +54,8 @@ struct MaterialList
 };
 
 constexpr std::array material_names = {
+    // @volatile: Keep in sync with MaterialList. The order must be the same for UI to work properly.
+
     "plain",        "emerald",       "jade",         "obsidian",      "pearl",          "ruby",         "turquoise",
     "brass",        "bronze",        "chrome",       "copper",        "gold",           "silver",       "black_plastic",
     "cyan_plastic", "green_plastic", "red_plastic",  "white_plastic", "yellow_plastic", "black_rubber", "cyan_rubber",

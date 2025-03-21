@@ -1,7 +1,7 @@
 #include "zenith/system/application.hpp"
 
+#include "zenith/core/scene_manager.hpp"
 #include "zenith/core/system_manager.hpp"
-#include "zenith/graphics/renderer.hpp"
 #include "zenith/system/event_queue.hpp"
 
 namespace zth {
@@ -25,33 +25,31 @@ auto Application::run() -> void
     while (!Window::should_close())
     {
         while (auto event = EventQueue::pop())
-            handle_event(*event);
+            dispatch_event(*event);
 
-        handle_update();
-
-        Renderer::clear();
-        Renderer::render();
-        handle_render();
+        update();
+        render();
 
         Window::swap_buffers();
         Window::poll_events();
     }
 }
 
-auto Application::handle_event(const Event& event) -> void
+auto Application::dispatch_event(const Event& event) -> void
 {
-    SystemManager::on_event(event);
+    SystemManager::dispatch_event(event);
     on_event(event);
 }
 
-auto Application::handle_update() -> void
+auto Application::update() -> void
 {
-    SystemManager::on_update();
+    SystemManager::update();
     on_update();
 }
 
-auto Application::handle_render() -> void
+auto Application::render() -> void
 {
+    SceneManager::render_scene();
     SystemManager::on_render();
     on_render();
 }

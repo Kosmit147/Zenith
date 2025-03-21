@@ -11,8 +11,9 @@ public:
     ~Testbed() override = default;
 
 private:
-    zth::debug::DebugToolsUi _debug_tools_ui;
-    zth::debug::ScenePickerUi _scene_picker_ui;
+    // @todo: Move to debug layer.
+    zth::debug::DebugToolsPanel _debug_tools_panel;
+    zth::debug::ScenePicker _scene_picker;
 
 private:
     auto on_update() -> void override;
@@ -20,7 +21,5 @@ private:
 
     auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 
-    auto log_event(const zth::Event& event) -> void;
-
-    auto update_ui() -> void;
+    auto draw_ui() -> void;
 };

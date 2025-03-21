@@ -61,7 +61,7 @@ template<typename T> struct CustomAllocator
 
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 {
-    if (new_size_bytes == 0)
+    if (new_size_bytes == 0) [[unlikely]]
     {
         deallocate(ptr);
         return;

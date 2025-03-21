@@ -16,9 +16,39 @@ constexpr auto reference_vector = world_forward;
 
 } // namespace
 
+auto EulerAngles::operator+(const EulerAngles& other) const -> EulerAngles
+{
+    return { .pitch = pitch + other.pitch, .yaw = yaw + other.yaw, .roll = roll + other.roll };
+}
+
+auto EulerAngles::operator-(const EulerAngles& other) const -> EulerAngles
+{
+    return { .pitch = pitch - other.pitch, .yaw = yaw - other.yaw, .roll = roll - other.roll };
+}
+
+auto EulerAngles::operator+=(const EulerAngles& other) -> EulerAngles&
+{
+    return *this = *this + other;
+}
+
+auto EulerAngles::operator-=(const EulerAngles& other) -> EulerAngles&
+{
+    return *this = *this - other;
+}
+
+auto EulerAngles::operator-() const -> EulerAngles
+{
+    return { .pitch = -pitch, .yaw = -yaw, .roll = -roll };
+}
+
 auto to_quaternion(float angle, glm::vec3 axis) -> glm::quat
 {
     return glm::rotate(glm::identity<glm::quat>(), angle, axis);
+}
+
+auto to_quaternion(glm::vec3 direction) -> glm::quat
+{
+    return glm::rotation(reference_vector, direction);
 }
 
 auto to_quaternion(Rotation rotation) -> glm::quat
@@ -33,8 +63,8 @@ auto to_quaternion(EulerAngles angles) -> glm::quat
 
 auto to_rotation(glm::vec3 direction) -> Rotation
 {
-    // @robustness: handle cases where direction vector is opposite to the reference vector
-    // in that case the resulting axis vector is (0, 0, 0)
+    // @robustness: Handle cases where direction vector is opposite to the reference vector. In that case the resulting
+    // axis vector is (0, 0, 0).
     auto axis = glm::cross(reference_vector, direction);
     auto angle = glm::acos(glm::dot(reference_vector, direction));
     return Rotation{ .angle = angle, .axis = axis };
@@ -56,6 +86,17 @@ auto to_direction(EulerAngles angles) -> glm::vec3
     return glm::normalize(glm::vec3{ x, y, z });
 }
 
+auto to_euler_angles(glm::vec3 direction) -> EulerAngles
+{
+    auto [x, y, z] = direction;
+
+    return EulerAngles{
+        .pitch = glm::asin(y),
+        .yaw = std::atan2(z, x),
+        .roll = 0.0f, // A direction vector does not define roll.
+    };
+}
+
 auto to_euler_angles(glm::quat rotation) -> EulerAngles
 {
     auto [x, y, z] = glm::eulerAngles(rotation);
@@ -64,17 +105,6 @@ auto to_euler_angles(glm::quat rotation) -> EulerAngles
         .pitch = x,
         .yaw = y,
         .roll = z,
-    };
-}
-
-auto to_euler_angles(glm::vec3 direction) -> EulerAngles
-{
-    auto [x, y, z] = direction;
-
-    return EulerAngles{
-        .pitch = glm::asin(y),
-        .yaw = std::atan2(z, x),
-        .roll = 0.0f, // a direction vector does not define roll
     };
 }
 

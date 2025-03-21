@@ -9,12 +9,14 @@ add_library(imgui STATIC
 	"../../dependencies/imgui/imgui_widgets.cpp"
 	"../../dependencies/imgui/backends/imgui_impl_glfw.cpp"
 	"../../dependencies/imgui/backends/imgui_impl_opengl3.cpp"
+	"../../dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
 
 	"../../dependencies/ImGuizmo/ImGuizmo.cpp"
 )
 
 target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/imgui")
 target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/imgui/backends")
+target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/imgui/misc/cpp")
 target_include_directories(imgui SYSTEM PUBLIC "../../dependencies/ImGuizmo")
 
 target_compile_features(imgui PRIVATE cxx_std_23)

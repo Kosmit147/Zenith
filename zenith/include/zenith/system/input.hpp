@@ -20,7 +20,7 @@ public:
     Input() = delete;
 
     static auto init() -> void;
-    static auto on_update() -> void;
+    static auto update() -> void;
     static auto on_input_event(const Event& event) -> void;
     static auto shut_down() -> void;
 

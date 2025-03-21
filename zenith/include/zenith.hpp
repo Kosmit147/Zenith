@@ -4,6 +4,7 @@
 
 #include "zenith/core.hpp"
 #include "zenith/debug.hpp"
+#include "zenith/ecs.hpp"
 #include "zenith/embedded.hpp"
 #include "zenith/fs.hpp"
 #include "zenith/gl.hpp"

@@ -18,7 +18,7 @@ auto TemporaryStorage::init() -> void
     ZTH_CORE_INFO("Temporary storage initialized.");
 }
 
-auto TemporaryStorage::on_update() -> void
+auto TemporaryStorage::update() -> void
 {
     reset();
 }
@@ -51,7 +51,7 @@ auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
     ZTH_ASSERT(_buffer_ptr != nullptr);
     ZTH_ASSERT(math::is_power_of_2(alignment));
 
-    if (size_bytes == 0)
+    if (size_bytes == 0) [[unlikely]]
         return nullptr;
 
     memory::align(_buffer_ptr, alignment);
@@ -62,7 +62,7 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
 {
     ZTH_ASSERT(_buffer_ptr != nullptr);
 
-    if (size_bytes == 0)
+    if (size_bytes == 0) [[unlikely]]
         return nullptr;
 
     auto result = _buffer_ptr;
@@ -71,7 +71,7 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
     // Make sure _buffer_ptr didn't overflow.
     ZTH_ASSERT(_buffer_ptr >= begin());
 
-    if (_buffer_ptr > end())
+    if (_buffer_ptr > end()) [[unlikely]]
     {
         _buffer_ptr = end();
         return allocate_if_overflowed(size_bytes);

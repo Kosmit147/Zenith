@@ -25,7 +25,7 @@ public:
     TemporaryStorage() = delete;
 
     static auto init() -> void;
-    static auto on_update() -> void;
+    static auto update() -> void;
     static auto shut_down() -> void;
 
     static auto reset() -> void;

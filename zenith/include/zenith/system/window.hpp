@@ -48,7 +48,7 @@ public:
 
     [[nodiscard]] static auto should_close() -> bool;
 
-    // returns the time since window was created, in seconds
+    // Returns the time since the window was created, in seconds.
     [[nodiscard]] static auto time() -> double;
 
     static auto set_active() -> void;
@@ -60,8 +60,6 @@ public:
     static auto set_frame_rate_limit(u32 limit) -> void;
     static auto disable_frame_rate_limit() -> void;
     static auto set_cursor_enabled(bool enabled) -> void;
-    static auto enable_cursor() -> void;
-    static auto disable_cursor() -> void;
 
     [[nodiscard]] static auto glfw_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;

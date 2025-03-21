@@ -56,7 +56,7 @@ private:
     float _yaw;
     float _roll;
 
-    // these three vectors represent the camera's coordinate system
+    // These three vectors represent the camera's coordinate system.
     glm::vec3 _forward;
     glm::vec3 _right;
     glm::vec3 _up;

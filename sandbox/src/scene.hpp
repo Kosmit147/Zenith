@@ -8,7 +8,8 @@ public:
     ~Scene() override = default;
 
 private:
-    zth::CubeShape _cube;
+    zth::Entity _cube = create_entity("Cube");
+    zth::Entity _light = create_entity("Light");
     zth::gl::Texture2D _cube_texture;
     zth::Material _cube_material;
     std::shared_ptr<zth::PerspectiveCamera> _camera;

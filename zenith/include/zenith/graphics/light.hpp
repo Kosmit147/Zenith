@@ -1,11 +1,30 @@
 #pragma once
 
+#include <array>
+
 #include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
 
+#include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/math/vector.hpp"
 
 namespace zth {
+
+enum class LightType : u8
+{
+    Directional,
+    Point,
+    Spot,
+    Ambient,
+};
+
+constexpr std::array light_type_enumerations = {
+    LightType::Directional,
+    LightType::Point,
+    LightType::Spot,
+    LightType::Ambient,
+};
 
 struct LightProperties
 {
@@ -15,7 +34,8 @@ struct LightProperties
     glm::vec3 specular{ 1.0f };
 };
 
-// example light attenuation values:
+// ### Example light attenuation values:
+//
 // Distance     Constant    Linear      Quadratic
 // 7	        1.0	    0.7	        1.8
 // 13	        1.0	    0.35	0.44
@@ -39,23 +59,19 @@ struct LightAttenuation
 
 struct DirectionalLight
 {
-    glm::vec3 direction{ math::world_down };
     LightProperties properties{};
 };
 
 struct PointLight
 {
-    glm::vec3 position{ 0.0f };
     LightProperties properties{};
     LightAttenuation attenuation{};
 };
 
 struct SpotLight
 {
-    glm::vec3 position{ 0.0f };
-    glm::vec3 direction{ math::world_down };
-    float inner_cutoff = glm::cos(glm::radians(12.5f)); // cos of the inner cone angle
-    float outer_cutoff = glm::cos(glm::radians(15.0f)); // cos of the outer cone angle
+    float inner_cutoff_cosine = glm::cos(glm::radians(12.5f)); // Cosine of the inner cone angle.
+    float outer_cutoff_cosine = glm::cos(glm::radians(15.0f)); // Cosine of the outer cone angle.
     LightProperties properties{};
     LightAttenuation attenuation{};
 };
@@ -65,4 +81,42 @@ struct AmbientLight
     glm::vec3 ambient{ 0.1f };
 };
 
+struct DirectionalLightRenderData
+{
+    glm::vec3 direction{ math::world_down };
+    LightProperties properties{};
+};
+
+struct PointLightRenderData
+{
+    glm::vec3 position{ 0.0f };
+    LightProperties properties{};
+    LightAttenuation attenuation{};
+};
+
+struct SpotLightRenderData
+{
+    glm::vec3 position{ 0.0f };
+    glm::vec3 direction{ math::world_down };
+    float inner_cutoff_cosine = glm::cos(glm::radians(12.5f)); // Cosine of the inner cone angle.
+    float outer_cutoff_cosine = glm::cos(glm::radians(15.0f)); // Cosine of the outer cone angle.
+    LightProperties properties{};
+    LightAttenuation attenuation{};
+};
+
+struct AmbientLightRenderData
+{
+    glm::vec3 ambient{ 0.1f };
+};
+
+[[nodiscard]] auto to_string(LightType light_type) -> const char*;
+
 } // namespace zth
+
+ZTH_DECLARE_FORMATTER(zth::LightType);
+ZTH_DECLARE_FORMATTER(zth::LightProperties);
+ZTH_DECLARE_FORMATTER(zth::LightAttenuation);
+ZTH_DECLARE_FORMATTER(zth::DirectionalLight);
+ZTH_DECLARE_FORMATTER(zth::PointLight);
+ZTH_DECLARE_FORMATTER(zth::SpotLight);
+ZTH_DECLARE_FORMATTER(zth::AmbientLight);

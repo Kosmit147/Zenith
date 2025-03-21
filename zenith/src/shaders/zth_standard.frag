@@ -41,8 +41,8 @@ struct SpotLight
 {
     vec3 position;
     vec3 direction;
-    float inner_cutoff;
-    float outer_cutoff;
+    float inner_cutoff_cosine;
+    float outer_cutoff_cosine;
     LightProperties properties;
     LightAttenuation attenuation;
 };
@@ -127,11 +127,12 @@ Light convert_point_light(PointLight point_light)
 
 // dist is the distance from frag position to spot light.
 // angle is the dot product of the direction from spot light to frag position and spot light direction.
-Light convert_spot_light(SpotLight spot_light, float dist, float angle)
+Light convert_spot_light(SpotLight spot_light, float dist, float angle_cosine)
 {
     float strength = calc_strength(spot_light.attenuation, dist);
 
-    float intensity = (angle - spot_light.outer_cutoff) / (spot_light.inner_cutoff - spot_light.outer_cutoff);
+    float intensity = (angle_cosine - spot_light.outer_cutoff_cosine) /
+        (spot_light.inner_cutoff_cosine - spot_light.outer_cutoff_cosine);
     intensity = clamp(intensity, 0.0, 1.0);
     strength *= intensity;
 
@@ -203,11 +204,11 @@ vec3 calc_spot_lights(vec3 normal, vec3 view_direction)
 	    vec3 diff_from_spot_light = Position - spot_light.position;
 	    float distance_from_spot_light = length(diff_from_spot_light);
         vec3 normalized_diff = diff_from_spot_light / distance_from_spot_light;
-	    float angle = dot(spot_light.direction, normalized_diff);
+	    float angle_cosine = dot(spot_light.direction, normalized_diff);
 
-        if (angle > spot_light.outer_cutoff)
+        if (angle_cosine > spot_light.outer_cutoff_cosine)
         {
-            Light light = convert_spot_light(spot_light, distance_from_spot_light, angle);
+            Light light = convert_spot_light(spot_light, distance_from_spot_light, angle_cosine);
             result += calc_light(light, normal, view_direction);
         }
     }

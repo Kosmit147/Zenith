@@ -7,10 +7,12 @@ add_library(
 	"src/core/camera_controller.cpp"
 	"src/core/exception.cpp"
 	"src/core/random.cpp"
+	"src/core/scene.cpp"
 	"src/core/scene_manager.cpp"
 	"src/core/system_manager.cpp"
-	"src/core/transform.cpp"
 	"src/debug/ui/ui.cpp"
+	"src/ecs/components.cpp"
+	"src/ecs/entity.cpp"
 	"src/embedded/shaders.cpp"
 	"src/fs/file.cpp"
 	"src/gl/buffer.cpp"
@@ -21,13 +23,14 @@ add_library(
 	"src/gl/vertex_layout.cpp"
 	"src/graphics/camera.cpp"
 	"src/graphics/imgui_renderer.cpp"
+	"src/graphics/light.cpp"
 	"src/graphics/materials.cpp"
 	"src/graphics/mesh.cpp"
 	"src/graphics/meshes.cpp"
 	"src/graphics/renderer.cpp"
 	"src/graphics/shaders.cpp"
 	"src/graphics/shader_preprocessor.cpp"
-	"src/graphics/shape.cpp"
+	"src/log/formatters.cpp"
 	"src/log/logger.cpp"
 	"src/math/matrix.cpp"
 	"src/math/quaternion.cpp"
@@ -66,6 +69,7 @@ target_compile_definitions(zenith_core PRIVATE ${ZTH_COMPILE_DEFINITIONS})
 
 add_subdirectory("imgui")
 
+target_link_libraries(zenith_core PUBLIC EnTT)
 target_link_libraries(zenith_core PUBLIC glad)
 target_link_libraries(zenith_core PUBLIC glfw)
 target_link_libraries(zenith_core PUBLIC glm)

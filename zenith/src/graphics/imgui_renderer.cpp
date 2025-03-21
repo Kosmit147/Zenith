@@ -25,7 +25,7 @@ auto ImGuiRenderer::init() -> void
     ZTH_CORE_INFO("ImGui renderer initialized.");
 }
 
-auto ImGuiRenderer::on_update() -> void
+auto ImGuiRenderer::update() -> void
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();

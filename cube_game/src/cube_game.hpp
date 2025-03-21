@@ -8,8 +8,12 @@ public:
     ~CubeGame() override = default;
 
 private:
+    // @todo: Move to debug layer.
+    zth::debug::DebugToolsPanel _debug_tools_panel;
+
+private:
     auto on_update() -> void override;
     auto on_event(const zth::Event& event) -> void override;
 
-    static auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
+    auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 };

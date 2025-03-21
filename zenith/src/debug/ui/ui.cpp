@@ -1,18 +1,22 @@
 #include "zenith/debug/ui/ui.hpp"
 
-#include <glm/geometric.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
-#include <spdlog/fmt/fmt.h>
+#include <glm/vec4.hpp>
+#include <imgui_stdlib.h>
 
+#include "zenith/core/assert.hpp"
 #include "zenith/core/scene_manager.hpp"
-#include "zenith/core/transform.hpp"
+#include "zenith/ecs/components.hpp"
 #include "zenith/graphics/light.hpp"
 #include "zenith/graphics/material.hpp"
 #include "zenith/graphics/materials.hpp"
 #include "zenith/graphics/renderer.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/math/quaternion.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/window.hpp"
 
@@ -20,19 +24,363 @@ namespace zth::debug {
 
 namespace {
 
-constexpr auto slider_drag_speed = 0.01f;
+constexpr auto default_drag_speed = 0.01f;
+
+constexpr auto light_ambient_drag_speed = default_drag_speed * 0.1f;
+constexpr auto material_shininess_drag_speed = default_drag_speed * 10.0f;
+constexpr auto light_attenuation_drag_speed = default_drag_speed * 0.01f;
+
+auto drag_float(const char* label, float& value, float drag_speed = default_drag_speed) -> bool
+{
+    return ImGui::DragFloat(label, &value, drag_speed);
+}
+
+auto drag_float_2(const char* label, float values[2], float drag_speed = default_drag_speed) -> bool
+{
+    return ImGui::DragFloat2(label, values, drag_speed);
+}
+
+auto drag_float_3(const char* label, float values[3], float drag_speed = default_drag_speed) -> bool
+{
+    return ImGui::DragFloat3(label, values, drag_speed);
+}
+
+auto drag_float_4(const char* label, float values[4], float drag_speed = default_drag_speed) -> bool
+{
+    return ImGui::DragFloat4(label, values, drag_speed);
+}
+
+auto drag_vec(const char* label, glm::vec2& vec, float drag_speed = default_drag_speed) -> bool
+{
+    return drag_float_2(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_vec(const char* label, glm::vec3& vec, float drag_speed = default_drag_speed) -> bool
+{
+    return drag_float_3(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_vec(const char* label, glm::vec4& vec, float drag_speed = default_drag_speed) -> bool
+{
+    return drag_float_4(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto slide_float(const char* label, float& value, float min = 0.0f, float max = 1.0f) -> bool
+{
+    return ImGui::SliderFloat(label, &value, min, max);
+}
+
+auto slide_float_2(const char* label, float values[2], float min = 0.0f, float max = 1.0f) -> bool
+{
+    return ImGui::SliderFloat2(label, values, min, max);
+}
+
+auto slide_float_3(const char* label, float values[3], float min = 0.0f, float max = 1.0f) -> bool
+{
+    return ImGui::SliderFloat3(label, values, min, max);
+}
+
+auto slide_float_4(const char* label, float values[4], float min = 0.0f, float max = 1.0f) -> bool
+{
+    return ImGui::SliderFloat4(label, values, min, max);
+}
+
+auto slide_vec(const char* label, glm::vec2& vec, float min = 0.0f, float max = 1.0f) -> bool
+{
+    return slide_float_2(label, glm::value_ptr(vec), min, max);
+}
+
+auto slide_vec(const char* label, glm::vec3& vec, float min = 0.0f, float max = 1.0f) -> bool
+{
+    return slide_float_3(label, glm::value_ptr(vec), min, max);
+}
+
+auto slide_vec(const char* label, glm::vec4& vec, float min = 0.0f, float max = 1.0f) -> bool
+{
+    return slide_float_4(label, glm::value_ptr(vec), min, max);
+}
+
+auto edit_color(const char* label, glm::vec3& color) -> bool
+{
+    return ImGui::ColorEdit3(label, glm::value_ptr(color));
+}
+
+auto edit_color(const char* label, glm::vec4& color) -> bool
+{
+    return ImGui::ColorEdit4(label, glm::value_ptr(color));
+}
+
+auto pick_color(const char* label, glm::vec3& color) -> bool
+{
+    return ImGui::ColorPicker3(label, glm::value_ptr(color));
+}
+
+auto pick_color(const char* label, glm::vec4& color) -> bool
+{
+    return ImGui::ColorPicker4(label, glm::value_ptr(color));
+}
+
+auto slide_angle(const char* label, float& angle_radians, float degrees_min = 0.0f, float degrees_max = 360.0f) -> bool
+{
+    return ImGui::SliderAngle(label, &angle_radians, degrees_min, degrees_max);
+}
+
+auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed = default_drag_speed) -> bool
+{
+    float values[3] = {
+        angles.pitch,
+        angles.yaw,
+        angles.roll,
+    };
+
+    if (drag_float_3(label, values, drag_speed))
+    {
+        angles.pitch = values[0];
+        angles.yaw = values[1];
+        angles.roll = values[2];
+        return true;
+    }
+
+    return false;
+}
+
+auto edit_quat(const char* label, glm::quat& quaternion) -> bool
+{
+    return slide_float_4(label, glm::value_ptr(quaternion));
+}
+
+auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
+{
+    const auto original_angles = math::to_euler_angles(quaternion);
+    auto maybe_modified_angles = original_angles;
+
+    if (drag_euler_angles(label, maybe_modified_angles))
+    {
+        auto change = maybe_modified_angles - original_angles;
+        quaternion *= math::to_quaternion(change);
+        return true;
+    }
+
+    return false;
+}
+
+auto edit_tag(TagComponent& tag) -> void
+{
+    ImGui::InputText("Tag", &tag.tag);
+}
+
+auto edit_transform(TransformComponent& transform) -> void
+{
+    ImGui::SeparatorText("Transform");
+
+    auto translation = transform.translation();
+
+    if (drag_vec("Translation", translation))
+        transform.set_translation(translation);
+
+    auto rotation = transform.rotation();
+
+    if (edit_quat_as_euler_angles("Rotation", rotation))
+        transform.set_rotation(rotation);
+
+    auto scale = transform.scale();
+
+    if (drag_vec("Scale", scale))
+        transform.set_scale(scale);
+}
+
+auto edit_light_type(LightType& type) -> bool
+{
+    auto value_changed = false;
+
+    auto light_type_selected_idx = std::to_underlying(type);
+
+    if (ImGui::BeginCombo("Type", to_string(light_type_enumerations[light_type_selected_idx])))
+    {
+        for (usize i = 0; i < light_type_enumerations.size(); i++)
+        {
+            const auto is_selected = light_type_selected_idx == i;
+
+            if (ImGui::Selectable(to_string(light_type_enumerations[i]), is_selected))
+            {
+                light_type_selected_idx = static_cast<decltype(light_type_selected_idx)>(i);
+                type = static_cast<LightType>(light_type_selected_idx);
+                value_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return value_changed;
+}
+
+auto edit_light_properties(LightProperties& properties) -> void
+{
+    edit_color("Color", properties.color);
+    drag_vec("Ambient", properties.ambient, light_ambient_drag_speed);
+    drag_vec("Diffuse", properties.diffuse);
+    drag_vec("Specular", properties.specular);
+}
+
+auto edit_light_attenuation(LightAttenuation& attenuation) -> void
+{
+    drag_float("Constant", attenuation.constant, light_attenuation_drag_speed);
+    drag_float("Linear", attenuation.linear, light_attenuation_drag_speed);
+    drag_float("Quadratic", attenuation.quadratic, light_attenuation_drag_speed);
+}
+
+auto edit_directional_light(DirectionalLight& light) -> void
+{
+    edit_light_properties(light.properties);
+}
+
+auto edit_point_light(PointLight& light) -> void
+{
+    edit_light_properties(light.properties);
+    edit_light_attenuation(light.attenuation);
+}
+
+auto edit_spot_light(SpotLight& light) -> void
+{
+    float inner_cutoff = glm::acos(light.inner_cutoff_cosine);
+    float outer_cutoff = glm::acos(light.outer_cutoff_cosine);
+
+    if (slide_angle("Inner Cutoff", inner_cutoff))
+        light.inner_cutoff_cosine = glm::cos(inner_cutoff);
+
+    if (slide_angle("Outer Cutoff", outer_cutoff))
+        light.outer_cutoff_cosine = glm::cos(outer_cutoff);
+
+    edit_light_properties(light.properties);
+    edit_light_attenuation(light.attenuation);
+}
+
+auto edit_ambient_light(AmbientLight& light) -> void
+{
+    drag_vec("Ambient", light.ambient, light_ambient_drag_speed);
+}
+
+auto edit_light(LightComponent& light) -> void
+{
+    ImGui::SeparatorText("Light");
+
+    auto light_type = light.type();
+
+    if (edit_light_type(light_type))
+        light.set_light(light_type);
+
+    switch (light.type())
+    {
+        using enum LightType;
+    case Directional:
+        edit_directional_light(light.directional_light());
+        break;
+    case Point:
+        edit_point_light(light.point_light());
+        break;
+    case Spot:
+        edit_spot_light(light.spot_light());
+        break;
+    case Ambient:
+        edit_ambient_light(light.ambient_light());
+        break;
+    }
+}
 
 } // namespace
 
-DebugToolsUi::DebugToolsUi(StringView label) : _label(label) {}
-
-auto DebugToolsUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
+auto TransformGizmo::draw(TransformComponent& transform, const PerspectiveCamera& camera) const -> void
 {
-    if (event.key == toggle_wireframe_mode_key)
-        Renderer::toggle_wireframe_mode();
+    ImGuizmo::Enable(true);
+    auto transform_matrix = transform.transform();
+
+    auto& view = camera.view();
+    auto& projection = camera.projection();
+
+    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), operation, mode,
+                             glm::value_ptr(transform_matrix), nullptr, nullptr))
+    {
+        transform.set_transform(transform_matrix);
+    }
 }
 
-auto DebugToolsUi::on_update() -> void
+auto EntityInspectorPanel::draw(entt::entity entity, entt::registry& registry) const -> void
+{
+    ZTH_ASSERT(registry.valid(entity));
+
+    ImGui::Begin("Entity Inspector");
+
+    {
+        // TagComponent and TransformComponent are mandatory.
+
+        auto& tag = registry.get<TagComponent>(entity);
+        edit_tag(tag);
+
+        auto& transform = registry.get<TransformComponent>(entity);
+        edit_transform(transform);
+
+        if (Window::cursor_enabled())
+            gizmo.draw(transform, Renderer::camera());
+    }
+
+    if (registry.any_of<CameraComponent>(entity))
+    {
+        // auto& camera = _registry.get<CameraComponent>(entity);
+        // @todo
+    }
+
+    if (registry.any_of<LightComponent>(entity))
+    {
+        auto& light = registry.get<LightComponent>(entity);
+        edit_light(light);
+    }
+
+    if (registry.any_of<MeshComponent>(entity))
+    {
+        // auto& mesh = _registry.get<MeshComponent>(entity);
+        // @todo
+    }
+
+    if (registry.any_of<MaterialComponent>(entity))
+    {
+        // auto& material = _registry.get<MaterialComponent>(entity);
+        // @todo
+    }
+
+    ImGui::End();
+}
+
+SceneHierarchyPanel::SceneHierarchyPanel(entt::registry& registry) : _registry(registry) {}
+
+auto SceneHierarchyPanel::draw() -> void
+{
+    ImGui::Begin("Scene Hierarchy");
+
+    for (auto entity : _registry.view<entt::entity>())
+    {
+        const auto& tag = _registry.get<const TagComponent>(entity);
+
+        auto label = ZTH_FORMAT("{}##{}", tag.tag, std::to_underlying(entity));
+
+        if (ImGui::Selectable(label.c_str(), _selected_entity == entity))
+            _selected_entity = entity;
+    }
+
+    if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
+        _selected_entity = entt::null;
+    else if (_registry.valid(_selected_entity))
+        inspector.draw(_selected_entity, _registry);
+
+    ImGui::End();
+}
+
+DebugToolsPanel::DebugToolsPanel(StringView label) : _label(label) {}
+
+auto DebugToolsPanel::draw() -> void
 {
     ImGui::Begin(_label.data());
 
@@ -57,6 +405,8 @@ auto DebugToolsUi::on_update() -> void
 
     if (frame_rate_limit_enabled)
     {
+        static_assert(sizeof(int) == sizeof(_frame_rate_limit));
+
         if (ImGui::InputInt("##", reinterpret_cast<int*>(&_frame_rate_limit)))
             Window::set_frame_rate_limit(_frame_rate_limit);
     }
@@ -70,104 +420,15 @@ auto DebugToolsUi::on_update() -> void
     ImGui::End();
 }
 
-TransformUi::TransformUi(Transformable3D& transformable, StringView label)
-    : _label(label), _transformable(transformable)
-{}
-
-auto TransformUi::on_update() -> void
+auto DebugToolsPanel::on_key_pressed_event(const KeyPressedEvent& event) const -> void
 {
-    ImGui::Begin(_label.data());
-
-    auto translation = _transformable.translation();
-
-    if (ImGui::DragFloat3("Translation", reinterpret_cast<float*>(&translation), slider_drag_speed))
-        _transformable.set_translation(translation);
-
-    if (ImGui::SliderAngle("Rotation Angle", &_rotation.angle))
-        _transformable.set_rotation(_rotation);
-
-    if (ImGui::DragFloat3("Rotation Axis", reinterpret_cast<float*>(&_rotation.axis), slider_drag_speed))
-    {
-        _rotation.axis = glm::normalize(_rotation.axis);
-        _transformable.set_rotation(_rotation);
-    }
-
-    auto scale = _transformable.scale();
-
-    if (_uniform_scale)
-    {
-        if (ImGui::DragFloat("Scale", reinterpret_cast<float*>(&scale), slider_drag_speed))
-        {
-            scale = glm::vec3{ scale.x };
-            _transformable.set_scale(scale);
-        }
-    }
-    else
-    {
-        if (ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), slider_drag_speed))
-            _transformable.set_scale(scale);
-    }
-
-    if (ImGui::Checkbox("Uniform Scale", &_uniform_scale))
-    {
-        if (_uniform_scale)
-        {
-            scale = glm::vec3{ scale.x };
-            _transformable.set_scale(scale);
-        }
-    }
-
-    ImGui::End();
+    if (event.key == toggle_wireframe_mode_key)
+        Renderer::toggle_wireframe_mode();
 }
 
-TransformGizmo::TransformGizmo(Transformable3D& transformable, const PerspectiveCamera& camera)
-    : _transformable(transformable), _camera(camera)
-{}
+MaterialPanel::MaterialPanel(Material& material, StringView label) : _label(label), _material(material) {}
 
-auto TransformGizmo::on_update() -> void
-{
-    if (!enabled)
-        return;
-
-    ImGuizmo::Enable(true);
-    auto transform = _transformable.transform();
-
-    auto& view = _camera.view();
-    auto& projection = _camera.projection();
-
-    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), _current_gizmo_operation,
-                             _current_gizmo_mode, glm::value_ptr(transform), nullptr, nullptr))
-    {
-        _transformable.set_transform(transform);
-    }
-}
-
-auto TransformGizmo::on_key_pressed_event(const KeyPressedEvent& event) -> void
-{
-    if (event.key == toggle_key)
-    {
-        enabled = !enabled;
-    }
-    else if (event.key == switch_to_translate_mode_key)
-    {
-        _current_gizmo_operation = ImGuizmo::TRANSLATE;
-        _current_gizmo_mode = ImGuizmo::WORLD;
-    }
-    else if (event.key == switch_to_rotate_mode_key)
-    {
-        _current_gizmo_operation = ImGuizmo::ROTATE;
-        _current_gizmo_mode = ImGuizmo::LOCAL;
-    }
-    else if (event.key == switch_to_scale_mode_key)
-    {
-        _current_gizmo_operation = ImGuizmo::SCALE;
-        _current_gizmo_mode = ImGuizmo::LOCAL;
-    }
-}
-
-MaterialUi::MaterialUi(Material& material, StringView label) : _label(label), _material(material) {}
-
-auto MaterialUi::on_update() -> void
+auto MaterialPanel::draw() -> void
 {
     const auto& materials = materials::materials();
     const auto& material_names = materials::material_names;
@@ -196,7 +457,7 @@ auto MaterialUi::on_update() -> void
         ImGui::EndCombo();
     }
 
-    ImGui::ColorPicker3("Albedo", reinterpret_cast<float*>(&_material.albedo));
+    pick_color("Albedo", _material.albedo);
 
     auto map_picker = [](StringView label, i16 selected_idx, const Vector<String>& map_names) {
         constexpr auto none_selected_label = "None";
@@ -245,124 +506,53 @@ auto MaterialUi::on_update() -> void
     if (auto pick = map_picker("Emission Map", _emission_map_selected_idx, _emission_map_names))
         set_emission_map(*pick);
 
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_material.ambient), slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_material.diffuse), slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_material.specular), slider_drag_speed);
-    ImGui::DragFloat("Shininess", &_material.shininess, slider_drag_speed * 10.0f);
+    drag_vec("Ambient", _material.ambient, light_ambient_drag_speed);
+    drag_vec("Diffuse", _material.diffuse);
+    drag_vec("Specular", _material.specular);
+    drag_float("Shininess", _material.shininess, material_shininess_drag_speed);
 
     ImGui::End();
 }
 
-auto MaterialUi::add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void
+auto MaterialPanel::add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void
 {
     _diffuse_map_names.emplace_back(name);
     _diffuse_maps.push_back(&diffuse_map);
 }
 
-auto MaterialUi::add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void
+auto MaterialPanel::add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void
 {
     _specular_map_names.emplace_back(name);
     _specular_maps.push_back(&specular_map);
 }
 
-auto MaterialUi::add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void
+auto MaterialPanel::add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void
 {
     _emission_map_names.emplace_back(name);
     _emission_maps.push_back(&emission_map);
 }
 
-auto MaterialUi::set_diffuse_map(i16 idx) -> void
+auto MaterialPanel::set_diffuse_map(i16 idx) -> void
 {
     _diffuse_map_selected_idx = idx;
     _material.diffuse_map = idx >= 0 ? _diffuse_maps[idx] : nullptr;
 }
 
-auto MaterialUi::set_specular_map(i16 idx) -> void
+auto MaterialPanel::set_specular_map(i16 idx) -> void
 {
     _specular_map_selected_idx = idx;
     _material.specular_map = idx >= 0 ? _specular_maps[idx] : nullptr;
 }
 
-auto MaterialUi::set_emission_map(i16 idx) -> void
+auto MaterialPanel::set_emission_map(i16 idx) -> void
 {
     _emission_map_selected_idx = idx;
     _material.emission_map = idx >= 0 ? _emission_maps[idx] : nullptr;
 }
 
-// @cleanup: Move sliders for light properties and attenuation into separate functions.
+ScenePicker::ScenePicker(StringView label) : _label(label) {}
 
-DirectionalLightUi::DirectionalLightUi(DirectionalLight& light, StringView label) : _label(label), _light(light) {}
-
-auto DirectionalLightUi::on_update() -> void
-{
-    ImGui::Begin(_label.data());
-
-    if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
-        _light.direction = glm::normalize(_light.direction);
-
-    // @cleanup: Duplicated code.
-    ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
-
-    ImGui::End();
-}
-
-PointLightUi::PointLightUi(PointLight& light, StringView label) : _label(label), _light(light) {}
-
-auto PointLightUi::on_update() -> void
-{
-    ImGui::Begin(_label.data());
-
-    // @cleanup: Duplicated code.
-    ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
-    ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
-
-    static_assert(sizeof(_light.attenuation) == 3 * sizeof(float));
-    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed * 0.01f);
-
-    ImGui::End();
-}
-
-SpotLightUi::SpotLightUi(SpotLight& light, StringView label) : _label(label), _light(light) {}
-
-auto SpotLightUi::on_update() -> void
-{
-    ImGui::Begin(_label.data());
-
-    ImGui::DragFloat3("Position", reinterpret_cast<float*>(&_light.position), slider_drag_speed * 0.1f);
-
-    if (ImGui::SliderFloat3("Direction", reinterpret_cast<float*>(&_light.direction), -1.0f, 1.0f))
-        _light.direction = glm::normalize(_light.direction);
-
-    float inner_cutoff = glm::acos(_light.inner_cutoff);
-    float outer_cutoff = glm::acos(_light.outer_cutoff);
-
-    if (ImGui::SliderAngle("Inner Cutoff", &inner_cutoff, 0.0f, 180.0f))
-        _light.inner_cutoff = glm::cos(inner_cutoff);
-
-    if (ImGui::SliderAngle("Outer Cutoff", &outer_cutoff, 0.0f, 180.0f))
-        _light.outer_cutoff = glm::cos(outer_cutoff);
-
-    // @cleanup: Duplicated code.
-    ImGui::ColorPicker3("Color", reinterpret_cast<float*>(&_light.properties.color));
-    ImGui::DragFloat3("Ambient", reinterpret_cast<float*>(&_light.properties.ambient), slider_drag_speed * 0.1f);
-    ImGui::DragFloat3("Diffuse", reinterpret_cast<float*>(&_light.properties.diffuse), slider_drag_speed);
-    ImGui::DragFloat3("Specular", reinterpret_cast<float*>(&_light.properties.specular), slider_drag_speed);
-
-    static_assert(sizeof(_light.attenuation) == 3 * sizeof(float));
-    ImGui::DragFloat3("Attenuation", reinterpret_cast<float*>(&_light.attenuation), slider_drag_speed * 0.01f);
-
-    ImGui::End();
-}
-
-ScenePickerUi::ScenePickerUi(StringView label) : _label(label) {}
-
-auto ScenePickerUi::on_update() -> void
+auto ScenePicker::draw() -> void
 {
     ImGui::Begin(_label.data());
 
@@ -374,12 +564,12 @@ auto ScenePickerUi::on_update() -> void
     ImGui::SameLine();
 
     if (ImGui::ArrowButton("Prev", ImGuiDir_Left))
-        prev();
+        prev_scene();
 
     ImGui::SameLine();
 
     if (ImGui::ArrowButton("Next", ImGuiDir_Right))
-        next();
+        next_scene();
 
     ImGui::SameLine();
 
@@ -389,15 +579,15 @@ auto ScenePickerUi::on_update() -> void
     ImGui::End();
 }
 
-auto ScenePickerUi::on_key_pressed_event(const KeyPressedEvent& event) -> void
+auto ScenePicker::on_key_pressed_event(const KeyPressedEvent& event) -> void
 {
     if (event.key == prev_scene_key)
-        prev();
+        prev_scene();
     else if (event.key == next_scene_key)
-        next();
+        next_scene();
 }
 
-auto ScenePickerUi::prev() -> void
+auto ScenePicker::prev_scene() -> void
 {
     if (_scene_count == 0)
         return;
@@ -410,7 +600,7 @@ auto ScenePickerUi::prev() -> void
     load_scene(_selected_scene_idx);
 }
 
-auto ScenePickerUi::next() -> void
+auto ScenePicker::next_scene() -> void
 {
     if (_scene_count == 0)
         return;
@@ -423,7 +613,7 @@ auto ScenePickerUi::next() -> void
     load_scene(_selected_scene_idx);
 }
 
-auto ScenePickerUi::load_scene(usize idx) const -> void
+auto ScenePicker::load_scene(usize idx) const -> void
 {
     auto scene = _scene_constructors[idx]();
     SceneManager::load_scene(std::move(scene));

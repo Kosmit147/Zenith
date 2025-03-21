@@ -13,8 +13,9 @@ public:
     SceneManager() = delete;
 
     static auto init() -> void;
-    static auto on_update() -> void;
-    static auto on_event(const Event& event) -> void;
+    static auto update() -> void;
+    static auto dispatch_event(const Event& event) -> void;
+    static auto render_scene() -> void;
     static auto on_render() -> void;
     static auto shut_down() -> void;
 

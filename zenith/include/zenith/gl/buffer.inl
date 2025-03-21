@@ -6,7 +6,7 @@
 
 namespace zth::gl {
 
-// --------------------------- GlBuffer ---------------------------
+// --------------------------- Buffer ---------------------------
 
 auto Buffer::create_static_with_data(auto&& data) -> Buffer
 {

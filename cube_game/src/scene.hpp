@@ -1,6 +1,5 @@
 #pragma once
 
-#include "block.hpp"
 #include "player.hpp"
 
 class Scene : public zth::Scene
@@ -13,9 +12,10 @@ public:
 private:
     zth::gl::Texture2D _block_texture;
     zth::Material _block_material;
-    std::shared_ptr<zth::DirectionalLight> _light;
 
-    zth::Vector<Block> _blocks;
+    zth::Entity _directional_light = create_entity("Directional Light");
+
+    zth::Vector<zth::Entity> _blocks;
     Player _player;
 
 private:

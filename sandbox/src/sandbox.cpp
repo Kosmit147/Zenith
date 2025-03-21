@@ -14,6 +14,7 @@ const zth::ApplicationSpec app_spec = {
         .gl_profile = zth::gl::Profile::Core,
         .fullscreen = false,
         .vsync = true,
+        .frame_rate_limit = 60,
         .resizable = true,
         .maximized = true,
         .cursor_enabled = false,
@@ -35,7 +36,7 @@ Sandbox::Sandbox() : Application(app_spec)
 
 auto Sandbox::on_update() -> void
 {
-    _debug_tools_ui.on_update();
+    _debug_tools_panel.draw();
 }
 
 auto Sandbox::on_event(const zth::Event& event) -> void
@@ -46,7 +47,7 @@ auto Sandbox::on_event(const zth::Event& event) -> void
 
 auto Sandbox::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
-    _debug_tools_ui.on_key_pressed_event(event);
+    _debug_tools_panel.on_key_pressed_event(event);
 
     static bool cursor_enabled = app_spec.window_spec.cursor_enabled;
 
