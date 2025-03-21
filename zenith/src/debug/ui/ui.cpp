@@ -17,6 +17,7 @@
 #include "zenith/graphics/renderer.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/window.hpp"
 
@@ -364,7 +365,7 @@ auto SceneHierarchyPanel::draw() -> void
     {
         const auto& tag = _registry.get<const TagComponent>(entity);
 
-        auto label = ZTH_FORMAT("{}##{}", tag.tag, std::to_underlying(entity));
+        auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity));
 
         if (ImGui::Selectable(label.c_str(), _selected_entity == entity))
             _selected_entity = entity;
@@ -411,7 +412,7 @@ auto DebugToolsPanel::draw() -> void
             Window::set_frame_rate_limit(_frame_rate_limit);
     }
 
-    auto label = ZTH_FORMAT("Wireframe ({})", toggle_wireframe_mode_key);
+    auto label = format_to_temporary("Wireframe ({})", toggle_wireframe_mode_key);
     auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
 
     if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
@@ -558,7 +559,7 @@ auto ScenePicker::draw() -> void
 
     ImGui::Text("%s", _scene_names[_selected_scene_idx].c_str());
 
-    auto prev_scene_label = ZTH_FORMAT("Prev ({})", prev_scene_key);
+    auto prev_scene_label = format_to_temporary("Prev ({})", prev_scene_key);
     ImGui::TextUnformatted(prev_scene_label.c_str());
 
     ImGui::SameLine();
@@ -573,7 +574,7 @@ auto ScenePicker::draw() -> void
 
     ImGui::SameLine();
 
-    auto next_scene_label = ZTH_FORMAT("Next ({})", next_scene_key);
+    auto next_scene_label = format_to_temporary("Next ({})", next_scene_key);
     ImGui::TextUnformatted(next_scene_label.c_str());
 
     ImGui::End();

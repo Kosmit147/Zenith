@@ -37,7 +37,7 @@ Scene::Scene()
 
         for (const auto [x, y, z] : coords)
         {
-            auto name = ZTH_FORMAT("Block {}", counter++);
+            auto name = zth::format("Block {}", counter++);
             auto& block = _blocks.emplace_back(create_entity(name));
 
             auto& block_transform = registry.get<zth::TransformComponent>(block);
@@ -58,7 +58,7 @@ Scene::Scene()
 
         for (const auto [x, y, z] : coords)
         {
-            auto name = ZTH_FORMAT("Block {}", counter++);
+            auto name = zth::format("Block {}", counter++);
             auto& block = _blocks.emplace_back(create_entity(name));
 
             auto& block_transform = registry.get<zth::TransformComponent>(block);

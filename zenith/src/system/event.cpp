@@ -185,36 +185,36 @@ ZTH_DEFINE_FORMATTER(zth::MouseWheelScrolledEvent, event)
 
 ZTH_DEFINE_FORMATTER(zth::Event, event)
 {
-    auto result = ZTH_FORMAT("Event {{\n"
-                             "\t.type = {},\n"
-                             "\t.category = {},\n",
-                             event.type(), event.category());
+    ZTH_FORMAT_OUT("Event {{\n"
+                   "\t.type = {},\n"
+                   "\t.category = {},\n",
+                   event.type(), event.category());
 
     switch (event.type())
     {
         using enum zth::EventType;
     case WindowResized:
-        result += ZTH_FORMAT("\t.window_resized_event = {},\n", event.window_resized_event());
+        ZTH_FORMAT_OUT("\t.window_resized_event = {},\n", event.window_resized_event());
         break;
     case KeyPressed:
-        result += ZTH_FORMAT("\t.key_pressed_event = {},\n", event.key_pressed_event());
+        ZTH_FORMAT_OUT("\t.key_pressed_event = {},\n", event.key_pressed_event());
         break;
     case KeyReleased:
-        result += ZTH_FORMAT("\t.key_released_event = {},\n", event.key_released_event());
+        ZTH_FORMAT_OUT("\t.key_released_event = {},\n", event.key_released_event());
         break;
     case MouseButtonPressed:
-        result += ZTH_FORMAT("\t.mouse_button_pressed_event = {},\n", event.mouse_button_pressed_event());
+        ZTH_FORMAT_OUT("\t.mouse_button_pressed_event = {},\n", event.mouse_button_pressed_event());
         break;
     case MouseButtonReleased:
-        result += ZTH_FORMAT("\t.mouse_button_released_event = {},\n", event.mouse_button_released_event());
+        ZTH_FORMAT_OUT("\t.mouse_button_released_event = {},\n", event.mouse_button_released_event());
         break;
     case MouseMoved:
-        result += ZTH_FORMAT("\t.mouse_moved_event = {},\n", event.mouse_moved_event());
+        ZTH_FORMAT_OUT("\t.mouse_moved_event = {},\n", event.mouse_moved_event());
         break;
     case MouseWheelScrolled:
-        result += ZTH_FORMAT("\t.mouse_wheel_scrolled_event = {},\n", event.mouse_wheel_scrolled_event());
+        ZTH_FORMAT_OUT("\t.mouse_wheel_scrolled_event = {},\n", event.mouse_wheel_scrolled_event());
         break;
     }
 
-    return ZTH_FORMAT_OUT("{}}}", result);
+    return ZTH_FORMAT_OUT("}}");
 }

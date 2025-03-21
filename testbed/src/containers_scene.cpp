@@ -93,7 +93,7 @@ ContainersScene::ContainersScene()
 
     for (const auto [i, position] : container_positions | std::views::enumerate)
     {
-        auto label = ZTH_FORMAT("Container {}", i);
+        auto label = zth::format("Container {}", i);
         auto& container = _containers.emplace_back(create_entity(label));
 
         registry.emplace_or_replace<zth::MeshComponent>(container, &zth::meshes::cube_mesh());

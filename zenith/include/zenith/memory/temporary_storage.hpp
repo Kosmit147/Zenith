@@ -1,12 +1,14 @@
 #pragma once
 
 #include <cstddef>
+#include <iterator>
 #include <memory>
 #include <ranges>
 #include <type_traits>
 #include <utility>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/string.hpp"
@@ -116,6 +118,14 @@ template<typename T>
 [[nodiscard]] auto make_temporary(auto&&...) -> Temporary<T>
     requires(std::is_unbounded_array_v<T>)
 = delete;
+
+template<typename... Args>
+[[nodiscard]] auto format_to_temporary(fmt::format_string<Args...> fmt, Args&&... args) -> TemporaryString
+{
+    TemporaryString result;
+    format_to(std::back_inserter(result), fmt, std::forward<decltype(args)>(args)...);
+    return result;
+}
 
 template<typename T> auto TemporaryStorageAllocator<T>::allocate(std::size_t count) const noexcept -> T*
 {
