@@ -391,26 +391,26 @@ ZTH_DEFINE_FORMATTER(zth::CameraComponent, camera)
 
 ZTH_DEFINE_FORMATTER(zth::LightComponent, light)
 {
-    auto result = ZTH_FORMAT("LightComponent {{\n"
-                             "\t.type = {},\n",
-                             light.type());
+    ZTH_FORMAT_OUT("LightComponent {{\n"
+                   "\t.type = {},\n",
+                   light.type());
 
     switch (light.type())
     {
         using enum zth::LightType;
     case Directional:
-        result += ZTH_FORMAT("\t.directional_light = {},\n", light.directional_light());
+        ZTH_FORMAT_OUT("\t.directional_light = {},\n", light.directional_light());
         break;
     case Point:
-        result += ZTH_FORMAT("\t.point_light = {},\n", light.point_light());
+        ZTH_FORMAT_OUT("\t.point_light = {},\n", light.point_light());
         break;
     case Spot:
-        result += ZTH_FORMAT("\t.spot_light = {},\n", light.spot_light());
+        ZTH_FORMAT_OUT("\t.spot_light = {},\n", light.spot_light());
         break;
     case Ambient:
-        result += ZTH_FORMAT("\t.ambient_light = {},\n", light.ambient_light());
+        ZTH_FORMAT_OUT("\t.ambient_light = {},\n", light.ambient_light());
         break;
     }
 
-    return ZTH_FORMAT_OUT("{}}}", result);
+    return ZTH_FORMAT_OUT("}}");
 }

@@ -2,12 +2,14 @@
 
 #include <spdlog/fmt/fmt.h>
 
+#include <iterator>
+#include <type_traits>
+#include <utility>
+
 #include "zenith/stl/string.hpp"
 
-#define ZTH_FORMAT(...) ::fmt::format(__VA_ARGS__)
-
 #define ZTH_DECLARE_FORMATTER(type)                                                                                    \
-    template<> struct ::fmt::formatter<type> : formatter<::zth::String>                                                \
+    template<> struct ::fmt::formatter<type> : formatter<::zth::StringView>                                            \
     {                                                                                                                  \
         static auto format(const type&, format_context& ctx) -> decltype(ctx.out());                                   \
     }
@@ -16,3 +18,18 @@
     auto ::fmt::formatter<type>::format(const type& var, format_context& ctx)->decltype(ctx.out())
 
 #define ZTH_FORMAT_OUT(...) ::fmt::format_to(ctx.out(), __VA_ARGS__)
+
+namespace zth {
+
+template<typename... Args> [[nodiscard]] auto format(fmt::format_string<Args...> fmt, Args&&... args) -> String
+{
+    return fmt::format(fmt, std::forward<decltype(args)>(args)...);
+}
+
+template<std::output_iterator It, typename... Args>
+auto format_to(It&& out, fmt::format_string<Args...> fmt, Args&&... args) -> std::remove_cvref_t<It>
+{
+    return fmt::format_to(std::forward<decltype(out)>(out), fmt, std::forward<decltype(args)>(args)...);
+}
+
+} // namespace zth

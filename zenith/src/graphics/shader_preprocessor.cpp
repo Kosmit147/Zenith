@@ -192,15 +192,15 @@ auto ShaderPreprocessor::resolve_include_directive() -> Result<Success, Preproce
 
     if (!source_name)
     {
-        constexpr auto message = "Invalid #include directive";
-        return Error{ PreprocessShaderError{ .line_info = line_info(), .description = message } };
+        constexpr auto message = "Invalid #include directive"_sv;
+        return Error{ PreprocessShaderError{ .line_info = line_info(), .description = TemporaryString{ message } } };
     }
 
     auto included_source = get_source(*source_name);
 
     if (!included_source)
     {
-        auto message = ZTH_FORMAT("Source {} not present in shader preprocessor's source list", *source_name);
+        auto message = format_to_temporary("Source {} not present in shader preprocessor's source list", *source_name);
         return Error{ PreprocessShaderError{ .line_info = line_info(), .description = std::move(message) } };
     }
 

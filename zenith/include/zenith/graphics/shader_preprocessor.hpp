@@ -5,6 +5,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/string_map.hpp"
 #include "zenith/util/optional.hpp"
@@ -22,7 +23,7 @@ struct LineInfo
 struct PreprocessShaderError
 {
     Optional<LineInfo> line_info;
-    String description;
+    TemporaryString description;
 };
 
 class ShaderPreprocessor

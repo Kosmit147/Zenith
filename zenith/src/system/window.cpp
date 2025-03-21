@@ -48,7 +48,7 @@ auto Window::init(const WindowSpec& spec) -> void
 
     if (spec.gl_version != gl::Version{ 4, 6 })
     {
-        auto error_message = ZTH_FORMAT(
+        auto error_message = format(
             "Zenith supports only OpenGL 4.6. Tried to create an OpenGL context with version {}.", spec.gl_version);
         ZTH_CORE_CRITICAL(error_message);
         throw Exception{ error_message };
@@ -57,8 +57,8 @@ auto Window::init(const WindowSpec& spec) -> void
     if (spec.gl_profile != gl::Profile::Core)
     {
         auto error_message =
-            ZTH_FORMAT("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",
-                       spec.gl_profile);
+            format("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",
+                   spec.gl_profile);
         ZTH_CORE_CRITICAL(error_message);
         throw Exception{ error_message };
     }

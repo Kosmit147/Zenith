@@ -483,37 +483,37 @@ ZTH_DEFINE_FORMATTER(zth::gl::ShaderSourcePaths, paths)
     // @test: This function.
     // @robustness: .string() throws.
 
-    auto result = ZTH_FORMAT("ShaderSourcePaths {{\n"
-                             "\t.vertex_path = \"{}\",\n"
-                             "\t.fragment_path = \"{}\",\n",
-                             paths.vertex_path.string(), paths.fragment_path.string());
+    ZTH_FORMAT_OUT("ShaderSourcePaths {{\n"
+                   "\t.vertex_path = \"{}\",\n"
+                   "\t.fragment_path = \"{}\",\n",
+                   paths.vertex_path.string(), paths.fragment_path.string());
 
     {
-        result += "\t.tess_control_path = ";
+        ZTH_FORMAT_OUT("\t.tess_control_path = ");
 
         if (paths.tess_control_path)
-            result += ZTH_FORMAT("\"{}\",\n", paths.tess_control_path->string());
+            ZTH_FORMAT_OUT("\"{}\",\n", paths.tess_control_path->string());
         else
-            result += "nil,\n";
+            ZTH_FORMAT_OUT("nil,\n");
     }
 
     {
-        result += "\t.tess_evaluation_path = ";
+        ZTH_FORMAT_OUT("\t.tess_evaluation_path = ");
 
         if (paths.tess_evaluation_path)
-            result += ZTH_FORMAT("\"{}\",\n", paths.tess_evaluation_path->string());
+            ZTH_FORMAT_OUT("\"{}\",\n", paths.tess_evaluation_path->string());
         else
-            result += "nil,\n";
+            ZTH_FORMAT_OUT("nil,\n");
     }
 
     {
-        result += "\t.geometry_path = ";
+        ZTH_FORMAT_OUT("\t.geometry_path = ");
 
         if (paths.geometry_path)
-            result += ZTH_FORMAT("\"{}\",\n", paths.geometry_path->string());
+            ZTH_FORMAT_OUT("\"{}\",\n", paths.geometry_path->string());
         else
-            result += "nil,\n";
+            ZTH_FORMAT_OUT("nil,\n");
     }
 
-    return ZTH_FORMAT_OUT("{}}}", result);
+    return ZTH_FORMAT_OUT("}}");
 }
