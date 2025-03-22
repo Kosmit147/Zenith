@@ -20,7 +20,7 @@ Application::~Application()
 
 auto Application::run() -> void
 {
-    Window::set_active();
+    Window::make_context_current();
 
     while (!Window::should_close())
     {

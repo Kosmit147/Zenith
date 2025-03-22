@@ -51,8 +51,8 @@ public:
     // Returns the time since the window was created, in seconds.
     [[nodiscard]] static auto time() -> double;
 
-    static auto set_active() -> void;
-    static auto set_vsync(bool value) -> void;
+    static auto make_context_current() -> void;
+    static auto set_vsync_enabled(bool enabled) -> void;
     static auto swap_buffers() -> void;
     static auto poll_events() -> void;
     static auto close() -> void;

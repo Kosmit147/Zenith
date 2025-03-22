@@ -94,8 +94,8 @@ auto Window::init(const WindowSpec& spec) -> void
 
     Defer destroy_window{ [&] { glfwDestroyWindow(_window); } };
 
-    set_active();
-    set_vsync(spec.vsync);
+    make_context_current();
+    set_vsync_enabled(spec.vsync);
 
     if (spec.frame_rate_limit)
         set_frame_rate_limit(*spec.frame_rate_limit);
@@ -147,14 +147,14 @@ auto Window::time() -> double
     return glfwGetTime();
 }
 
-auto Window::set_active() -> void
+auto Window::make_context_current() -> void
 {
     glfwMakeContextCurrent(_window);
 }
 
-auto Window::set_vsync(bool value) -> void
+auto Window::set_vsync_enabled(bool enabled) -> void
 {
-    glfwSwapInterval(value);
+    glfwSwapInterval(enabled);
 }
 
 auto Window::swap_buffers() -> void
