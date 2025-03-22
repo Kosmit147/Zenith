@@ -20,7 +20,10 @@ auto ImGuiRenderer::init() -> void
     ImGui_ImplGlfw_InitForOpenGL(Window::glfw_handle(), true);
     ImGui_ImplOpenGL3_Init();
 
-    ImGui::GetIO().FontGlobalScale = initial_font_scale;
+    auto& io = ImGui::GetIO();
+    io.FontGlobalScale = initial_font_scale;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ZTH_CORE_INFO("ImGui renderer initialized.");
 }
@@ -29,8 +32,10 @@ auto ImGuiRenderer::update() -> void
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
-
     ImGui::NewFrame();
+
+    ImGui::DockSpaceOverViewport(ImGui::GetID("Main Window Dockspace"), ImGui::GetMainViewport(),
+                                 ImGuiDockNodeFlags_PassthruCentralNode);
 
     ImGuizmo::BeginFrame();
     auto& io = ImGui::GetIO();
@@ -41,6 +46,12 @@ auto ImGuiRenderer::on_render() -> void
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    ImGui::UpdatePlatformWindows();
+    ImGui::RenderPlatformWindowsDefault();
+
+    // Platform functions may change the current OpenGL context, so we need to restore it.
+    Window::make_context_current();
 }
 
 auto ImGuiRenderer::shut_down() -> void
