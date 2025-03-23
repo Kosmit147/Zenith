@@ -3,7 +3,6 @@
 #include "core/fwd.hpp"
 
 #include "core/assert.hpp"
-#include "core/asset_manager.hpp"
 #include "core/camera_controller.hpp"
 #include "core/exception.hpp"
 #include "core/random.hpp"

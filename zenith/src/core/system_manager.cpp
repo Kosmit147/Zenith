@@ -1,6 +1,6 @@
 #include "zenith/core/system_manager.hpp"
 
-#include "zenith/core/asset_manager.hpp"
+#include "zenith/asset/asset_manager.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene_manager.hpp"
 #include "zenith/log/logger.hpp"
