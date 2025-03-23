@@ -12,6 +12,7 @@
 #include "zenith/math.hpp"
 #include "zenith/memory.hpp"
 #include "zenith/renderer.hpp"
+#include "zenith/script.hpp"
 #include "zenith/stl.hpp"
 #include "zenith/system.hpp"
 #include "zenith/util.hpp"

@@ -3,6 +3,7 @@ project(sandbox LANGUAGES CXX)
 
 add_executable(
 	sandbox
+	"src/cube_script.cpp"
 	"src/sandbox.cpp"
 	"src/scene.cpp"
 )

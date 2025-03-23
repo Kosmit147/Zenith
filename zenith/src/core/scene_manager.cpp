@@ -11,6 +11,14 @@ auto SceneManager::init() -> void
     ZTH_CORE_INFO("Scene manager initialized.");
 }
 
+auto SceneManager::dispatch_event(const Event& event) -> void
+{
+    if (!_scene)
+        return;
+
+    _scene->dispatch_event(event);
+}
+
 auto SceneManager::update() -> void
 {
     if (_queued_scene)
@@ -29,14 +37,6 @@ auto SceneManager::update() -> void
     }
 
     _scene->update();
-}
-
-auto SceneManager::dispatch_event(const Event& event) -> void
-{
-    if (!_scene)
-        return;
-
-    _scene->dispatch_event(event);
 }
 
 auto SceneManager::render_scene() -> void

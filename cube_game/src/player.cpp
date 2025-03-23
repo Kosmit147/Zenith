@@ -15,12 +15,6 @@ Player::Player()
       _camera_controller(_camera)
 {}
 
-auto Player::on_update() -> void
-{
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-}
-
 auto Player::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::WindowResized)
@@ -28,6 +22,12 @@ auto Player::on_event(const zth::Event& event) -> void
         auto window_resized_event = event.window_resized_event();
         on_window_resized_event(window_resized_event);
     }
+}
+
+auto Player::on_update() -> void
+{
+    if (!zth::Window::cursor_enabled())
+        _camera_controller.on_update();
 }
 
 auto Player::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void

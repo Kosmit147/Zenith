@@ -20,14 +20,6 @@ auto Scene::create_entity(String&& tag) -> EntityHandle
     return _registry.create(std::move(tag));
 }
 
-auto Scene::update() -> void
-{
-    if (scene_hierarchy_panel_enabled)
-        _scene_hierarchy_panel.draw();
-
-    on_update();
-}
-
 auto Scene::dispatch_event(const Event& event) -> void
 {
     if (event.type() == EventType::KeyPressed)
@@ -58,7 +50,25 @@ auto Scene::dispatch_event(const Event& event) -> void
         }
     }
 
+    auto scripts = _registry.view<ScriptComponent>();
+
+    for (auto&& [entity_id, script] : scripts.each())
+        script.script->dispatch_event(EntityHandle{ entity_id, _registry }, event);
+
     on_event(event);
+}
+
+auto Scene::update() -> void
+{
+    if (scene_hierarchy_panel_enabled)
+        _scene_hierarchy_panel.draw();
+
+    auto scripts = _registry.view<ScriptComponent>();
+
+    for (auto&& [entity_id, script] : scripts.each())
+        script.script->update(EntityHandle{ entity_id, _registry });
+
+    on_update();
 }
 
 auto Scene::render() -> void
@@ -67,9 +77,9 @@ auto Scene::render() -> void
 
     auto lights = _registry.view<const LightComponent>();
 
-    for (auto&& [entity, light] : lights.each())
+    for (auto&& [entity_id, light] : lights.each())
     {
-        auto& transform = _registry.get<const TransformComponent>(entity);
+        auto& transform = _registry.get<const TransformComponent>(entity_id);
 
         switch (light.type())
         {
@@ -91,7 +101,7 @@ auto Scene::render() -> void
 
     auto meshes = _registry.group<const TransformComponent, const MeshComponent, const MaterialComponent>();
 
-    for (auto&& [entity, transform, mesh, material] : meshes.each())
+    for (auto&& [_, transform, mesh, material] : meshes.each())
         Renderer::submit(*mesh.mesh, transform.transform(), *material.material);
 
     Renderer::end_scene();

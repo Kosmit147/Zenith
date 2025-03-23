@@ -9,7 +9,7 @@
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
-#include "zenith/ecs/entity.hpp"
+#include "zenith/ecs/ecs.hpp"
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/renderer/fwd.hpp"

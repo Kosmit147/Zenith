@@ -16,8 +16,8 @@ private:
     zth::debug::ScenePicker _scene_picker;
 
 private:
-    auto on_update() -> void override;
     auto on_event(const zth::Event& event) -> void override;
+    auto on_update() -> void override;
 
     auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 

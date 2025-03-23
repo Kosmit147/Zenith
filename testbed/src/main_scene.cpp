@@ -107,22 +107,6 @@ auto MainScene::on_load() -> void
     zth::Renderer::set_camera(_camera);
 }
 
-auto MainScene::on_update() -> void
-{
-    update_ui();
-
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-
-    auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
-    auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
-    auto& light_component_3 = _point_light_1.get<const zth::LightComponent>();
-
-    _point_light_1_material.albedo = light_component_1.point_light().properties.color;
-    _point_light_2_material.albedo = light_component_2.point_light().properties.color;
-    _point_light_3_material.albedo = light_component_3.point_light().properties.color;
-}
-
 auto MainScene::on_event(const zth::Event& event) -> void
 {
     switch (event.type())
@@ -137,6 +121,22 @@ auto MainScene::on_event(const zth::Event& event) -> void
     default:
         break;
     }
+}
+
+auto MainScene::on_update() -> void
+{
+    update_ui();
+
+    if (!zth::Window::cursor_enabled())
+        _camera_controller.on_update();
+
+    auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
+    auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
+    auto& light_component_3 = _point_light_1.get<const zth::LightComponent>();
+
+    _point_light_1_material.albedo = light_component_1.point_light().properties.color;
+    _point_light_2_material.albedo = light_component_2.point_light().properties.color;
+    _point_light_3_material.albedo = light_component_3.point_light().properties.color;
 }
 
 auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void

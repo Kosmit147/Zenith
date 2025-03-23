@@ -2,6 +2,8 @@
 
 #include <battery/embed.hpp>
 
+#include "cube_script.hpp"
+
 namespace {
 
 const auto wall_texture = b::embed<"assets/wall.jpg">().data();
@@ -25,24 +27,13 @@ Scene::Scene()
     _light.emplace_or_replace<zth::TransformComponent>(glm::vec3{ 0.0f },
                                                        glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
     _light.emplace_or_replace<zth::LightComponent>(zth::DirectionalLight{});
+
+    _cube.emplace_or_replace<zth::ScriptComponent>(std::make_unique<CubeScript>());
 }
 
 auto Scene::on_load() -> void
 {
     zth::Renderer::set_camera(_camera);
-}
-
-auto Scene::on_update() -> void
-{
-    const auto time = zth::Time::time<float>();
-
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-
-    auto& cube_transform = _cube.get<zth::TransformComponent>();
-
-    cube_transform.rotate(0.0005f * time, glm::normalize(glm::vec3{ 0.0f, 1.0f, 0.0f }));
-    cube_transform.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));
 }
 
 auto Scene::on_event(const zth::Event& event) -> void
@@ -52,6 +43,12 @@ auto Scene::on_event(const zth::Event& event) -> void
         auto window_resized_event = event.window_resized_event();
         on_window_resized_event(window_resized_event);
     }
+}
+
+auto Scene::on_update() -> void
+{
+    if (!zth::Window::cursor_enabled())
+        _camera_controller.on_update();
 }
 
 auto Scene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
