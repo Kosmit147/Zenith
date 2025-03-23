@@ -1,4 +1,4 @@
-#include "zenith/graphics/camera.hpp"
+#include "zenith/renderer/camera.hpp"
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>

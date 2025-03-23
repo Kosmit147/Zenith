@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 
 #include "zenith/gl/fwd.hpp"
-#include "zenith/graphics/shaders.hpp"
+#include "zenith/renderer/shaders.hpp"
 
 namespace zth {
 

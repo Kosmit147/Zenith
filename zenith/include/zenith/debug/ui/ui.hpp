@@ -12,7 +12,7 @@
 #include "zenith/ecs/entity.hpp"
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/fwd.hpp"
-#include "zenith/graphics/fwd.hpp"
+#include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"

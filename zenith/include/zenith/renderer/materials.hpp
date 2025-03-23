@@ -3,7 +3,7 @@
 #include <array>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/graphics/material.hpp"
+#include "zenith/renderer/material.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth::materials {

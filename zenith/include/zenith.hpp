@@ -8,7 +8,7 @@
 #include "zenith/embedded.hpp"
 #include "zenith/fs.hpp"
 #include "zenith/gl.hpp"
-#include "zenith/graphics.hpp"
+#include "zenith/renderer.hpp"
 #include "zenith/log.hpp"
 #include "zenith/math.hpp"
 #include "zenith/memory.hpp"

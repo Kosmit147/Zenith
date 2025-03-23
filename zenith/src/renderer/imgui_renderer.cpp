@@ -1,4 +1,4 @@
-#include "zenith/graphics/imgui_renderer.hpp"
+#include "zenith/renderer/imgui_renderer.hpp"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
