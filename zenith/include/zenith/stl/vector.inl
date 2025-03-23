@@ -1,7 +1,7 @@
 #pragma once
 
+#include <algorithm>
 #include <iterator>
-#include <memory>
 #include <utility>
 
 #include "zenith/core/assert.hpp"
@@ -173,6 +173,15 @@ constexpr auto InPlaceVector<T, Capacity>::clear() noexcept(std::is_nothrow_dest
 {
     std::ranges::destroy(*this);
     _end = begin();
+}
+
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::swap_impl(InPlaceVector& smaller, InPlaceVector& bigger)
+    noexcept(std::is_nothrow_swappable_v<value_type> && std::is_nothrow_move_constructible_v<value_type>) -> void
+{
+    auto leftover_begin = std::swap_ranges(smaller.begin(), smaller.end(), bigger.begin());
+    smaller._end = std::uninitialized_move(leftover_begin, bigger.end(), smaller.end());
+    bigger._end = leftover_begin;
 }
 
 } // namespace zth
