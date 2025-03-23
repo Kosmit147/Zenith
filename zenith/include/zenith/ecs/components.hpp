@@ -4,10 +4,13 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+#include <memory>
+
 #include "zenith/log/format.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
+#include "zenith/script/script.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -89,6 +92,13 @@ private:
 
 private:
     auto update_transform() -> void;
+};
+
+// --------------------------- ScriptComponent ---------------------------
+
+struct ScriptComponent
+{
+    std::unique_ptr<Script> script; // script should never be null.
 };
 
 // --------------------------- MeshComponent ---------------------------

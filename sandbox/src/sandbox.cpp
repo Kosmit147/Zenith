@@ -34,15 +34,15 @@ Sandbox::Sandbox() : Application(app_spec)
     zth::SceneManager::load_scene(std::make_unique<Scene>());
 }
 
-auto Sandbox::on_update() -> void
-{
-    _debug_tools_panel.draw();
-}
-
 auto Sandbox::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::KeyPressed)
         on_key_pressed_event(event.key_pressed_event());
+}
+
+auto Sandbox::on_update() -> void
+{
+    _debug_tools_panel.draw();
 }
 
 auto Sandbox::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void

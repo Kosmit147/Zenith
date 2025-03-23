@@ -1,4 +1,4 @@
-#include "zenith/ecs/entity.hpp"
+#include "zenith/ecs/ecs.hpp"
 
 #include "zenith/core/assert.hpp"
 #include "zenith/ecs/components.hpp"

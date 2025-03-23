@@ -32,15 +32,15 @@ Testbed::Testbed() : Application(app_spec)
     _scene_picker.add_scene<ContainersScene>("Containers");
 }
 
-auto Testbed::on_update() -> void
-{
-    draw_ui();
-}
-
 auto Testbed::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::KeyPressed)
         on_key_pressed_event(event.key_pressed_event());
+}
+
+auto Testbed::on_update() -> void
+{
+    draw_ui();
 }
 
 auto Testbed::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void

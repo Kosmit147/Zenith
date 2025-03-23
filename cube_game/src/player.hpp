@@ -5,8 +5,8 @@ class Player
 public:
     explicit Player();
 
-    auto on_update() -> void;
     auto on_event(const zth::Event& event) -> void;
+    auto on_update() -> void;
 
     [[nodiscard]] auto camera() const -> auto& { return _camera; }
 

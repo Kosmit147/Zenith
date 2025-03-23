@@ -1,7 +1,7 @@
 #pragma once
 
 #include "zenith/debug/ui/ui.hpp"
-#include "zenith/ecs/entity.hpp"
+#include "zenith/ecs/ecs.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/macros.hpp"
@@ -37,13 +37,13 @@ private:
     debug::SceneHierarchyPanel _scene_hierarchy_panel{ _registry };
 
 private:
-    auto update() -> void;
     auto dispatch_event(const Event& event) -> void;
+    auto update() -> void;
     auto render() -> void;
 
     virtual auto on_load() -> void {}
-    virtual auto on_update() -> void {}
     virtual auto on_event([[maybe_unused]] const Event& event) -> void {}
+    virtual auto on_update() -> void {}
     virtual auto on_render() -> void {}
     virtual auto on_unload() -> void {}
 };

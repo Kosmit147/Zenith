@@ -13,6 +13,33 @@
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
 
+// Zenith uses ENTT as a backend powering its entity component system.
+
+// An entity component system allows game objects (entities) to be dynamically composed of any set of components which
+// provides more freedom and flexibility than an object-oriented model. A component can be anything. Example components
+// that Zenith uses are TagComponent, which stores the entity's tag (a name) and TransformComponent, which stores the
+// entity's translation, rotation and scale. A Zenith entity is always required to have these two components.
+
+// An entity is in essence just an id that is associated with a set of components through the Registry. The Registry
+// provides ways to iterate through all instances of a component that it contains, which enables a more efficient way of
+// dealing with updating entities: Instead of considering every entity separately and determining what needs to be done
+// with it based on the state of the entity, you can just iterate over every instance of a component and update it.
+// Components are closely packed in memory which highly increases cache efficiency.
+
+// There are certain limitations to keep in mind when working with the entity component system:
+// - Creating entities and components is allowed during iterations, except during reverse iterations, and it never
+// invalidates already existing references.
+// - Deleting the current entity or removing its components is allowed during iterations, but it could invalidate
+// references. For all the other entities, destroying them or removing their iterated components is not allowed and
+// results in undefined behavior.
+// - In case of reverse iterations, adding or removing elements is not allowed under any circumstances.
+
+// The most common way to interact with an entity is through an EntityHandle which is a thin wrapper over an entity id
+// and a pointer to the registry associated with that entity. It exposes methods to operate on the entity's components
+// and to destroy the entity.
+
+// A component can be any user-defined type. It is not needed to announce the existence of a component before using it.
+
 namespace zth {
 
 // clang-format off
@@ -83,6 +110,8 @@ public:
     [[nodiscard]] auto registry() const -> Optional<Reference<Registry>>;
 };
 
+// The Registry stores all the entities and their components and provides methods to create and remove entities, modify
+// their components, and to iterate through all existing entities and components.
 class Registry
 {
 public:
@@ -128,4 +157,4 @@ private:
 
 } // namespace zth
 
-#include "entity.inl"
+#include "ecs.inl"

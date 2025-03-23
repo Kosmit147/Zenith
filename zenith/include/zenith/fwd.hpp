@@ -5,5 +5,6 @@
 #include "gl/fwd.hpp"
 #include "memory/fwd.hpp"
 #include "renderer/fwd.hpp"
+#include "script/fwd.hpp"
 #include "stl/fwd.hpp"
 #include "system/fwd.hpp"

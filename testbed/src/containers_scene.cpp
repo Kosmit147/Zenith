@@ -111,15 +111,6 @@ auto ContainersScene::on_load() -> void
     zth::Renderer::set_camera(_camera);
 }
 
-auto ContainersScene::on_update() -> void
-{
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-
-    auto& light = _point_light.get<const zth::LightComponent>();
-    _point_light_material.albedo = light.point_light().properties.color;
-}
-
 auto ContainersScene::on_event(const zth::Event& event) -> void
 {
     switch (event.type())
@@ -140,6 +131,15 @@ auto ContainersScene::on_event(const zth::Event& event) -> void
     default:
         break;
     }
+}
+
+auto ContainersScene::on_update() -> void
+{
+    if (!zth::Window::cursor_enabled())
+        _camera_controller.on_update();
+
+    auto& light = _point_light.get<const zth::LightComponent>();
+    _point_light_material.albedo = light.point_light().properties.color;
 }
 
 auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
