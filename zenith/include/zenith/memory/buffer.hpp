@@ -34,7 +34,7 @@ public:
     alignas(Alignment) UnderlyingStorage bytes; // The data is uninitialized.
 
 public:
-    explicit StaticBuffer() = default;
+    explicit StaticBuffer() noexcept = default;
     explicit StaticBuffer(const void* data, size_type data_size_bytes) noexcept;
     explicit StaticBuffer(std::ranges::contiguous_range auto&& data) noexcept;
 
@@ -77,7 +77,7 @@ public:
     using iterator = pointer;
     using const_iterator = const_pointer;
 
-    explicit Buffer() = default;
+    explicit Buffer() noexcept = default;
     explicit Buffer(size_type size_bytes) noexcept;
     explicit Buffer(const void* data, size_type data_size_bytes) noexcept;
     explicit Buffer(std::ranges::contiguous_range auto&& data) noexcept;
@@ -138,7 +138,7 @@ public:
     using iterator = pointer;
     using const_iterator = const_pointer;
 
-    explicit DynamicBuffer() = default;
+    explicit DynamicBuffer() noexcept = default;
     explicit DynamicBuffer(size_type size_bytes) noexcept;
     explicit DynamicBuffer(const void* data, size_type data_size_bytes) noexcept;
     explicit DynamicBuffer(std::ranges::contiguous_range auto&& data) noexcept;

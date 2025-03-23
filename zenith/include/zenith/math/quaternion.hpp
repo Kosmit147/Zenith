@@ -26,6 +26,8 @@ struct EulerAngles
     auto operator-=(const EulerAngles& other) -> EulerAngles&;
 
     [[nodiscard]] auto operator-() const -> EulerAngles;
+
+    [[nodiscard]] explicit operator glm::vec3() const;
 };
 
 [[nodiscard]] auto to_quaternion(float angle, glm::vec3 axis) -> glm::quat; // axis must be normalized.
