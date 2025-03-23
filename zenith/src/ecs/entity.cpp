@@ -1,5 +1,6 @@
 #include "zenith/ecs/entity.hpp"
 
+#include "zenith/core/assert.hpp"
 #include "zenith/ecs/components.hpp"
 
 namespace zth {
@@ -27,6 +28,7 @@ auto EntityHandle::destroy() -> void
 
 auto EntityHandle::destroy_unchecked() -> void
 {
+    ZTH_ASSERT(valid());
     registry()->get().destroy_unchecked(*this);
 }
 
