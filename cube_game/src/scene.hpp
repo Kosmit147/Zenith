@@ -13,9 +13,9 @@ private:
     zth::gl::Texture2D _block_texture;
     zth::Material _block_material;
 
-    zth::Entity _directional_light = create_entity("Directional Light");
+    zth::EntityHandle _directional_light = create_entity("Directional Light");
 
-    zth::Vector<zth::Entity> _blocks;
+    zth::Vector<zth::EntityHandle> _blocks;
     Player _player;
 
 private:

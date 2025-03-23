@@ -75,12 +75,12 @@ auto Texture2D::unbind(u32 slot) -> void
     glBindTextureUnit(slot, GL_NONE);
 }
 
-auto Texture2D::create() -> void
+auto Texture2D::create() noexcept -> void
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 }
 
-auto Texture2D::destroy() const -> void
+auto Texture2D::destroy() const noexcept -> void
 {
     glDeleteTextures(1, &_id);
 }

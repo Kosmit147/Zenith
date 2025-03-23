@@ -110,8 +110,8 @@ private:
     TextureId _id = GL_NONE;
 
 private:
-    auto create() -> void;
-    auto destroy() const -> void;
+    auto create() noexcept -> void;
+    auto destroy() const noexcept -> void;
 
     auto init_from_memory(const void* data, usize data_size_bytes, const TextureParams& params) -> void;
 };

@@ -160,12 +160,12 @@ auto Buffer::resize(u32 size_bytes) -> void
     reallocate(size_bytes);
 }
 
-auto Buffer::create() -> void
+auto Buffer::create() noexcept -> void
 {
     glCreateBuffers(1, &_id);
 }
 
-auto Buffer::destroy() -> void
+auto Buffer::destroy() noexcept -> void
 {
     glDeleteBuffers(1, &_id);
 }
@@ -186,13 +186,11 @@ auto Buffer::reallocate(u32 new_size_bytes) -> void
         Buffer tmp_buffer = create_static_with_size(bytes_to_copy);
         glCopyNamedBufferSubData(_id, tmp_buffer._id, 0, 0, bytes_to_copy);
 
-        ZTH_ASSERT(_usage.has_value());
         glNamedBufferData(_id, new_size_bytes, nullptr, to_gl_enum(*_usage));
         glCopyNamedBufferSubData(tmp_buffer._id, _id, 0, 0, bytes_to_copy);
     }
     else
     {
-        ZTH_ASSERT(_usage.has_value());
         glNamedBufferData(_id, new_size_bytes, nullptr, to_gl_enum(*_usage));
     }
 

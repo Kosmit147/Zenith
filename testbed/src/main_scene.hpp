@@ -8,7 +8,7 @@ public:
     ~MainScene() override = default;
 
 private:
-    zth::Entity _cube = create_entity("Cube");
+    zth::EntityHandle _cube = create_entity("Cube");
 
     zth::Vector<zth::gl::Texture2D> _diffuse_maps;
     zth::Vector<zth::gl::Texture2D> _specular_maps;
@@ -22,11 +22,11 @@ private:
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;
 
-    zth::Entity _directional_light = create_entity("Directional Light");
+    zth::EntityHandle _directional_light = create_entity("Directional Light");
 
-    zth::Entity _point_light_1 = create_entity("Point Light 1");
-    zth::Entity _point_light_2 = create_entity("Point Light 2");
-    zth::Entity _point_light_3 = create_entity("Point Light 3");
+    zth::EntityHandle _point_light_1 = create_entity("Point Light 1");
+    zth::EntityHandle _point_light_2 = create_entity("Point Light 2");
+    zth::EntityHandle _point_light_3 = create_entity("Point Light 3");
 
     zth::debug::MaterialPanel _material_panel{ _cube_material };
 

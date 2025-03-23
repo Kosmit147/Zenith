@@ -10,26 +10,14 @@
 
 namespace zth {
 
-auto Scene::create_entity(const String& tag) -> Entity
+auto Scene::create_entity(const String& tag) -> EntityHandle
 {
-    auto entity = _registry.create();
-
-    // @cleanup: Entity should handle creating these components on its own.
-    _registry.emplace<TagComponent>(entity, tag);
-    _registry.emplace<TransformComponent>(entity);
-
-    return entity;
+    return _registry.create(tag);
 }
 
-auto Scene::create_entity(String&& tag) -> Entity
+auto Scene::create_entity(String&& tag) -> EntityHandle
 {
-    auto entity = _registry.create();
-
-    // @cleanup: Entity should handle creating these components on its own.
-    _registry.emplace<TagComponent>(entity, std::move(tag));
-    _registry.emplace<TransformComponent>(entity);
-
-    return entity;
+    return _registry.create(std::move(tag));
 }
 
 auto Scene::update() -> void

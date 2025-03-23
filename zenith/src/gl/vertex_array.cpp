@@ -172,12 +172,12 @@ auto VertexArray::index_type() const -> GLenum
     return _index_buffer->index_type();
 }
 
-auto VertexArray::create() -> void
+auto VertexArray::create() noexcept -> void
 {
     glCreateVertexArrays(1, &_id);
 }
 
-auto VertexArray::destroy() const -> void
+auto VertexArray::destroy() const noexcept -> void
 {
     glDeleteVertexArrays(1, &_id);
 }
