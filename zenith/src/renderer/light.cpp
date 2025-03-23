@@ -1,4 +1,4 @@
-#include "zenith/graphics/light.hpp"
+#include "zenith/renderer/light.hpp"
 
 #include "zenith/core/assert.hpp"
 #include "zenith/log/formatters.hpp"

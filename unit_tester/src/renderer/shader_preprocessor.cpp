@@ -1,4 +1,4 @@
-#include <zenith/graphics/shader_preprocessor.hpp>
+#include <zenith/renderer/shader_preprocessor.hpp>
 #include <zenith/stl/string.hpp>
 
 #include "matchers.hpp"

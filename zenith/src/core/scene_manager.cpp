@@ -1,8 +1,8 @@
 #include "zenith/core/scene_manager.hpp"
 
 #include "zenith/core/scene.hpp"
-#include "zenith/graphics/renderer.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/renderer/renderer.hpp"
 
 namespace zth {
 

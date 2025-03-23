@@ -4,8 +4,8 @@
 #include <ImGuizmo.h>
 
 #include "zenith/ecs/components.hpp"
-#include "zenith/graphics/light.hpp"
-#include "zenith/graphics/renderer.hpp"
+#include "zenith/renderer/light.hpp"
+#include "zenith/renderer/renderer.hpp"
 #include "zenith/system/event.hpp"
 
 namespace zth {

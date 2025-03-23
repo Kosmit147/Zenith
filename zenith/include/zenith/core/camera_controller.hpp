@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "zenith/graphics/camera.hpp"
+#include "zenith/renderer/camera.hpp"
 #include "zenith/system/input.hpp"
 
 namespace zth {

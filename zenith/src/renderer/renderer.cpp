@@ -1,4 +1,4 @@
-#include "zenith/graphics/renderer.hpp"
+#include "zenith/renderer/renderer.hpp"
 
 #include <glad/glad.h>
 #include <glm/gtx/structured_bindings.hpp>
@@ -10,14 +10,14 @@
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
 #include "zenith/gl/vertex_array.hpp"
-#include "zenith/graphics/colors.hpp"
-#include "zenith/graphics/material.hpp"
-#include "zenith/graphics/materials.hpp"
-#include "zenith/graphics/mesh.hpp"
-#include "zenith/graphics/meshes.hpp"
-#include "zenith/graphics/shaders.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
+#include "zenith/renderer/colors.hpp"
+#include "zenith/renderer/material.hpp"
+#include "zenith/renderer/materials.hpp"
+#include "zenith/renderer/mesh.hpp"
+#include "zenith/renderer/meshes.hpp"
+#include "zenith/renderer/shaders.hpp"
 #include "zenith/system/event.hpp"
 
 namespace zth {

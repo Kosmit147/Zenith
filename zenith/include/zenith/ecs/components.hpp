@@ -4,10 +4,10 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-#include "zenith/graphics/fwd.hpp"
-#include "zenith/graphics/light.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/renderer/fwd.hpp"
+#include "zenith/renderer/light.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/util/macros.hpp"
 

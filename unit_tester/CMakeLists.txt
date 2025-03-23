@@ -6,9 +6,9 @@ include(Catch)
 
 add_executable(
 	unit_tester
-	"src/graphics/shader_preprocessor.cpp"
 	"src/memory/memory.cpp"
 	"src/meta/type.cpp"
+	"src/renderer/shader_preprocessor.cpp"
 	"src/stl/string_algorithm.cpp"
 	"src/stl/string_hasher.cpp"
 	"src/stl/vector.cpp"
