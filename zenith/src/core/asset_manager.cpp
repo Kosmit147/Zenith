@@ -1,5 +1,6 @@
 #include "zenith/core/asset_manager.hpp"
 
+#include "zenith/core/assert.hpp"
 #include "zenith/fs/file.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/log/logger.hpp"
@@ -27,7 +28,7 @@ auto AssetManager::shut_down() -> void
     ZTH_CORE_INFO("Asset manager shut down.");
 }
 
-// @cleanup: Could probably remove some code duplication in add_* functions.
+// @cleanup: Could probably remove some code duplication by making all of these functions templated on the asset type.
 
 auto AssetManager::add_shader(StringView name, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>
 {
@@ -195,6 +196,30 @@ auto AssetManager::get_material(StringView name) -> Optional<Reference<Material>
 
     ZTH_CORE_ERROR("[Asset Manager] Couldn't get material \"{}\".", name);
     return nil;
+}
+
+auto AssetManager::get_shader_unchecked(StringView name) -> gl::Shader&
+{
+    auto kv = _shaders.find(name);
+    ZTH_ASSERT(kv != _shaders.end());
+    auto& [_, shader_ref] = *kv;
+    return shader_ref;
+}
+
+auto AssetManager::get_texture_unchecked(StringView name) -> gl::Texture2D&
+{
+    auto kv = _textures.find(name);
+    ZTH_ASSERT(kv != _textures.end());
+    auto& [_, texture_ref] = *kv;
+    return texture_ref;
+}
+
+auto AssetManager::get_material_unchecked(StringView name) -> Material&
+{
+    auto kv = _materials.find(name);
+    ZTH_ASSERT(kv != _materials.end());
+    auto& [_, material_ref] = *kv;
+    return material_ref;
 }
 
 auto AssetManager::remove_shader(StringView name) -> bool

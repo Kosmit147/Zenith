@@ -46,6 +46,10 @@ public:
     [[nodiscard]] static auto get_texture(StringView name) -> Optional<Reference<gl::Texture2D>>;
     [[nodiscard]] static auto get_material(StringView name) -> Optional<Reference<Material>>;
 
+    [[nodiscard]] static auto get_shader_unchecked(StringView name) -> gl::Shader&;
+    [[nodiscard]] static auto get_texture_unchecked(StringView name) -> gl::Texture2D&;
+    [[nodiscard]] static auto get_material_unchecked(StringView name) -> Material&;
+
     static auto remove_shader(StringView name) -> bool;
     static auto remove_texture(StringView name) -> bool;
     static auto remove_material(StringView name) -> bool;
