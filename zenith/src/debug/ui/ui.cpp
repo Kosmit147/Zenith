@@ -309,72 +309,74 @@ auto TransformGizmo::draw(TransformComponent& transform, const PerspectiveCamera
     }
 }
 
-auto EntityInspectorPanel::draw(entt::entity entity, entt::registry& registry) const -> void
+auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
 {
-    ZTH_ASSERT(registry.valid(entity));
+    ZTH_ASSERT(entity.valid());
 
     ImGui::Begin("Entity Inspector");
 
     {
         // TagComponent and TransformComponent are mandatory.
+        static_assert(IsIntegralComponent<TagComponent>);
+        static_assert(IsIntegralComponent<TransformComponent>);
 
-        auto& tag = registry.get<TagComponent>(entity);
+        auto& tag = entity.get<TagComponent>();
         edit_tag(tag);
 
-        auto& transform = registry.get<TransformComponent>(entity);
+        auto& transform = entity.get<TransformComponent>();
         edit_transform(transform);
 
         if (Window::cursor_enabled())
             gizmo.draw(transform, Renderer::camera());
     }
 
-    if (registry.any_of<CameraComponent>(entity))
+    if (entity.any_of<CameraComponent>())
     {
-        // auto& camera = _registry.get<CameraComponent>(entity);
+        // auto& camera = entity.get<CameraComponent>();
         // @todo
     }
 
-    if (registry.any_of<LightComponent>(entity))
+    if (entity.any_of<LightComponent>())
     {
-        auto& light = registry.get<LightComponent>(entity);
+        auto& light = entity.get<LightComponent>();
         edit_light(light);
     }
 
-    if (registry.any_of<MeshComponent>(entity))
+    if (entity.any_of<MeshComponent>())
     {
-        // auto& mesh = _registry.get<MeshComponent>(entity);
+        // auto& mesh = entity.get<MeshComponent>();
         // @todo
     }
 
-    if (registry.any_of<MaterialComponent>(entity))
+    if (entity.any_of<MaterialComponent>())
     {
-        // auto& material = _registry.get<MaterialComponent>(entity);
+        // auto& material = entity.get<MaterialComponent>();
         // @todo
     }
 
     ImGui::End();
 }
 
-SceneHierarchyPanel::SceneHierarchyPanel(entt::registry& registry) : _registry(registry) {}
+SceneHierarchyPanel::SceneHierarchyPanel(Registry& registry) : _registry(registry) {}
 
 auto SceneHierarchyPanel::draw() -> void
 {
     ImGui::Begin("Scene Hierarchy");
 
-    for (auto entity : _registry.view<entt::entity>())
+    for (auto entity_id : _registry.view<EntityId>())
     {
-        const auto& tag = _registry.get<const TagComponent>(entity);
+        const auto& tag = _registry.get<const TagComponent>(entity_id);
 
-        auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity));
+        auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity_id));
 
-        if (ImGui::Selectable(label.c_str(), _selected_entity == entity))
-            _selected_entity = entity;
+        if (ImGui::Selectable(label.c_str(), _selected_entity_id == entity_id))
+            _selected_entity_id = entity_id;
     }
 
     if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
-        _selected_entity = entt::null;
-    else if (_registry.valid(_selected_entity))
-        inspector.draw(_selected_entity, _registry);
+        _selected_entity_id = null_entity;
+    else if (_registry.valid(_selected_entity_id))
+        inspector.draw(EntityHandle{ _selected_entity_id, _registry });
 
     ImGui::End();
 }

@@ -2,8 +2,6 @@
 
 #include <imgui.h>
 #include <ImGuizmo.h>
-#include <entt/entity/entity.hpp>
-#include <entt/fwd.hpp>
 
 #include <concepts>
 #include <functional>
@@ -11,6 +9,7 @@
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/ecs/entity.hpp"
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/graphics/fwd.hpp"
@@ -34,7 +33,7 @@ struct EntityInspectorPanel
 {
     TransformGizmo gizmo;
 
-    auto draw(entt::entity entity, entt::registry& registry) const -> void;
+    auto draw(EntityHandle entity) const -> void;
 };
 
 class SceneHierarchyPanel
@@ -43,15 +42,15 @@ public:
     EntityInspectorPanel inspector;
 
 public:
-    explicit SceneHierarchyPanel(entt::registry& registry);
+    explicit SceneHierarchyPanel(Registry& registry);
     ZTH_NO_COPY_NO_MOVE(SceneHierarchyPanel)
     ~SceneHierarchyPanel() = default;
 
     auto draw() -> void;
 
 private:
-    entt::registry& _registry;
-    entt::entity _selected_entity = entt::null;
+    Registry& _registry;
+    EntityId _selected_entity_id = null_entity;
 };
 
 // @todo: Replace / improve.

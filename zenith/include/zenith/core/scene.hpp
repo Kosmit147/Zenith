@@ -1,7 +1,5 @@
 #pragma once
 
-#include <entt/entity/registry.hpp>
-
 #include "zenith/debug/ui/ui.hpp"
 #include "zenith/ecs/entity.hpp"
 #include "zenith/stl/string.hpp"
@@ -29,13 +27,12 @@ public:
     friend class SceneManager;
 
 protected:
-    // @todo: Wrap registry and entity in our own classes.
     [[nodiscard]] auto registry(this auto&& self) -> auto& { return self._registry; }
-    [[nodiscard]] auto create_entity(const String& tag) -> Entity;
-    [[nodiscard]] auto create_entity(String&& tag) -> Entity;
+    [[nodiscard]] auto create_entity(const String& tag) -> EntityHandle;
+    [[nodiscard]] auto create_entity(String&& tag) -> EntityHandle;
 
 private:
-    entt::registry _registry;
+    Registry _registry;
     // @cleanup: SceneHierarchyPanel shouldn't be in Scene.
     debug::SceneHierarchyPanel _scene_hierarchy_panel{ _registry };
 

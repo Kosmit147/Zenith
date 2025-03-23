@@ -11,7 +11,7 @@ public:
     ~ContainersScene() override = default;
 
 private:
-    zth::Vector<zth::Entity> _containers;
+    zth::Vector<zth::EntityHandle> _containers;
 
     zth::gl::Texture2D _diffuse_map;
     zth::gl::Texture2D _specular_map;
@@ -22,10 +22,10 @@ private:
     std::shared_ptr<zth::PerspectiveCamera> _camera;
     zth::FpsCameraController _camera_controller;
 
-    zth::Entity _directional_light = create_entity("Directional Light");
-    zth::Entity _point_light = create_entity("Point Light");
-    zth::Entity _spot_light = create_entity("Spot Light");
-    zth::Entity _ambient_light = create_entity("Ambient Light");
+    zth::EntityHandle _directional_light = create_entity("Directional Light");
+    zth::EntityHandle _point_light = create_entity("Point Light");
+    zth::EntityHandle _spot_light = create_entity("Spot Light");
+    zth::EntityHandle _ambient_light = create_entity("Ambient Light");
 
     bool _spot_light_on = true;
 

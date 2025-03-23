@@ -10,7 +10,7 @@
 #include "zenith/log/format.hpp"
 #include "zenith/stl/string.hpp"
 
-template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<zth::String>
+template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<zth::StringView>
 {
     static auto format(const glm::vec<2, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {
@@ -18,7 +18,7 @@ template<typename T> struct fmt::formatter<glm::vec<2, T>> : formatter<zth::Stri
     }
 };
 
-template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<zth::String>
+template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<zth::StringView>
 {
     static auto format(const glm::vec<3, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {
@@ -26,7 +26,7 @@ template<typename T> struct fmt::formatter<glm::vec<3, T>> : formatter<zth::Stri
     }
 };
 
-template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<zth::String>
+template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<zth::StringView>
 {
     static auto format(const glm::vec<4, T>& vec, format_context& ctx) -> decltype(ctx.out())
     {
@@ -34,7 +34,7 @@ template<typename T> struct fmt::formatter<glm::vec<4, T>> : formatter<zth::Stri
     }
 };
 
-template<typename T> struct fmt::formatter<glm::qua<T>> : formatter<zth::String>
+template<typename T> struct fmt::formatter<glm::qua<T>> : formatter<zth::StringView>
 {
     static auto format(const glm::qua<T>& quat, format_context& ctx) -> decltype(ctx.out())
     {

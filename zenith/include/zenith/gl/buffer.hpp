@@ -127,8 +127,8 @@ private:
     Optional<BufferUsage> _usage = nil;
 
 private:
-    auto create() -> void;
-    auto destroy() -> void;
+    auto create() noexcept -> void;
+    auto destroy() noexcept -> void;
 
     auto reallocate(u32 new_size_bytes) -> void;
 

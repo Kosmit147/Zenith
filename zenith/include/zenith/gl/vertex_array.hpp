@@ -88,8 +88,8 @@ private:
     VertexArrayLayout _layout{};
 
 private:
-    auto create() -> void;
-    auto destroy() const -> void;
+    auto create() noexcept -> void;
+    auto destroy() const noexcept -> void;
 
     auto bind_vertex_buffer_layout() const -> void;
     auto bind_instance_buffer_layout() const -> void;
