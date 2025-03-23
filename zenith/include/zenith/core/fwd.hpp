@@ -2,8 +2,6 @@
 
 namespace zth {
 
-class AssetManager;
-
 class FpsCameraController;
 
 class Exception;

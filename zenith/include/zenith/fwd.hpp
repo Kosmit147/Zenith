@@ -1,5 +1,6 @@
 #pragma once
 
+#include "asset/fwd.hpp"
 #include "core/fwd.hpp"
 #include "ecs/fwd.hpp"
 #include "gl/fwd.hpp"
