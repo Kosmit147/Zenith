@@ -57,32 +57,30 @@ MainScene::MainScene()
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller(_camera)
 {
-    auto& registry = Scene::registry();
-
     // --- Cube ---
 
-    registry.emplace_or_replace<zth::MeshComponent>(_cube, &zth::meshes::cube_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_cube, &_cube_material);
+    _cube.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
+    _cube.emplace_or_replace<zth::MaterialComponent>(&_cube_material);
 
     // --- Lights ---
 
-    registry.emplace_or_replace<zth::TransformComponent>(_directional_light, directional_light_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_directional_light, directional_light_light_component);
+    _directional_light.emplace_or_replace<zth::TransformComponent>(directional_light_transform_component);
+    _directional_light.emplace_or_replace<zth::LightComponent>(directional_light_light_component);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_point_light_1, point_light_1_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_point_light_1, point_light_1_light_component);
-    registry.emplace_or_replace<zth::MeshComponent>(_point_light_1, &zth::meshes::sphere_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_point_light_1, &_point_light_1_material);
+    _point_light_1.emplace_or_replace<zth::TransformComponent>(point_light_1_transform_component);
+    _point_light_1.emplace_or_replace<zth::LightComponent>(point_light_1_light_component);
+    _point_light_1.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
+    _point_light_1.emplace_or_replace<zth::MaterialComponent>(&_point_light_1_material);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_point_light_2, point_light_2_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_point_light_2, point_light_2_light_component);
-    registry.emplace_or_replace<zth::MeshComponent>(_point_light_2, &zth::meshes::sphere_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_point_light_2, &_point_light_2_material);
+    _point_light_2.emplace_or_replace<zth::TransformComponent>(point_light_2_transform_component);
+    _point_light_2.emplace_or_replace<zth::LightComponent>(point_light_2_light_component);
+    _point_light_2.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
+    _point_light_2.emplace_or_replace<zth::MaterialComponent>(&_point_light_2_material);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_point_light_3, point_light_3_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_point_light_3, point_light_3_light_component);
-    registry.emplace_or_replace<zth::MeshComponent>(_point_light_3, &zth::meshes::sphere_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_point_light_3, &_point_light_3_material);
+    _point_light_3.emplace_or_replace<zth::TransformComponent>(point_light_3_transform_component);
+    _point_light_3.emplace_or_replace<zth::LightComponent>(point_light_3_light_component);
+    _point_light_3.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
+    _point_light_3.emplace_or_replace<zth::MaterialComponent>(&_point_light_3_material);
 
     _diffuse_maps.emplace_back(embedded::cobble_diffuse_map_data, cobble_diffuse_map_params);
     _diffuse_maps.emplace_back(embedded::container_diffuse_map_data);
@@ -116,11 +114,9 @@ auto MainScene::on_update() -> void
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
 
-    auto& registry = Scene::registry();
-
-    auto& light_component_1 = registry.get<const zth::LightComponent>(_point_light_1);
-    auto& light_component_2 = registry.get<const zth::LightComponent>(_point_light_2);
-    auto& light_component_3 = registry.get<const zth::LightComponent>(_point_light_3);
+    auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
+    auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
+    auto& light_component_3 = _point_light_1.get<const zth::LightComponent>();
 
     _point_light_1_material.albedo = light_component_1.point_light().properties.color;
     _point_light_2_material.albedo = light_component_2.point_light().properties.color;

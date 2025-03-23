@@ -4,21 +4,6 @@
 
 namespace zth {
 
-// clang-format off
-
-// An integral component is a component that cannot be removed.
-template<typename T> struct is_integral_component : std::false_type {};
-template<typename T> constexpr auto is_integral_component_v = is_integral_component<T>::value;
-
-// We always require every entity to have a TagComponent and a TransformComponent.
-template<> struct is_integral_component<TagComponent> : std::true_type {};
-template<> struct is_integral_component<TransformComponent> : std::true_type {};
-
-// clang-format on
-
-template<typename T>
-concept IsIntegralComponent = is_integral_component_v<T>;
-
 template<typename... Components> auto ConstEntityHandle::all_of() const -> bool
 {
     return _registry->all_of<Components...>(*this);
