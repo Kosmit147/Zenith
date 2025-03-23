@@ -41,6 +41,11 @@ auto EulerAngles::operator-() const -> EulerAngles
     return { .pitch = -pitch, .yaw = -yaw, .roll = -roll };
 }
 
+EulerAngles::operator glm::vec3() const
+{
+    return glm::vec3{ pitch, yaw, roll };
+}
+
 auto to_quaternion(float angle, glm::vec3 axis) -> glm::quat
 {
     return glm::rotate(glm::identity<glm::quat>(), angle, axis);

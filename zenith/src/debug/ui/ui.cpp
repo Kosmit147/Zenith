@@ -128,17 +128,11 @@ auto slide_angle(const char* label, float& angle_radians, float degrees_min = 0.
 
 auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed = default_drag_speed) -> bool
 {
-    float values[3] = {
-        angles.pitch,
-        angles.yaw,
-        angles.roll,
-    };
+    auto values = static_cast<glm::vec3>(angles);
 
-    if (drag_float_3(label, values, drag_speed))
+    if (drag_vec(label, values, drag_speed))
     {
-        angles.pitch = values[0];
-        angles.yaw = values[1];
-        angles.roll = values[2];
+        angles = math::EulerAngles{ .pitch = values.x, .yaw = values.y, .roll = values.z };
         return true;
     }
 
