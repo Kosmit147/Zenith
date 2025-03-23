@@ -80,11 +80,24 @@ public:
     constexpr auto pop_back() noexcept(std::is_nothrow_destructible_v<value_type>) -> void;
     constexpr auto clear() noexcept(std::is_nothrow_destructible_v<value_type>) -> void;
 
+    friend constexpr auto swap(InPlaceVector& first, InPlaceVector& second)
+        noexcept(std::is_nothrow_swappable_v<value_type> && std::is_nothrow_move_constructible_v<value_type>) -> void
+    {
+        if (first.size() < second.size())
+            swap_impl(first, second);
+        else
+            swap_impl(second, first);
+    }
+
 private:
     // @speed: We could determine what the smallest unsigned integer type capable of storing the values between 0 and
     // Capacity is and use it instead of end pointer (or maybe even forgo it completely if Capacity is 0).
     pointer _end = nullptr;
     memory::StaticBuffer<sizeof(value_type) * Capacity, alignof(value_type)> _data;
+
+private:
+    static constexpr auto swap_impl(InPlaceVector& smaller, InPlaceVector& bigger)
+        noexcept(std::is_nothrow_swappable_v<value_type> && std::is_nothrow_move_constructible_v<value_type>) -> void;
 };
 
 } // namespace zth

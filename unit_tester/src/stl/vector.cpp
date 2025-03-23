@@ -61,7 +61,7 @@ TEST_CASE("InPlaceVector can be constructed", "[InPlaceVector]")
     }
 }
 
-TEST_CASE("InPlaceVector can be copied and moved", "[InPlaceVector]")
+TEST_CASE("InPlaceVector can be copied, moved and swapped", "[InPlaceVector]")
 {
     zth::InPlaceVector<int, 3> source = { 1, 2, 3 };
 
@@ -109,6 +109,19 @@ TEST_CASE("InPlaceVector can be copied and moved", "[InPlaceVector]")
 
         REQUIRE(dest.size() == source.size());
         REQUIRE(dest.capacity() == source.capacity());
+    }
+
+    SECTION("swap works")
+    {
+        zth::InPlaceVector<int, 5> first = { 1, 2 };
+        zth::InPlaceVector<int, 5> second = { 4, 3, 2, 1 };
+
+        auto expected_first = second;
+        auto expected_second = first;
+
+        swap(first, second);
+        REQUIRE_THAT(first, RangeEquals(expected_first));
+        REQUIRE_THAT(second, RangeEquals(expected_second));
     }
 }
 
