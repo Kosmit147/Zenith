@@ -5,6 +5,7 @@
 
 #include "zenith/gl/fwd.hpp"
 #include "zenith/gl/texture.hpp"
+#include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/string_map.hpp"
 #include "zenith/util/optional.hpp"
@@ -38,15 +39,21 @@ public:
     static auto add_texture_from_file(StringView name, const std::filesystem::path& path,
                                       const gl::TextureParams& params = {}) -> Optional<Reference<gl::Texture2D>>;
 
+    static auto add_material(StringView name, const Material& material) -> Optional<Reference<Material>>;
+    static auto add_material(StringView name, Material&& material) -> Optional<Reference<Material>>;
+
     [[nodiscard]] static auto get_shader(StringView name) -> Optional<Reference<gl::Shader>>;
     [[nodiscard]] static auto get_texture(StringView name) -> Optional<Reference<gl::Texture2D>>;
+    [[nodiscard]] static auto get_material(StringView name) -> Optional<Reference<Material>>;
 
     static auto remove_shader(StringView name) -> bool;
     static auto remove_texture(StringView name) -> bool;
+    static auto remove_material(StringView name) -> bool;
 
 private:
     static StringHashMap<gl::Shader> _shaders;
     static StringHashMap<gl::Texture2D> _textures;
+    static StringHashMap<Material> _materials;
 };
 
 auto AssetManager::add_texture_from_memory(StringView name, std::ranges::contiguous_range auto&& data,

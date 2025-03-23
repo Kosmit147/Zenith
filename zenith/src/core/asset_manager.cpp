@@ -3,11 +3,13 @@
 #include "zenith/fs/file.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/renderer/material.hpp"
 
 namespace zth {
 
 StringHashMap<gl::Shader> AssetManager::_shaders;
 StringHashMap<gl::Texture2D> AssetManager::_textures;
+StringHashMap<Material> AssetManager::_materials;
 
 auto AssetManager::init() -> void
 {
@@ -20,6 +22,7 @@ auto AssetManager::shut_down() -> void
 
     _shaders.clear();
     _textures.clear();
+    _materials.clear();
 
     ZTH_CORE_INFO("Asset manager shut down.");
 }
@@ -51,8 +54,8 @@ auto AssetManager::add_shader_from_sources(StringView name, const gl::ShaderSour
         return nil;
     }
 
-    auto& [_, shader] = *kv;
-    return shader;
+    auto& [_, shader_ref] = *kv;
+    return shader_ref;
 }
 
 auto AssetManager::add_shader_from_files(StringView name, const gl::ShaderSourcePaths& paths)
@@ -66,8 +69,8 @@ auto AssetManager::add_shader_from_files(StringView name, const gl::ShaderSource
         return nil;
     }
 
-    auto& [_, shader] = *kv;
-    return shader;
+    auto& [_, shader_ref] = *kv;
+    return shader_ref;
 }
 
 auto AssetManager::add_texture(StringView name, gl::Texture2D&& texture) -> Optional<Reference<gl::Texture2D>>
@@ -95,8 +98,8 @@ auto AssetManager::add_texture_from_memory(StringView name, const void* data, us
         return nil;
     }
 
-    auto& [_, texture] = *kv;
-    return texture;
+    auto& [_, texture_ref] = *kv;
+    return texture_ref;
 }
 
 auto AssetManager::add_texture_from_file(const std::filesystem::path& path, const gl::TextureParams& params)
@@ -126,16 +129,44 @@ auto AssetManager::add_texture_from_file(StringView name, const std::filesystem:
         return nil;
     }
 
-    auto& [_, texture] = *kv;
-    return texture;
+    auto& [_, texture_ref] = *kv;
+    return texture_ref;
+}
+
+auto AssetManager::add_material(StringView name, const Material& material) -> Optional<Reference<Material>>
+{
+    auto [kv, success] = _materials.emplace(name, material);
+
+    if (!success)
+    {
+        ZTH_CORE_ERROR("[Asset Manager] Couldn't add material \"{}\".", name);
+        return nil;
+    }
+
+    auto& [_, material_ref] = *kv;
+    return material_ref;
+}
+
+auto AssetManager::add_material(StringView name, Material&& material) -> Optional<Reference<Material>>
+{
+    auto [kv, success] = _materials.emplace(name, std::move(material));
+
+    if (!success)
+    {
+        ZTH_CORE_ERROR("[Asset Manager] Couldn't add material \"{}\".", name);
+        return nil;
+    }
+
+    auto& [_, material_ref] = *kv;
+    return material_ref;
 }
 
 auto AssetManager::get_shader(StringView name) -> Optional<Reference<gl::Shader>>
 {
     if (auto kv = _shaders.find(name); kv != _shaders.end())
     {
-        auto& [_, shader] = *kv;
-        return shader;
+        auto& [_, shader_ref] = *kv;
+        return shader_ref;
     }
 
     ZTH_CORE_ERROR("[Asset Manager] Couldn't get shader \"{}\".", name);
@@ -146,11 +177,23 @@ auto AssetManager::get_texture(StringView name) -> Optional<Reference<gl::Textur
 {
     if (auto kv = _textures.find(name); kv != _textures.end())
     {
-        auto& [_, texture] = *kv;
-        return texture;
+        auto& [_, texture_ref] = *kv;
+        return texture_ref;
     }
 
     ZTH_CORE_ERROR("[Asset Manager] Couldn't get texture \"{}\".", name);
+    return nil;
+}
+
+auto AssetManager::get_material(StringView name) -> Optional<Reference<Material>>
+{
+    if (auto kv = _materials.find(name); kv != _materials.end())
+    {
+        auto& [_, texture_ref] = *kv;
+        return texture_ref;
+    }
+
+    ZTH_CORE_ERROR("[Asset Manager] Couldn't get material \"{}\".", name);
     return nil;
 }
 
@@ -163,6 +206,12 @@ auto AssetManager::remove_shader(StringView name) -> bool
 auto AssetManager::remove_texture(StringView name) -> bool
 {
     auto elems_erased = _textures.erase(name);
+    return elems_erased != 0;
+}
+
+auto AssetManager::remove_material(StringView name) -> bool
+{
+    auto elems_erased = _materials.erase(name);
     return elems_erased != 0;
 }
 
