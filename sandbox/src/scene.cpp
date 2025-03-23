@@ -19,14 +19,12 @@ Scene::Scene()
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller(_camera)
 {
-    auto& registry = Scene::registry();
+    _cube.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
+    _cube.emplace_or_replace<zth::MaterialComponent>(&_cube_material);
 
-    registry.emplace_or_replace<zth::MeshComponent>(_cube, &zth::meshes::cube_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_cube, &_cube_material);
-
-    registry.emplace_or_replace<zth::TransformComponent>(_light, glm::vec3{ 0.0f },
-                                                         glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
-    registry.emplace_or_replace<zth::LightComponent>(_light, zth::DirectionalLight{});
+    _light.emplace_or_replace<zth::TransformComponent>(glm::vec3{ 0.0f },
+                                                       glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
+    _light.emplace_or_replace<zth::LightComponent>(zth::DirectionalLight{});
 }
 
 auto Scene::on_load() -> void
@@ -41,9 +39,7 @@ auto Scene::on_update() -> void
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
 
-    auto& registry = Scene::registry();
-
-    auto& cube_transform = registry.get<zth::TransformComponent>(_cube);
+    auto& cube_transform = _cube.get<zth::TransformComponent>();
 
     cube_transform.rotate(0.0005f * time, glm::normalize(glm::vec3{ 0.0f, 1.0f, 0.0f }));
     cube_transform.rotate(0.0005f * time, glm::normalize(glm::vec3{ -0.3f, 0.1f, 0.7f }));

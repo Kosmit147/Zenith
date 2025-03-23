@@ -76,33 +76,31 @@ ContainersScene::ContainersScene()
       _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
       _camera_controller{ _camera }
 {
-    auto& registry = Scene::registry();
+    _directional_light.emplace_or_replace<zth::TransformComponent>(directional_light_transform_component);
+    _directional_light.emplace_or_replace<zth::LightComponent>(directional_light_light_component);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_directional_light, directional_light_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_directional_light, directional_light_light_component);
+    _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
+    _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
+    _point_light.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
+    _point_light.emplace_or_replace<zth::MaterialComponent>(&_point_light_material);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_point_light, point_light_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_point_light, point_light_light_component);
-    registry.emplace_or_replace<zth::MeshComponent>(_point_light, &zth::meshes::sphere_mesh());
-    registry.emplace_or_replace<zth::MaterialComponent>(_point_light, &_point_light_material);
+    _spot_light.emplace_or_replace<zth::TransformComponent>(spot_light_transform_component);
+    _spot_light.emplace_or_replace<zth::LightComponent>(spot_light_light_component);
 
-    registry.emplace_or_replace<zth::TransformComponent>(_spot_light, spot_light_transform_component);
-    registry.emplace_or_replace<zth::LightComponent>(_spot_light, spot_light_light_component);
-
-    registry.emplace_or_replace<zth::LightComponent>(_ambient_light, ambient_light_light_component);
+    _ambient_light.emplace_or_replace<zth::LightComponent>(ambient_light_light_component);
 
     for (const auto [i, position] : container_positions | std::views::enumerate)
     {
         auto label = zth::format("Container {}", i);
         auto& container = _containers.emplace_back(create_entity(label));
 
-        registry.emplace_or_replace<zth::MeshComponent>(container, &zth::meshes::cube_mesh());
-        registry.emplace_or_replace<zth::MaterialComponent>(container, &_container_material);
+        container.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
+        container.emplace_or_replace<zth::MaterialComponent>(&_container_material);
 
         const auto rotation_axis = glm::normalize(glm::vec3{ 1.0f, 0.3f, 0.5f });
         auto angle = 0.35f * static_cast<float>(i);
 
-        auto& container_transform = registry.get<zth::TransformComponent>(container);
+        auto& container_transform = container.get<zth::TransformComponent>();
         container_transform.translate(position);
         container_transform.rotate(angle, rotation_axis);
     }
@@ -118,9 +116,7 @@ auto ContainersScene::on_update() -> void
     if (!zth::Window::cursor_enabled())
         _camera_controller.on_update();
 
-    auto& registry = Scene::registry();
-
-    auto& light = registry.get<const zth::LightComponent>(_point_light);
+    auto& light = _point_light.get<const zth::LightComponent>();
     _point_light_material.albedo = light.point_light().properties.color;
 }
 
@@ -154,13 +150,11 @@ auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& eve
 
 auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
-    auto& registry = Scene::registry();
-
     if (event.key == toggle_spotlight_key)
     {
         _spot_light_on = !_spot_light_on;
 
-        auto& light = registry.get<zth::LightComponent>(_spot_light);
+        auto& light = _spot_light.get<zth::LightComponent>();
 
         if (_spot_light_on)
             light.spot_light().properties.color = zth::colors::white;

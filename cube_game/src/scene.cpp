@@ -19,11 +19,9 @@ Scene::Scene()
     : _block_texture(cobble_texture_data, cobble_texture_params),
       _block_material{ .diffuse_map = &_block_texture, .specular = glm::vec3{ 0.1f } }
 {
-    auto& registry = Scene::registry();
-
-    auto& light_transform = registry.get<zth::TransformComponent>(_directional_light);
+    auto& light_transform = _directional_light.get<zth::TransformComponent>();
     light_transform.set_direction(directional_light_direction);
-    registry.emplace_or_replace<zth::LightComponent>(_directional_light, zth::DirectionalLight{});
+    _directional_light.emplace_or_replace<zth::LightComponent>(zth::DirectionalLight{});
 
     std::size_t counter = 0;
 
@@ -40,11 +38,11 @@ Scene::Scene()
             auto name = zth::format("Block {}", counter++);
             auto& block = _blocks.emplace_back(create_entity(name));
 
-            auto& block_transform = registry.get<zth::TransformComponent>(block);
+            auto& block_transform = block.get<zth::TransformComponent>();
             block_transform.set_translation(glm::ivec3{ x, y, z });
 
-            registry.emplace<zth::MeshComponent>(block, &zth::meshes::cube_mesh());
-            registry.emplace<zth::MaterialComponent>(block, &_block_material);
+            block.emplace<zth::MeshComponent>(&zth::meshes::cube_mesh());
+            block.emplace<zth::MaterialComponent>(&_block_material);
         }
     }
 
@@ -61,11 +59,11 @@ Scene::Scene()
             auto name = zth::format("Block {}", counter++);
             auto& block = _blocks.emplace_back(create_entity(name));
 
-            auto& block_transform = registry.get<zth::TransformComponent>(block);
+            auto& block_transform = block.get<zth::TransformComponent>();
             block_transform.set_translation(glm::ivec3{ x, y, z });
 
-            registry.emplace<zth::MeshComponent>(block, &zth::meshes::cube_mesh());
-            registry.emplace<zth::MaterialComponent>(block, &_block_material);
+            block.emplace<zth::MeshComponent>(&zth::meshes::cube_mesh());
+            block.emplace<zth::MaterialComponent>(&_block_material);
         }
     }
 }
