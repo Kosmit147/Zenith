@@ -25,6 +25,32 @@ constexpr auto light_attenuation_drag_speed = default_ui_drag_speed * 0.01f;
 constexpr auto light_ambient_drag_speed = default_ui_drag_speed * 0.1f;
 constexpr auto material_shininess_drag_speed = default_ui_drag_speed * 10.0f;
 
+auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_values) -> bool
+{
+    auto value_changed = false;
+
+    if (ImGui::BeginCombo(label, to_string(value)))
+    {
+        for (auto current_value : enum_values)
+        {
+            const auto is_selected = current_value == value;
+
+            if (ImGui::Selectable(to_string(current_value), is_selected))
+            {
+                value = current_value;
+                value_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return value_changed;
+}
+
 } // namespace
 
 auto drag_float(const char* label, float& value, float drag_speed) -> bool
@@ -175,6 +201,11 @@ auto slide_angles(const char* label, glm::vec4& angles, float min_degrees, float
     return false;
 }
 
+auto checkbox(const char* label, bool& value) -> bool
+{
+    return ImGui::Checkbox(label, &value);
+}
+
 auto edit_color(const char* label, glm::vec3& color) -> bool
 {
     return ImGui::ColorEdit3(label, glm::value_ptr(color));
@@ -233,33 +264,19 @@ auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
     return false;
 }
 
-auto edit_light_type(LightType& type) -> bool
+auto select_key(const char* label, Key& key) -> bool
 {
-    auto value_changed = false;
+    return select_stringifiable_enum(label, key, key_enumerations);
+}
 
-    auto light_type_selected_idx = std::to_underlying(type);
+auto select_mouse_button(const char* label, MouseButton& button) -> bool
+{
+    return select_stringifiable_enum(label, button, mouse_button_enumerations);
+}
 
-    if (ImGui::BeginCombo("Type", to_string(light_type_enumerations[light_type_selected_idx])))
-    {
-        for (usize i = 0; i < light_type_enumerations.size(); i++)
-        {
-            const auto is_selected = light_type_selected_idx == i;
-
-            if (ImGui::Selectable(to_string(light_type_enumerations[i]), is_selected))
-            {
-                light_type_selected_idx = static_cast<decltype(light_type_selected_idx)>(i);
-                type = static_cast<LightType>(light_type_selected_idx);
-                value_changed = true;
-            }
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    return value_changed;
+auto select_light_type(LightType& type) -> bool
+{
+    return select_stringifiable_enum("Type", type, light_type_enumerations);
 }
 
 auto edit_light_properties(LightProperties& properties) -> void
@@ -349,7 +366,7 @@ auto edit_light_component(LightComponent& light) -> void
 
     auto light_type = light.type();
 
-    if (edit_light_type(light_type))
+    if (select_light_type(light_type))
         light.set_light(light_type);
 
     switch (light.type())
@@ -374,6 +391,8 @@ auto edit_script_component(ScriptComponent& script) -> void
 {
     ImGui::SeparatorText("Script");
     ImGui::TextUnformatted(script.script().display_name());
+
+    script.script().debug_edit();
 }
 
 auto TransformGizmo::draw(TransformComponent& transform) const -> void

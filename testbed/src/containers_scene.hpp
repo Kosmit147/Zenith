@@ -22,7 +22,6 @@ private:
 
     zth::EntityHandle _directional_light = create_entity("Directional Light");
     zth::EntityHandle _point_light = create_entity("Point Light");
-    zth::EntityHandle _spot_light = create_entity("Spot Light");
     zth::EntityHandle _ambient_light = create_entity("Ambient Light");
 
     bool _spot_light_on = true;

@@ -8,7 +8,7 @@ namespace zth::meshes {
 namespace {
 
 const std::array cube_vertices = {
-    // front wall
+    // Front wall.
     StandardVertex{
         .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 0.0f, 0.0f } },
     StandardVertex{
@@ -18,7 +18,7 @@ const std::array cube_vertices = {
     StandardVertex{
         .local_position = { -0.5f, 0.5f, 0.5f }, .normal = { 0.0f, 0.0f, 1.0f }, .tex_coords = { 0.0f, 1.0f } },
 
-    // back wall
+    // Back wall.
     StandardVertex{
         .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 0.0f, 0.0f } },
     StandardVertex{
@@ -28,7 +28,7 @@ const std::array cube_vertices = {
     StandardVertex{
         .local_position = { 0.5f, -0.5f, -0.5f }, .normal = { 0.0f, 0.0f, -1.0f }, .tex_coords = { 1.0f, 0.0f } },
 
-    // left wall
+    // Left wall.
     StandardVertex{
         .local_position = { -0.5f, 0.5f, 0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
     StandardVertex{
@@ -38,7 +38,7 @@ const std::array cube_vertices = {
     StandardVertex{
         .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { -1.0f, 0.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
 
-    // right wall
+    // Right wall.
     StandardVertex{
         .local_position = { 0.5f, 0.5f, 0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 0.0f } },
     StandardVertex{
@@ -48,7 +48,7 @@ const std::array cube_vertices = {
     StandardVertex{
         .local_position = { 0.5f, 0.5f, -0.5f }, .normal = { 1.0f, 0.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
 
-    // bottom wall
+    // Bottom wall.
     StandardVertex{
         .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
     StandardVertex{
@@ -58,7 +58,7 @@ const std::array cube_vertices = {
     StandardVertex{
         .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
 
-    // top wall
+    // Top wall.
     StandardVertex{
         .local_position = { -0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
     StandardVertex{
@@ -70,7 +70,7 @@ const std::array cube_vertices = {
 };
 
 const std::array<GLushort, 36> cube_indices = {
-    // front wall
+    // Front wall.
     0,
     1,
     2,
@@ -78,7 +78,7 @@ const std::array<GLushort, 36> cube_indices = {
     2,
     3,
 
-    // back wall
+    // Back wall.
     4,
     5,
     6,
@@ -86,7 +86,7 @@ const std::array<GLushort, 36> cube_indices = {
     6,
     7,
 
-    // left wall
+    // Left wall.
     8,
     9,
     10,
@@ -94,7 +94,7 @@ const std::array<GLushort, 36> cube_indices = {
     10,
     11,
 
-    // right wall
+    // Right wall.
     12,
     13,
     14,
@@ -102,7 +102,7 @@ const std::array<GLushort, 36> cube_indices = {
     14,
     15,
 
-    // bottom wall
+    // Bottom wall.
     16,
     17,
     18,
@@ -110,7 +110,7 @@ const std::array<GLushort, 36> cube_indices = {
     18,
     19,
 
-    // top wall
+    // Top wall.
     20,
     21,
     22,
@@ -120,7 +120,7 @@ const std::array<GLushort, 36> cube_indices = {
 };
 
 const std::array pyramid_vertices = {
-    // front wall
+    // Front wall.
     StandardVertex{ .local_position = { -0.5f, -0.5f, 0.5f },
                     .normal = { 0.0f, 0.447214f, 0.894427f },
                     .tex_coords = { 0.0f, 0.0f } },
@@ -131,7 +131,7 @@ const std::array pyramid_vertices = {
                     .normal = { 0.0f, 0.447214f, 0.894427f },
                     .tex_coords = { 0.5f, 1.0f } },
 
-    // right wall
+    // Right wall.
     StandardVertex{ .local_position = { 0.5f, -0.5f, 0.5f },
                     .normal = { 0.894427f, 0.447214f, 0.0f },
                     .tex_coords = { 0.0f, 0.0f } },
@@ -142,7 +142,7 @@ const std::array pyramid_vertices = {
                     .normal = { 0.894427f, 0.447214f, 0.0f },
                     .tex_coords = { 0.5f, 1.0f } },
 
-    // back wall
+    // Back wall.
     StandardVertex{ .local_position = { 0.5f, -0.5f, -0.5f },
                     .normal = { 0.0f, 0.447214f, -0.894427f },
                     .tex_coords = { 0.0f, 0.0f } },
@@ -153,7 +153,7 @@ const std::array pyramid_vertices = {
                     .normal = { 0.0f, 0.447214f, -0.894427f },
                     .tex_coords = { 0.5f, 1.0f } },
 
-    // left wall
+    // Left wall.
     StandardVertex{ .local_position = { -0.5f, -0.5f, -0.5f },
                     .normal = { -0.894427f, 0.447214f, 0.0f },
                     .tex_coords = { 0.0f, 0.0f } },
@@ -164,7 +164,7 @@ const std::array pyramid_vertices = {
                     .normal = { -0.894427f, 0.447214f, 0.0f },
                     .tex_coords = { 0.5f, 1.0f } },
 
-    // bottom wall
+    // Bottom wall.
     StandardVertex{
         .local_position = { -0.5f, -0.5f, -0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 0.0f } },
     StandardVertex{
@@ -176,19 +176,19 @@ const std::array pyramid_vertices = {
 };
 
 const std::array<GLushort, 18> pyramid_indices = {
-    // front wall
+    // Front wall.
     0, 1, 2,
 
-    // right wall
+    // Right wall.
     3, 4, 5,
 
-    // back wall
+    // Back wall.
     6, 7, 8,
 
-    // left wall
+    // Left wall.
     9, 10, 11,
 
-    // bottom wall
+    // Bottom wall.
     12, 13, 14, 12, 14, 15
 };
 
