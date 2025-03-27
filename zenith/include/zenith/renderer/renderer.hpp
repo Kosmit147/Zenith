@@ -1,16 +1,14 @@
 #pragma once
 
 #include <glm/fwd.hpp>
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include <memory>
-
 #include "zenith/core/typedefs.hpp"
+#include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/fwd.hpp"
-#include "zenith/math/vector.hpp"
-#include "zenith/renderer/camera.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/shader_data.hpp"
@@ -40,6 +38,34 @@ struct RenderBatch
     const gl::VertexArray* vertex_array;
     const Material* material;
     Vector<const glm::mat4*> transforms;
+};
+
+struct DirectionalLightRenderData
+{
+    glm::vec3 direction;
+    LightProperties properties;
+};
+
+struct PointLightRenderData
+{
+    glm::vec3 position;
+    LightProperties properties;
+    LightAttenuation attenuation;
+};
+
+struct SpotLightRenderData
+{
+    glm::vec3 position;
+    glm::vec3 direction;
+    float inner_cutoff_cosine; // Cosine of the inner cone angle.
+    float outer_cutoff_cosine; // Cosine of the outer cone angle.
+    LightProperties properties;
+    LightAttenuation attenuation;
+};
+
+struct AmbientLightRenderData
+{
+    glm::vec3 ambient;
 };
 
 // @test: Multiple directional lights.
@@ -83,15 +109,15 @@ public:
     static auto set_clear_color(glm::vec4 color) -> void;
     static auto clear() -> void;
 
-    static auto begin_scene() -> void;
+    static auto begin_scene(const CameraComponent& camera, const TransformComponent& camera_transform) -> void;
     static auto end_scene() -> void;
 
-    static auto set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void;
-
-    static auto submit_directional_light(const DirectionalLightRenderData& data) -> void;
-    static auto submit_point_light(const PointLightRenderData& data) -> void;
-    static auto submit_spot_light(const SpotLightRenderData& data) -> void;
-    static auto submit_ambient_light(const AmbientLightRenderData& data) -> void;
+    static auto submit_light(const LightComponent& light, const TransformComponent& light_transform) -> void;
+    static auto submit_directional_light(const DirectionalLight& light, const TransformComponent& light_transform)
+        -> void;
+    static auto submit_point_light(const PointLight& light, const TransformComponent& light_transform) -> void;
+    static auto submit_spot_light(const SpotLight& light, const TransformComponent& light_transform) -> void;
+    static auto submit_ambient_light(const AmbientLight& light) -> void;
 
     // The submitted references must all be valid until the renderer finishes rendering the scene.
     static auto submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
@@ -99,12 +125,15 @@ public:
     static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
         -> void;
 
-    [[nodiscard]] static auto camera() -> const PerspectiveCamera&;
+    [[nodiscard]] static auto current_camera_view() -> const glm::mat4&;
+    [[nodiscard]] static auto current_camera_projection() -> const glm::mat4&;
+    [[nodiscard]] static auto current_camera_view_projection() -> const glm::mat4&;
     [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
 
 private:
-    std::shared_ptr<const PerspectiveCamera> _camera =
-        std::make_shared<PerspectiveCamera>(glm::vec3{ 0.0f }, math::world_forward, 1.0f);
+    glm::mat4 _current_camera_view;
+    glm::mat4 _current_camera_projection;
+    glm::mat4 _current_camera_view_projection;
 
     Vector<DirectionalLightRenderData> _directional_lights;
     Vector<PointLightRenderData> _point_lights;
@@ -152,7 +181,7 @@ private:
 
     static auto bind_material(const Material& material) -> void;
 
-    static auto upload_camera_data() -> void;
+    static auto upload_camera_data(glm::vec3 camera_position, const glm::mat4& view_projection) -> void;
     static auto upload_material_data(const Material& material) -> void;
     static auto upload_light_data() -> void;
     static auto upload_directional_lights_data() -> void;

@@ -26,7 +26,7 @@ struct TransformGizmo
     ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
     ImGuizmo::MODE mode = ImGuizmo::WORLD;
 
-    auto draw(TransformComponent& transform, const PerspectiveCamera& camera) const -> void;
+    auto draw(TransformComponent& transform) const -> void;
 };
 
 struct EntityInspectorPanel

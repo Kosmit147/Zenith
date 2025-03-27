@@ -2,8 +2,6 @@
 
 namespace zth {
 
-class FpsCameraController;
-
 class Exception;
 
 class Random;

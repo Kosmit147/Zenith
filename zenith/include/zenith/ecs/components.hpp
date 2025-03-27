@@ -2,6 +2,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
 
 #include <memory>
@@ -12,7 +13,6 @@
 #include "zenith/renderer/light.hpp"
 #include "zenith/script/script.hpp"
 #include "zenith/stl/string.hpp"
-#include "zenith/util/macros.hpp"
 
 namespace zth {
 
@@ -48,10 +48,6 @@ public:
     explicit TransformComponent(glm::vec3 translation, math::EulerAngles rotation, float scale);
     explicit TransformComponent(const glm::mat4& transform);
 
-    ZTH_DEFAULT_COPY_DEFAULT_MOVE(TransformComponent)
-
-    ~TransformComponent() = default;
-
     auto translate(glm::vec3 translation) -> TransformComponent&;
 
     auto rotate(float angle, glm::vec3 axis) -> TransformComponent&; // axis must be normalized.
@@ -78,12 +74,19 @@ public:
 
     [[nodiscard]] auto translation() const { return _translation; }
     [[nodiscard]] auto rotation() const { return _rotation; }
+    [[nodiscard]] auto euler_angles() const -> math::EulerAngles;
     [[nodiscard]] auto direction() const -> glm::vec3;
     [[nodiscard]] auto scale() const { return _scale; }
+
+    [[nodiscard]] auto forward() const -> glm::vec3;
+    [[nodiscard]] auto right() const -> glm::vec3;
+    [[nodiscard]] auto up() const -> glm::vec3;
 
     [[nodiscard]] auto transform() const -> auto& { return _transform; }
 
 private:
+    // @speed: Maybe we should not store the matrix in here and instead always recreate it with the call to transform().
+    // That would be a lot better for cache efficiency when submitting the transforms to the renderer.
     glm::mat4 _transform{ 1.0f };
 
     glm::vec3 _translation{ 0.0f };
@@ -96,9 +99,16 @@ private:
 
 // --------------------------- ScriptComponent ---------------------------
 
-struct ScriptComponent
+class ScriptComponent
 {
-    std::unique_ptr<Script> script; // script should never be null.
+public:
+    explicit ScriptComponent(std::unique_ptr<Script>&& script);
+
+    [[nodiscard]] auto script() -> Script&;
+    [[nodiscard]] auto script() const -> const Script&;
+
+private:
+    std::unique_ptr<Script> _script; // script should never be null.
 };
 
 // --------------------------- MeshComponent ---------------------------
@@ -117,9 +127,18 @@ struct MaterialComponent
 
 // --------------------------- CameraComponent ---------------------------
 
+// @todo: Orthographic camera.
+
 struct CameraComponent
 {
-    // @todo
+    float aspect_ratio;
+    float fov = glm::radians(45.0f);
+    float near = 0.1f;
+    float far = 100.0f;
+
+    [[nodiscard]] auto view(const TransformComponent& transform) const -> glm::mat4;
+    [[nodiscard]] auto projection() const -> glm::mat4;
+    [[nodiscard]] auto view_projection(const TransformComponent& transform) const -> glm::mat4;
 };
 
 // --------------------------- LightComponent ---------------------------
@@ -150,12 +169,6 @@ public:
     [[nodiscard]] auto ambient_light() -> AmbientLight&;
     [[nodiscard]] auto ambient_light() const -> const AmbientLight&;
 
-    [[nodiscard]] auto to_directional_light_render_data(const TransformComponent& transform) const
-        -> DirectionalLightRenderData;
-    [[nodiscard]] auto to_point_light_render_data(const TransformComponent& transform) const -> PointLightRenderData;
-    [[nodiscard]] auto to_spot_light_render_data(const TransformComponent& transform) const -> SpotLightRenderData;
-    [[nodiscard]] auto to_ambient_light_render_data() const -> AmbientLightRenderData;
-
 private:
     LightType _type;
 
@@ -172,6 +185,7 @@ private:
 
 ZTH_DECLARE_FORMATTER(zth::TagComponent);
 ZTH_DECLARE_FORMATTER(zth::TransformComponent);
+ZTH_DECLARE_FORMATTER(zth::ScriptComponent);
 ZTH_DECLARE_FORMATTER(zth::MeshComponent);
 ZTH_DECLARE_FORMATTER(zth::MaterialComponent);
 ZTH_DECLARE_FORMATTER(zth::CameraComponent);

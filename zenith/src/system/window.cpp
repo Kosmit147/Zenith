@@ -222,6 +222,13 @@ auto Window::size() -> glm::uvec2
     return glm::uvec2{ static_cast<unsigned int>(width), static_cast<unsigned int>(height) };
 }
 
+auto Window::aspect_ratio() -> float
+{
+    int width, height;
+    glfwGetWindowSize(_window, &width, &height);
+    return static_cast<float>(width) / static_cast<float>(height);
+}
+
 auto Window::mouse_pos() -> glm::vec2
 {
     double x_pos, y_pos;

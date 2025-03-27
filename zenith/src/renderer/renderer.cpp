@@ -2,10 +2,9 @@
 
 #include <glad/glad.h>
 #include <glm/gtx/structured_bindings.hpp>
-#include <glm/mat3x3.hpp>
-#include <glm/mat4x4.hpp>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
@@ -152,7 +151,7 @@ auto Renderer::clear() -> void
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-auto Renderer::begin_scene() -> void
+auto Renderer::begin_scene(const CameraComponent& camera, const TransformComponent& camera_transform) -> void
 {
     renderer->_draw_commands.clear();
     renderer->_batches.clear();
@@ -163,6 +162,15 @@ auto Renderer::begin_scene() -> void
     renderer->_ambient_lights.clear();
 
     clear();
+
+    auto view = camera.view(camera_transform);
+    auto projection = camera.projection();
+    auto view_projection = projection * view;
+
+    renderer->_current_camera_view = view;
+    renderer->_current_camera_projection = projection;
+    renderer->_current_camera_view_projection = view_projection;
+    upload_camera_data(camera_transform.translation(), view_projection);
 }
 
 auto Renderer::end_scene() -> void
@@ -170,30 +178,61 @@ auto Renderer::end_scene() -> void
     render();
 }
 
-auto Renderer::set_camera(std::shared_ptr<const PerspectiveCamera> camera) -> void
+auto Renderer::submit_light(const LightComponent& light, const TransformComponent& light_transform) -> void
 {
-    ZTH_ASSERT(camera != nullptr);
-    renderer->_camera = std::move(camera);
+    switch (light.type())
+    {
+        using enum LightType;
+    case Directional:
+        submit_directional_light(light.directional_light(), light_transform);
+        break;
+    case Point:
+        submit_point_light(light.point_light(), light_transform);
+        break;
+    case Spot:
+        submit_spot_light(light.spot_light(), light_transform);
+        break;
+    case Ambient:
+        submit_ambient_light(light.ambient_light());
+        break;
+    }
 }
 
-auto Renderer::submit_directional_light(const DirectionalLightRenderData& data) -> void
+auto Renderer::submit_directional_light(const DirectionalLight& light, const TransformComponent& light_transform)
+    -> void
 {
-    renderer->_directional_lights.push_back(data);
+    renderer->_directional_lights.push_back(DirectionalLightRenderData{
+        .direction = light_transform.direction(),
+        .properties = light.properties,
+    });
 }
 
-auto Renderer::submit_point_light(const PointLightRenderData& data) -> void
+auto Renderer::submit_point_light(const PointLight& light, const TransformComponent& light_transform) -> void
 {
-    renderer->_point_lights.push_back(data);
+    renderer->_point_lights.push_back(PointLightRenderData{
+        .position = light_transform.translation(),
+        .properties = light.properties,
+        .attenuation = light.attenuation,
+    });
 }
 
-auto Renderer::submit_spot_light(const SpotLightRenderData& data) -> void
+auto Renderer::submit_spot_light(const SpotLight& light, const TransformComponent& light_transform) -> void
 {
-    renderer->_spot_lights.push_back(data);
+    renderer->_spot_lights.push_back(SpotLightRenderData{
+        .position = light_transform.translation(),
+        .direction = light_transform.direction(),
+        .inner_cutoff_cosine = light.inner_cutoff_cosine,
+        .outer_cutoff_cosine = light.outer_cutoff_cosine,
+        .properties = light.properties,
+        .attenuation = light.attenuation,
+    });
 }
 
-auto Renderer::submit_ambient_light(const AmbientLightRenderData& data) -> void
+auto Renderer::submit_ambient_light(const AmbientLight& light) -> void
 {
-    renderer->_ambient_lights.push_back(data);
+    renderer->_ambient_lights.push_back(AmbientLightRenderData{
+        .ambient = light.ambient,
+    });
 }
 
 auto Renderer::submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void
@@ -206,15 +245,23 @@ auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& tran
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
 
-auto Renderer::camera() -> const PerspectiveCamera&
+auto Renderer::current_camera_view() -> const glm::mat4&
 {
-    ZTH_ASSERT(renderer->_camera != nullptr);
-    return *renderer->_camera;
+    return renderer->_current_camera_view;
+}
+
+auto Renderer::current_camera_projection() -> const glm::mat4&
+{
+    return renderer->_current_camera_projection;
+}
+
+auto Renderer::current_camera_view_projection() -> const glm::mat4&
+{
+    return renderer->_current_camera_view_projection;
 }
 
 auto Renderer::render() -> void
 {
-    upload_camera_data();
     upload_light_data();
     batch_draw_commands();
 
@@ -316,14 +363,11 @@ auto Renderer::bind_material(const Material& material) -> void
         material.emission_map->bind(emission_map_slot);
 }
 
-auto Renderer::upload_camera_data() -> void
+auto Renderer::upload_camera_data(glm::vec3 camera_position, const glm::mat4& view_projection) -> void
 {
-    ZTH_ASSERT(renderer->_camera != nullptr);
-    const auto& camera = renderer->_camera;
-
     CameraUboData camera_ubo_data = {
-        .view_projection = camera->view_projection(),
-        .camera_position = camera->translation(),
+        .view_projection = view_projection,
+        .camera_position = camera_position,
     };
 
     renderer->_camera_ubo.buffer_data(camera_ubo_data);

@@ -13,6 +13,9 @@ public:
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(Script)
     virtual ~Script() = default;
 
+    // display_name is a string that gets displayed in the ui.
+    [[nodiscard]] virtual auto display_name() const -> const char* { return "Script"; }
+
     friend class Scene;
 
 private:

@@ -4,7 +4,6 @@ project(zenith VERSION 0.1.0 LANGUAGES CXX)
 add_library(
 	zenith_core STATIC
 	"src/asset/asset_manager.cpp"
-	"src/core/camera_controller.cpp"
 	"src/core/exception.cpp"
 	"src/core/random.cpp"
 	"src/core/scene.cpp"
@@ -28,7 +27,6 @@ add_library(
 	"src/memory/alloc.cpp"
 	"src/memory/buffer.cpp"
 	"src/memory/temporary_storage.cpp"
-	"src/renderer/camera.cpp"
 	"src/renderer/imgui_renderer.cpp"
 	"src/renderer/light.cpp"
 	"src/renderer/materials.cpp"
@@ -37,6 +35,7 @@ add_library(
 	"src/renderer/renderer.cpp"
 	"src/renderer/shaders.cpp"
 	"src/renderer/shader_preprocessor.cpp"
+	"src/script/camera_controller.cpp"
 	"src/script/script.cpp"
 	"src/stl/string_algorithm.cpp"
 	"src/system/application.cpp"

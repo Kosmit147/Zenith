@@ -1,6 +1,10 @@
 #include "zenith/math/matrix.hpp"
 
+#include <glm/geometric.hpp>
+#include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include "zenith/math/vector.hpp"
@@ -10,7 +14,16 @@ namespace zth::math {
 auto compose_transform(glm::vec3 scale, glm::quat rotation, glm::vec3 translation) -> glm::mat4
 {
     glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, translation);
-    transform *= glm::mat4_cast(rotation);
+    transform *= rotation_matrix_from_quaternion(rotation);
+    transform = glm::scale(transform, scale);
+
+    return transform;
+}
+
+auto compose_transform(glm::vec3 scale, EulerAngles rotation, glm::vec3 translation) -> glm::mat4
+{
+    glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, translation);
+    transform *= rotation_matrix_from_euler_angles(rotation);
     transform = glm::scale(transform, scale);
 
     return transform;
@@ -39,12 +52,12 @@ auto decompose_transform(const glm::mat4& transform) -> TransformComponents
     };
 }
 
-auto get_translation(const glm::mat4& transform) -> glm::vec3
+auto extract_translation(const glm::mat4& transform) -> glm::vec3
 {
-    return transform[3];
+    return glm::column(transform, 3);
 }
 
-auto get_scale(const glm::mat4& transform) -> glm::vec3
+auto extract_scale(const glm::mat4& transform) -> glm::vec3
 {
     auto x = glm::length(glm::vec3{ transform[0] });
     auto y = glm::length(glm::vec3{ transform[1] });
@@ -55,7 +68,7 @@ auto get_scale(const glm::mat4& transform) -> glm::vec3
 
 auto has_uniform_scale(const glm::mat4& transform, float epsilon) -> bool
 {
-    auto scale = get_scale(transform);
+    auto scale = extract_scale(transform);
     return has_relatively_equal_components(scale, epsilon);
 }
 
@@ -71,6 +84,23 @@ auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3
     // The transpose of the inverse of the upper-left 3x3 part of the transform matrix.
     // @speed: Investigate whether caching these matrices is worth it.
     return glm::inverseTranspose(glm::mat3{ transform });
+}
+
+auto rotation_matrix_from_quaternion(glm::quat rotation) -> glm::mat4
+{
+    return glm::mat4_cast(rotation);
+}
+
+auto rotation_matrix_from_euler_angles(EulerAngles rotation) -> glm::mat4
+{
+    return glm::eulerAngleYXZ(rotation.yaw, rotation.pitch, rotation.roll);
+}
+
+auto extract_euler_angles_from_rotation_matrix(const glm::mat4& rotation_matrix) -> EulerAngles
+{
+    EulerAngles angles;
+    glm::extractEulerAngleYXZ(rotation_matrix, angles.yaw, angles.pitch, angles.roll);
+    return angles;
 }
 
 } // namespace zth::math

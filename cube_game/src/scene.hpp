@@ -1,7 +1,5 @@
 #pragma once
 
-#include "player.hpp"
-
 class Scene : public zth::Scene
 {
 public:
@@ -10,16 +8,16 @@ public:
     ~Scene() override = default;
 
 private:
+    zth::EntityHandle _camera = create_entity("Camera");
+    zth::EntityHandle _directional_light = create_entity("Directional Light");
+    zth::Vector<zth::EntityHandle> _blocks;
+
     zth::gl::Texture2D _block_texture;
     zth::Material _block_material;
-
-    zth::EntityHandle _directional_light = create_entity("Directional Light");
-
-    zth::Vector<zth::EntityHandle> _blocks;
-    Player _player;
 
 private:
     auto on_load() -> void override;
     auto on_event(const zth::Event& event) -> void override;
-    auto on_update() -> void override;
+
+    auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
 };

@@ -63,6 +63,7 @@ public:
 
     [[nodiscard]] static auto glfw_handle() -> GLFWwindow*;
     [[nodiscard]] static auto size() -> glm::uvec2;
+    [[nodiscard]] static auto aspect_ratio() -> float;
     [[nodiscard]] static auto mouse_pos() -> glm::vec2;
     [[nodiscard]] static auto frame_rate_limit() -> Optional<u32>;
     [[nodiscard]] static auto cursor_enabled() -> bool;

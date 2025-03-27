@@ -27,9 +27,12 @@ namespace {
 
 constexpr auto default_drag_speed = 0.01f;
 
-constexpr auto light_ambient_drag_speed = default_drag_speed * 0.1f;
-constexpr auto material_shininess_drag_speed = default_drag_speed * 10.0f;
+constexpr auto far_plane_drag_speed = default_drag_speed * 10.0f;
+
 constexpr auto light_attenuation_drag_speed = default_drag_speed * 0.01f;
+constexpr auto light_ambient_drag_speed = default_drag_speed * 0.1f;
+
+constexpr auto material_shininess_drag_speed = default_drag_speed * 10.0f;
 
 auto drag_float(const char* label, float& value, float drag_speed = default_drag_speed) -> bool
 {
@@ -64,6 +67,45 @@ auto drag_vec(const char* label, glm::vec3& vec, float drag_speed = default_drag
 auto drag_vec(const char* label, glm::vec4& vec, float drag_speed = default_drag_speed) -> bool
 {
     return drag_float_4(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_angles(const char* label, glm::vec2& angles, float drag_speed = default_drag_speed) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (drag_float_2(label, glm::value_ptr(degrees), drag_speed))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
+}
+
+auto drag_angles(const char* label, glm::vec3& angles, float drag_speed = default_drag_speed) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (drag_float_3(label, glm::value_ptr(degrees), drag_speed))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
+}
+
+auto drag_angles(const char* label, glm::vec4& angles, float drag_speed = default_drag_speed) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (drag_float_4(label, glm::value_ptr(degrees), drag_speed))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
 }
 
 auto slide_float(const char* label, float& value, float min = 0.0f, float max = 1.0f) -> bool
@@ -101,6 +143,45 @@ auto slide_vec(const char* label, glm::vec4& vec, float min = 0.0f, float max = 
     return slide_float_4(label, glm::value_ptr(vec), min, max);
 }
 
+auto slide_angles(const char* label, glm::vec2& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (slide_float_2(label, glm::value_ptr(degrees), min_degrees, max_degrees))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
+}
+
+auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (slide_float_3(label, glm::value_ptr(degrees), min_degrees, max_degrees))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
+}
+
+auto slide_angles(const char* label, glm::vec4& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+{
+    auto degrees = glm::degrees(angles);
+
+    if (slide_float_4(label, glm::value_ptr(degrees), min_degrees, max_degrees))
+    {
+        angles = glm::radians(degrees);
+        return true;
+    }
+
+    return false;
+}
+
 auto edit_color(const char* label, glm::vec3& color) -> bool
 {
     return ImGui::ColorEdit3(label, glm::value_ptr(color));
@@ -130,7 +211,7 @@ auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_
 {
     auto values = static_cast<glm::vec3>(angles);
 
-    if (drag_vec(label, values, drag_speed))
+    if (drag_angles(label, values, drag_speed))
     {
         angles = math::EulerAngles{ .pitch = values.x, .yaw = values.y, .roll = values.z };
         return true;
@@ -152,7 +233,7 @@ auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
     if (drag_euler_angles(label, maybe_modified_angles))
     {
         auto change = maybe_modified_angles - original_angles;
-        quaternion *= math::to_quaternion(change);
+        quaternion = math::rotate(quaternion, change);
         return true;
     }
 
@@ -182,6 +263,16 @@ auto edit_transform(TransformComponent& transform) -> void
 
     if (drag_vec("Scale", scale))
         transform.set_scale(scale);
+}
+
+auto edit_camera(CameraComponent& camera) -> void
+{
+    ImGui::SeparatorText("Camera");
+
+    drag_float("Aspect Ratio", camera.aspect_ratio);
+    slide_angle("FOV", camera.fov, 0.0f, 180.0f);
+    drag_float("Near Plane", camera.near);
+    drag_float("Far Plane", camera.far, far_plane_drag_speed);
 }
 
 auto edit_light_type(LightType& type) -> bool
@@ -286,15 +377,21 @@ auto edit_light(LightComponent& light) -> void
     }
 }
 
+auto edit_script(ScriptComponent& script) -> void
+{
+    ImGui::SeparatorText("Script");
+    ImGui::TextUnformatted(script.script().display_name());
+}
+
 } // namespace
 
-auto TransformGizmo::draw(TransformComponent& transform, const PerspectiveCamera& camera) const -> void
+auto TransformGizmo::draw(TransformComponent& transform) const -> void
 {
     ImGuizmo::Enable(true);
     auto transform_matrix = transform.transform();
 
-    auto& view = camera.view();
-    auto& projection = camera.projection();
+    auto& view = Renderer::current_camera_view();
+    auto& projection = Renderer::current_camera_projection();
 
     if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), operation, mode,
                              glm::value_ptr(transform_matrix), nullptr, nullptr))
@@ -321,13 +418,13 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
         edit_transform(transform);
 
         if (Window::cursor_enabled())
-            gizmo.draw(transform, Renderer::camera());
+            gizmo.draw(transform);
     }
 
     if (entity.any_of<CameraComponent>())
     {
-        // auto& camera = entity.get<CameraComponent>();
-        // @todo
+        auto& camera = entity.get<CameraComponent>();
+        edit_camera(camera);
     }
 
     if (entity.any_of<LightComponent>())
@@ -346,6 +443,12 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
     {
         // auto& material = entity.get<MaterialComponent>();
         // @todo
+    }
+
+    if (entity.any_of<ScriptComponent>())
+    {
+        auto& script = entity.get<ScriptComponent>();
+        edit_script(script);
     }
 
     ImGui::End();

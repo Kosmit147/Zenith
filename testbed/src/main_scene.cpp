@@ -1,14 +1,17 @@
 #include "main_scene.hpp"
 
 #include "embedded.hpp"
+#include "zenith/script/camera_controller.hpp"
 
 namespace {
 
-constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
-constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
+const auto camera_transform_component =
+    zth::TransformComponent{ glm::vec3{ 0.0f, 0.0f, 5.0f }, zth::math::world_forward };
 
-constexpr auto aspect_ratio = 16.0f / 9.0f;
-constexpr auto fov = glm::radians(45.0f);
+const auto camera_camera_component = zth::CameraComponent{
+    .aspect_ratio = 16.0f / 9.0f,
+    .fov = glm::radians(45.0f),
+};
 
 const auto directional_light_transform_component = zth::TransformComponent{
     glm::vec3{ 0.0f },
@@ -53,10 +56,14 @@ const auto cobble_diffuse_map_params = zth::gl::TextureParams{
 MainScene::MainScene()
     : _point_light_1_material{ .shader = &zth::shaders::flat_color() },
       _point_light_2_material{ .shader = &zth::shaders::flat_color() },
-      _point_light_3_material{ .shader = &zth::shaders::flat_color() },
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
-      _camera_controller(_camera)
+      _point_light_3_material{ .shader = &zth::shaders::flat_color() }
 {
+    // --- Camera ---
+
+    _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
+    _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
+    _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
+
     // --- Cube ---
 
     _cube.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
@@ -102,11 +109,6 @@ MainScene::MainScene()
     _material_panel.add_emission_map("Matrix", _emission_maps[0]);
 }
 
-auto MainScene::on_load() -> void
-{
-    zth::Renderer::set_camera(_camera);
-}
-
 auto MainScene::on_event(const zth::Event& event) -> void
 {
     switch (event.type())
@@ -127,9 +129,6 @@ auto MainScene::on_update() -> void
 {
     update_ui();
 
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-
     auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
     auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
     auto& light_component_3 = _point_light_1.get<const zth::LightComponent>();
@@ -139,11 +138,12 @@ auto MainScene::on_update() -> void
     _point_light_3_material.albedo = light_component_3.point_light().properties.color;
 }
 
-auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
+auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
-    auto new_width = event.new_size.x;
-    auto new_height = event.new_size.y;
-    _camera->set_aspect_ratio(static_cast<float>(new_width) / static_cast<float>(new_height));
+    auto new_size = event.new_size;
+
+    auto& camera = _camera.get<zth::CameraComponent>();
+    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
 auto MainScene::update_ui() -> void

@@ -4,7 +4,7 @@
 #include <ImGuizmo.h>
 
 #include "zenith/ecs/components.hpp"
-#include "zenith/renderer/light.hpp"
+#include "zenith/log/logger.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/system/event.hpp"
 
@@ -53,7 +53,7 @@ auto Scene::dispatch_event(const Event& event) -> void
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
-        script.script->dispatch_event(EntityHandle{ entity_id, _registry }, event);
+        script.script().dispatch_event(EntityHandle{ entity_id, _registry }, event);
 
     on_event(event);
 }
@@ -66,37 +66,32 @@ auto Scene::update() -> void
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
-        script.script->update(EntityHandle{ entity_id, _registry });
+        script.script().update(EntityHandle{ entity_id, _registry });
 
     on_update();
 }
 
 auto Scene::render() -> void
 {
-    Renderer::begin_scene();
+    auto camera_entity_id = _registry.view<const CameraComponent>().front();
+
+    if (camera_entity_id == null_entity)
+    {
+        ZTH_CORE_WARN("[Scene] No entity with a CameraComponent found.");
+        return;
+    }
+
+    const auto& [camera, camera_transform] =
+        _registry.get<const CameraComponent, const TransformComponent>(camera_entity_id);
+
+    Renderer::begin_scene(camera, camera_transform);
 
     auto lights = _registry.view<const LightComponent>();
 
     for (auto&& [entity_id, light] : lights.each())
     {
         auto& transform = _registry.get<const TransformComponent>(entity_id);
-
-        switch (light.type())
-        {
-            using enum LightType;
-        case Directional:
-            Renderer::submit_directional_light(light.to_directional_light_render_data(transform));
-            break;
-        case Point:
-            Renderer::submit_point_light(light.to_point_light_render_data(transform));
-            break;
-        case Spot:
-            Renderer::submit_spot_light(light.to_spot_light_render_data(transform));
-            break;
-        case Ambient:
-            Renderer::submit_ambient_light(light.to_ambient_light_render_data());
-            break;
-        }
+        Renderer::submit_light(light, transform);
     }
 
     auto meshes = _registry.group<const TransformComponent, const MeshComponent, const MaterialComponent>();
