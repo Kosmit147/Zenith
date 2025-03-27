@@ -9,6 +9,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/stl/range.hpp"
+#include "zenith/util/optional.hpp"
+#include "zenith/util/reference.hpp"
 
 namespace zth {
 
@@ -79,6 +81,13 @@ public:
         -> value_type&;
     constexpr auto pop_back() noexcept(std::is_nothrow_destructible_v<value_type>) -> void;
     constexpr auto clear() noexcept(std::is_nothrow_destructible_v<value_type>) -> void;
+
+    constexpr auto try_emplace_back(auto&&... args)
+        noexcept(std::is_nothrow_constructible_v<value_type, decltype(args)...>) -> Optional<Reference<value_type>>;
+    constexpr auto try_push_back(const value_type& value) noexcept(std::is_nothrow_copy_constructible_v<value_type>)
+        -> Optional<Reference<value_type>>;
+    constexpr auto try_push_back(value_type&& value) noexcept(std::is_nothrow_move_constructible_v<value_type>)
+        -> Optional<Reference<value_type>>;
 
     friend constexpr auto swap(InPlaceVector& first, InPlaceVector& second)
         noexcept(std::is_nothrow_swappable_v<value_type> && std::is_nothrow_move_constructible_v<value_type>) -> void

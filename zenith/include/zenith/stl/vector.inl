@@ -176,12 +176,42 @@ constexpr auto InPlaceVector<T, Capacity>::clear() noexcept(std::is_nothrow_dest
 }
 
 template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::try_emplace_back(auto&&... args)
+    noexcept(std::is_nothrow_constructible_v<value_type, decltype(args)...>) -> Optional<Reference<value_type>>
+{
+    if (size() >= capacity())
+        return nil;
+
+    return emplace_back(std::forward<decltype(args)>(args)...);
+}
+
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::try_push_back(const value_type& value)
+    noexcept(std::is_nothrow_copy_constructible_v<value_type>) -> Optional<Reference<value_type>>
+{
+    if (size() >= capacity())
+        return nil;
+
+    return push_back(std::forward<decltype(value)>(value));
+}
+
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::try_push_back(value_type&& value)
+    noexcept(std::is_nothrow_move_constructible_v<value_type>) -> Optional<Reference<value_type>>
+{
+    if (size() >= capacity())
+        return nil;
+
+    return push_back(std::forward<decltype(value)>(value));
+}
+
+template<std::movable T, usize Capacity>
 constexpr auto InPlaceVector<T, Capacity>::swap_impl(InPlaceVector& smaller, InPlaceVector& bigger)
     noexcept(std::is_nothrow_swappable_v<value_type> && std::is_nothrow_move_constructible_v<value_type>) -> void
 {
-    auto leftover_begin = std::swap_ranges(smaller.begin(), smaller.end(), bigger.begin());
-    smaller._end = std::uninitialized_move(leftover_begin, bigger.end(), smaller.end());
-    bigger._end = leftover_begin;
+    auto leftover = std::swap_ranges(smaller.begin(), smaller.end(), bigger.begin());
+    smaller._end = std::uninitialized_move(leftover, bigger.end(), smaller.end());
+    bigger._end = leftover;
 }
 
 } // namespace zth

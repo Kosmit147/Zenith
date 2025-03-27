@@ -174,11 +174,11 @@ TEST_CASE("can iterate over elements of an InPlaceVector", "[InPlaceVector]")
 
 TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
 {
-    zth::InPlaceVector<int, 100> vec = { 1, 2, 3 };
+    zth::InPlaceVector<int, 6> vec = { 1, 2, 3 };
 
     REQUIRE_FALSE(vec.empty());
     REQUIRE(vec.size() == 3);
-    REQUIRE(vec.capacity() == 100);
+    REQUIRE(vec.capacity() == 6);
 
     SECTION("can use at() or operator[] to modify")
     {
@@ -201,6 +201,21 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
         REQUIRE_THAT(vec, RangeEquals(expected));
     }
 
+    SECTION("can try to push back")
+    {
+        std::array expected = { 1, 2, 3, 4, 5, 6 };
+
+        vec.try_push_back(4);
+        vec.try_push_back(5);
+        vec.try_push_back(std::move(6));
+
+        vec.try_push_back(4);
+        vec.try_push_back(std::move(6));
+
+        REQUIRE(vec.size() == expected.size());
+        REQUIRE_THAT(vec, RangeEquals(expected));
+    }
+
     SECTION("can emplace back")
     {
         std::array expected = { 1, 2, 3, 4, 5, 6 };
@@ -208,6 +223,21 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
         vec.emplace_back(4);
         vec.emplace_back(5);
         vec.emplace_back(std::move(6));
+
+        REQUIRE(vec.size() == expected.size());
+        REQUIRE_THAT(vec, RangeEquals(expected));
+    }
+
+    SECTION("can try to emplace back")
+    {
+        std::array expected = { 1, 2, 3, 4, 5, 6 };
+
+        vec.emplace_back(4);
+        vec.emplace_back(5);
+        vec.emplace_back(std::move(6));
+
+        vec.try_emplace_back(4);
+        vec.try_emplace_back(std::move(6));
 
         REQUIRE(vec.size() == expected.size());
         REQUIRE_THAT(vec, RangeEquals(expected));
@@ -227,7 +257,7 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
         vec.clear();
 
         REQUIRE(vec.size() == 0);
-        REQUIRE(vec.capacity() == 100);
+        REQUIRE(vec.capacity() == 6);
     }
 
     SECTION("can mix modifying operations")
@@ -235,10 +265,10 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
         vec.clear();
 
         REQUIRE(vec.size() == 0);
-        REQUIRE(vec.capacity() == 100);
+        REQUIRE(vec.capacity() == 6);
 
         vec.push_back(3);
-        vec.push_back(2);
+        vec.try_push_back(2);
         vec.push_back(1);
 
         std::array expected_1 = { 3, 2, 1 };
@@ -248,14 +278,15 @@ TEST_CASE("InPlaceVector can be modified", "[InPlaceVector]")
 
         vec.pop_back();
         vec.pop_back();
-        vec.emplace_back(60);
+        vec.try_emplace_back(60);
+        vec.emplace_back(61);
 
-        std::array expected_2 = { 3, 60 };
+        std::array expected_2 = { 3, 60, 61 };
 
         REQUIRE(vec.size() == expected_2.size());
         REQUIRE_THAT(vec, RangeEquals(expected_2));
 
-        REQUIRE(vec.capacity() == 100);
+        REQUIRE(vec.capacity() == 6);
     }
 }
 
