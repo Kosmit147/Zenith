@@ -29,7 +29,7 @@ struct TransformComponents
 [[nodiscard]] auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3;
 
 [[nodiscard]] auto rotation_matrix_from_quaternion(glm::quat rotation) -> glm::mat4;
-[[nodiscard]] auto rotation_matrix_from_euler_angles(EulerAngles rotation) -> glm::mat4;
+[[nodiscard]] auto rotation_matrix_from_euler_angles(EulerAngles angles) -> glm::mat4;
 [[nodiscard]] auto extract_euler_angles_from_rotation_matrix(const glm::mat4& rotation_matrix) -> EulerAngles;
 
 } // namespace zth::math

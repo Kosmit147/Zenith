@@ -7,7 +7,7 @@
 
 namespace zth::math {
 
-struct Rotation
+struct AngleAxis
 {
     float angle = 0.0f; // In radians.
     glm::vec3 axis = world_up;
@@ -32,10 +32,12 @@ struct EulerAngles
 
 [[nodiscard]] auto to_quaternion(float angle, glm::vec3 axis) -> glm::quat; // axis must be normalized.
 [[nodiscard]] auto to_quaternion(glm::vec3 direction) -> glm::quat;         // direction must be normalized.
-[[nodiscard]] auto to_quaternion(Rotation rotation) -> glm::quat;           // axis must be normalized.
+[[nodiscard]] auto to_quaternion(glm::vec3 direction, glm::vec3 up)
+    -> glm::quat;                                                  // direction and up must be normalized.
+[[nodiscard]] auto to_quaternion(AngleAxis rotation) -> glm::quat; // axis must be normalized.
 [[nodiscard]] auto to_quaternion(EulerAngles angles) -> glm::quat;
 
-[[nodiscard]] auto to_rotation(glm::vec3 direction) -> Rotation; // direction must be normalized.
+[[nodiscard]] auto to_angle_axis(glm::vec3 direction) -> AngleAxis; // direction must be normalized.
 [[nodiscard]] auto to_direction(glm::quat rotation) -> glm::vec3;
 [[nodiscard]] auto to_direction(EulerAngles angles) -> glm::vec3;
 [[nodiscard]] auto to_euler_angles(glm::vec3 direction) -> EulerAngles; // direction must be normalized.
@@ -44,7 +46,7 @@ struct EulerAngles
 [[nodiscard]] auto rotate(glm::quat quaternion, glm::quat rotation)
     -> glm::quat; // quaternion and rotation must be normalized.
 [[nodiscard]] auto rotate(glm::quat quaternion, float angle, glm::vec3 axis) -> glm::quat; // axis must be normalized.
-[[nodiscard]] auto rotate(glm::quat quaternion, Rotation rotation) -> glm::quat;
+[[nodiscard]] auto rotate(glm::quat quaternion, AngleAxis rotation) -> glm::quat;
 [[nodiscard]] auto rotate(glm::quat quaternion, EulerAngles rotation) -> glm::quat;
 
 } // namespace zth::math

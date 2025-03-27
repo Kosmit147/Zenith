@@ -4,6 +4,7 @@ namespace zth {
 
 struct TagComponent;
 class TransformComponent;
+class ScriptComponent;
 struct MeshComponent;
 struct MaterialComponent;
 struct CameraComponent;

@@ -2,6 +2,10 @@
 
 #include <imgui.h>
 #include <ImGuizmo.h>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <concepts>
 #include <functional>
@@ -12,6 +16,7 @@
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/fwd.hpp"
+#include "zenith/math/quaternion.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
@@ -20,6 +25,59 @@
 #include "zenith/util/macros.hpp"
 
 namespace zth::debug {
+
+constexpr auto default_ui_drag_speed = 0.01f;
+
+auto drag_float(const char* label, float& value, float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_float_2(const char* label, float values[2], float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_float_3(const char* label, float values[3], float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_float_4(const char* label, float values[4], float drag_speed = default_ui_drag_speed) -> bool;
+
+auto drag_vec(const char* label, glm::vec2& vec, float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_vec(const char* label, glm::vec3& vec, float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_vec(const char* label, glm::vec4& vec, float drag_speed = default_ui_drag_speed) -> bool;
+
+auto drag_angles(const char* label, glm::vec2& angles, float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_angles(const char* label, glm::vec3& angles, float drag_speed = default_ui_drag_speed) -> bool;
+auto drag_angles(const char* label, glm::vec4& angles, float drag_speed = default_ui_drag_speed) -> bool;
+
+auto slide_float(const char* label, float& value, float min = 0.0f, float max = 1.0f) -> bool;
+auto slide_float_2(const char* label, float values[2], float min = 0.0f, float max = 1.0f) -> bool;
+auto slide_float_3(const char* label, float values[3], float min = 0.0f, float max = 1.0f) -> bool;
+auto slide_float_4(const char* label, float values[4], float min = 0.0f, float max = 1.0f) -> bool;
+
+auto slide_vec(const char* label, glm::vec2& vec, float min = 0.0f, float max = 1.0f) -> bool;
+auto slide_vec(const char* label, glm::vec3& vec, float min = 0.0f, float max = 1.0f) -> bool;
+auto slide_vec(const char* label, glm::vec4& vec, float min = 0.0f, float max = 1.0f) -> bool;
+
+auto slide_angles(const char* label, glm::vec2& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
+auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
+auto slide_angles(const char* label, glm::vec4& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
+
+auto edit_color(const char* label, glm::vec3& color) -> bool;
+auto edit_color(const char* label, glm::vec4& color) -> bool;
+auto pick_color(const char* label, glm::vec3& color) -> bool;
+auto pick_color(const char* label, glm::vec4& color) -> bool;
+
+auto slide_angle(const char* label, float& angle_radians, float degrees_min = 0.0f, float degrees_max = 360.0f) -> bool;
+auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed = default_ui_drag_speed) -> bool;
+
+auto edit_quat(const char* label, glm::quat& quaternion) -> bool;
+auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool;
+
+auto edit_light_type(LightType& type) -> bool;
+auto edit_light_properties(LightProperties& properties) -> void;
+auto edit_light_attenuation(LightAttenuation& attenuation) -> void;
+auto edit_directional_light(DirectionalLight& light) -> void;
+auto edit_point_light(PointLight& light) -> void;
+auto edit_spot_light(SpotLight& light) -> void;
+auto edit_ambient_light(AmbientLight& light) -> void;
+
+auto edit_tag_component(TagComponent& tag) -> void;
+auto edit_transform_component(TransformComponent& transform) -> void;
+auto edit_camera_component(CameraComponent& camera) -> void;
+auto edit_light_component(LightComponent& light) -> void;
+auto edit_script_component(ScriptComponent& script) -> void;
 
 struct TransformGizmo
 {

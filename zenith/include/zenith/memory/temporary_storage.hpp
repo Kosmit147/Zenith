@@ -17,7 +17,7 @@
 namespace zth {
 
 // A linear memory allocator which gets reset every frame. If we exceed the capacity, we resort to a regular allocation
-// using new. The preferred way of interacting with TemporaryStorage is via make_temporary function.
+// using new. The preferred way of interacting with TemporaryStorage is via the make_temporary function.
 class TemporaryStorage
 {
 public:
@@ -68,7 +68,7 @@ template<typename T> struct TemporaryStorageAllocator
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
-// @cleanup: We should move these aliases somewhere also because they force us to include a lot of headers in this file.
+// @cleanup: We should move these aliases somewhere else because they force us to include a lot of headers in this file.
 template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;
 using TemporaryString = GenericString<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = Vector<T, TemporaryStorageAllocator<T>>;

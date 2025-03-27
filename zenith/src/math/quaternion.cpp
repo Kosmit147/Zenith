@@ -57,7 +57,12 @@ auto to_quaternion(glm::vec3 direction) -> glm::quat
     return glm::rotation(reference_vector, direction);
 }
 
-auto to_quaternion(Rotation rotation) -> glm::quat
+auto to_quaternion(glm::vec3 direction, glm::vec3 up) -> glm::quat
+{
+    return glm::quatLookAt(direction, up);
+}
+
+auto to_quaternion(AngleAxis rotation) -> glm::quat
 {
     return to_quaternion(rotation.angle, rotation.axis);
 }
@@ -67,13 +72,13 @@ auto to_quaternion(EulerAngles angles) -> glm::quat
     return glm::quat{ static_cast<glm::vec3>(angles) };
 }
 
-auto to_rotation(glm::vec3 direction) -> Rotation
+auto to_angle_axis(glm::vec3 direction) -> AngleAxis
 {
-    // @robustness: Handle cases where direction vector is opposite to the reference vector. In that case the resulting
-    // axis vector is (0, 0, 0).
+    // @todo: Handle cases where direction vector is opposite to the reference vector. In that case the resulting axis
+    // vector is (0, 0, 0).
     auto axis = glm::cross(reference_vector, direction);
     auto angle = glm::acos(glm::dot(reference_vector, direction));
-    return Rotation{ .angle = angle, .axis = axis };
+    return AngleAxis{ .angle = angle, .axis = axis };
 }
 
 auto to_direction(glm::quat rotation) -> glm::vec3
@@ -122,7 +127,7 @@ auto rotate(glm::quat quaternion, float angle, glm::vec3 axis) -> glm::quat
     return glm::normalize(glm::rotateNormalizedAxis(quaternion, angle, axis));
 }
 
-auto rotate(glm::quat quaternion, Rotation rotation) -> glm::quat
+auto rotate(glm::quat quaternion, AngleAxis rotation) -> glm::quat
 {
     return rotate(quaternion, rotation.angle, rotation.axis);
 }
