@@ -54,6 +54,8 @@ auto slide_angles(const char* label, glm::vec2& angles, float min_degrees = 0.0f
 auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
 auto slide_angles(const char* label, glm::vec4& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
 
+auto checkbox(const char* label, bool& value) -> bool;
+
 auto edit_color(const char* label, glm::vec3& color) -> bool;
 auto edit_color(const char* label, glm::vec4& color) -> bool;
 auto pick_color(const char* label, glm::vec3& color) -> bool;
@@ -65,7 +67,10 @@ auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_
 auto edit_quat(const char* label, glm::quat& quaternion) -> bool;
 auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool;
 
-auto edit_light_type(LightType& type) -> bool;
+auto select_key(const char* label, Key& key) -> bool;
+auto select_mouse_button(const char* label, MouseButton& button) -> bool;
+
+auto select_light_type(LightType& type) -> bool;
 auto edit_light_properties(LightProperties& properties) -> void;
 auto edit_light_attenuation(LightAttenuation& attenuation) -> void;
 auto edit_directional_light(DirectionalLight& light) -> void;

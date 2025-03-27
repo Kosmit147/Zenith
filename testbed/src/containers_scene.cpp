@@ -75,6 +75,7 @@ ContainersScene::ContainersScene()
 
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
+    _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
     _camera.emplace_or_replace<zth::LightComponent>(camera_light_component);
 
     // --- Directional Light ---
@@ -152,7 +153,7 @@ auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) ->
     {
         _spot_light_on = !_spot_light_on;
 
-        auto& light = _spot_light.get<zth::LightComponent>();
+        auto& light = _camera.get<zth::LightComponent>();
 
         if (_spot_light_on)
             light.spot_light().properties.color = zth::colors::white;

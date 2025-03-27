@@ -120,8 +120,6 @@ auto MainScene::on_event(const zth::Event& event) -> void
         on_window_resized_event(window_resized_event);
     }
     break;
-    default:
-        break;
     }
 }
 

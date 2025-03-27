@@ -33,6 +33,7 @@ public:
     ~FlyCamera() override = default;
 
     [[nodiscard]] auto display_name() const -> const char* override;
+    auto debug_edit() -> void override;
 
 private:
     auto on_update(EntityHandle actor) -> void override;

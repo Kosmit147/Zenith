@@ -15,6 +15,7 @@ public:
 
     // display_name is a string that gets displayed in the ui.
     [[nodiscard]] virtual auto display_name() const -> const char* { return "Script"; }
+    virtual auto debug_edit() -> void {}
 
     friend class Scene;
 
