@@ -4,11 +4,22 @@
 
 namespace {
 
-constexpr auto camera_position = glm::vec3{ 0.0f, 0.0f, 5.0f };
-constexpr auto camera_forward = glm::vec3{ 0.0f, 0.0f, -1.0f };
+const auto camera_transform_component =
+    zth::TransformComponent{ glm::vec3{ 0.0f, 0.0f, 5.0f }, zth::math::world_forward };
 
-constexpr auto aspect_ratio = 16.0f / 9.0f;
-constexpr auto fov = glm::radians(45.0f);
+const auto camera_camera_component = zth::CameraComponent{
+    .aspect_ratio = 16.0f / 9.0f,
+    .fov = glm::radians(45.0f),
+};
+
+const auto camera_light_component = zth::LightComponent{
+    zth::SpotLight {
+        .attenuation = {
+            .linear = 0.09f,
+            .quadratic = 0.032f,
+        },
+    },
+};
 
 const auto directional_light_transform_component = zth::TransformComponent{
     glm::vec3{ 0.0f },
@@ -43,20 +54,6 @@ const auto point_light_light_component = zth::LightComponent {
     },
 };
 
-const auto spot_light_transform_component = zth::TransformComponent{
-    camera_position,
-    camera_forward,
-};
-
-const auto spot_light_light_component = zth::LightComponent{
-    zth::SpotLight {
-        .attenuation = {
-            .linear = 0.09f,
-            .quadratic = 0.032f,
-        },
-    },
-};
-
 const auto ambient_light_light_component = zth::LightComponent{ zth::AmbientLight{
     .ambient = glm::vec3{ 0.05f, 0.05f, 0.05f },
 } };
@@ -72,22 +69,29 @@ constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    g
 ContainersScene::ContainersScene()
     : _diffuse_map{ embedded::container2_diffuse_map_data }, _specular_map{ embedded::container2_specular_map_data },
       _container_material{ .diffuse_map = &_diffuse_map, .specular_map = &_specular_map },
-      _point_light_material{ .shader = &zth::shaders::flat_color() },
-      _camera(std::make_shared<zth::PerspectiveCamera>(camera_position, camera_forward, aspect_ratio, fov)),
-      _camera_controller{ _camera }
+      _point_light_material{ .shader = &zth::shaders::flat_color() }
 {
+    // --- Camera ---
+
+    _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
+    _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
+    _camera.emplace_or_replace<zth::LightComponent>(camera_light_component);
+
+    // --- Directional Light ---
+
     _directional_light.emplace_or_replace<zth::TransformComponent>(directional_light_transform_component);
     _directional_light.emplace_or_replace<zth::LightComponent>(directional_light_light_component);
 
+    // --- Point Light ---
     _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
     _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
     _point_light.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
     _point_light.emplace_or_replace<zth::MaterialComponent>(&_point_light_material);
 
-    _spot_light.emplace_or_replace<zth::TransformComponent>(spot_light_transform_component);
-    _spot_light.emplace_or_replace<zth::LightComponent>(spot_light_light_component);
-
+    // --- Ambient Light ---
     _ambient_light.emplace_or_replace<zth::LightComponent>(ambient_light_light_component);
+
+    // --- Containers ---
 
     for (const auto [i, position] : container_positions | std::views::enumerate)
     {
@@ -104,11 +108,6 @@ ContainersScene::ContainersScene()
         container_transform.translate(position);
         container_transform.rotate(angle, rotation_axis);
     }
-}
-
-auto ContainersScene::on_load() -> void
-{
-    zth::Renderer::set_camera(_camera);
 }
 
 auto ContainersScene::on_event(const zth::Event& event) -> void
@@ -135,17 +134,16 @@ auto ContainersScene::on_event(const zth::Event& event) -> void
 
 auto ContainersScene::on_update() -> void
 {
-    if (!zth::Window::cursor_enabled())
-        _camera_controller.on_update();
-
     auto& light = _point_light.get<const zth::LightComponent>();
     _point_light_material.albedo = light.point_light().properties.color;
 }
 
-auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) -> void
+auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
     auto new_size = event.new_size;
-    _camera->set_aspect_ratio(static_cast<float>(new_size.x) / static_cast<float>(new_size.y));
+
+    auto& camera = _camera.get<zth::CameraComponent>();
+    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
 auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void

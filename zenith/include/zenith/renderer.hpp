@@ -2,7 +2,6 @@
 
 #include "renderer/fwd.hpp"
 
-#include "renderer/camera.hpp"
 #include "renderer/colors.hpp"
 #include "renderer/imgui_renderer.hpp"
 #include "renderer/light.hpp"

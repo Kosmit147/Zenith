@@ -4,7 +4,6 @@ project(cube_game LANGUAGES CXX)
 add_executable(
 	cube_game
 	"src/cube_game.cpp"
-	"src/player.cpp"
 	"src/scene.cpp"
 )
 

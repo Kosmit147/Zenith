@@ -7,7 +7,6 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
-#include "zenith/math/vector.hpp"
 
 namespace zth {
 
@@ -77,34 +76,6 @@ struct SpotLight
 };
 
 struct AmbientLight
-{
-    glm::vec3 ambient{ 0.1f };
-};
-
-struct DirectionalLightRenderData
-{
-    glm::vec3 direction{ math::world_down };
-    LightProperties properties{};
-};
-
-struct PointLightRenderData
-{
-    glm::vec3 position{ 0.0f };
-    LightProperties properties{};
-    LightAttenuation attenuation{};
-};
-
-struct SpotLightRenderData
-{
-    glm::vec3 position{ 0.0f };
-    glm::vec3 direction{ math::world_down };
-    float inner_cutoff_cosine = glm::cos(glm::radians(12.5f)); // Cosine of the inner cone angle.
-    float outer_cutoff_cosine = glm::cos(glm::radians(15.0f)); // Cosine of the outer cone angle.
-    LightProperties properties{};
-    LightAttenuation attenuation{};
-};
-
-struct AmbientLightRenderData
 {
     glm::vec3 ambient{ 0.1f };
 };

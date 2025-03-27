@@ -1,11 +1,12 @@
 #include "zenith/math/quaternion.hpp"
 
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/quaternion_transform.hpp>
 #include <glm/geometric.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/rotate_normalized_axis.hpp>
 #include <glm/gtx/structured_bindings.hpp>
 #include <glm/trigonometric.hpp>
 
+#include "zenith/math/matrix.hpp"
 #include "zenith/math/vector.hpp"
 
 namespace zth::math {
@@ -48,7 +49,7 @@ EulerAngles::operator glm::vec3() const
 
 auto to_quaternion(float angle, glm::vec3 axis) -> glm::quat
 {
-    return glm::rotate(glm::identity<glm::quat>(), angle, axis);
+    return glm::angleAxis(angle, axis);
 }
 
 auto to_quaternion(glm::vec3 direction) -> glm::quat
@@ -63,7 +64,7 @@ auto to_quaternion(Rotation rotation) -> glm::quat
 
 auto to_quaternion(EulerAngles angles) -> glm::quat
 {
-    return glm::quat{ glm::vec3{ angles.pitch, angles.yaw, angles.roll } };
+    return glm::quat{ static_cast<glm::vec3>(angles) };
 }
 
 auto to_rotation(glm::vec3 direction) -> Rotation
@@ -104,23 +105,21 @@ auto to_euler_angles(glm::vec3 direction) -> EulerAngles
 
 auto to_euler_angles(glm::quat rotation) -> EulerAngles
 {
-    auto [x, y, z] = glm::eulerAngles(rotation);
+    auto rotation_matrix = rotation_matrix_from_quaternion(rotation);
 
-    return EulerAngles{
-        .pitch = x,
-        .yaw = y,
-        .roll = z,
-    };
+    EulerAngles angles;
+    glm::extractEulerAngleYXZ(rotation_matrix, angles.yaw, angles.pitch, angles.roll);
+    return angles;
 }
 
 auto rotate(glm::quat quaternion, glm::quat rotation) -> glm::quat
 {
-    return rotation * quaternion;
+    return glm::normalize(rotation * quaternion);
 }
 
 auto rotate(glm::quat quaternion, float angle, glm::vec3 axis) -> glm::quat
 {
-    return glm::normalize(glm::rotate(quaternion, angle, axis));
+    return glm::normalize(glm::rotateNormalizedAxis(quaternion, angle, axis));
 }
 
 auto rotate(glm::quat quaternion, Rotation rotation) -> glm::quat

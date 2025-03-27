@@ -25,7 +25,6 @@ endif()
 if(ZTH_DIST_BUILD)
     set(B_PRODUCTION_MODE ON) # For battery-embed.
     add_compile_definitions(ZTH_DIST_BUILD)
-    add_compile_definitions(ENTT_DISABLE_ASSERT)
 else()
     message(WARNING "ZTH_DIST_BUILD is off. Enable ZTH_DIST_BUILD option to strip all debugging features when deploying your application.")
 endif()

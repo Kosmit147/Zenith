@@ -4,8 +4,6 @@
 
 namespace zth {
 
-class PerspectiveCamera;
-
 class ImGuiRenderer;
 
 enum class LightType : u8;
@@ -15,10 +13,6 @@ struct DirectionalLight;
 struct PointLight;
 struct SpotLight;
 struct AmbientLight;
-struct DirectionalLightRenderData;
-struct PointLightRenderData;
-struct SpotLightRenderData;
-struct AmbientLightRenderData;
 
 struct Material;
 
@@ -38,6 +32,10 @@ struct MeshList;
 
 struct DrawCommand;
 struct RenderBatch;
+struct DirectionalLightRenderData;
+struct PointLightRenderData;
+struct SpotLightRenderData;
+struct AmbientLightRenderData;
 class Renderer;
 
 namespace shaders {

@@ -1,8 +1,11 @@
 #include "zenith/ecs/components.hpp"
 
+#include <glm/ext/matrix_clip_space.hpp>
+
 #include "zenith/core/assert.hpp"
 #include "zenith/log/formatters.hpp"
 #include "zenith/math/matrix.hpp"
+#include "zenith/math/vector.hpp"
 
 namespace zth {
 
@@ -184,14 +187,68 @@ auto TransformComponent::set_transform(const glm::mat4& transform) -> TransformC
     return *this;
 }
 
+auto TransformComponent::euler_angles() const -> math::EulerAngles
+{
+    return math::to_euler_angles(_rotation);
+}
+
 auto TransformComponent::direction() const -> glm::vec3
 {
     return math::to_direction(_rotation);
 }
 
+auto TransformComponent::forward() const -> glm::vec3
+{
+    return _rotation * math::world_forward;
+}
+
+auto TransformComponent::right() const -> glm::vec3
+{
+    return _rotation * math::world_right;
+}
+
+auto TransformComponent::up() const -> glm::vec3
+{
+    return _rotation * math::world_up;
+}
+
 auto TransformComponent::update_transform() -> void
 {
     _transform = math::compose_transform(_scale, _rotation, _translation);
+}
+
+// --------------------------- ScriptComponent ---------------------------
+
+ScriptComponent::ScriptComponent(std::unique_ptr<Script>&& script) : _script(std::move(script)) {}
+
+auto ScriptComponent::script() -> Script&
+{
+    ZTH_ASSERT(_script != nullptr);
+    return *_script;
+}
+
+auto ScriptComponent::script() const -> const Script&
+{
+    ZTH_ASSERT(_script != nullptr);
+    return *_script;
+}
+
+// --------------------------- CameraComponent ---------------------------
+
+auto CameraComponent::view(const TransformComponent& transform) const -> glm::mat4
+{
+    auto translation = transform.translation();
+    return glm::lookAt(translation, translation + transform.forward(), transform.up());
+}
+
+auto CameraComponent::projection() const -> glm::mat4
+{
+    return glm::perspective(fov, aspect_ratio, near, far);
+}
+
+auto CameraComponent::view_projection(const TransformComponent& transform) const -> glm::mat4
+{
+    return projection() * view(transform);
 }
 
 // --------------------------- LightComponent ---------------------------
@@ -299,51 +356,6 @@ auto LightComponent::ambient_light() const -> const AmbientLight&
     return _ambient_light;
 }
 
-auto LightComponent::to_directional_light_render_data(const TransformComponent& transform) const
-    -> DirectionalLightRenderData
-{
-    const auto& [properties] = directional_light();
-
-    return DirectionalLightRenderData{
-        .direction = transform.direction(),
-        .properties = properties,
-    };
-}
-
-auto LightComponent::to_point_light_render_data(const TransformComponent& transform) const -> PointLightRenderData
-{
-    const auto& [properties, attenuation] = point_light();
-
-    return PointLightRenderData{
-        .position = transform.translation(),
-        .properties = properties,
-        .attenuation = attenuation,
-    };
-}
-
-auto LightComponent::to_spot_light_render_data(const TransformComponent& transform) const -> SpotLightRenderData
-{
-    const auto& [inner_cutoff_cosine, outer_cutoff_cosine, properties, attenuation] = spot_light();
-
-    return SpotLightRenderData{
-        .position = transform.translation(),
-        .direction = transform.direction(),
-        .inner_cutoff_cosine = inner_cutoff_cosine,
-        .outer_cutoff_cosine = outer_cutoff_cosine,
-        .properties = properties,
-        .attenuation = attenuation,
-    };
-}
-
-auto LightComponent::to_ambient_light_render_data() const -> AmbientLightRenderData
-{
-    const auto& [ambient] = ambient_light();
-
-    return AmbientLightRenderData{
-        .ambient = ambient,
-    };
-}
-
 } // namespace zth
 
 ZTH_DEFINE_FORMATTER(zth::TagComponent, tag)
@@ -365,6 +377,11 @@ ZTH_DEFINE_FORMATTER(zth::TransformComponent, transform)
                           transform.translation(), transform.rotation(), transform.scale(), transform.transform());
 }
 
+ZTH_DEFINE_FORMATTER(zth::ScriptComponent, script)
+{
+    return ZTH_FORMAT_OUT("ScriptComponent(\"{}\")", script.script().display_name());
+}
+
 ZTH_DEFINE_FORMATTER(zth::MeshComponent, mesh)
 {
     // @todo
@@ -383,10 +400,13 @@ ZTH_DEFINE_FORMATTER(zth::MaterialComponent, material)
 
 ZTH_DEFINE_FORMATTER(zth::CameraComponent, camera)
 {
-    // @todo
-
-    (void)camera;
-    return ZTH_FORMAT_OUT("not implemented");
+    return ZTH_FORMAT_OUT("CameraComponent {{\n"
+                          "\t.aspect_ratio = {},\n"
+                          "\t.fov = {},\n"
+                          "\t.near = {},\n"
+                          "\t.far = {},\n"
+                          "}}",
+                          camera.aspect_ratio, camera.fov, camera.near, camera.far);
 }
 
 ZTH_DEFINE_FORMATTER(zth::LightComponent, light)
