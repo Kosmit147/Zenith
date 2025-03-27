@@ -71,6 +71,22 @@
 
 #endif
 
+// ZTH_FORCE_INLINE
+
+#if defined(_MSC_VER)
+
+#define ZTH_FORCE_INLINE __forceinline
+
+#elif defined(__GNUC__) || defined(__clang__)
+
+#define ZTH_FORCE_INLINE __attribute__((always_inline))
+
+#else
+
+#define ZTH_FORCE_INLINE
+
+#endif
+
 // ZTH_NO_INLINE
 
 #if defined(_MSC_VER)
