@@ -7,8 +7,6 @@
 #include "zenith/memory/fwd.hpp"
 #include "zenith/stl/range.hpp"
 #include "zenith/util/macros.hpp"
-#include "zenith/util/optional.hpp"
-#include "zenith/util/reference.hpp"
 
 namespace zth::memory {
 
