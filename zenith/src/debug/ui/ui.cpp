@@ -1,18 +1,13 @@
 #include "zenith/debug/ui/ui.hpp"
 
-#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 #include <imgui_stdlib.h>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/scene_manager.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/log/format.hpp"
-#include "zenith/math/quaternion.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/material.hpp"
@@ -25,51 +20,49 @@ namespace zth::debug {
 
 namespace {
 
-constexpr auto default_drag_speed = 0.01f;
+constexpr auto far_plane_drag_speed = default_ui_drag_speed * 10.0f;
+constexpr auto light_attenuation_drag_speed = default_ui_drag_speed * 0.01f;
+constexpr auto light_ambient_drag_speed = default_ui_drag_speed * 0.1f;
+constexpr auto material_shininess_drag_speed = default_ui_drag_speed * 10.0f;
 
-constexpr auto far_plane_drag_speed = default_drag_speed * 10.0f;
+} // namespace
 
-constexpr auto light_attenuation_drag_speed = default_drag_speed * 0.01f;
-constexpr auto light_ambient_drag_speed = default_drag_speed * 0.1f;
-
-constexpr auto material_shininess_drag_speed = default_drag_speed * 10.0f;
-
-auto drag_float(const char* label, float& value, float drag_speed = default_drag_speed) -> bool
+auto drag_float(const char* label, float& value, float drag_speed) -> bool
 {
     return ImGui::DragFloat(label, &value, drag_speed);
 }
 
-auto drag_float_2(const char* label, float values[2], float drag_speed = default_drag_speed) -> bool
+auto drag_float_2(const char* label, float values[2], float drag_speed) -> bool
 {
     return ImGui::DragFloat2(label, values, drag_speed);
 }
 
-auto drag_float_3(const char* label, float values[3], float drag_speed = default_drag_speed) -> bool
+auto drag_float_3(const char* label, float values[3], float drag_speed) -> bool
 {
     return ImGui::DragFloat3(label, values, drag_speed);
 }
 
-auto drag_float_4(const char* label, float values[4], float drag_speed = default_drag_speed) -> bool
+auto drag_float_4(const char* label, float values[4], float drag_speed) -> bool
 {
     return ImGui::DragFloat4(label, values, drag_speed);
 }
 
-auto drag_vec(const char* label, glm::vec2& vec, float drag_speed = default_drag_speed) -> bool
+auto drag_vec(const char* label, glm::vec2& vec, float drag_speed) -> bool
 {
     return drag_float_2(label, glm::value_ptr(vec), drag_speed);
 }
 
-auto drag_vec(const char* label, glm::vec3& vec, float drag_speed = default_drag_speed) -> bool
+auto drag_vec(const char* label, glm::vec3& vec, float drag_speed) -> bool
 {
     return drag_float_3(label, glm::value_ptr(vec), drag_speed);
 }
 
-auto drag_vec(const char* label, glm::vec4& vec, float drag_speed = default_drag_speed) -> bool
+auto drag_vec(const char* label, glm::vec4& vec, float drag_speed) -> bool
 {
     return drag_float_4(label, glm::value_ptr(vec), drag_speed);
 }
 
-auto drag_angles(const char* label, glm::vec2& angles, float drag_speed = default_drag_speed) -> bool
+auto drag_angles(const char* label, glm::vec2& angles, float drag_speed) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -82,7 +75,7 @@ auto drag_angles(const char* label, glm::vec2& angles, float drag_speed = defaul
     return false;
 }
 
-auto drag_angles(const char* label, glm::vec3& angles, float drag_speed = default_drag_speed) -> bool
+auto drag_angles(const char* label, glm::vec3& angles, float drag_speed) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -95,7 +88,7 @@ auto drag_angles(const char* label, glm::vec3& angles, float drag_speed = defaul
     return false;
 }
 
-auto drag_angles(const char* label, glm::vec4& angles, float drag_speed = default_drag_speed) -> bool
+auto drag_angles(const char* label, glm::vec4& angles, float drag_speed) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -108,42 +101,42 @@ auto drag_angles(const char* label, glm::vec4& angles, float drag_speed = defaul
     return false;
 }
 
-auto slide_float(const char* label, float& value, float min = 0.0f, float max = 1.0f) -> bool
+auto slide_float(const char* label, float& value, float min, float max) -> bool
 {
     return ImGui::SliderFloat(label, &value, min, max);
 }
 
-auto slide_float_2(const char* label, float values[2], float min = 0.0f, float max = 1.0f) -> bool
+auto slide_float_2(const char* label, float values[2], float min, float max) -> bool
 {
     return ImGui::SliderFloat2(label, values, min, max);
 }
 
-auto slide_float_3(const char* label, float values[3], float min = 0.0f, float max = 1.0f) -> bool
+auto slide_float_3(const char* label, float values[3], float min, float max) -> bool
 {
     return ImGui::SliderFloat3(label, values, min, max);
 }
 
-auto slide_float_4(const char* label, float values[4], float min = 0.0f, float max = 1.0f) -> bool
+auto slide_float_4(const char* label, float values[4], float min, float max) -> bool
 {
     return ImGui::SliderFloat4(label, values, min, max);
 }
 
-auto slide_vec(const char* label, glm::vec2& vec, float min = 0.0f, float max = 1.0f) -> bool
+auto slide_vec(const char* label, glm::vec2& vec, float min, float max) -> bool
 {
     return slide_float_2(label, glm::value_ptr(vec), min, max);
 }
 
-auto slide_vec(const char* label, glm::vec3& vec, float min = 0.0f, float max = 1.0f) -> bool
+auto slide_vec(const char* label, glm::vec3& vec, float min, float max) -> bool
 {
     return slide_float_3(label, glm::value_ptr(vec), min, max);
 }
 
-auto slide_vec(const char* label, glm::vec4& vec, float min = 0.0f, float max = 1.0f) -> bool
+auto slide_vec(const char* label, glm::vec4& vec, float min, float max) -> bool
 {
     return slide_float_4(label, glm::value_ptr(vec), min, max);
 }
 
-auto slide_angles(const char* label, glm::vec2& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+auto slide_angles(const char* label, glm::vec2& angles, float min_degrees, float max_degrees) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -156,7 +149,7 @@ auto slide_angles(const char* label, glm::vec2& angles, float min_degrees = 0.0f
     return false;
 }
 
-auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+auto slide_angles(const char* label, glm::vec3& angles, float min_degrees, float max_degrees) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -169,7 +162,7 @@ auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f
     return false;
 }
 
-auto slide_angles(const char* label, glm::vec4& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool
+auto slide_angles(const char* label, glm::vec4& angles, float min_degrees, float max_degrees) -> bool
 {
     auto degrees = glm::degrees(angles);
 
@@ -202,12 +195,12 @@ auto pick_color(const char* label, glm::vec4& color) -> bool
     return ImGui::ColorPicker4(label, glm::value_ptr(color));
 }
 
-auto slide_angle(const char* label, float& angle_radians, float degrees_min = 0.0f, float degrees_max = 360.0f) -> bool
+auto slide_angle(const char* label, float& angle_radians, float degrees_min, float degrees_max) -> bool
 {
     return ImGui::SliderAngle(label, &angle_radians, degrees_min, degrees_max);
 }
 
-auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed = default_drag_speed) -> bool
+auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed) -> bool
 {
     auto values = static_cast<glm::vec3>(angles);
 
@@ -228,51 +221,16 @@ auto edit_quat(const char* label, glm::quat& quaternion) -> bool
 auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
 {
     const auto original_angles = math::to_euler_angles(quaternion);
-    auto maybe_modified_angles = original_angles;
+    auto new_angles = original_angles;
 
-    if (drag_euler_angles(label, maybe_modified_angles))
+    if (drag_euler_angles(label, new_angles))
     {
-        auto change = maybe_modified_angles - original_angles;
+        auto change = new_angles - original_angles;
         quaternion = math::rotate(quaternion, change);
         return true;
     }
 
     return false;
-}
-
-auto edit_tag(TagComponent& tag) -> void
-{
-    ImGui::InputText("Tag", &tag.tag);
-}
-
-auto edit_transform(TransformComponent& transform) -> void
-{
-    ImGui::SeparatorText("Transform");
-
-    auto translation = transform.translation();
-
-    if (drag_vec("Translation", translation))
-        transform.set_translation(translation);
-
-    auto rotation = transform.rotation();
-
-    if (edit_quat_as_euler_angles("Rotation", rotation))
-        transform.set_rotation(rotation);
-
-    auto scale = transform.scale();
-
-    if (drag_vec("Scale", scale))
-        transform.set_scale(scale);
-}
-
-auto edit_camera(CameraComponent& camera) -> void
-{
-    ImGui::SeparatorText("Camera");
-
-    drag_float("Aspect Ratio", camera.aspect_ratio);
-    slide_angle("FOV", camera.fov, 0.0f, 180.0f);
-    drag_float("Near Plane", camera.near);
-    drag_float("Far Plane", camera.far, far_plane_drag_speed);
 }
 
 auto edit_light_type(LightType& type) -> bool
@@ -350,7 +308,42 @@ auto edit_ambient_light(AmbientLight& light) -> void
     drag_vec("Ambient", light.ambient, light_ambient_drag_speed);
 }
 
-auto edit_light(LightComponent& light) -> void
+auto edit_tag_component(TagComponent& tag) -> void
+{
+    ImGui::InputText("Tag", &tag.tag);
+}
+
+auto edit_transform_component(TransformComponent& transform) -> void
+{
+    ImGui::SeparatorText("Transform");
+
+    auto translation = transform.translation();
+
+    if (drag_vec("Translation", translation))
+        transform.set_translation(translation);
+
+    auto rotation = transform.rotation();
+
+    if (edit_quat_as_euler_angles("Rotation", rotation))
+        transform.set_rotation(rotation);
+
+    auto scale = transform.scale();
+
+    if (drag_vec("Scale", scale))
+        transform.set_scale(scale);
+}
+
+auto edit_camera_component(CameraComponent& camera) -> void
+{
+    ImGui::SeparatorText("Camera");
+
+    drag_float("Aspect Ratio", camera.aspect_ratio);
+    slide_angle("FOV", camera.fov, 0.0f, 180.0f);
+    drag_float("Near Plane", camera.near);
+    drag_float("Far Plane", camera.far, far_plane_drag_speed);
+}
+
+auto edit_light_component(LightComponent& light) -> void
 {
     ImGui::SeparatorText("Light");
 
@@ -377,13 +370,11 @@ auto edit_light(LightComponent& light) -> void
     }
 }
 
-auto edit_script(ScriptComponent& script) -> void
+auto edit_script_component(ScriptComponent& script) -> void
 {
     ImGui::SeparatorText("Script");
     ImGui::TextUnformatted(script.script().display_name());
 }
-
-} // namespace
 
 auto TransformGizmo::draw(TransformComponent& transform) const -> void
 {
@@ -412,10 +403,10 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
         static_assert(IsIntegralComponent<TransformComponent>);
 
         auto& tag = entity.get<TagComponent>();
-        edit_tag(tag);
+        edit_tag_component(tag);
 
         auto& transform = entity.get<TransformComponent>();
-        edit_transform(transform);
+        edit_transform_component(transform);
 
         if (Window::cursor_enabled())
             gizmo.draw(transform);
@@ -424,13 +415,13 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
     if (entity.any_of<CameraComponent>())
     {
         auto& camera = entity.get<CameraComponent>();
-        edit_camera(camera);
+        edit_camera_component(camera);
     }
 
     if (entity.any_of<LightComponent>())
     {
         auto& light = entity.get<LightComponent>();
-        edit_light(light);
+        edit_light_component(light);
     }
 
     if (entity.any_of<MeshComponent>())
@@ -448,7 +439,7 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
     if (entity.any_of<ScriptComponent>())
     {
         auto& script = entity.get<ScriptComponent>();
-        edit_script(script);
+        edit_script_component(script);
     }
 
     ImGui::End();

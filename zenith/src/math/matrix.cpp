@@ -91,9 +91,9 @@ auto rotation_matrix_from_quaternion(glm::quat rotation) -> glm::mat4
     return glm::mat4_cast(rotation);
 }
 
-auto rotation_matrix_from_euler_angles(EulerAngles rotation) -> glm::mat4
+auto rotation_matrix_from_euler_angles(EulerAngles angles) -> glm::mat4
 {
-    return glm::eulerAngleYXZ(rotation.yaw, rotation.pitch, rotation.roll);
+    return glm::eulerAngleYXZ(angles.yaw, angles.pitch, angles.roll);
 }
 
 auto extract_euler_angles_from_rotation_matrix(const glm::mat4& rotation_matrix) -> EulerAngles

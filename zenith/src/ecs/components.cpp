@@ -26,7 +26,8 @@ TransformComponent::TransformComponent(glm::vec3 translation, glm::quat rotation
     set_rotation(rotation);
 }
 
-TransformComponent::TransformComponent(glm::vec3 translation, math::Rotation rotation) : TransformComponent(translation)
+TransformComponent::TransformComponent(glm::vec3 translation, math::AngleAxis rotation)
+    : TransformComponent(translation)
 {
     set_rotation(rotation);
 }
@@ -49,7 +50,7 @@ TransformComponent::TransformComponent(glm::vec3 translation, glm::quat rotation
     set_scale(scale);
 }
 
-TransformComponent::TransformComponent(glm::vec3 translation, math::Rotation rotation, glm::vec3 scale)
+TransformComponent::TransformComponent(glm::vec3 translation, math::AngleAxis rotation, glm::vec3 scale)
     : TransformComponent(translation, rotation)
 {
     set_scale(scale);
@@ -69,7 +70,7 @@ TransformComponent::TransformComponent(glm::vec3 translation, glm::quat rotation
     : TransformComponent(translation, rotation, glm::vec3{ scale })
 {}
 
-TransformComponent::TransformComponent(glm::vec3 translation, math::Rotation rotation, float scale)
+TransformComponent::TransformComponent(glm::vec3 translation, math::AngleAxis rotation, float scale)
     : TransformComponent(translation, rotation, glm::vec3{ scale })
 {}
 
@@ -96,7 +97,7 @@ auto TransformComponent::rotate(float angle, glm::vec3 axis) -> TransformCompone
     return *this;
 }
 
-auto TransformComponent::rotate(math::Rotation rotation) -> TransformComponent&
+auto TransformComponent::rotate(math::AngleAxis rotation) -> TransformComponent&
 {
     _rotation = math::rotate(_rotation, rotation.angle, rotation.axis);
     update_transform();
@@ -141,7 +142,7 @@ auto TransformComponent::set_rotation(float angle, glm::vec3 axis) -> TransformC
     return set_rotation(math::to_quaternion(angle, axis));
 }
 
-auto TransformComponent::set_rotation(math::Rotation rotation) -> TransformComponent&
+auto TransformComponent::set_rotation(math::AngleAxis rotation) -> TransformComponent&
 {
     return set_rotation(math::to_quaternion(rotation));
 }
@@ -161,6 +162,11 @@ auto TransformComponent::set_rotation(math::EulerAngles rotation) -> TransformCo
 auto TransformComponent::set_direction(glm::vec3 direction) -> TransformComponent&
 {
     return set_rotation(math::to_quaternion(direction));
+}
+
+auto TransformComponent::set_direction(glm::vec3 direction, glm::vec3 up) -> TransformComponent&
+{
+    return set_rotation(math::to_quaternion(direction, up));
 }
 
 auto TransformComponent::set_scale(float scale) -> TransformComponent&

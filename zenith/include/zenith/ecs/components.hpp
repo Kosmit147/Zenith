@@ -34,24 +34,24 @@ public:
     explicit TransformComponent(glm::vec3 translation);
     explicit TransformComponent(glm::vec3 translation, glm::vec3 direction); // direction must be normalized.
     explicit TransformComponent(glm::vec3 translation, glm::quat rotation);
-    explicit TransformComponent(glm::vec3 translation, math::Rotation rotation);
+    explicit TransformComponent(glm::vec3 translation, math::AngleAxis rotation);
     explicit TransformComponent(glm::vec3 translation, math::EulerAngles rotation);
     explicit TransformComponent(glm::vec3 translation, glm::vec3 direction,
                                 glm::vec3 scale); // direction must be normalized.
     explicit TransformComponent(glm::vec3 translation, glm::quat rotation, glm::vec3 scale);
-    explicit TransformComponent(glm::vec3 translation, math::Rotation rotation, glm::vec3 scale);
+    explicit TransformComponent(glm::vec3 translation, math::AngleAxis rotation, glm::vec3 scale);
     explicit TransformComponent(glm::vec3 translation, math::EulerAngles rotation, glm::vec3 scale);
     explicit TransformComponent(glm::vec3 translation, glm::vec3 direction,
                                 float scale); // direction must be normalized.
     explicit TransformComponent(glm::vec3 translation, glm::quat rotation, float scale);
-    explicit TransformComponent(glm::vec3 translation, math::Rotation rotation, float scale);
+    explicit TransformComponent(glm::vec3 translation, math::AngleAxis rotation, float scale);
     explicit TransformComponent(glm::vec3 translation, math::EulerAngles rotation, float scale);
     explicit TransformComponent(const glm::mat4& transform);
 
     auto translate(glm::vec3 translation) -> TransformComponent&;
 
     auto rotate(float angle, glm::vec3 axis) -> TransformComponent&; // axis must be normalized.
-    auto rotate(math::Rotation rotation) -> TransformComponent&;     // axis must be normalized.
+    auto rotate(math::AngleAxis rotation) -> TransformComponent&;    // axis must be normalized.
     auto rotate(glm::quat rotation) -> TransformComponent&;          // rotation must be normalized.
     auto rotate(math::EulerAngles rotation) -> TransformComponent&;  // rotation must be normalized.
 
@@ -61,11 +61,13 @@ public:
     auto set_translation(glm::vec3 translation) -> TransformComponent&;
 
     auto set_rotation(float angle, glm::vec3 axis) -> TransformComponent&; // axis must be normalized.
-    auto set_rotation(math::Rotation rotation) -> TransformComponent&;     // axis must be normalized.
+    auto set_rotation(math::AngleAxis rotation) -> TransformComponent&;    // axis must be normalized.
     auto set_rotation(glm::quat rotation) -> TransformComponent&;          // rotation must be normalized.
     auto set_rotation(math::EulerAngles rotation) -> TransformComponent&;
 
     auto set_direction(glm::vec3 direction) -> TransformComponent&; // direction must be normalized.
+    auto set_direction(glm::vec3 direction, glm::vec3 up)
+        -> TransformComponent&; // direction and up must be normalized.
 
     auto set_scale(float scale) -> TransformComponent&;
     auto set_scale(glm::vec3 scale) -> TransformComponent&;
