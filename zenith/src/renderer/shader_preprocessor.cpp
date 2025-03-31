@@ -19,21 +19,18 @@ constexpr auto include_str = "#include"_sv;
 
 StringHashMap<String> ShaderPreprocessor::_sources;
 
-auto ShaderPreprocessor::init() -> void
+auto ShaderPreprocessor::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Initializing shader preprocessor...");
-
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
-
     ZTH_CORE_INFO("Shader preprocessor initialized.");
+    return Success{};
 }
 
 auto ShaderPreprocessor::shut_down() -> void
 {
     ZTH_CORE_INFO("Shutting down shader preprocessor...");
-
     _sources.clear();
-
     ZTH_CORE_INFO("Shader preprocessor shut down.");
 }
 

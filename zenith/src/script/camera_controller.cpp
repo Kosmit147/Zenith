@@ -1,6 +1,6 @@
 #include "zenith/script/camera_controller.hpp"
 
-#include "zenith/debug/ui/ui.hpp"
+#include "zenith/debug/ui.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"

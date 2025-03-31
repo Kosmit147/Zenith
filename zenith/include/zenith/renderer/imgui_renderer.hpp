@@ -1,5 +1,8 @@
 #pragma once
 
+#include "zenith/stl/string.hpp"
+#include "zenith/util/result.hpp"
+
 namespace zth {
 
 class ImGuiRenderer
@@ -10,9 +13,9 @@ public:
 public:
     ImGuiRenderer() = delete;
 
-    static auto init() -> void;
-    static auto update() -> void;
-    static auto on_render() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
+    static auto start_frame() -> void;
+    static auto render() -> void;
     static auto shut_down() -> void;
 };
 

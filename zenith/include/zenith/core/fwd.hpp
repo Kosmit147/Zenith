@@ -10,6 +10,4 @@ class Scene;
 
 class SceneManager;
 
-class SystemManager;
-
 } // namespace zth

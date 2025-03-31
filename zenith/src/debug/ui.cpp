@@ -1,4 +1,4 @@
-#include "zenith/debug/ui/ui.hpp"
+#include "zenith/debug/ui.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
@@ -13,7 +13,7 @@
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/materials.hpp"
 #include "zenith/renderer/renderer.hpp"
-#include "zenith/system/event.hpp"
+#include "zenith/system/input.hpp"
 #include "zenith/system/window.hpp"
 
 namespace zth::debug {
@@ -387,6 +387,26 @@ auto edit_light_component(LightComponent& light) -> void
     }
 }
 
+auto edit_mesh_component(MeshComponent& mesh) -> void
+{
+    (void)mesh;
+
+    ImGui::SeparatorText("Mesh");
+    ImGui::TextUnformatted("TODO!");
+
+    // @todo
+}
+
+auto edit_material_component(MaterialComponent& material) -> void
+{
+    (void)material;
+
+    ImGui::SeparatorText("Material");
+    ImGui::TextUnformatted("TODO!");
+
+    // @todo
+}
+
 auto edit_script_component(ScriptComponent& script) -> void
 {
     ImGui::SeparatorText("Script");
@@ -395,7 +415,7 @@ auto edit_script_component(ScriptComponent& script) -> void
     script.script().debug_edit();
 }
 
-auto TransformGizmo::draw(TransformComponent& transform) const -> void
+auto TransformGizmo::display(TransformComponent& transform) const -> void
 {
     ImGuizmo::Enable(true);
     auto transform_matrix = transform.transform();
@@ -410,7 +430,7 @@ auto TransformGizmo::draw(TransformComponent& transform) const -> void
     }
 }
 
-auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
+auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 {
     ZTH_ASSERT(entity.valid());
 
@@ -428,7 +448,7 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
         edit_transform_component(transform);
 
         if (Window::cursor_enabled())
-            gizmo.draw(transform);
+            gizmo.display(transform);
     }
 
     if (entity.any_of<CameraComponent>())
@@ -445,14 +465,14 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
 
     if (entity.any_of<MeshComponent>())
     {
-        // auto& mesh = entity.get<MeshComponent>();
-        // @todo
+        auto& mesh = entity.get<MeshComponent>();
+        edit_mesh_component(mesh);
     }
 
     if (entity.any_of<MaterialComponent>())
     {
-        // auto& material = entity.get<MaterialComponent>();
-        // @todo
+        auto& material = entity.get<MaterialComponent>();
+        edit_material_component(material);
     }
 
     if (entity.any_of<ScriptComponent>())
@@ -464,15 +484,13 @@ auto EntityInspectorPanel::draw(EntityHandle entity) const -> void
     ImGui::End();
 }
 
-SceneHierarchyPanel::SceneHierarchyPanel(Registry& registry) : _registry(registry) {}
-
-auto SceneHierarchyPanel::draw() -> void
+auto SceneHierarchyPanel::display(Registry& registry) -> void
 {
     ImGui::Begin("Scene Hierarchy");
 
-    for (auto entity_id : _registry.view<EntityId>())
+    for (auto entity_id : registry.view<EntityId>())
     {
-        const auto& tag = _registry.get<const TagComponent>(entity_id);
+        const auto& tag = registry.get<const TagComponent>(entity_id);
 
         auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity_id));
 
@@ -482,15 +500,15 @@ auto SceneHierarchyPanel::draw() -> void
 
     if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
         _selected_entity_id = null_entity;
-    else if (_registry.valid(_selected_entity_id))
-        inspector.draw(EntityHandle{ _selected_entity_id, _registry });
+    else if (registry.valid(_selected_entity_id))
+        inspector.display(EntityHandle{ _selected_entity_id, registry });
 
     ImGui::End();
 }
 
 DebugToolsPanel::DebugToolsPanel(StringView label) : _label(label) {}
 
-auto DebugToolsPanel::draw() -> void
+auto DebugToolsPanel::display() -> void
 {
     ImGui::Begin(_label.data());
 
@@ -521,7 +539,7 @@ auto DebugToolsPanel::draw() -> void
             Window::set_frame_rate_limit(_frame_rate_limit);
     }
 
-    auto label = format_to_temporary("Wireframe ({})", toggle_wireframe_mode_key);
+    auto label = format_to_temporary("Wireframe");
     auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
 
     if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
@@ -530,15 +548,9 @@ auto DebugToolsPanel::draw() -> void
     ImGui::End();
 }
 
-auto DebugToolsPanel::on_key_pressed_event(const KeyPressedEvent& event) const -> void
-{
-    if (event.key == toggle_wireframe_mode_key)
-        Renderer::toggle_wireframe_mode();
-}
-
 MaterialPanel::MaterialPanel(Material& material, StringView label) : _label(label), _material(material) {}
 
-auto MaterialPanel::draw() -> void
+auto MaterialPanel::display() -> void
 {
     const auto& materials = materials::materials();
     const auto& material_names = materials::material_names;
@@ -662,13 +674,13 @@ auto MaterialPanel::set_emission_map(i16 idx) -> void
 
 ScenePicker::ScenePicker(StringView label) : _label(label) {}
 
-auto ScenePicker::draw() -> void
+auto ScenePicker::display() -> void
 {
     ImGui::Begin(_label.data());
 
     ImGui::Text("%s", _scene_names[_selected_scene_idx].c_str());
 
-    auto prev_scene_label = format_to_temporary("Prev ({})", prev_scene_key);
+    auto prev_scene_label = format_to_temporary("Prev");
     ImGui::TextUnformatted(prev_scene_label.c_str());
 
     ImGui::SameLine();
@@ -683,18 +695,10 @@ auto ScenePicker::draw() -> void
 
     ImGui::SameLine();
 
-    auto next_scene_label = format_to_temporary("Next ({})", next_scene_key);
+    auto next_scene_label = format_to_temporary("Next");
     ImGui::TextUnformatted(next_scene_label.c_str());
 
     ImGui::End();
-}
-
-auto ScenePicker::on_key_pressed_event(const KeyPressedEvent& event) -> void
-{
-    if (event.key == prev_scene_key)
-        prev_scene();
-    else if (event.key == next_scene_key)
-        next_scene();
 }
 
 auto ScenePicker::prev_scene() -> void
@@ -726,7 +730,7 @@ auto ScenePicker::next_scene() -> void
 auto ScenePicker::load_scene(usize idx) const -> void
 {
     auto scene = _scene_constructors[idx]();
-    SceneManager::load_scene(std::move(scene));
+    SceneManager::queue_scene(std::move(scene));
 }
 
 } // namespace zth::debug

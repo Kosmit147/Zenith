@@ -5,6 +5,7 @@
 #include "zenith/gl/context.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/util/optional.hpp"
+#include "zenith/util/result.hpp"
 
 struct GLFWwindow;
 
@@ -43,7 +44,7 @@ public:
 
     Window() = delete;
 
-    static auto init(const WindowSpec& spec) -> void;
+    [[nodiscard]] static auto init(const WindowSpec& spec) -> Result<Success, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto should_close() -> bool;

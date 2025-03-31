@@ -13,8 +13,10 @@
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/shader_data.hpp"
 #include "zenith/renderer/vertex.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -99,7 +101,7 @@ public:
     static constexpr usize initial_instance_buffer_size = sizeof(InstanceVertex) * 1000;
 
 public:
-    static auto init() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 

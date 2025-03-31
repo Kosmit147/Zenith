@@ -23,7 +23,7 @@ auto main() -> int
     }
     catch (const spdlog::spdlog_ex& e)
     {
-        std::println(std::cerr, "CRITICAL ERROR: Failed to initialize logger: {}", e.what());
+        std::println(std::cerr, "CRITICAL ERROR: {}", e.what());
     }
     catch (const Exception& e)
     {

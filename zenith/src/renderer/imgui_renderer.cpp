@@ -10,7 +10,7 @@
 
 namespace zth {
 
-auto ImGuiRenderer::init() -> void
+auto ImGuiRenderer::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Initializing ImGui renderer...");
 
@@ -26,9 +26,10 @@ auto ImGuiRenderer::init() -> void
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ZTH_CORE_INFO("ImGui renderer initialized.");
+    return Success{};
 }
 
-auto ImGuiRenderer::update() -> void
+auto ImGuiRenderer::start_frame() -> void
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -42,7 +43,7 @@ auto ImGuiRenderer::update() -> void
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 }
 
-auto ImGuiRenderer::on_render() -> void
+auto ImGuiRenderer::render() -> void
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

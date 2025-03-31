@@ -17,12 +17,6 @@ public:
     [[nodiscard]] virtual auto display_name() const -> const char* { return "Script"; }
     virtual auto debug_edit() -> void {}
 
-    friend class Scene;
-
-private:
-    auto dispatch_event(EntityHandle actor, const Event& event) -> void;
-    auto update(EntityHandle actor) -> void;
-
     virtual auto on_event([[maybe_unused]] EntityHandle actor, [[maybe_unused]] const Event& event) -> void {}
     virtual auto on_update([[maybe_unused]] EntityHandle actor) -> void {}
 };

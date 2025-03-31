@@ -10,6 +10,7 @@
 #include "zenith/stl/string_map.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -20,7 +21,7 @@ class AssetManager
 public:
     AssetManager() = delete;
 
-    static auto init() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
     static auto shut_down() -> void;
 
     static auto add_shader(StringView identifier, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>;
@@ -60,10 +61,10 @@ private:
     static StringHashMap<Material> _materials;
 };
 
-auto AssetManager::add_texture_from_memory(StringView name, std::ranges::contiguous_range auto&& data,
+auto AssetManager::add_texture_from_memory(StringView identifier, std::ranges::contiguous_range auto&& data,
                                            const gl::TextureParams& params) -> Optional<Reference<gl::Texture2D>>
 {
-    return add_texture_from_memory(name, std::data(data),
+    return add_texture_from_memory(identifier, std::data(data),
                                    std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params);
 }
 

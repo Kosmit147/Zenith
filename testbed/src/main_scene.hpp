@@ -34,5 +34,5 @@ private:
 
     auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
 
-    auto update_ui() -> void;
+    auto display_ui() -> void;
 };

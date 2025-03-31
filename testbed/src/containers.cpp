@@ -1,4 +1,4 @@
-#include "containers_scene.hpp"
+#include "containers.hpp"
 
 #include "embedded.hpp"
 
@@ -66,7 +66,7 @@ constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    g
 
 } // namespace
 
-ContainersScene::ContainersScene()
+Containers::Containers()
     : _diffuse_map{ embedded::container2_diffuse_map_data }, _specular_map{ embedded::container2_specular_map_data },
       _container_material{ .diffuse_map = &_diffuse_map, .specular_map = &_specular_map },
       _point_light_material{ .shader = &zth::shaders::flat_color() }
@@ -111,7 +111,7 @@ ContainersScene::ContainersScene()
     }
 }
 
-auto ContainersScene::on_event(const zth::Event& event) -> void
+auto Containers::on_event(const zth::Event& event) -> void
 {
     switch (event.type())
     {
@@ -133,13 +133,13 @@ auto ContainersScene::on_event(const zth::Event& event) -> void
     }
 }
 
-auto ContainersScene::on_update() -> void
+auto Containers::on_update() -> void
 {
     auto& light = _point_light.get<const zth::LightComponent>();
     _point_light_material.albedo = light.point_light().properties.color;
 }
 
-auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto Containers::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
     auto new_size = event.new_size;
 
@@ -147,7 +147,7 @@ auto ContainersScene::on_window_resized_event(const zth::WindowResizedEvent& eve
     camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
-auto ContainersScene::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
+auto Containers::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
 {
     if (event.key == toggle_spotlight_key)
     {

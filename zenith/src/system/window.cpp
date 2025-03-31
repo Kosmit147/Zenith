@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/core/exception.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
@@ -42,7 +41,7 @@ namespace {
 
 } // namespace
 
-auto Window::init(const WindowSpec& spec) -> void
+auto Window::init(const WindowSpec& spec) -> Result<Success, String>
 {
     ZTH_CORE_INFO("Initializing window...");
 
@@ -50,8 +49,7 @@ auto Window::init(const WindowSpec& spec) -> void
     {
         auto error_message = format(
             "Zenith supports only OpenGL 4.6. Tried to create an OpenGL context with version {}.", spec.gl_version);
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception{ error_message };
+        return Error{ error_message };
     }
 
     if (spec.gl_profile != gl::Profile::Core)
@@ -59,16 +57,11 @@ auto Window::init(const WindowSpec& spec) -> void
         auto error_message =
             format("Zenith supports only OpenGL Core profile. Tried to create an OpenGL context with {} profile.",
                    spec.gl_profile);
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception{ error_message };
+        return Error{ error_message };
     }
 
     if (!glfwInit())
-    {
-        auto error_message = "Failed to initialize GLFW.";
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception{ error_message };
-    }
+        return Error{ "Failed to initialize GLFW." };
 
     Defer terminate_glfw{ [] { glfwTerminate(); } };
 
@@ -86,11 +79,7 @@ auto Window::init(const WindowSpec& spec) -> void
     _window = create_glfw_window(spec.size, spec.title.data(), spec.fullscreen);
 
     if (!_window)
-    {
-        auto error_message = "Failed to create a window.";
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception{ error_message };
-    }
+        return Error{ "Failed to create a window." };
 
     Defer destroy_window{ [&] { glfwDestroyWindow(_window); } };
 
@@ -112,19 +101,16 @@ auto Window::init(const WindowSpec& spec) -> void
         glfw_force_aspect_ratio(*spec.forced_aspect_ratio);
 
     if (!init_glad())
-    {
-        auto error_message = "Failed to initialize glad.";
-        ZTH_CORE_CRITICAL(error_message);
-        throw Exception{ error_message };
-    }
+        return Error{ "Failed to initialize glad." };
 
-    // make sure that the renderer sets glViewport after initialization
+    // Make sure that the renderer sets glViewport after initialization.
     EventQueue::push(WindowResizedEvent{ size() });
 
     destroy_window.dismiss();
     terminate_glfw.dismiss();
 
     ZTH_CORE_INFO("Window initialized.");
+    return Success{};
 }
 
 auto Window::shut_down() -> void

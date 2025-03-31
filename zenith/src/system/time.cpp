@@ -5,12 +5,13 @@
 
 namespace zth {
 
-auto Time::init() -> void
+auto Time::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Time system initialized.");
+    return Success{};
 }
 
-auto Time::update() -> void
+auto Time::start_frame() -> void
 {
     auto new_time = Window::time();
     _delta_time = std::min(new_time - _time, delta_time_limit);

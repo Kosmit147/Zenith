@@ -12,9 +12,10 @@ StringHashMap<gl::Shader> AssetManager::_shaders;
 StringHashMap<gl::Texture2D> AssetManager::_textures;
 StringHashMap<Material> AssetManager::_materials;
 
-auto AssetManager::init() -> void
+auto AssetManager::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Asset manager initialized.");
+    return Success{};
 }
 
 auto AssetManager::shut_down() -> void

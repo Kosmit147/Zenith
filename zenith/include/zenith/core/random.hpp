@@ -6,6 +6,8 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
+#include "zenith/stl/string.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -16,7 +18,7 @@ class Random
 public:
     Random() = delete;
 
-    static auto init() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
     static auto shut_down() -> void;
 
     // Generates a random integer in range [min; max] (inclusive).
