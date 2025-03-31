@@ -1,7 +1,7 @@
 #include "zenith/system/application.hpp"
 
 #include "zenith/core/exception.hpp"
-#include "zenith/core/scene_manager.hpp"
+#include "zenith/core/scene.hpp"
 #include "zenith/layer/layers.hpp"
 #include "zenith/system/event_queue.hpp"
 #include "zenith/util/defer.hpp"

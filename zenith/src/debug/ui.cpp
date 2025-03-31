@@ -5,7 +5,7 @@
 #include <imgui_stdlib.h>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/core/scene_manager.hpp"
+#include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/memory/temporary_storage.hpp"
