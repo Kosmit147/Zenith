@@ -13,6 +13,7 @@
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -26,8 +27,8 @@ public:
 public:
     TemporaryStorage() = delete;
 
-    static auto init() -> void;
-    static auto update() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
+    static auto start_frame() -> void;
     static auto shut_down() -> void;
 
     static auto reset() -> void;

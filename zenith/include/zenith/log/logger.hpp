@@ -1,11 +1,12 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
+#include <spdlog/logger.h>
 
 #include <memory>
 
 #include "zenith/stl/string.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -21,7 +22,7 @@ class Logger
 public:
     Logger() = delete;
 
-    static auto init(const LoggerSpec& logger_spec) -> void;
+    [[nodiscard]] static auto init(const LoggerSpec& logger_spec) -> Result<Success, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto core_logger() -> spdlog::logger&;

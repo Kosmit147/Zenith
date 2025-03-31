@@ -73,7 +73,7 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
     return *this > other || *this == other;
 }
 
-auto Renderer::init() -> void
+auto Renderer::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Initializing renderer...");
 
@@ -103,6 +103,7 @@ auto Renderer::init() -> void
     materials::load_materials();
 
     ZTH_CORE_INFO("Renderer initialized.");
+    return Success{};
 }
 
 auto Renderer::on_window_event(const Event& event) -> void

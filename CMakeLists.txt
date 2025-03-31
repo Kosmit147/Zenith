@@ -47,7 +47,6 @@ add_subdirectory("dependencies/stb_image")
 add_subdirectory("zenith")
 add_subdirectory("sandbox")
 add_subdirectory("testbed")
-add_subdirectory("cube_game")
 add_subdirectory("unit_tester")
 
 enable_testing()

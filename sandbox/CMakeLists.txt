@@ -4,8 +4,9 @@ project(sandbox LANGUAGES CXX)
 add_executable(
 	sandbox
 	"src/cube_script.cpp"
+	"src/main_layer.cpp"
+	"src/main_scene.cpp"
 	"src/sandbox.cpp"
-	"src/scene.cpp"
 )
 
 b_embed(sandbox "assets/wall.jpg")

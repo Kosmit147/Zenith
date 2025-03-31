@@ -55,4 +55,4 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <spdlog/fmt/fmt.h>
-#include <spdlog/spdlog.h>
+#include <spdlog/logger.h>

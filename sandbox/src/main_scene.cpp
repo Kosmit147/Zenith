@@ -1,4 +1,4 @@
-#include "scene.hpp"
+#include "main_scene.hpp"
 
 #include <battery/embed.hpp>
 
@@ -18,7 +18,7 @@ const auto camera_camera_component = zth::CameraComponent{
 
 } // namespace
 
-Scene::Scene() : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture }
+MainScene::MainScene() : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture }
 {
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
@@ -34,7 +34,7 @@ Scene::Scene() : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_c
     _cube.emplace_or_replace<zth::ScriptComponent>(std::make_unique<CubeScript>());
 }
 
-auto Scene::on_event(const zth::Event& event) -> void
+auto MainScene::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::WindowResized)
     {
@@ -43,7 +43,7 @@ auto Scene::on_event(const zth::Event& event) -> void
     }
 }
 
-auto Scene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
+auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
 {
     auto new_size = event.new_size;
 

@@ -1,14 +1,14 @@
 #pragma once
 
-class ContainersScene : public zth::Scene
+class Containers : public zth::Scene
 {
 public:
     static constexpr auto toggle_spotlight_key = zth::Key::F;
 
 public:
-    explicit ContainersScene();
-    ZTH_NO_COPY_NO_MOVE(ContainersScene)
-    ~ContainersScene() override = default;
+    explicit Containers();
+    ZTH_NO_COPY_NO_MOVE(Containers)
+    ~Containers() override = default;
 
 private:
     zth::EntityHandle _camera = create_entity("Camera");

@@ -5,30 +5,39 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/log/format.hpp"
 
 namespace zth {
 
 std::shared_ptr<spdlog::logger> Logger::_core_logger;
 std::shared_ptr<spdlog::logger> Logger::_client_logger;
 
-auto Logger::init(const LoggerSpec& logger_spec) -> void
+auto Logger::init(const LoggerSpec& logger_spec) -> Result<Success, String>
 {
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logger_spec.log_file_path, true);
+    try
+    {
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logger_spec.log_file_path, true);
 
-    spdlog::sinks_init_list sink_list = { console_sink, file_sink };
-    _core_logger = std::make_shared<spdlog::logger>(logger_spec.core_logger_label, sink_list);
-    _client_logger = std::make_shared<spdlog::logger>(logger_spec.client_logger_label, sink_list);
+        spdlog::sinks_init_list sink_list = { console_sink, file_sink };
+        _core_logger = std::make_shared<spdlog::logger>(logger_spec.core_logger_label, sink_list);
+        _client_logger = std::make_shared<spdlog::logger>(logger_spec.client_logger_label, sink_list);
 
 #if !defined(ZTH_DIST_BUILD)
-    _core_logger->set_level(spdlog::level::trace);
-    _client_logger->set_level(spdlog::level::trace);
+        _core_logger->set_level(spdlog::level::trace);
+        _client_logger->set_level(spdlog::level::trace);
 #else
-    _core_logger->set_level(spdlog::level::info);
-    _client_logger->set_level(spdlog::level::info);
+        _core_logger->set_level(spdlog::level::info);
+        _client_logger->set_level(spdlog::level::info);
 #endif
+    }
+    catch (const spdlog::spdlog_ex& e)
+    {
+        return Error{ format("Failed to initialize logger: {}", e.what()) };
+    }
 
     ZTH_CORE_INFO("Logger initialized.");
+    return Success{};
 }
 
 auto Logger::shut_down() -> void

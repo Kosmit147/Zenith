@@ -9,8 +9,10 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/optional.hpp"
+#include "zenith/util/result.hpp"
 
 namespace zth {
 
@@ -19,7 +21,7 @@ class Input
 public:
     Input() = delete;
 
-    static auto init() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
     static auto update() -> void;
     static auto on_input_event(const Event& event) -> void;
     static auto shut_down() -> void;

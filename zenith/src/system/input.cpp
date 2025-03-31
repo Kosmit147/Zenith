@@ -10,7 +10,7 @@ namespace zth {
 std::unordered_map<Key, bool> Input::_key_states;
 std::unordered_map<MouseButton, bool> Input::_mouse_button_states;
 
-auto Input::init() -> void
+auto Input::init() -> Result<Success, String>
 {
     ZTH_CORE_INFO("Initializing input system...");
 
@@ -20,11 +20,12 @@ auto Input::init() -> void
     for (auto button : mouse_button_enumerations)
         _mouse_button_states.insert({ button, false });
 
-    // a solution for sudden movements caused by the first read of mouse position
+    // A solution for sudden movements caused by the first read of mouse position.
     _mouse_pos = Window::mouse_pos();
     _prev_mouse_pos = Window::mouse_pos();
 
     ZTH_CORE_INFO("Input system initialized.");
+    return Success{};
 }
 
 auto Input::update() -> void

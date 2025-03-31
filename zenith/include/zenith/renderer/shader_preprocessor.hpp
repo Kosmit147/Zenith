@@ -34,7 +34,7 @@ public:
 public:
     ShaderPreprocessor() = delete;
 
-    static auto init() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto preprocess(StringView source) -> Result<String, PreprocessShaderError>;

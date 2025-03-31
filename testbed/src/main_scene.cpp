@@ -125,7 +125,7 @@ auto MainScene::on_event(const zth::Event& event) -> void
 
 auto MainScene::on_update() -> void
 {
-    update_ui();
+    display_ui();
 
     auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
     auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
@@ -144,7 +144,7 @@ auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) co
     camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
-auto MainScene::update_ui() -> void
+auto MainScene::display_ui() -> void
 {
-    _material_panel.draw();
+    _material_panel.display();
 }

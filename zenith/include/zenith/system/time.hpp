@@ -2,6 +2,9 @@
 
 #include <concepts>
 
+#include "zenith/stl/string.hpp"
+#include "zenith/util/result.hpp"
+
 namespace zth {
 
 class Time
@@ -12,8 +15,8 @@ public:
 public:
     Time() = delete;
 
-    static auto init() -> void;
-    static auto update() -> void;
+    [[nodiscard]] static auto init() -> Result<Success, String>;
+    static auto start_frame() -> void;
     static auto shut_down() -> void;
 
     template<std::floating_point T = double> [[nodiscard]] static auto time() -> T { return static_cast<T>(_time); }
