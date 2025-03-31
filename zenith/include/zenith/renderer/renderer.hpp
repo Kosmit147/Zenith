@@ -101,7 +101,7 @@ public:
     static constexpr usize initial_instance_buffer_size = sizeof(InstanceVertex) * 1000;
 
 public:
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 

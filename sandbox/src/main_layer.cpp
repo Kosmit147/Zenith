@@ -1,8 +1,8 @@
 #include "main_layer.hpp"
 
-auto MainLayer::on_attach() -> zth::Result<zth::Success, zth::String>
+auto MainLayer::on_attach() -> zth::Result<void, zth::String>
 {
-    return zth::Success{};
+    return {};
 }
 
 auto MainLayer::on_event(const zth::Event& event) -> void

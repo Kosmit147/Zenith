@@ -7,10 +7,10 @@
 
 namespace zth {
 
-auto SceneManager::init() -> Result<Success, String>
+auto SceneManager::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Scene manager initialized.");
-    return Success{};
+    return {};
 }
 
 auto SceneManager::start_frame() -> void

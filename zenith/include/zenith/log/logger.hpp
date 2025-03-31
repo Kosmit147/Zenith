@@ -22,7 +22,7 @@ class Logger
 public:
     Logger() = delete;
 
-    [[nodiscard]] static auto init(const LoggerSpec& logger_spec) -> Result<Success, String>;
+    [[nodiscard]] static auto init(const LoggerSpec& logger_spec) -> Result<void, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto core_logger() -> spdlog::logger&;

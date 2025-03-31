@@ -45,7 +45,7 @@ auto SystemLayer::on_update() -> void
     Input::update();
 }
 
-auto SystemLayer::on_attach() -> Result<Success, String>
+auto SystemLayer::on_attach() -> Result<void, String>
 {
     auto result = Logger::init(_logger_spec);
     if (!result)
@@ -81,7 +81,7 @@ auto SystemLayer::on_attach() -> Result<Success, String>
     shut_down_temporary_storage.dismiss();
 
     ZTH_CORE_INFO("System layer initialized...");
-    return Success{};
+    return {};
 }
 
 auto SystemLayer::on_detach() -> void
@@ -131,7 +131,7 @@ auto RuntimeLayer::on_render() -> void
     SceneManager::on_render();
 }
 
-auto RuntimeLayer::on_attach() -> Result<Success, String>
+auto RuntimeLayer::on_attach() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing runtime layer...");
 
@@ -167,7 +167,7 @@ auto RuntimeLayer::on_attach() -> Result<Success, String>
     shut_down_scene_manager.dismiss();
 
     ZTH_CORE_INFO("Runtime layer initialized...");
-    return Success{};
+    return {};
 }
 
 auto RuntimeLayer::on_detach() -> void
@@ -216,7 +216,7 @@ auto DebugLayer::on_update() -> void
     }
 }
 
-auto DebugLayer::on_attach() -> Result<Success, String>
+auto DebugLayer::on_attach() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing runtime layer...");
 
@@ -228,7 +228,7 @@ auto DebugLayer::on_attach() -> Result<Success, String>
     shut_down_imgui_renderer.dismiss();
 
     ZTH_CORE_INFO("Runtime layer initialized...");
-    return Success{};
+    return {};
 }
 
 auto DebugLayer::on_detach() -> void

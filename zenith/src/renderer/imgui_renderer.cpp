@@ -10,7 +10,7 @@
 
 namespace zth {
 
-auto ImGuiRenderer::init() -> Result<Success, String>
+auto ImGuiRenderer::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing ImGui renderer...");
 
@@ -26,7 +26,7 @@ auto ImGuiRenderer::init() -> Result<Success, String>
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ZTH_CORE_INFO("ImGui renderer initialized.");
-    return Success{};
+    return {};
 }
 
 auto ImGuiRenderer::start_frame() -> void

@@ -5,10 +5,10 @@
 
 namespace zth {
 
-auto Time::init() -> Result<Success, String>
+auto Time::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Time system initialized.");
-    return Success{};
+    return {};
 }
 
 auto Time::start_frame() -> void

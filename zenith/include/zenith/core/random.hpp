@@ -18,7 +18,7 @@ class Random
 public:
     Random() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto shut_down() -> void;
 
     // Generates a random integer in range [min; max] (inclusive).

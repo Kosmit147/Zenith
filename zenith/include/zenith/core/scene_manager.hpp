@@ -16,7 +16,7 @@ class SceneManager
 public:
     SceneManager() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto start_frame() -> void;
     static auto dispatch_event(const Event& event) -> void;
     static auto update() -> void;

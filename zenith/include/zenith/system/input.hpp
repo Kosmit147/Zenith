@@ -21,7 +21,7 @@ class Input
 public:
     Input() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto update() -> void;
     static auto on_input_event(const Event& event) -> void;
     static auto shut_down() -> void;

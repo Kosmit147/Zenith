@@ -6,7 +6,7 @@ public:
     static constexpr auto toggle_cursor_key = zth::Key::LeftControl;
 
 public:
-    auto on_attach() -> zth::Result<zth::Success, zth::String> override;
+    auto on_attach() -> zth::Result<void, zth::String> override;
     auto on_event(const zth::Event& event) -> void override;
 
 private:

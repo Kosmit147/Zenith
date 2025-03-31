@@ -12,7 +12,7 @@ namespace zth {
 std::shared_ptr<spdlog::logger> Logger::_core_logger;
 std::shared_ptr<spdlog::logger> Logger::_client_logger;
 
-auto Logger::init(const LoggerSpec& logger_spec) -> Result<Success, String>
+auto Logger::init(const LoggerSpec& logger_spec) -> Result<void, String>
 {
     try
     {
@@ -37,7 +37,7 @@ auto Logger::init(const LoggerSpec& logger_spec) -> Result<Success, String>
     }
 
     ZTH_CORE_INFO("Logger initialized.");
-    return Success{};
+    return {};
 }
 
 auto Logger::shut_down() -> void

@@ -9,12 +9,12 @@ namespace zth {
 memory::Buffer TemporaryStorage::_buffer{ initial_capacity };
 Vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
 
-auto TemporaryStorage::init() -> Result<Success, String>
+auto TemporaryStorage::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing temporary storage...");
     reset();
     ZTH_CORE_INFO("Temporary storage initialized.");
-    return Success{};
+    return {};
 }
 
 auto TemporaryStorage::start_frame() -> void

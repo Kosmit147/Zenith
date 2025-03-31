@@ -7,12 +7,12 @@ namespace zth {
 std::random_device Random::_random_device;
 std::mt19937_64 Random::_generator;
 
-auto Random::init() -> Result<Success, String>
+auto Random::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing random number generator...");
     _generator.seed(_random_device());
     ZTH_CORE_INFO("Random number generator initialized.");
-    return Success{};
+    return {};
 }
 
 auto Random::shut_down() -> void
