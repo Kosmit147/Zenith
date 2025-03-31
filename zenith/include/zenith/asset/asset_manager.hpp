@@ -21,7 +21,7 @@ class AssetManager
 public:
     AssetManager() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto shut_down() -> void;
 
     static auto add_shader(StringView identifier, gl::Shader&& shader) -> Optional<Reference<gl::Shader>>;

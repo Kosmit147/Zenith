@@ -15,7 +15,7 @@ public:
 public:
     Time() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto start_frame() -> void;
     static auto shut_down() -> void;
 

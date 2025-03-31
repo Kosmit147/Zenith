@@ -19,12 +19,12 @@ constexpr auto include_str = "#include"_sv;
 
 StringHashMap<String> ShaderPreprocessor::_sources;
 
-auto ShaderPreprocessor::init() -> Result<Success, String>
+auto ShaderPreprocessor::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing shader preprocessor...");
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
     ZTH_CORE_INFO("Shader preprocessor initialized.");
-    return Success{};
+    return {};
 }
 
 auto ShaderPreprocessor::shut_down() -> void
@@ -136,7 +136,7 @@ auto ShaderPreprocessor::preprocess() -> Result<String, PreprocessShaderError>
     return std::move(_result_buffer).str();
 }
 
-auto ShaderPreprocessor::process_directive_or_comment() -> Result<Success, PreprocessShaderError>
+auto ShaderPreprocessor::process_directive_or_comment() -> Result<void, PreprocessShaderError>
 {
     // We're at "//" or '#'.
 
@@ -158,10 +158,10 @@ auto ShaderPreprocessor::process_directive_or_comment() -> Result<Success, Prepr
         ZTH_ASSERT(false);
     }
 
-    return Success{};
+    return {};
 }
 
-auto ShaderPreprocessor::resolve_preprocessor_directive() -> Result<Success, PreprocessShaderError>
+auto ShaderPreprocessor::resolve_preprocessor_directive() -> Result<void, PreprocessShaderError>
 {
     // We're at '#'.
 
@@ -173,11 +173,11 @@ auto ShaderPreprocessor::resolve_preprocessor_directive() -> Result<Success, Pre
     {
         // A directive other than #include; leave it be.
         advance_line();
-        return Success{};
+        return {};
     }
 }
 
-auto ShaderPreprocessor::resolve_include_directive() -> Result<Success, PreprocessShaderError>
+auto ShaderPreprocessor::resolve_include_directive() -> Result<void, PreprocessShaderError>
 {
     // We're at '#'.
 
@@ -208,7 +208,7 @@ auto ShaderPreprocessor::resolve_include_directive() -> Result<Success, Preproce
 
     _result_buffer << *preprocessed_included_source;
     skip(source_name->size() + 2);
-    return Success{};
+    return {};
 }
 
 auto ShaderPreprocessor::at(usize index) const -> Optional<char>

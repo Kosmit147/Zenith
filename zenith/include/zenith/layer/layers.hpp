@@ -28,7 +28,7 @@ private:
     WindowSpec _window_spec;
 
 private:
-    [[nodiscard]] auto on_attach() -> Result<Success, String> override;
+    [[nodiscard]] auto on_attach() -> Result<void, String> override;
     auto on_detach() -> void override;
 };
 
@@ -47,7 +47,7 @@ public:
     auto on_render() -> void override;
 
 private:
-    [[nodiscard]] auto on_attach() -> Result<Success, String> override;
+    [[nodiscard]] auto on_attach() -> Result<void, String> override;
     auto on_detach() -> void override;
 };
 
@@ -81,7 +81,7 @@ private:
     bool _had_to_enable_cursor = false;
 
 private:
-    [[nodiscard]] auto on_attach() -> Result<Success, String> override;
+    [[nodiscard]] auto on_attach() -> Result<void, String> override;
     auto on_detach() -> void override;
 
     auto on_key_pressed_event(const KeyPressedEvent& event) -> void;

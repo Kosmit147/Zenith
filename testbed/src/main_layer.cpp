@@ -3,11 +3,11 @@
 #include "containers.hpp"
 #include "main_scene.hpp"
 
-auto MainLayer::on_attach() -> zth::Result<zth::Success, zth::String>
+auto MainLayer::on_attach() -> zth::Result<void, zth::String>
 {
     _scene_picker.add_scene<MainScene>("Main Scene");
     _scene_picker.add_scene<Containers>("Containers");
-    return zth::Success{};
+    return {};
 }
 
 auto MainLayer::on_event(const zth::Event& event) -> void

@@ -34,7 +34,7 @@ public:
 public:
     ShaderPreprocessor() = delete;
 
-    [[nodiscard]] static auto init() -> Result<Success, String>;
+    [[nodiscard]] static auto init() -> Result<void, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto preprocess(StringView source) -> Result<String, PreprocessShaderError>;
@@ -68,9 +68,9 @@ private:
         -> Result<String, PreprocessShaderError>;
     [[nodiscard]] auto preprocess() -> Result<String, PreprocessShaderError>;
 
-    [[nodiscard]] auto process_directive_or_comment() -> Result<Success, PreprocessShaderError>;
-    [[nodiscard]] auto resolve_preprocessor_directive() -> Result<Success, PreprocessShaderError>;
-    [[nodiscard]] auto resolve_include_directive() -> Result<Success, PreprocessShaderError>;
+    [[nodiscard]] auto process_directive_or_comment() -> Result<void, PreprocessShaderError>;
+    [[nodiscard]] auto resolve_preprocessor_directive() -> Result<void, PreprocessShaderError>;
+    [[nodiscard]] auto resolve_include_directive() -> Result<void, PreprocessShaderError>;
 
     [[nodiscard]] auto at(usize index) const -> Optional<char>;
     [[nodiscard]] auto line_info() const -> LineInfo;

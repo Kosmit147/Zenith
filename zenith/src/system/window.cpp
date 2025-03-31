@@ -41,7 +41,7 @@ namespace {
 
 } // namespace
 
-auto Window::init(const WindowSpec& spec) -> Result<Success, String>
+auto Window::init(const WindowSpec& spec) -> Result<void, String>
 {
     ZTH_CORE_INFO("Initializing window...");
 
@@ -110,7 +110,7 @@ auto Window::init(const WindowSpec& spec) -> Result<Success, String>
     terminate_glfw.dismiss();
 
     ZTH_CORE_INFO("Window initialized.");
-    return Success{};
+    return {};
 }
 
 auto Window::shut_down() -> void

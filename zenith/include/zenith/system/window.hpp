@@ -44,7 +44,7 @@ public:
 
     Window() = delete;
 
-    [[nodiscard]] static auto init(const WindowSpec& spec) -> Result<Success, String>;
+    [[nodiscard]] static auto init(const WindowSpec& spec) -> Result<void, String>;
     static auto shut_down() -> void;
 
     [[nodiscard]] static auto should_close() -> bool;

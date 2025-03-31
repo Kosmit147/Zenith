@@ -28,7 +28,7 @@ public:
     friend class LayerStack;
 
 private:
-    [[nodiscard]] virtual auto on_attach() -> Result<Success, String> { return Success{}; }
+    [[nodiscard]] virtual auto on_attach() -> Result<void, String> { return {}; }
     virtual auto on_detach() -> void {}
 };
 
