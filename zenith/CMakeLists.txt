@@ -7,7 +7,6 @@ add_library(
 	"src/core/exception.cpp"
 	"src/core/random.cpp"
 	"src/core/scene.cpp"
-	"src/core/scene_manager.cpp"
 	"src/debug/ui.cpp"
 	"src/ecs/components.cpp"
 	"src/ecs/ecs.cpp"

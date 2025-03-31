@@ -6,5 +6,4 @@
 #include "core/exception.hpp"
 #include "core/random.hpp"
 #include "core/scene.hpp"
-#include "core/scene_manager.hpp"
 #include "core/typedefs.hpp"

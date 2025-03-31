@@ -5,7 +5,7 @@
 
 #include "zenith/asset/asset_manager.hpp"
 #include "zenith/core/random.hpp"
-#include "zenith/core/scene_manager.hpp"
+#include "zenith/core/scene.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/imgui_renderer.hpp"
