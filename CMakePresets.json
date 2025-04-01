@@ -27,14 +27,20 @@
       "displayName": "x64-debug",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (Debug)",
       "inherits": "windows-base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ZTH_DEVELOPER": "ON"
+      }
     },
     {
       "name": "x64-release",
       "displayName": "x64-release",
       "description": "Target Windows (64-bit) with the Visual Studio development environment. (RelWithDebInfo)",
       "inherits": "windows-base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "ZTH_DEVELOPER": "ON"
+      }
     },
     {
       "name": "x64-dist",
@@ -43,6 +49,7 @@
       "inherits": "windows-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
+        "ZTH_DEVELOPER": "ON",
         "ZTH_DIST_BUILD": "ON"
       }
     }
