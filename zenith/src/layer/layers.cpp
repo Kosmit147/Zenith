@@ -31,6 +31,7 @@ SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window
 auto SystemLayer::on_frame_start() -> void
 {
     Time::start_frame();
+    Input::start_frame();
     TemporaryStorage::start_frame();
 }
 
@@ -38,11 +39,6 @@ auto SystemLayer::on_event(const Event& event) -> void
 {
     if (event.category() == EventCategory::InputEvent)
         Input::on_input_event(event);
-}
-
-auto SystemLayer::on_update() -> void
-{
-    Input::update();
 }
 
 auto SystemLayer::on_attach() -> Result<void, String>

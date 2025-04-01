@@ -22,7 +22,7 @@ public:
     Input() = delete;
 
     [[nodiscard]] static auto init() -> Result<void, String>;
-    static auto update() -> void;
+    static auto start_frame() -> void;
     static auto on_input_event(const Event& event) -> void;
     static auto shut_down() -> void;
 
@@ -49,7 +49,6 @@ private:
     static inline glm::vec2 _mouse_scroll_delta = { 0.0f, 0.0f };
 
     static inline glm::vec2 _prev_mouse_pos = { 0.0f, 0.0f };
-    static inline bool _mouse_scroll_delta_updated = false;
 };
 
 enum class Key : u16
