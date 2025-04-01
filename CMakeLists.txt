@@ -9,6 +9,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+if(PROJECT_IS_TOP_LEVEL)
+    option(ZTH_DEVELOPER ON)
+else()
+    option(ZTH_DEVELOPER OFF)
+endif()
+
 option(ZTH_DIST_BUILD OFF)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -45,8 +51,11 @@ add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/stb_image")
 
 add_subdirectory("zenith")
-add_subdirectory("sandbox")
-add_subdirectory("testbed")
-add_subdirectory("unit_tester")
+
+if(ZTH_DEVELOPER)
+    add_subdirectory("testbed")
+    add_subdirectory("sandbox")
+    add_subdirectory("unit_tester")
+endif()
 
 enable_testing()
