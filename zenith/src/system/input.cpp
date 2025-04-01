@@ -30,8 +30,9 @@ auto Input::init() -> Result<void, String>
 
 auto Input::start_frame() -> void
 {
-    _mouse_scroll_delta = { 0.0f, 0.0f };
     _prev_mouse_pos = _mouse_pos;
+    _mouse_pos_delta = { 0.0f, 0.0f };
+    _mouse_scroll_delta = { 0.0f, 0.0f };
 }
 
 auto Input::on_input_event(const Event& event) -> void
