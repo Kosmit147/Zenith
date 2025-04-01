@@ -73,6 +73,19 @@ auto Scene::create_entity(String&& tag) -> EntityHandle
     return _registry.create(std::move(tag));
 }
 
+auto Scene::find_entity_by_tag(StringView tag) -> Optional<EntityHandle>
+{
+    auto tags = _registry.view<const TagComponent>();
+
+    for (auto&& [entity_id, tag_component] : tags.each())
+    {
+        if (tag_component.tag == tag)
+            return EntityHandle{ entity_id, _registry };
+    }
+
+    return nil;
+}
+
 auto SceneManager::init() -> Result<void, String>
 {
     ZTH_CORE_INFO("Scene manager initialized.");
