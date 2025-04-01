@@ -19,9 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { name: Debug, build_type: Debug, flags: -DZTH_DIST_BUILD=FALSE }
-          - { name: Release, build_type: RelWithDebInfo, flags: -DZTH_DIST_BUILD=FALSE }
-          - { name: Dist, build_type: Release, flags: -DZTH_DIST_BUILD=TRUE }
+          - { name: Debug, build_type: Debug, flags: -DZTH_DEVELOPER=TRUE -DZTH_DIST_BUILD=FALSE }
+          - { name: Release, build_type: RelWithDebInfo, flags: -DZTH_DEVELOPER=TRUE -DZTH_DIST_BUILD=FALSE }
+          - { name: Dist, build_type: Release, flags: -DZTH_DEVELOPER=TRUE -DZTH_DIST_BUILD=TRUE }
 
     steps:
     - name: Checkout
