@@ -21,7 +21,6 @@ public:
 
     auto on_frame_start() -> void override;
     auto on_event(const Event& event) -> void override;
-    auto on_update() -> void override;
 
 private:
     LoggerSpec _logger_spec;

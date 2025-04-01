@@ -28,15 +28,10 @@ auto Input::init() -> Result<void, String>
     return {};
 }
 
-auto Input::update() -> void
+auto Input::start_frame() -> void
 {
-    _mouse_pos_delta = _mouse_pos - _prev_mouse_pos;
+    _mouse_scroll_delta = { 0.0f, 0.0f };
     _prev_mouse_pos = _mouse_pos;
-
-    if (!_mouse_scroll_delta_updated)
-        _mouse_scroll_delta = { 0.0f, 0.0f };
-
-    _mouse_scroll_delta_updated = false;
 }
 
 auto Input::on_input_event(const Event& event) -> void
@@ -79,7 +74,7 @@ auto Input::on_input_event(const Event& event) -> void
     case MouseWheelScrolled:
     {
         auto [delta] = event.mouse_wheel_scrolled_event();
-        set_mouse_scroll_delta(delta);
+        set_mouse_scroll_delta(_mouse_scroll_delta + delta);
     }
     break;
     default:
@@ -133,12 +128,12 @@ auto Input::mouse_scroll_delta() -> glm::vec2
 auto Input::set_mouse_pos(glm::vec2 value) -> void
 {
     _mouse_pos = value;
+    _mouse_pos_delta = _mouse_pos - _prev_mouse_pos;
 }
 
 auto Input::set_mouse_scroll_delta(glm::vec2 value) -> void
 {
     _mouse_scroll_delta = value;
-    _mouse_scroll_delta_updated = true;
 }
 
 auto glfw_key_to_key(int key) -> Optional<Key>
