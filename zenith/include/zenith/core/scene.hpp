@@ -27,6 +27,8 @@ public:
     auto create_entity(const String& tag) -> EntityHandle;
     auto create_entity(String&& tag) -> EntityHandle;
 
+    [[nodiscard]] auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
+
     [[nodiscard]] auto registry(this auto&& self) -> auto& { return self._registry; }
 
     friend class SceneManager;
