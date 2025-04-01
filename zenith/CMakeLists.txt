@@ -59,12 +59,20 @@ target_compile_options(zenith_core PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(zenith_core PRIVATE "src/pch.hpp")
 set_property(TARGET zenith_core PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-set(ZTH_COMPILE_DEFINITIONS
-	_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # for battery::embed
-	GLM_ENABLE_EXPERIMENTAL # for matrix decomposition
+set(ZTH_PRIVATE_DEFINITIONS
+	_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # For battery::embed.
 )
 
-target_compile_definitions(zenith_core PRIVATE ${ZTH_COMPILE_DEFINITIONS})
+set(ZTH_PUBLIC_DEFINITIONS
+	GLM_ENABLE_EXPERIMENTAL # For matrix decomposition.
+)
+
+if(ZTH_DIST_BUILD)
+    set(ZTH_PUBLIC_DEFINITIONS "${ZTH_PUBLIC_DEFINITIONS} ZTH_DIST_BUILD")
+endif()
+
+target_compile_definitions(zenith_core PRIVATE ${ZTH_PRIVATE_DEFINITIONS})
+target_compile_definitions(zenith_core PUBLIC ${ZTH_PUBLIC_DEFINITIONS})
 
 add_subdirectory("imgui")
 
@@ -86,6 +94,7 @@ target_compile_options(zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
 target_precompile_headers(zenith REUSE_FROM zenith_core)
 set_property(TARGET zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
-target_compile_definitions(zenith PRIVATE ${ZTH_COMPILE_DEFINITIONS})
+target_compile_definitions(zenith PRIVATE ${ZTH_PRIVATE_DEFINITIONS})
+target_compile_definitions(zenith PUBLIC ${ZTH_PUBLIC_DEFINITIONS})
 
 target_link_libraries(zenith PUBLIC zenith_core)
