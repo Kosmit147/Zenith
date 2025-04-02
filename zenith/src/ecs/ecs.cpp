@@ -7,6 +7,16 @@ namespace zth {
 
 ConstEntityHandle::ConstEntityHandle(EntityId id, Registry& registry) : _id(id), _registry(&registry) {}
 
+auto ConstEntityHandle::tag() const -> const TagComponent&
+{
+    return get<const TagComponent>();
+}
+
+auto ConstEntityHandle::transform() const -> const TransformComponent&
+{
+    return get<const TransformComponent>();
+}
+
 auto ConstEntityHandle::registry() const -> Optional<Reference<const Registry>>
 {
     if (_registry)
@@ -18,6 +28,16 @@ auto ConstEntityHandle::registry() const -> Optional<Reference<const Registry>>
 auto ConstEntityHandle::valid() const -> bool
 {
     return _registry && _registry->valid(_id);
+}
+
+auto EntityHandle::tag() const -> TagComponent&
+{
+    return get<TagComponent>();
+}
+
+auto EntityHandle::transform() const -> TransformComponent&
+{
+    return get<TransformComponent>();
 }
 
 auto EntityHandle::destroy() -> void
