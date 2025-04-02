@@ -9,6 +9,13 @@
 
 namespace zth {
 
+// --------------------------- TagComponent ---------------------------
+
+auto TagComponent::display_label() -> const char*
+{
+    return "Tag";
+}
+
 // --------------------------- TransformComponent ---------------------------
 
 TransformComponent::TransformComponent(glm::vec3 translation)
@@ -218,6 +225,11 @@ auto TransformComponent::up() const -> glm::vec3
     return _rotation * math::world_up;
 }
 
+auto TransformComponent::display_label() -> const char*
+{
+    return "Transform";
+}
+
 auto TransformComponent::update_transform() -> void
 {
     _transform = math::compose_transform(_scale, _rotation, _translation);
@@ -239,6 +251,25 @@ auto ScriptComponent::script() const -> const Script&
     return *_script;
 }
 
+auto ScriptComponent::display_label() -> const char*
+{
+    return "Script";
+}
+
+// --------------------------- MeshComponent ---------------------------
+
+auto MeshComponent::display_label() -> const char*
+{
+    return "Mesh";
+}
+
+// --------------------------- MaterialComponent ---------------------------
+
+auto MaterialComponent::display_label() -> const char*
+{
+    return "Material";
+}
+
 // --------------------------- CameraComponent ---------------------------
 
 auto CameraComponent::view(const TransformComponent& transform) const -> glm::mat4
@@ -255,6 +286,11 @@ auto CameraComponent::projection() const -> glm::mat4
 auto CameraComponent::view_projection(const TransformComponent& transform) const -> glm::mat4
 {
     return projection() * view(transform);
+}
+
+auto CameraComponent::display_label() -> const char*
+{
+    return "Camera";
 }
 
 // --------------------------- LightComponent ---------------------------
@@ -362,6 +398,11 @@ auto LightComponent::ambient_light() const -> const AmbientLight&
     return _ambient_light;
 }
 
+auto LightComponent::display_label() -> const char*
+{
+    return "Light";
+}
+
 } // namespace zth
 
 ZTH_DEFINE_FORMATTER(zth::TagComponent, tag)
@@ -385,7 +426,7 @@ ZTH_DEFINE_FORMATTER(zth::TransformComponent, transform)
 
 ZTH_DEFINE_FORMATTER(zth::ScriptComponent, script)
 {
-    return ZTH_FORMAT_OUT("ScriptComponent(\"{}\")", script.script().display_name());
+    return ZTH_FORMAT_OUT("ScriptComponent(\"{}\")", script.script().display_label());
 }
 
 ZTH_DEFINE_FORMATTER(zth::MeshComponent, mesh)

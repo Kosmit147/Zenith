@@ -18,15 +18,17 @@ namespace zth {
 
 // --------------------------- TagComponent ---------------------------
 
-// TagComponent is mandatory for every entity.
+// TagComponent is integral for every entity.
 struct TagComponent
 {
     String tag;
+
+    [[nodiscard]] static auto display_label() -> const char*;
 };
 
 // --------------------------- TransformComponent ---------------------------
 
-// TransformComponent is mandatory for every entity.
+// TransformComponent is integral for every entity.
 class TransformComponent
 {
 public:
@@ -86,6 +88,8 @@ public:
 
     [[nodiscard]] auto transform() const -> auto& { return _transform; }
 
+    [[nodiscard]] static auto display_label() -> const char*;
+
 private:
     // @speed: Maybe we should not store the matrix in here and instead always recreate it with the call to transform().
     // That would be a lot better for cache efficiency when submitting the transforms to the renderer.
@@ -109,6 +113,8 @@ public:
     [[nodiscard]] auto script() -> Script&;
     [[nodiscard]] auto script() const -> const Script&;
 
+    [[nodiscard]] static auto display_label() -> const char*;
+
 private:
     std::unique_ptr<Script> _script; // script should never be null.
 };
@@ -118,6 +124,8 @@ private:
 struct MeshComponent
 {
     const Mesh* mesh;
+
+    [[nodiscard]] static auto display_label() -> const char*;
 };
 
 // --------------------------- MaterialComponent ---------------------------
@@ -125,6 +133,8 @@ struct MeshComponent
 struct MaterialComponent
 {
     const Material* material;
+
+    [[nodiscard]] static auto display_label() -> const char*;
 };
 
 // --------------------------- CameraComponent ---------------------------
@@ -133,7 +143,7 @@ struct MaterialComponent
 
 struct CameraComponent
 {
-    float aspect_ratio;
+    float aspect_ratio = 1.0f;
     float fov = glm::radians(45.0f);
     float near = 0.1f;
     float far = 100.0f;
@@ -141,6 +151,8 @@ struct CameraComponent
     [[nodiscard]] auto view(const TransformComponent& transform) const -> glm::mat4;
     [[nodiscard]] auto projection() const -> glm::mat4;
     [[nodiscard]] auto view_projection(const TransformComponent& transform) const -> glm::mat4;
+
+    [[nodiscard]] static auto display_label() -> const char*;
 };
 
 // --------------------------- LightComponent ---------------------------
@@ -170,6 +182,8 @@ public:
     [[nodiscard]] auto spot_light() const -> const SpotLight&;
     [[nodiscard]] auto ambient_light() -> AmbientLight&;
     [[nodiscard]] auto ambient_light() const -> const AmbientLight&;
+
+    [[nodiscard]] static auto display_label() -> const char*;
 
 private:
     LightType _type;

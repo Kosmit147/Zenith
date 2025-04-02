@@ -128,8 +128,8 @@ auto MainScene::on_update() -> void
     display_ui();
 
     auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
-    auto& light_component_2 = _point_light_1.get<const zth::LightComponent>();
-    auto& light_component_3 = _point_light_1.get<const zth::LightComponent>();
+    auto& light_component_2 = _point_light_2.get<const zth::LightComponent>();
+    auto& light_component_3 = _point_light_3.get<const zth::LightComponent>();
 
     _point_light_1_material.albedo = light_component_1.point_light().properties.color;
     _point_light_2_material.albedo = light_component_2.point_light().properties.color;

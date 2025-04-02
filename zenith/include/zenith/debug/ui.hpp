@@ -77,13 +77,13 @@ auto edit_point_light(PointLight& light) -> void;
 auto edit_spot_light(SpotLight& light) -> void;
 auto edit_ambient_light(AmbientLight& light) -> void;
 
-auto edit_tag_component(TagComponent& tag) -> void;
-auto edit_transform_component(TransformComponent& transform) -> void;
-auto edit_camera_component(CameraComponent& camera) -> void;
-auto edit_light_component(LightComponent& light) -> void;
-auto edit_mesh_component(MeshComponent& mesh) -> void;
-auto edit_material_component(MaterialComponent& material) -> void;
-auto edit_script_component(ScriptComponent& script) -> void;
+auto edit_component(TagComponent& tag) -> void;
+auto edit_component(TransformComponent& transform) -> void;
+auto edit_component(CameraComponent& camera) -> void;
+auto edit_component(LightComponent& light) -> void;
+auto edit_component(MeshComponent& mesh) -> void;
+auto edit_component(MaterialComponent& material) -> void;
+auto edit_component(ScriptComponent& script) -> void;
 
 struct TransformGizmo
 {

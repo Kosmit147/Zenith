@@ -7,7 +7,7 @@
 
 namespace zth::scripts {
 
-auto FlyCamera::display_name() const -> const char*
+auto FlyCamera::display_label() const -> const char*
 {
     return "Fly Camera";
 }

@@ -25,6 +25,8 @@ constexpr auto light_attenuation_drag_speed = default_ui_drag_speed * 0.01f;
 constexpr auto light_ambient_drag_speed = default_ui_drag_speed * 0.1f;
 constexpr auto material_shininess_drag_speed = default_ui_drag_speed * 10.0f;
 
+constexpr auto default_relative_item_width = 12.0f;
+
 auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_values) -> bool
 {
     auto value_changed = false;
@@ -49,6 +51,42 @@ auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_
     }
 
     return value_changed;
+}
+
+template<typename Component> auto display_component(EntityHandle entity) -> void
+{
+    ZTH_ASSERT(entity.any_of<Component>());
+
+    if (ImGui::TreeNodeEx(Component::display_label(), ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        auto remove_component = false;
+
+        if constexpr (!IsIntegralComponent<Component>)
+        {
+            // Component is removable.
+
+            if (ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonRight))
+            {
+                if (ImGui::MenuItem("Remove Component"))
+                    remove_component = true;
+
+                ImGui::EndPopup();
+            }
+        }
+
+        auto& component = entity.get<Component>();
+        edit_component(component);
+
+        if constexpr (!IsIntegralComponent<Component>)
+        {
+            // Component is removable.
+
+            if (remove_component)
+                entity.erase<Component>();
+        }
+
+        ImGui::TreePop();
+    }
 }
 
 } // namespace
@@ -325,15 +363,13 @@ auto edit_ambient_light(AmbientLight& light) -> void
     drag_vec("Ambient", light.ambient, light_ambient_drag_speed);
 }
 
-auto edit_tag_component(TagComponent& tag) -> void
+auto edit_component(TagComponent& tag) -> void
 {
-    ImGui::InputText("Tag", &tag.tag);
+    ImGui::InputText(TagComponent::display_label(), &tag.tag);
 }
 
-auto edit_transform_component(TransformComponent& transform) -> void
+auto edit_component(TransformComponent& transform) -> void
 {
-    ImGui::SeparatorText("Transform");
-
     auto translation = transform.translation();
 
     if (drag_vec("Translation", translation))
@@ -350,20 +386,16 @@ auto edit_transform_component(TransformComponent& transform) -> void
         transform.set_scale(scale);
 }
 
-auto edit_camera_component(CameraComponent& camera) -> void
+auto edit_component(CameraComponent& camera) -> void
 {
-    ImGui::SeparatorText("Camera");
-
     drag_float("Aspect Ratio", camera.aspect_ratio);
     slide_angle("FOV", camera.fov, 0.0f, 180.0f);
     drag_float("Near Plane", camera.near);
     drag_float("Far Plane", camera.far, far_plane_drag_speed);
 }
 
-auto edit_light_component(LightComponent& light) -> void
+auto edit_component(LightComponent& light) -> void
 {
-    ImGui::SeparatorText("Light");
-
     auto light_type = light.type();
 
     if (select_light_type(light_type))
@@ -387,31 +419,27 @@ auto edit_light_component(LightComponent& light) -> void
     }
 }
 
-auto edit_mesh_component(MeshComponent& mesh) -> void
+auto edit_component(MeshComponent& mesh) -> void
 {
     (void)mesh;
 
-    ImGui::SeparatorText("Mesh");
     ImGui::TextUnformatted("TODO!");
 
     // @todo
 }
 
-auto edit_material_component(MaterialComponent& material) -> void
+auto edit_component(MaterialComponent& material) -> void
 {
     (void)material;
 
-    ImGui::SeparatorText("Material");
     ImGui::TextUnformatted("TODO!");
 
     // @todo
 }
 
-auto edit_script_component(ScriptComponent& script) -> void
+auto edit_component(ScriptComponent& script) -> void
 {
-    ImGui::SeparatorText("Script");
-    ImGui::TextUnformatted(script.script().display_name());
-
+    ImGui::TextUnformatted(script.script().display_label());
     script.script().debug_edit();
 }
 
@@ -435,6 +463,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     ZTH_ASSERT(entity.valid());
 
     ImGui::Begin("Entity Inspector");
+    ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
     {
         // TagComponent and TransformComponent are mandatory.
@@ -442,45 +471,56 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
         static_assert(IsIntegralComponent<TransformComponent>);
 
         auto& tag = entity.get<TagComponent>();
-        edit_tag_component(tag);
+        edit_component(tag);
 
         auto& transform = entity.get<TransformComponent>();
-        edit_transform_component(transform);
+        display_component<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
             gizmo.display(transform);
     }
 
     if (entity.any_of<CameraComponent>())
-    {
-        auto& camera = entity.get<CameraComponent>();
-        edit_camera_component(camera);
-    }
+        display_component<CameraComponent>(entity);
 
     if (entity.any_of<LightComponent>())
-    {
-        auto& light = entity.get<LightComponent>();
-        edit_light_component(light);
-    }
+        display_component<LightComponent>(entity);
 
     if (entity.any_of<MeshComponent>())
-    {
-        auto& mesh = entity.get<MeshComponent>();
-        edit_mesh_component(mesh);
-    }
+        display_component<MeshComponent>(entity);
 
     if (entity.any_of<MaterialComponent>())
-    {
-        auto& material = entity.get<MaterialComponent>();
-        edit_material_component(material);
-    }
+        display_component<MaterialComponent>(entity);
 
     if (entity.any_of<ScriptComponent>())
+        display_component<ScriptComponent>(entity);
+
+    ImGui::SeparatorText("##");
+
+    if (ImGui::Button("Add Component"))
+        ImGui::OpenPopup("AddComponentPopup");
+
+    if (ImGui::BeginPopup("AddComponentPopup"))
     {
-        auto& script = entity.get<ScriptComponent>();
-        edit_script_component(script);
+        auto add_component_menu_item = [&]<typename Component>(std::type_identity<Component>) {
+            if (ImGui::MenuItem(Component::display_label()))
+            {
+                if (!entity.any_of<Component>())
+                    entity.emplace<Component>();
+
+                ImGui::CloseCurrentPopup();
+            }
+        };
+
+        add_component_menu_item(std::type_identity<CameraComponent>{});
+        add_component_menu_item(std::type_identity<LightComponent>{});
+
+        // @todo: Add other components.
+
+        ImGui::EndPopup();
     }
 
+    ImGui::PopItemWidth();
     ImGui::End();
 }
 
@@ -496,12 +536,28 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
 
         if (ImGui::Selectable(label.c_str(), _selected_entity_id == entity_id))
             _selected_entity_id = entity_id;
+
+        if (ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonRight))
+        {
+            if (ImGui::MenuItem("Destroy Entity"))
+                registry.destroy(_selected_entity_id);
+
+            ImGui::EndPopup();
+        }
     }
 
     if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
         _selected_entity_id = null_entity;
     else if (registry.valid(_selected_entity_id))
         inspector.display(EntityHandle{ _selected_entity_id, registry });
+
+    if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems))
+    {
+        if (ImGui::MenuItem("Create Empty Entity"))
+            registry.create();
+
+        ImGui::EndPopup();
+    }
 
     ImGui::End();
 }

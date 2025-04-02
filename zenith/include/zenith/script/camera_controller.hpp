@@ -32,7 +32,7 @@ public:
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(FlyCamera)
     ~FlyCamera() override = default;
 
-    [[nodiscard]] auto display_name() const -> const char* override;
+    [[nodiscard]] auto display_label() const -> const char* override;
     auto debug_edit() -> void override;
 
 private:
