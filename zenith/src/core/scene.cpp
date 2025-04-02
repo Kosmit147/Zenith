@@ -76,30 +76,12 @@ auto Scene::create_entity(String&& tag) -> EntityHandle
 
 auto Scene::find_entity_by_tag(StringView tag) -> Optional<EntityHandle>
 {
-    auto tags = _registry.view<const TagComponent>();
-
-    for (auto&& [entity_id, tag_component] : tags.each())
-    {
-        if (tag_component.tag == tag)
-            return EntityHandle{ entity_id, _registry };
-    }
-
-    return nil;
+    return _registry.find_entity_by_tag(tag);
 }
 
 auto Scene::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>
 {
-    TemporaryVector<EntityHandle> entities;
-
-    auto tags = _registry.view<const TagComponent>();
-
-    for (auto&& [entity_id, tag_component] : tags.each())
-    {
-        if (tag_component.tag == tag)
-            entities.emplace_back(entity_id, _registry);
-    }
-
-    return entities;
+    return _registry.find_entities_by_tag(tag);
 }
 
 auto SceneManager::init() -> Result<void, String>
