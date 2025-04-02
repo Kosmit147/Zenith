@@ -72,6 +72,9 @@ public:
     ConstEntityHandle(InvalidHandle) {}
     ConstEntityHandle(EntityId id, Registry& registry);
 
+    [[nodiscard]] auto tag() const -> const TagComponent&;
+    [[nodiscard]] auto transform() const -> const TransformComponent&;
+
     template<typename... Components> [[nodiscard]] auto all_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto any_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto get() const -> decltype(auto);
@@ -95,6 +98,9 @@ class EntityHandle : public ConstEntityHandle
 {
 public:
     using ConstEntityHandle::ConstEntityHandle;
+
+    [[nodiscard]] auto tag() const -> TagComponent&;
+    [[nodiscard]] auto transform() const -> TransformComponent&;
 
     template<typename Component> auto emplace(auto&&... args) const -> Component&;
     template<typename Component> auto emplace_or_replace(auto&&... args) const -> Component&;
