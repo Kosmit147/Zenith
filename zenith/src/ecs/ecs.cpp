@@ -68,6 +68,34 @@ auto Registry::create(String&& tag) -> EntityHandle
     return entity;
 }
 
+auto Registry::find_entity_by_tag(StringView tag) -> Optional<EntityHandle>
+{
+    auto tags = view<const TagComponent>();
+
+    for (auto&& [entity_id, tag_component] : tags.each())
+    {
+        if (tag_component.tag == tag)
+            return EntityHandle{ entity_id, *this };
+    }
+
+    return nil;
+}
+
+auto Registry::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>
+{
+    TemporaryVector<EntityHandle> entities;
+
+    auto tags = view<const TagComponent>();
+
+    for (auto&& [entity_id, tag_component] : tags.each())
+    {
+        if (tag_component.tag == tag)
+            entities.emplace_back(entity_id, *this);
+    }
+
+    return entities;
+}
+
 auto Registry::destroy(EntityId id) -> void
 {
     if (_registry.valid(id))

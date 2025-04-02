@@ -8,6 +8,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/ecs/fwd.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
@@ -126,6 +127,9 @@ public:
 
     auto create(const String& tag) -> EntityHandle;
     auto create(String&& tag = "Entity") -> EntityHandle;
+
+    auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
+    auto find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>;
 
     template<typename Component> auto emplace(EntityId id, auto&&... args) -> Component&;
     template<typename Component> auto emplace_or_replace(EntityId id, auto&&... args) -> Component&;
