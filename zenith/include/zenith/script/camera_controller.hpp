@@ -3,6 +3,7 @@
 #include <glm/trigonometric.hpp>
 
 #include "zenith/script/script.hpp"
+#include "zenith/system/fwd.hpp"
 #include "zenith/system/input.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -36,6 +37,7 @@ public:
     auto debug_edit() -> void override;
 
 private:
+    auto on_event(EntityHandle actor, const Event& event) -> void override;
     auto on_update(EntityHandle actor) -> void override;
 };
 

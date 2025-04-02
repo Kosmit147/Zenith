@@ -2,6 +2,8 @@
 
 #include "zenith/debug/ui.hpp"
 #include "zenith/ecs/components.hpp"
+#include "zenith/ecs/ecs.hpp"
+#include "zenith/system/event.hpp"
 #include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 
@@ -36,6 +38,20 @@ auto FlyCamera::debug_edit() -> void
     {
         debug::select_key("Sprint Key", sprint_key);
         debug::drag_float("Sprinting Speed Multiplier", sprinting_speed_multiplier);
+    }
+}
+
+void FlyCamera::on_event(EntityHandle actor, const Event& event)
+{
+    if (event.type() == EventType::WindowResized)
+    {
+        auto [new_size] = event.window_resized_event();
+
+        if (!actor.any_of<CameraComponent>())
+            return;
+
+        auto& camera = actor.get<CameraComponent>();
+        camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
     }
 }
 

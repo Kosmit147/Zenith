@@ -13,9 +13,4 @@ private:
     zth::EntityHandle _light = create_entity("Light");
     zth::gl::Texture2D _cube_texture;
     zth::Material _cube_material;
-
-private:
-    auto on_event(const zth::Event& event) -> void override;
-
-    auto on_window_resized_event(const zth::WindowResizedEvent& event) const -> void;
 };
