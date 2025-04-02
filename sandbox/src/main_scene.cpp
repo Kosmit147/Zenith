@@ -33,20 +33,3 @@ MainScene::MainScene() : _cube_texture(wall_texture), _cube_material{ .diffuse_m
 
     _cube.emplace_or_replace<zth::ScriptComponent>(std::make_unique<CubeScript>());
 }
-
-auto MainScene::on_event(const zth::Event& event) -> void
-{
-    if (event.type() == zth::EventType::WindowResized)
-    {
-        auto window_resized_event = event.window_resized_event();
-        on_window_resized_event(window_resized_event);
-    }
-}
-
-auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
-{
-    auto new_size = event.new_size;
-
-    auto& camera = _camera.get<zth::CameraComponent>();
-    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
-}

@@ -109,20 +109,6 @@ MainScene::MainScene()
     _material_panel.add_emission_map("Matrix", _emission_maps[0]);
 }
 
-auto MainScene::on_event(const zth::Event& event) -> void
-{
-    switch (event.type())
-    {
-        using enum zth::EventType;
-    case WindowResized:
-    {
-        auto window_resized_event = event.window_resized_event();
-        on_window_resized_event(window_resized_event);
-    }
-    break;
-    }
-}
-
 auto MainScene::on_update() -> void
 {
     display_ui();
@@ -134,14 +120,6 @@ auto MainScene::on_update() -> void
     _point_light_1_material.albedo = light_component_1.point_light().properties.color;
     _point_light_2_material.albedo = light_component_2.point_light().properties.color;
     _point_light_3_material.albedo = light_component_3.point_light().properties.color;
-}
-
-auto MainScene::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
-{
-    auto new_size = event.new_size;
-
-    auto& camera = _camera.get<zth::CameraComponent>();
-    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
 auto MainScene::display_ui() -> void

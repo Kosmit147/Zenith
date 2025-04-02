@@ -116,12 +116,6 @@ auto Containers::on_event(const zth::Event& event) -> void
     switch (event.type())
     {
         using enum zth::EventType;
-    case WindowResized:
-    {
-        auto window_resized_event = event.window_resized_event();
-        on_window_resized_event(window_resized_event);
-    }
-    break;
     case KeyPressed:
     {
         auto key_pressed_event = event.key_pressed_event();
@@ -137,14 +131,6 @@ auto Containers::on_update() -> void
 {
     auto& light = _point_light.get<const zth::LightComponent>();
     _point_light_material.albedo = light.point_light().properties.color;
-}
-
-auto Containers::on_window_resized_event(const zth::WindowResizedEvent& event) const -> void
-{
-    auto new_size = event.new_size;
-
-    auto& camera = _camera.get<zth::CameraComponent>();
-    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
 }
 
 auto Containers::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
