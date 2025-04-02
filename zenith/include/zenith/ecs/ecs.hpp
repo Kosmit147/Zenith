@@ -124,8 +124,8 @@ public:
 
     [[nodiscard]] auto valid(EntityId id) const -> bool;
 
-    [[nodiscard]] auto create(const String& tag) -> EntityHandle;
-    [[nodiscard]] auto create(String&& tag = "Entity") -> EntityHandle;
+    auto create(const String& tag) -> EntityHandle;
+    auto create(String&& tag = "Entity") -> EntityHandle;
 
     template<typename Component> auto emplace(EntityId id, auto&&... args) -> Component&;
     template<typename Component> auto emplace_or_replace(EntityId id, auto&&... args) -> Component&;

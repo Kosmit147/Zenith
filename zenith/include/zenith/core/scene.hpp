@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "zenith/ecs/ecs.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/macros.hpp"
@@ -28,6 +29,7 @@ public:
     auto create_entity(String&& tag) -> EntityHandle;
 
     [[nodiscard]] auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
+    [[nodiscard]] auto find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>;
 
     [[nodiscard]] auto registry(this auto&& self) -> auto& { return self._registry; }
 
