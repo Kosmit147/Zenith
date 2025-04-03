@@ -19,28 +19,29 @@ template<typename... Components> auto ConstEntityHandle::get() const -> decltype
     return static_cast<const Registry*>(_registry)->get<Components...>(*this);
 }
 
-template<typename Component> auto ConstEntityHandle::get_or_emplace(auto&&... args) const -> Component&
+template<typename Component> auto ConstEntityHandle::get_or_emplace(auto&&... args) const -> decltype(auto)
 {
     return static_cast<const Registry*>(_registry)->get_or_emplace<Component>(*this,
                                                                               std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component> auto EntityHandle::emplace(auto&&... args) const -> Component&
+template<typename Component> auto EntityHandle::emplace(auto&&... args) const -> decltype(auto)
 {
     return _registry->emplace<Component>(*this, std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component> auto EntityHandle::emplace_or_replace(auto&&... args) const -> Component&
+template<typename Component> auto EntityHandle::emplace_or_replace(auto&&... args) const -> decltype(auto)
 {
     return _registry->emplace_or_replace<Component>(*this, std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component, std::invocable<Component&>... F> auto EntityHandle::patch(F&&... funcs) const -> Component&
+template<typename Component, std::invocable<Component&>... F>
+auto EntityHandle::patch(F&&... funcs) const -> decltype(auto)
 {
     return _registry->patch<Component>(*this, std::forward<decltype(funcs)>(funcs)...);
 }
 
-template<typename Component> auto EntityHandle::replace(auto&&... args) const -> Component&
+template<typename Component> auto EntityHandle::replace(auto&&... args) const -> decltype(auto)
 {
     return _registry->replace<Component>(*this, std::forward<decltype(args)>(args)...);
 }
@@ -62,17 +63,17 @@ template<typename... Components> auto EntityHandle::get() const -> decltype(auto
     return _registry->get<Components...>(*this);
 }
 
-template<typename Component> auto EntityHandle::get_or_emplace(auto&&... args) const -> Component&
+template<typename Component> auto EntityHandle::get_or_emplace(auto&&... args) const -> decltype(auto)
 {
     return _registry->get_or_emplace<Component>(*this, std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component> auto Registry::emplace(EntityId id, auto&&... args) -> Component&
+template<typename Component> auto Registry::emplace(EntityId id, auto&&... args) -> decltype(auto)
 {
     return _registry.emplace<Component>(id, std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component> auto Registry::emplace_or_replace(EntityId id, auto&&... args) -> Component&
+template<typename Component> auto Registry::emplace_or_replace(EntityId id, auto&&... args) -> decltype(auto)
 {
     return _registry.emplace_or_replace<Component>(id, std::forward<decltype(args)>(args)...);
 }
@@ -84,12 +85,12 @@ template<typename... Components> auto Registry::clear() -> void
 }
 
 template<typename Component, std::invocable<Component&>... F>
-auto Registry::patch(EntityId id, F&&... funcs) -> Component&
+auto Registry::patch(EntityId id, F&&... funcs) -> decltype(auto)
 {
     return _registry.patch<Component>(id, std::forward<decltype(funcs)>(funcs)...);
 }
 
-template<typename Component> auto Registry::replace(EntityId id, auto&&... args) -> Component&
+template<typename Component> auto Registry::replace(EntityId id, auto&&... args) -> decltype(auto)
 {
     return _registry.replace<Component>(id, std::forward<decltype(args)>(args)...);
 }
@@ -121,7 +122,8 @@ template<typename... Components> auto Registry::get(this auto&& self, EntityId i
     return self._registry.template get<Components...>(id);
 }
 
-template<typename Component> auto Registry::get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> Component&
+template<typename Component>
+auto Registry::get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> decltype(auto)
 {
     return self._registry.template get_or_emplace<Component>(id, std::forward<decltype(args)>(args)...);
 }

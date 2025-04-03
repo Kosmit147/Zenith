@@ -30,6 +30,14 @@ auto Scene::update() -> void
         script.script().on_update(EntityHandle{ entity_id, _registry });
 
     on_update();
+
+    auto marked_for_deletion = _registry.view<DeletionMarkerComponent>();
+
+    // @speed: We could use a function which takes in either a view or a pair of iterators for destructing multiple
+    // entities at once more efficiently.
+
+    for (auto&& [entity_id] : marked_for_deletion.each())
+        _registry.destroy_now_unchecked(entity_id);
 }
 
 auto Scene::render() -> void

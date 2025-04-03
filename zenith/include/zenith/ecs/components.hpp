@@ -197,6 +197,10 @@ private:
     };
 };
 
+// --------------------------- DeletionMarkerComponent ---------------------------
+
+struct DeletionMarkerComponent {};
+
 } // namespace zth
 
 ZTH_DECLARE_FORMATTER(zth::TagComponent);

@@ -52,6 +52,7 @@ template<typename T> constexpr auto is_integral_component_v = is_integral_compon
 // We always require every entity to have a TagComponent and a TransformComponent.
 template<> struct is_integral_component<TagComponent> : std::true_type {};
 template<> struct is_integral_component<TransformComponent> : std::true_type {};
+template<> struct is_integral_component<DeletionMarkerComponent> : std::true_type {};
 
 // clang-format on
 
@@ -78,7 +79,7 @@ public:
     template<typename... Components> [[nodiscard]] auto all_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto any_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto get() const -> decltype(auto);
-    template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> Component&;
+    template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> decltype(auto);
 
     [[nodiscard]] auto id() const { return _id; }
     [[nodiscard]] auto registry() const -> Optional<Reference<const Registry>>;
@@ -102,17 +103,20 @@ public:
     [[nodiscard]] auto tag() const -> TagComponent&;
     [[nodiscard]] auto transform() const -> TransformComponent&;
 
-    template<typename Component> auto emplace(auto&&... args) const -> Component&;
-    template<typename Component> auto emplace_or_replace(auto&&... args) const -> Component&;
-    template<typename Component, std::invocable<Component&>... F> auto patch(F&&... funcs) const -> Component&;
-    template<typename Component> auto replace(auto&&... args) const -> Component&;
+    template<typename Component> auto emplace(auto&&... args) const -> decltype(auto);
+    template<typename Component> auto emplace_or_replace(auto&&... args) const -> decltype(auto);
+    template<typename Component, std::invocable<Component&>... F> auto patch(F&&... funcs) const -> decltype(auto);
+    template<typename Component> auto replace(auto&&... args) const -> decltype(auto);
     template<typename... Components> auto remove() const -> usize;
     template<typename... Components> auto erase() const -> void;
     template<typename... Components> [[nodiscard]] auto get() const -> decltype(auto);
-    template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> Component&;
+    template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> decltype(auto);
 
-    auto destroy() -> void;
+    auto destroy() -> bool;
     auto destroy_unchecked() -> void;
+
+    auto destroy_now() -> bool;
+    auto destroy_now_unchecked() -> void;
 
     [[nodiscard]] auto registry() const -> Optional<Reference<Registry>>;
 };
@@ -137,24 +141,29 @@ public:
     auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
     auto find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>;
 
-    template<typename Component> auto emplace(EntityId id, auto&&... args) -> Component&;
-    template<typename Component> auto emplace_or_replace(EntityId id, auto&&... args) -> Component&;
+    template<typename Component> auto emplace(EntityId id, auto&&... args) -> decltype(auto);
+    template<typename Component> auto emplace_or_replace(EntityId id, auto&&... args) -> decltype(auto);
     template<typename... Components> auto clear() -> void;
-    template<typename Component, std::invocable<Component&>... F> auto patch(EntityId id, F&&... funcs) -> Component&;
-    template<typename Component> auto replace(EntityId id, auto&&... args) -> Component&;
+    template<typename Component, std::invocable<Component&>... F>
+    auto patch(EntityId id, F&&... funcs) -> decltype(auto);
+    template<typename Component> auto replace(EntityId id, auto&&... args) -> decltype(auto);
     template<typename... Components> auto remove(EntityId id) -> usize;
     template<typename... Components> auto erase(EntityId id) -> void;
     template<typename... Components> [[nodiscard]] auto all_of(EntityId id) const -> bool;
     template<typename... Components> [[nodiscard]] auto any_of(EntityId id) const -> bool;
     template<typename... Components> [[nodiscard]] auto get(this auto&& self, EntityId id) -> decltype(auto);
     template<typename Component>
-    [[nodiscard]] auto get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> Component&;
+    [[nodiscard]] auto get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> decltype(auto);
 
-    auto destroy(EntityId id) -> void;
-    auto destroy(EntityHandle& entity) -> void;
-
+    auto destroy(EntityId id) -> bool;
+    auto destroy(EntityHandle& entity) -> bool;
     auto destroy_unchecked(EntityId id) -> void;
     auto destroy_unchecked(EntityHandle& entity) -> void;
+
+    auto destroy_now(EntityId id) -> bool;
+    auto destroy_now(EntityHandle& entity) -> bool;
+    auto destroy_now_unchecked(EntityId id) -> void;
+    auto destroy_now_unchecked(EntityHandle& entity) -> void;
 
     // @todo: Add get / exclude functionality.
     template<typename... Components> [[nodiscard]] auto view(this auto&& self) -> decltype(auto);

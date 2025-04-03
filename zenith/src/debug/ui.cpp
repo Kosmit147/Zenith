@@ -540,7 +540,7 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
         if (ImGui::BeginPopupContextItem(nullptr, ImGuiPopupFlags_MouseButtonRight))
         {
             if (ImGui::MenuItem("Destroy Entity"))
-                registry.destroy(_selected_entity_id);
+                registry.destroy(entity_id);
 
             ImGui::EndPopup();
         }

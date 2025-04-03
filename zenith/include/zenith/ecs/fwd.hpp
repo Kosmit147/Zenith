@@ -9,6 +9,7 @@ struct MeshComponent;
 struct MaterialComponent;
 struct CameraComponent;
 class LightComponent;
+struct DeletionMarkerComponent;
 
 class ConstEntityHandle;
 class EntityHandle;
