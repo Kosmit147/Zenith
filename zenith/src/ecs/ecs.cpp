@@ -40,16 +40,38 @@ auto EntityHandle::transform() const -> TransformComponent&
     return get<TransformComponent>();
 }
 
-auto EntityHandle::destroy() -> void
+auto EntityHandle::destroy() -> bool
 {
     if (valid())
+    {
         destroy_unchecked();
+        return true;
+    }
+
+    return false;
 }
 
 auto EntityHandle::destroy_unchecked() -> void
 {
     ZTH_ASSERT(valid());
     registry()->get().destroy_unchecked(*this);
+}
+
+auto EntityHandle::destroy_now() -> bool
+{
+    if (valid())
+    {
+        destroy_now_unchecked();
+        return true;
+    }
+
+    return false;
+}
+
+auto EntityHandle::destroy_now_unchecked() -> void
+{
+    ZTH_ASSERT(valid());
+    registry()->get().destroy_now_unchecked(*this);
 }
 
 auto EntityHandle::registry() const -> Optional<Reference<Registry>>
@@ -116,26 +138,69 @@ auto Registry::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHan
     return entities;
 }
 
-auto Registry::destroy(EntityId id) -> void
+auto Registry::destroy(EntityId id) -> bool
 {
     if (_registry.valid(id))
+    {
         destroy_unchecked(id);
+        return true;
+    }
+
+    return false;
 }
 
-auto Registry::destroy(EntityHandle& entity) -> void
+auto Registry::destroy(EntityHandle& entity) -> bool
 {
     if (entity.valid())
+    {
         destroy_unchecked(entity);
+        return true;
+    }
+
+    return false;
 }
 
 auto Registry::destroy_unchecked(EntityId id) -> void
 {
-    _registry.destroy(id);
+    emplace_or_replace<DeletionMarkerComponent>(id);
 }
 
 auto Registry::destroy_unchecked(EntityHandle& entity) -> void
 {
     destroy_unchecked(entity.id());
+    entity = EntityHandle::invalid;
+}
+
+auto Registry::destroy_now(EntityId id) -> bool
+{
+    if (_registry.valid(id))
+    {
+        destroy_now_unchecked(id);
+        return true;
+    }
+
+    return false;
+}
+
+auto Registry::destroy_now(EntityHandle& entity) -> bool
+{
+    if (entity.valid())
+    {
+        destroy_now_unchecked(entity);
+        return true;
+    }
+
+    return false;
+}
+
+auto Registry::destroy_now_unchecked(EntityId id) -> void
+{
+    _registry.destroy(id);
+}
+
+auto Registry::destroy_now_unchecked(EntityHandle& entity) -> void
+{
+    destroy_now_unchecked(entity.id());
     entity = EntityHandle::invalid;
 }
 
