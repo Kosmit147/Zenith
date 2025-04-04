@@ -14,12 +14,6 @@ private:
     zth::EntityHandle _camera = create_entity("Camera");
     zth::Vector<zth::EntityHandle> _containers;
 
-    zth::gl::Texture2D _diffuse_map;
-    zth::gl::Texture2D _specular_map;
-
-    zth::Material _container_material;
-    zth::Material _point_light_material;
-
     zth::EntityHandle _directional_light = create_entity("Directional Light");
     zth::EntityHandle _point_light = create_entity("Point Light");
     zth::EntityHandle _ambient_light = create_entity("Ambient Light");
@@ -29,6 +23,7 @@ private:
 private:
     auto on_event(const zth::Event& event) -> void override;
     auto on_update() -> void override;
+    auto on_unload() -> void override;
 
     auto on_key_pressed_event(const zth::KeyPressedEvent& event) -> void;
 };

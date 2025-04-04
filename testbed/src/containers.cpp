@@ -64,22 +64,41 @@ constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    g
                                              glm::vec3{ 1.3f, -2.0f, -2.5f },  glm::vec3{ 1.5f, 2.0f, -2.5f },
                                              glm::vec3{ 1.5f, 0.2f, -1.5f },   glm::vec3{ -1.3f, 1.0f, -1.5f } };
 
+constexpr auto container_diffuse_map_asset_id = "container_diffuse_map";
+constexpr auto container_specular_map_asset_id = "container_specular_map";
+constexpr auto container_material_asset_id = "container_material";
+constexpr auto point_light_material_asset_id = "point_light_material";
+
 } // namespace
 
 Containers::Containers()
-    : _diffuse_map{ embedded::container2_diffuse_map_data }, _specular_map{ embedded::container2_specular_map_data },
-      _container_material{ .diffuse_map = &_diffuse_map, .specular_map = &_specular_map },
-      _point_light_material{ .shader = &zth::shaders::flat_color() }
 {
-    // --- Camera ---
+    // clang-format off
 
+    auto& container_diffuse = zth::AssetManager::emplace<zth::gl::Texture2D>(
+        container_diffuse_map_asset_id, embedded::container2_diffuse_map_data)->get();
+
+    auto& container_specular = zth::AssetManager::emplace<zth::gl::Texture2D>(
+        container_specular_map_asset_id, embedded::container2_specular_map_data)->get();
+
+    auto& container_material = zth::AssetManager::emplace<zth::Material>(
+        container_material_asset_id,
+        zth::Material{ .diffuse_map = &container_diffuse,
+                       .specular_map = &container_specular })->get();
+
+    auto& point_light_material = zth::AssetManager::emplace<zth::Material>(
+        point_light_material_asset_id,
+        zth::Material{ .shader = &zth::shaders::flat_color() })->get();
+
+    // clang-format on
+
+    // --- Camera ---
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
     _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
     _camera.emplace_or_replace<zth::LightComponent>(camera_light_component);
 
     // --- Directional Light ---
-
     _directional_light.emplace_or_replace<zth::TransformComponent>(directional_light_transform_component);
     _directional_light.emplace_or_replace<zth::LightComponent>(directional_light_light_component);
 
@@ -87,7 +106,7 @@ Containers::Containers()
     _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
     _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
     _point_light.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
-    _point_light.emplace_or_replace<zth::MaterialComponent>(&_point_light_material);
+    _point_light.emplace_or_replace<zth::MaterialComponent>(&point_light_material);
 
     // --- Ambient Light ---
     _ambient_light.emplace_or_replace<zth::LightComponent>(ambient_light_light_component);
@@ -100,7 +119,7 @@ Containers::Containers()
         auto& container = _containers.emplace_back(create_entity(label));
 
         container.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
-        container.emplace_or_replace<zth::MaterialComponent>(&_container_material);
+        container.emplace_or_replace<zth::MaterialComponent>(&container_material);
 
         const auto rotation_axis = glm::normalize(glm::vec3{ 1.0f, 0.3f, 0.5f });
         auto angle = 0.35f * static_cast<float>(i);
@@ -130,7 +149,20 @@ auto Containers::on_event(const zth::Event& event) -> void
 auto Containers::on_update() -> void
 {
     auto& light = _point_light.get<const zth::LightComponent>();
-    _point_light_material.albedo = light.point_light().properties.color;
+    auto& point_light_material = zth::AssetManager::get_unchecked<zth::Material>(point_light_material_asset_id);
+    point_light_material.albedo = light.point_light().properties.color;
+}
+
+auto Containers::on_unload() -> void
+{
+    auto success = zth::AssetManager::remove<zth::gl::Texture2D>(container_diffuse_map_asset_id);
+    assert(success);
+    success = zth::AssetManager::remove<zth::gl::Texture2D>(container_specular_map_asset_id);
+    assert(success);
+    success = zth::AssetManager::remove<zth::Material>(container_material_asset_id);
+    assert(success);
+    success = zth::AssetManager::remove<zth::Material>(point_light_material_asset_id);
+    assert(success);
 }
 
 auto Containers::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
