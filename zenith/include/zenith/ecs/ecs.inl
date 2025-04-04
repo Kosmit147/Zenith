@@ -126,14 +126,17 @@ auto Registry::get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> 
     return self._registry.template get_or_emplace<Component>(id, std::forward<decltype(args)>(args)...);
 }
 
-template<typename... Components> auto Registry::view(this auto&& self) -> decltype(auto)
+template<typename... Components, typename... Exclude>
+auto Registry::view(this auto&& self, ExcludeComponent<Exclude...> exclude) -> decltype(auto)
 {
-    return self._registry.template view<Components...>();
+    return self._registry.template view<Components..., Exclude...>(std::forward<decltype(exclude)>(exclude));
 }
 
-template<typename... Components> auto Registry::group(this auto&& self) -> decltype(auto)
+template<typename... Components, typename... Get, typename... Exclude>
+auto Registry::group(this auto&& self, GetComponent<Get...> get, ExcludeComponent<Exclude...> exclude) -> decltype(auto)
 {
-    return self._registry.template group<Components...>();
+    return self._registry.template group<Components..., Get..., Exclude...>(std::forward<decltype(get)>(get),
+                                                                            std::forward<decltype(exclude)>(exclude));
 }
 
 template<typename... Components> auto Registry::sort() -> void
