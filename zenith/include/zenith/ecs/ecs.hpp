@@ -60,6 +60,9 @@ template<> struct is_integral_component<DeletionMarkerComponent> : std::true_typ
 template<typename T>
 concept IntegralComponent = is_integral_component_v<T>;
 
+template<typename... Components> using GetComponent = entt::get_t<Components...>;
+template<typename... Components> using ExcludeComponent = entt::exclude_t<Components...>;
+
 using EntityId = entt::entity;
 constexpr auto null_entity = entt::null;
 
@@ -166,9 +169,14 @@ public:
     auto destroy_now_unchecked(EntityId id) -> void;
     auto destroy_now_unchecked(EntityHandle& entity) -> void;
 
-    // @todo: Add get / exclude functionality.
-    template<typename... Components> [[nodiscard]] auto view(this auto&& self) -> decltype(auto);
-    template<typename... Components> [[nodiscard]] auto group(this auto&& self) -> decltype(auto);
+    template<typename... Components, typename... Exclude>
+    [[nodiscard]] auto view(this auto&& self, ExcludeComponent<Exclude...> exclude = ExcludeComponent{})
+        -> decltype(auto);
+
+    template<typename... Components, typename... Get, typename... Exclude>
+    [[nodiscard]] auto group(this auto&& self, GetComponent<Get...> get = GetComponent{},
+                             ExcludeComponent<Exclude...> exclude = ExcludeComponent{}) -> decltype(auto);
+
     template<typename... Components> auto sort() -> void;
 
 private:
