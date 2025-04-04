@@ -14,6 +14,7 @@ namespace zth::memory {
 // exhibit any implementation-defined behavior.
 
 [[nodiscard]] auto allocate(usize size_bytes) noexcept -> void*;
+[[nodiscard]] auto allocate_zeroed(usize size_bytes) noexcept -> void*;
 // Modifies ptr to point to the new location.
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void;
 // Modifies ptr to point to the new location. buffer_size_bytes determines how many bytes will be copied to the new
