@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <ImGuizmo.h>
 
-#include "zenith/asset/asset_manager.hpp"
+#include "zenith/asset/asset.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/log/logger.hpp"

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <type_traits>
-
 namespace zth {
 
 template<typename... Components> auto ConstEntityHandle::all_of() const -> bool
@@ -48,13 +46,13 @@ template<typename Component> auto EntityHandle::replace(auto&&... args) const ->
 
 template<typename... Components> auto EntityHandle::remove() const -> usize
 {
-    static_assert((!IsIntegralComponent<Components> && ...));
+    static_assert((!IntegralComponent<Components> && ...));
     return _registry->remove<Components...>(*this);
 }
 
 template<typename... Components> auto EntityHandle::erase() const -> void
 {
-    static_assert((!IsIntegralComponent<Components> && ...));
+    static_assert((!IntegralComponent<Components> && ...));
     _registry->erase<Components...>(*this);
 }
 
@@ -80,7 +78,7 @@ template<typename Component> auto Registry::emplace_or_replace(EntityId id, auto
 
 template<typename... Components> auto Registry::clear() -> void
 {
-    static_assert((!IsIntegralComponent<Components> && ...));
+    static_assert((!IntegralComponent<Components> && ...));
     _registry.clear<Components...>();
 }
 
@@ -97,13 +95,13 @@ template<typename Component> auto Registry::replace(EntityId id, auto&&... args)
 
 template<typename... Components> auto Registry::remove(EntityId id) -> usize
 {
-    static_assert((!IsIntegralComponent<Components> && ...));
+    static_assert((!IntegralComponent<Components> && ...));
     return _registry.remove<Components...>(id);
 }
 
 template<typename... Components> auto Registry::erase(EntityId id) -> void
 {
-    static_assert((!IsIntegralComponent<Components> && ...));
+    static_assert((!IntegralComponent<Components> && ...));
     _registry.erase<Components...>(id);
 }
 

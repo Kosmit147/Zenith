@@ -16,6 +16,7 @@ public:
                   const gl::VertexArrayLayout& layout);
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
                   const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer);
+
     explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
                   const gl::VertexArrayLayout& layout, gl::InstanceBuffer&& instance_buffer) = delete;
 

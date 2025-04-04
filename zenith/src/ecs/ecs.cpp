@@ -87,8 +87,8 @@ auto Registry::valid(EntityId id) const -> bool
     return _registry.valid(id);
 }
 
-static_assert(IsIntegralComponent<TagComponent>);
-static_assert(IsIntegralComponent<TransformComponent>);
+static_assert(IntegralComponent<TagComponent>);
+static_assert(IntegralComponent<TransformComponent>);
 
 auto Registry::create(const String& tag) -> EntityHandle
 {

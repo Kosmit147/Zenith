@@ -3,7 +3,7 @@ project(zenith VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(
 	zenith_core STATIC
-	"src/asset/asset_manager.cpp"
+	"src/asset/asset.cpp"
 	"src/core/exception.cpp"
 	"src/core/random.cpp"
 	"src/core/scene.cpp"

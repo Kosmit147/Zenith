@@ -61,7 +61,7 @@ template<typename Component> auto display_component(EntityHandle entity) -> void
     {
         auto remove_component = false;
 
-        if constexpr (!IsIntegralComponent<Component>)
+        if constexpr (!IntegralComponent<Component>)
         {
             // Component is removable.
 
@@ -77,7 +77,7 @@ template<typename Component> auto display_component(EntityHandle entity) -> void
         auto& component = entity.get<Component>();
         edit_component(component);
 
-        if constexpr (!IsIntegralComponent<Component>)
+        if constexpr (!IntegralComponent<Component>)
         {
             // Component is removable.
 
@@ -467,8 +467,8 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
     {
         // TagComponent and TransformComponent are mandatory.
-        static_assert(IsIntegralComponent<TagComponent>);
-        static_assert(IsIntegralComponent<TransformComponent>);
+        static_assert(IntegralComponent<TagComponent>);
+        static_assert(IntegralComponent<TransformComponent>);
 
         auto& tag = entity.get<TagComponent>();
         edit_component(tag);

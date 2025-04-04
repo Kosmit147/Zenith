@@ -4,6 +4,7 @@
 #include <entt/entity/registry.hpp>
 
 #include <concepts>
+#include <type_traits>
 #include <utility>
 
 #include "zenith/core/typedefs.hpp"
@@ -57,7 +58,7 @@ template<> struct is_integral_component<DeletionMarkerComponent> : std::true_typ
 // clang-format on
 
 template<typename T>
-concept IsIntegralComponent = is_integral_component_v<T>;
+concept IntegralComponent = is_integral_component_v<T>;
 
 using EntityId = entt::entity;
 constexpr auto null_entity = entt::null;

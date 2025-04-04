@@ -2,4 +2,4 @@
 
 #include "asset/fwd.hpp"
 
-#include "asset/asset_manager.hpp"
+#include "asset/asset.hpp"
