@@ -48,6 +48,12 @@ auto LayerStack::start_frame() -> void
         layer->on_frame_start();
 }
 
+auto LayerStack::fixed_update() -> void
+{
+    for (auto& layer : _layers)
+        layer->on_fixed_update();
+}
+
 auto LayerStack::dispatch_event(const Event& event) -> void
 {
     for (auto& layer : _layers)

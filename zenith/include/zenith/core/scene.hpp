@@ -22,6 +22,7 @@ public:
 
     auto start_frame() -> void;
     auto dispatch_event(const Event& event) -> void;
+    auto fixed_update() -> void;
     auto update() -> void;
     auto render() -> void;
 
@@ -42,6 +43,7 @@ private:
     virtual auto on_load() -> void {}
     virtual auto on_frame_start() -> void {}
     virtual auto on_event([[maybe_unused]] const Event& event) -> void {}
+    virtual auto on_fixed_update() -> void {}
     virtual auto on_update() -> void {}
     virtual auto on_render() -> void {}
     virtual auto on_unload() -> void {}
@@ -55,6 +57,7 @@ public:
     [[nodiscard]] static auto init() -> Result<void, String>;
     static auto start_frame() -> void;
     static auto dispatch_event(const Event& event) -> void;
+    static auto fixed_update() -> void;
     static auto update() -> void;
     static auto render() -> void;
     static auto on_render() -> void;

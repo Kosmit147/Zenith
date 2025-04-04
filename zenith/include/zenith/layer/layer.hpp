@@ -22,6 +22,7 @@ public:
 
     virtual auto on_frame_start() -> void {}
     virtual auto on_event([[maybe_unused]] const Event& event) -> void {}
+    virtual auto on_fixed_update() -> void {}
     virtual auto on_update() -> void {}
     virtual auto on_render() -> void {}
 
@@ -43,6 +44,7 @@ public:
     [[nodiscard]] auto top() const -> const Layer&;
 
     auto start_frame() -> void;
+    auto fixed_update() -> void;
     auto update() -> void;
     auto dispatch_event(const Event& event) -> void;
     auto render() -> void;

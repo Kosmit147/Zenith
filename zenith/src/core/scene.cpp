@@ -22,6 +22,16 @@ auto Scene::dispatch_event(const Event& event) -> void
     on_event(event);
 }
 
+auto Scene::fixed_update() -> void
+{
+    auto scripts = _registry.view<ScriptComponent>();
+
+    for (auto&& [entity_id, script] : scripts.each())
+        script.script().on_fixed_update(EntityHandle{ entity_id, _registry });
+
+    on_fixed_update();
+}
+
 auto Scene::update() -> void
 {
     auto scripts = _registry.view<ScriptComponent>();
@@ -121,6 +131,14 @@ auto SceneManager::dispatch_event(const Event& event) -> void
         return;
 
     _scene->dispatch_event(event);
+}
+
+auto SceneManager::fixed_update() -> void
+{
+    if (!_scene)
+        return;
+
+    _scene->fixed_update();
 }
 
 auto SceneManager::update() -> void

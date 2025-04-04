@@ -117,6 +117,11 @@ auto RuntimeLayer::on_event(const Event& event) -> void
     SceneManager::dispatch_event(event);
 }
 
+void RuntimeLayer::on_fixed_update()
+{
+    SceneManager::fixed_update();
+}
+
 auto RuntimeLayer::on_update() -> void
 {
     SceneManager::update();

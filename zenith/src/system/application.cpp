@@ -4,11 +4,12 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/layer/layers.hpp"
 #include "zenith/system/event_queue.hpp"
+#include "zenith/system/window.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth {
 
-Application::Application(const ApplicationSpec& spec)
+Application::Application(const ApplicationSpec& spec) : fixed_update_time(spec.fixed_update_time)
 {
     Defer cleanup{ [&] {
         pop_all_overlays();
@@ -82,6 +83,7 @@ auto Application::run() -> void
         while (auto event = EventQueue::pop())
             dispatch_event(*event);
 
+        fixed_update();
         update();
         render();
 
@@ -100,6 +102,21 @@ auto Application::dispatch_event(const Event& event) -> void
 {
     _layers.dispatch_event(event);
     _overlays.dispatch_event(event);
+}
+
+auto Application::fixed_update() -> void
+{
+    auto time = Window::time();
+    auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_update_time;
+    auto fixed_updates_to_perform = static_cast<usize>((time - accumulated_fixed_update_time) / fixed_update_time);
+
+    for (usize i = 0; i < fixed_updates_to_perform; i++)
+    {
+        _layers.fixed_update();
+        _overlays.fixed_update();
+    }
+
+    _fixed_updates_performed += fixed_updates_to_perform;
 }
 
 auto Application::update() -> void

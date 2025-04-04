@@ -42,6 +42,7 @@ public:
 
     auto on_frame_start() -> void override;
     auto on_event([[maybe_unused]] const Event& event) -> void override;
+    auto on_fixed_update() -> void override;
     auto on_update() -> void override;
     auto on_render() -> void override;
 
