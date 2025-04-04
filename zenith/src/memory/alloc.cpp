@@ -13,4 +13,11 @@ auto allocate(usize size_bytes) noexcept -> void*
     return ptr;
 }
 
+auto allocate_zeroed(usize size_bytes) noexcept -> void*
+{
+    auto ptr = allocate(size_bytes);
+    std::memset(ptr, 0, size_bytes);
+    return ptr;
+}
+
 } // namespace zth::memory
