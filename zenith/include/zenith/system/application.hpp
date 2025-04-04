@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "zenith/core/typedefs.hpp"
 #include "zenith/layer/layer.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/stl/string.hpp"
@@ -27,10 +28,14 @@ struct ApplicationSpec
 {
     WindowSpec window_spec{};
     LoggerSpec logger_spec{};
+    double fixed_update_time = 1 / 60.0; // In seconds.
 };
 
 class Application
 {
+public:
+    double fixed_update_time;
+
 public:
     explicit Application(const ApplicationSpec& spec = {});
     ZTH_NO_COPY_NO_MOVE(Application)
@@ -53,9 +58,12 @@ private:
     LayerStack _layers;
     LayerStack _overlays;
 
+    usize _fixed_updates_performed = 0;
+
 private:
     auto start_frame() -> void;
     auto dispatch_event(const Event& event) -> void;
+    auto fixed_update() -> void;
     auto update() -> void;
     auto render() -> void;
 };
