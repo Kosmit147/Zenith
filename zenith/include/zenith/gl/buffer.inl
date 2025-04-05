@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "zenith/core/assert.hpp"
 #include "zenith/gl/util.hpp"
 
 namespace zth::gl {
@@ -345,6 +346,21 @@ auto ShaderStorageBuffer::buffer_data(auto&& data, u32 offset) -> u32
 auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
+}
+
+template<GlBuffer DstBuffer, GlBuffer SrcBuffer>
+    requires(!std::is_const_v<std::remove_reference_t<DstBuffer>>
+             && !std::is_const_v<std::remove_reference_t<SrcBuffer>>)
+auto copy_buffer_data(DstBuffer& dst, SrcBuffer& src, u32 size_bytes, u32 dst_offset, u32 src_offset) -> u32
+{
+    if (dst.is_dynamic())
+        dst.reserve(dst_offset + size_bytes);
+
+    ZTH_ASSERT(dst.size_bytes() >= dst_offset + size_bytes);
+    ZTH_ASSERT(src.size_bytes() >= src_offset + size_bytes);
+    glCopyNamedBufferSubData(src.native_handle(), dst.native_handle(), src_offset, dst_offset, size_bytes);
+
+    return size_bytes;
 }
 
 } // namespace zth::gl

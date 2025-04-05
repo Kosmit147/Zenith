@@ -184,11 +184,11 @@ auto Buffer::reallocate(u32 new_size_bytes) -> void
 
         auto bytes_to_copy = std::min(_size_bytes, new_size_bytes);
         Buffer tmp_buffer = create_static_with_size(bytes_to_copy);
-        glCopyNamedBufferSubData(_id, tmp_buffer._id, 0, 0, bytes_to_copy);
+        copy_buffer_data(tmp_buffer, *this, bytes_to_copy);
 
         ZTH_ASSERT(_usage.has_value());
-        glNamedBufferData(_id, new_size_bytes, nullptr, to_gl_enum(*_usage));
-        glCopyNamedBufferSubData(tmp_buffer._id, _id, 0, 0, bytes_to_copy);
+        init_dynamic_with_size(new_size_bytes, *_usage);
+        copy_buffer_data(*this, tmp_buffer, bytes_to_copy);
     }
     else
     {
