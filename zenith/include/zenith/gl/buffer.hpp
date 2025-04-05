@@ -3,12 +3,11 @@
 #include <glad/glad.h>
 
 #include <ranges>
+#include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
-
-// @cleanup: Buffers implementation.
 
 namespace zth::gl {
 
@@ -419,6 +418,29 @@ public:
 private:
     Buffer _buffer;
 };
+
+// clang-format off
+
+template<typename T> struct is_gl_buffer : std::false_type {};
+template<typename T> constexpr auto is_gl_buffer_v = is_gl_buffer<T>::value;
+
+template<> struct is_gl_buffer<Buffer> : std::true_type {};
+template<> struct is_gl_buffer<VertexBuffer> : std::true_type {};
+template<> struct is_gl_buffer<IndexBuffer> : std::true_type {};
+template<> struct is_gl_buffer<InstanceBuffer> : std::true_type {};
+template<> struct is_gl_buffer<UniformBuffer> : std::true_type {};
+template<> struct is_gl_buffer<ShaderStorageBuffer> : std::true_type {};
+
+// clang-format on
+
+template<typename T>
+concept GlBuffer = is_gl_buffer_v<T>;
+
+// Returns the number of bytes copied.
+template<GlBuffer DstBuffer, GlBuffer SrcBuffer>
+    requires(!std::is_const_v<std::remove_reference_t<DstBuffer>>
+             && !std::is_const_v<std::remove_reference_t<SrcBuffer>>)
+auto copy_buffer_data(DstBuffer& dst, SrcBuffer& src, u32 size_bytes, u32 dst_offset = 0, u32 src_offset = 0) -> u32;
 
 [[nodiscard]] auto to_gl_enum(BufferUsage buffer_usage) -> GLenum;
 
