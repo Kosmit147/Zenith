@@ -82,6 +82,11 @@ auto Buffer::resize(size_type size_bytes) noexcept -> void
     reallocate(size_bytes);
 }
 
+auto Buffer::resize_to_at_least(size_type min_size_bytes) noexcept -> void
+{
+    resize(std::max(_size_bytes, min_size_bytes));
+}
+
 auto Buffer::free() noexcept -> void
 {
     _size_bytes = 0;
@@ -186,6 +191,11 @@ auto DynamicBuffer::resize(size_type size_bytes) noexcept -> void
     _size_bytes = size_bytes;
 }
 
+auto DynamicBuffer::resize_to_at_least(size_type min_size_bytes) noexcept -> void
+{
+    resize(std::max(_size_bytes, min_size_bytes));
+}
+
 auto DynamicBuffer::reserve(size_type min_capacity_bytes) noexcept -> void
 {
     reallocate_at_least(min_capacity_bytes);
@@ -218,12 +228,6 @@ auto DynamicBuffer::buffer_data(const void* data, size_type data_size_bytes, siz
 auto DynamicBuffer::clear() noexcept -> void
 {
     _size_bytes = 0;
-}
-
-auto DynamicBuffer::resize_to_at_least(size_type min_size_bytes) noexcept -> void
-{
-    reserve(min_size_bytes);
-    _size_bytes = std::max(_size_bytes, min_size_bytes);
 }
 
 auto DynamicBuffer::allocate(size_type capacity_bytes) noexcept -> void

@@ -8,6 +8,7 @@
 #include "zenith/gl/context.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
+#include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_array.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
@@ -89,7 +90,6 @@ auto Renderer::init() -> Result<void, String>
     glEnable(GL_CULL_FACE);
 
     renderer.reset(new Renderer);
-    renderer->_instance_buffer.set_stride(sizeof(InstanceVertex));
 
     set_clear_color(colors::transparent);
 
@@ -275,7 +275,8 @@ auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material&
     vertex_array.bind();
     bind_material(material);
 
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()), vertex_array.index_type(), nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
+                   gl::to_gl_enum(vertex_array.index_data_type()), nullptr);
 }
 
 auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void
@@ -283,8 +284,8 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
     vertex_array.bind();
     bind_material(material);
 
-    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()), vertex_array.index_type(),
-                            nullptr, static_cast<GLsizei>(instances));
+    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
+                            gl::to_gl_enum(vertex_array.index_data_type()), nullptr, static_cast<GLsizei>(instances));
 }
 
 auto Renderer::batch_draw_commands() -> void

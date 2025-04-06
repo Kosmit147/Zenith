@@ -22,7 +22,7 @@ struct InstanceVertex
     static const gl::VertexLayout layout;
 };
 
-inline const gl::VertexLayout InstanceVertex::layout = gl::VertexLayout::from_vertex<InstanceVertex>();
+inline const gl::VertexLayout InstanceVertex::layout = gl::VertexLayout::derive_from_vertex<InstanceVertex>();
 
 struct StandardVertex
 {
@@ -34,7 +34,7 @@ struct StandardVertex
     static const gl::VertexArrayLayout instanced_layout;
 };
 
-inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::from_vertex<StandardVertex>();
+inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::derive_from_vertex<StandardVertex>();
 
 inline const gl::VertexArrayLayout StandardVertex::instanced_layout = {
     .vertex_buffer_layout = StandardVertex::layout,

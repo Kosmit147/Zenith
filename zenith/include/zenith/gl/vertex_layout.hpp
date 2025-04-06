@@ -1,10 +1,9 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <initializer_list>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/gl/util.hpp"
 #include "zenith/stl/vector.hpp"
 
 namespace zth::gl {
@@ -25,10 +24,10 @@ enum class VertexLayoutElement : u8
 
 struct VertexLayoutElementInfo
 {
-    GLint count;
-    GLenum type;
-    GLuint size_bytes;
-    GLuint slots_occupied = 1;
+    u32 count;
+    DataType type;
+    u32 size_bytes;
+    u32 slots_occupied = 1;
 };
 
 class VertexLayout
@@ -39,9 +38,9 @@ public:
 public:
     constexpr VertexLayout() = default;
     constexpr VertexLayout(std::initializer_list<VertexLayoutElement> elems);
-    template<typename VertexType> [[nodiscard]] constexpr static auto from_vertex() -> VertexLayout;
+    template<typename VertexType> [[nodiscard]] constexpr static auto derive_from_vertex() -> VertexLayout;
 
-    constexpr auto push(VertexLayoutElement elem) -> void;
+    constexpr auto push(VertexLayoutElement elem) -> VertexLayoutElement&;
     constexpr auto clear() -> void;
 
     [[nodiscard]] constexpr auto size() const { return _elements.size(); }

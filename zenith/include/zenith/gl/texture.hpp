@@ -36,7 +36,7 @@ enum class TextureWrapMode : u16
 
 enum class TextureFilteringMode : u8
 {
-    // @volatile: these numbers are chosen for converting TextureMinFilter to an OpenGL value
+    // @volatile: These numbers are chosen for converting TextureMinFilter to an OpenGL value.
 
     Nearest = 0,
     Linear = 1,
@@ -44,7 +44,7 @@ enum class TextureFilteringMode : u8
 
 enum class MipmapFilteringMode : u8
 {
-    // @volatile: these numbers are chosen for converting TextureMinFilter to an OpenGL value
+    // @volatile: These numbers are chosen for converting TextureMinFilter to an OpenGL value.
 
     Nearest = 0,
     Linear = 2,

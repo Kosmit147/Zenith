@@ -6,6 +6,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
+#include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_layout.hpp"
 
 namespace zth::gl {
@@ -16,7 +17,7 @@ struct VertexArrayLayout
     VertexLayout instance_buffer_layout{};
 
     template<std::ranges::contiguous_range VertexData>
-    [[nodiscard]] constexpr static auto from_vertex_data() -> VertexArrayLayout;
+    [[nodiscard]] constexpr static auto derive_from_vertex_data() -> VertexArrayLayout;
 };
 
 // We're using separate attribute format from OpenGL 4.3 and newer, which means that vertex layouts are bound to vertex
@@ -70,7 +71,7 @@ public:
 
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto count() const -> u32;
-    [[nodiscard]] auto index_type() const -> GLenum;
+    [[nodiscard]] auto index_data_type() const -> DataType;
 
     [[nodiscard]] auto vertex_buffer() const { return _vertex_buffer; }
     [[nodiscard]] auto index_buffer() const { return _index_buffer; }
@@ -96,10 +97,10 @@ private:
 };
 
 template<std::ranges::contiguous_range VertexData>
-[[nodiscard]] constexpr auto VertexArrayLayout::from_vertex_data() -> VertexArrayLayout
+[[nodiscard]] constexpr auto VertexArrayLayout::derive_from_vertex_data() -> VertexArrayLayout
 {
     using VertexType = std::ranges::range_value_t<VertexData>;
-    return VertexArrayLayout{ .vertex_buffer_layout = VertexLayout::from_vertex<VertexType>(),
+    return VertexArrayLayout{ .vertex_buffer_layout = VertexLayout::derive_from_vertex<VertexType>(),
                               .instance_buffer_layout = {} };
 }
 

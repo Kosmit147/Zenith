@@ -163,7 +163,8 @@ private:
     // there doesn't appear to be any drawback to doing so. Crucially, this means that every vertex array needs to be
     // bound to the renderer's instance buffer before issuing the draw call.
     Vector<InstanceVertex> _instance_data;
-    gl::InstanceBuffer _instance_buffer = gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size);
+    gl::InstanceBuffer _instance_buffer =
+        gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size, sizeof(InstanceVertex));
 
     Vector<DrawCommand> _draw_commands;
     Vector<RenderBatch> _batches;

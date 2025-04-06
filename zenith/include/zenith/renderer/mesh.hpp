@@ -11,14 +11,17 @@ namespace zth {
 class Mesh
 {
 public:
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data);
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const gl::VertexArrayLayout& layout);
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer);
+    template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
+    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data,
+                  const gl::VertexArrayLayout& layout = gl::VertexArrayLayout::derive_from_vertex_data<VertexData>());
 
-    explicit Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-                  const gl::VertexArrayLayout& layout, gl::InstanceBuffer&& instance_buffer) = delete;
+    template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
+    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
+                  const gl::InstanceBuffer& instance_buffer);
+
+    template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
+    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
+                  gl::InstanceBuffer&& instance_buffer) = delete;
 
     ZTH_NO_COPY(Mesh)
 
@@ -37,21 +40,16 @@ private:
     gl::VertexArray _vertex_array;
 };
 
-Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data)
-    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
-      _vertex_array(gl::VertexArrayLayout::from_vertex_data<decltype(vertex_data)>(), _vertex_buffer, _index_buffer)
-{}
-
-Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-           const gl::VertexArrayLayout& layout)
+template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
+Mesh::Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout)
     : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
       _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
       _vertex_array(layout, _vertex_buffer, _index_buffer)
 {}
 
-Mesh::Mesh(std::ranges::contiguous_range auto&& vertex_data, std::ranges::contiguous_range auto&& index_data,
-           const gl::VertexArrayLayout& layout, const gl::InstanceBuffer& instance_buffer)
+template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
+Mesh::Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
+           const gl::InstanceBuffer& instance_buffer)
     : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
       _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
       _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
