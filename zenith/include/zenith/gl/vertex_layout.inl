@@ -48,9 +48,9 @@ template<> constexpr auto to_vertex_layout_elem<const glm::mat4>() -> VertexLayo
 
 constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> elems) : _elements(elems) {}
 
-constexpr auto VertexLayout::push(VertexLayoutElement elem) -> void
+constexpr auto VertexLayout::push(VertexLayoutElement elem) -> VertexLayoutElement&
 {
-    _elements.push_back(elem);
+    return _elements.push_back(elem);
 }
 
 constexpr auto VertexLayout::clear() -> void
@@ -58,7 +58,7 @@ constexpr auto VertexLayout::clear() -> void
     _elements.clear();
 }
 
-template<typename VertexType> constexpr auto VertexLayout::from_vertex() -> VertexLayout
+template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() -> VertexLayout
 {
     constexpr auto dummy_vertex = VertexType{};
     constexpr auto arity = meta::struct_arity<VertexType>();

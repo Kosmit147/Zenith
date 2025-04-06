@@ -52,8 +52,11 @@ template<typename T> constexpr auto is_integral_component_v = is_integral_compon
 
 // We always require every entity to have a TagComponent and a TransformComponent.
 template<> struct is_integral_component<TagComponent> : std::true_type {};
+template<> struct is_integral_component<const TagComponent> : std::true_type {};
 template<> struct is_integral_component<TransformComponent> : std::true_type {};
+template<> struct is_integral_component<const TransformComponent> : std::true_type {};
 template<> struct is_integral_component<DeletionMarkerComponent> : std::true_type {};
+template<> struct is_integral_component<const DeletionMarkerComponent> : std::true_type {};
 
 // clang-format on
 

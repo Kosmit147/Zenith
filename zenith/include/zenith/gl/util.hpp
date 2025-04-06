@@ -3,51 +3,139 @@
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
 
+#include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 
 namespace zth::gl {
 
 using GlslBool = GLuint;
 
-template<typename T> [[nodiscard]] constexpr auto to_gl_enum() -> GLenum
+enum class DataType : u16
+{
+    None = GL_NONE,
+    UnsignedByte = GL_UNSIGNED_BYTE,
+    Byte = GL_BYTE,
+    UnsignedShort = GL_UNSIGNED_SHORT,
+    Short = GL_SHORT,
+    UnsignedInt = GL_UNSIGNED_INT,
+    Int = GL_INT,
+    Float = GL_FLOAT,
+    Double = GL_DOUBLE,
+};
+
+template<typename T> [[nodiscard]] constexpr auto to_data_type() -> DataType
 {
     static_assert(false, "not implemented");
+    return DataType::None;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLubyte>() -> DataType
+{
+    return DataType::UnsignedByte;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLbyte>() -> DataType
+{
+    return DataType::Byte;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLushort>() -> DataType
+{
+    return DataType::UnsignedShort;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLshort>() -> DataType
+{
+    return DataType::Short;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLuint>() -> DataType
+{
+    return DataType::UnsignedInt;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLint>() -> DataType
+{
+    return DataType::Int;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLfloat>() -> DataType
+{
+    return DataType::Float;
+}
+
+template<> [[nodiscard]] constexpr auto to_data_type<GLdouble>() -> DataType
+{
+    return DataType::Double;
+}
+
+[[nodiscard]] constexpr auto to_gl_enum(DataType type) -> GLenum
+{
+    switch (type)
+    {
+        using enum DataType;
+    case None:
+        return GL_NONE;
+    case UnsignedByte:
+        return GL_UNSIGNED_BYTE;
+    case Byte:
+        return GL_BYTE;
+    case UnsignedShort:
+        return GL_UNSIGNED_SHORT;
+    case Short:
+        return GL_SHORT;
+    case UnsignedInt:
+        return GL_UNSIGNED_INT;
+    case Int:
+        return GL_INT;
+    case Float:
+        return GL_FLOAT;
+    case Double:
+        return GL_DOUBLE;
+    }
+
+    ZTH_ASSERT(false);
     return GL_NONE;
 }
 
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLubyte>() -> GLenum
+[[nodiscard]] constexpr auto is_an_index_data_type(DataType type) -> bool
 {
-    return GL_UNSIGNED_BYTE;
+    using enum DataType;
+    return type == UnsignedByte || type == UnsignedShort || type == UnsignedInt;
 }
 
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLbyte>() -> GLenum
+[[nodiscard]] constexpr auto size_of_data_type(DataType type) -> usize
 {
-    return GL_BYTE;
-}
+    switch (type)
+    {
+        using enum DataType;
+    case None:
+        return 0;
+    case UnsignedByte:
+        return sizeof(GLubyte);
+    case Byte:
+        return sizeof(GLbyte);
+    case UnsignedShort:
+        return sizeof(GLushort);
+    case Short:
+        return sizeof(GLshort);
+    case UnsignedInt:
+        return sizeof(GLuint);
+    case Int:
+        return sizeof(GLint);
+    case Float:
+        return sizeof(GLfloat);
+    case Double:
+        return sizeof(GLdouble);
+    }
 
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLushort>() -> GLenum
-{
-    return GL_UNSIGNED_SHORT;
-}
-
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLshort>() -> GLenum
-{
-    return GL_SHORT;
-}
-
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLuint>() -> GLenum
-{
-    return GL_UNSIGNED_INT;
-}
-
-template<> [[nodiscard]] constexpr auto to_gl_enum<GLint>() -> GLenum
-{
-    return GL_INT;
+    ZTH_ASSERT(false);
+    return 0;
 }
 
 template<typename T> [[nodiscard]] constexpr auto get_std140_field_alignment() -> usize
 {
-    // in the default case we assume T is a struct
+    // In the default case we assume T is a struct.
     return 16;
 }
 

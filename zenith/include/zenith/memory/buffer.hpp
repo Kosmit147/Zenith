@@ -104,6 +104,7 @@ public:
 
     // --- Buffer implementation
     auto resize(size_type size_bytes) noexcept -> void;
+    auto resize_to_at_least(size_type min_size_bytes) noexcept -> void;
     auto free() noexcept -> void;
 
     // Returns the number of bytes written.
@@ -165,6 +166,7 @@ public:
 
     // --- DynamicBuffer implementation
     auto resize(size_type size_bytes) noexcept -> void;
+    auto resize_to_at_least(size_type min_size_bytes) noexcept -> void;
     auto reserve(size_type min_capacity_bytes) noexcept -> void;
     auto shrink_to_fit() noexcept -> void;
     auto free() noexcept -> void;
@@ -185,8 +187,6 @@ private:
     // We're not using unique_ptr because a unique_ptr makes it more messy to reallocate the data.
 
 private:
-    auto resize_to_at_least(size_type min_size_bytes) noexcept -> void;
-
     auto allocate(size_type capacity_bytes) noexcept -> void;
     auto reallocate_exactly(size_type new_capacity_bytes) noexcept -> void;
     auto reallocate_at_least(size_type min_capacity_bytes) noexcept -> void;

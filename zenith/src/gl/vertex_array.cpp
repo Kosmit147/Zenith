@@ -161,15 +161,15 @@ auto VertexArray::count() const -> u32
     if (!_index_buffer)
         return 0;
 
-    return _index_buffer->size();
+    return _index_buffer->count();
 }
 
-auto VertexArray::index_type() const -> GLenum
+auto VertexArray::index_data_type() const -> DataType
 {
     if (!_index_buffer)
-        return GL_NONE;
+        return DataType::None;
 
-    return _index_buffer->index_type();
+    return _index_buffer->index_data_type();
 }
 
 auto VertexArray::create() noexcept -> void
@@ -194,7 +194,7 @@ auto VertexArray::bind_vertex_buffer_layout() const -> void
         for (GLuint i = 0; i < slots_occupied; i++)
         {
             glEnableVertexArrayAttrib(_id, index);
-            glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
+            glVertexArrayAttribFormat(_id, index, static_cast<GLint>(count), to_gl_enum(type), GL_FALSE, offset);
             glVertexArrayAttribBinding(_id, index, vertex_buffer_binding_index);
 
             index++;
@@ -215,7 +215,7 @@ auto VertexArray::bind_instance_buffer_layout() const -> void
         for (GLuint i = 0; i < slots_occupied; i++)
         {
             glEnableVertexArrayAttrib(_id, index);
-            glVertexArrayAttribFormat(_id, index, count, type, GL_FALSE, offset);
+            glVertexArrayAttribFormat(_id, index, static_cast<GLint>(count), to_gl_enum(type), GL_FALSE, offset);
             glVertexArrayAttribBinding(_id, index, instance_buffer_binding_index);
             glVertexArrayBindingDivisor(_id, instance_buffer_binding_index, 1);
 

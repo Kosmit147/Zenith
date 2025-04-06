@@ -26,7 +26,7 @@ template<> struct is_asset<gl::Texture2D> : std::true_type {};
 template<typename T>
 concept Asset = is_asset_v<T>;
 
-template<Asset A> constexpr auto get_asset_type_string() -> const char*;
+template<Asset A> [[nodiscard]] constexpr auto get_asset_type_string() -> const char*;
 
 class AssetManager
 {
@@ -48,8 +48,8 @@ public:
         requires(!std::is_reference_v<A>)
     static auto add(StringView identifier, A&& asset) -> Optional<Reference<A>>;
 
-    template<Asset A> static auto get(StringView identifier) -> Optional<Reference<A>>;
-    template<Asset A> static auto get_unchecked(StringView identifier) -> A&;
+    template<Asset A> [[nodiscard]] static auto get(StringView identifier) -> Optional<Reference<A>>;
+    template<Asset A> [[nodiscard]] static auto get_unchecked(StringView identifier) -> A&;
     template<Asset A> static auto remove(StringView identifier) -> bool;
 
 private:
@@ -58,7 +58,7 @@ private:
     static AssetMap<gl::Texture2D> _textures;
 
 private:
-    template<Asset A> static auto get_asset_map() -> AssetMap<A>&;
+    template<Asset A> [[nodiscard]] static auto get_asset_map() -> AssetMap<A>&;
 };
 
 template<> auto AssetManager::get_asset_map<Material>() -> AssetMap<Material>&;

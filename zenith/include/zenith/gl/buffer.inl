@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/gl/util.hpp"
 
 namespace zth::gl {
 
@@ -92,21 +91,24 @@ auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&&
 
 auto VertexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    _stride_bytes = sizeof(T);
     _buffer.init_static_with_data(data);
+    _stride_bytes = derive_stride<decltype(data)>();
 }
 
 auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    _stride_bytes = sizeof(T);
     _buffer.init_dynamic_with_data(data, usage);
+    _stride_bytes = derive_stride<decltype(data)>();
 }
 
 auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
+}
+
+template<std::ranges::contiguous_range VertexData> constexpr auto VertexBuffer::derive_stride() -> u32
+{
+    return sizeof(std::ranges::range_value_t<VertexData>);
 }
 
 // --------------------------- IndexBuffer ---------------------------
@@ -127,18 +129,16 @@ auto IndexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& 
 
 auto IndexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    _index_type = to_gl_enum<T>();
-    _size = static_cast<u32>(std::size(data));
     _buffer.init_static_with_data(data);
+    set_index_data_type(derive_index_data_type<decltype(data)>());
+    _count = static_cast<u32>(std::size(data));
 }
 
 auto IndexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    _index_type = to_gl_enum<T>();
-    _size = static_cast<u32>(std::size(data));
     _buffer.init_dynamic_with_data(data, usage);
+    set_index_data_type(derive_index_data_type<decltype(data)>());
+    _count = static_cast<u32>(std::size(data));
 }
 
 auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
@@ -146,9 +146,16 @@ auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 off
     return _buffer.buffer_data(data, offset);
 }
 
-template<typename T> auto IndexBuffer::set_index_type() -> void
+template<typename T> auto IndexBuffer::set_index_data_type() -> void
 {
-    _index_type = to_gl_enum<T>();
+    set_index_data_type(to_data_type<T>());
+}
+
+template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::derive_index_data_type() -> DataType
+{
+    constexpr auto data_type = to_data_type<std::ranges::range_value_t<IndexData>>();
+    static_assert(is_an_index_data_type(data_type), "data type must be ubyte, ushort or uint");
+    return data_type;
 }
 
 // --------------------------- InstanceBuffer ---------------------------
@@ -349,18 +356,23 @@ auto ShaderStorageBuffer::buffer_data(std::ranges::contiguous_range auto&& data,
 }
 
 template<GlBuffer DstBuffer, GlBuffer SrcBuffer>
-    requires(!std::is_const_v<std::remove_reference_t<DstBuffer>>
-             && !std::is_const_v<std::remove_reference_t<SrcBuffer>>)
+    requires(!std::is_const_v<std::remove_reference_t<DstBuffer>>)
 auto copy_buffer_data(DstBuffer& dst, SrcBuffer& src, u32 size_bytes, u32 dst_offset, u32 src_offset) -> u32
 {
-    if (dst.is_dynamic())
-        dst.reserve(dst_offset + size_bytes);
-
     ZTH_ASSERT(dst.size_bytes() >= dst_offset + size_bytes);
     ZTH_ASSERT(src.size_bytes() >= src_offset + size_bytes);
     glCopyNamedBufferSubData(src.native_handle(), dst.native_handle(), src_offset, dst_offset, size_bytes);
 
     return size_bytes;
+}
+
+template<GlBuffer DstBuffer, GlBuffer SrcBuffer>
+    requires(!std::is_const_v<std::remove_reference_t<DstBuffer>>)
+auto copy_buffer_data_to_dynamic_buffer(DstBuffer& dst, SrcBuffer& src, u32 size_bytes, u32 dst_offset, u32 src_offset)
+    -> u32
+{
+    dst.resize_to_at_least(dst_offset + size_bytes);
+    return copy_buffer_data(dst, src, size_bytes, dst_offset, src_offset);
 }
 
 } // namespace zth::gl
