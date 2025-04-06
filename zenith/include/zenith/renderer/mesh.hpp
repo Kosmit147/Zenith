@@ -2,7 +2,9 @@
 
 #include <ranges>
 
+#include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
+#include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_array.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -11,6 +13,13 @@ namespace zth {
 class Mesh
 {
 public:
+    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
+                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout);
+
+    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
+                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout,
+                  const gl::InstanceBuffer& instance_buffer);
+
     template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
     explicit Mesh(const VertexData& vertex_data, const IndexData& index_data,
                   const gl::VertexArrayLayout& layout = gl::VertexArrayLayout::derive_from_vertex_data<VertexData>());
@@ -18,6 +27,10 @@ public:
     template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
     explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
                   const gl::InstanceBuffer& instance_buffer);
+
+    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
+                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout,
+                  gl::InstanceBuffer&& instance_buffer) = delete;
 
     template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
     explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
