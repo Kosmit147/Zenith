@@ -6,6 +6,7 @@
 #include "zenith/asset/asset.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene.hpp"
+#include "zenith/gl/context.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/imgui_renderer.hpp"
@@ -21,8 +22,9 @@ namespace zth {
 // 1. Logger
 // 2. TemporaryStorage
 // 3. Window
-// 4. Time
-// 5. Input
+// 4. gl::Context
+// 5. Time
+// 6. Input
 
 SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
     : _logger_spec(logger_spec), _window_spec(window_spec)
@@ -60,6 +62,11 @@ auto SystemLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_window{ [] { Window::shut_down(); } };
 
+    result = gl::Context::init();
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_gl_context{ [] { gl::Context::shut_down(); } };
+
     result = Time::init();
     if (!result)
         return Error{ result.error() };
@@ -73,6 +80,7 @@ auto SystemLayer::on_attach() -> Result<void, String>
     shut_down_logger.dismiss();
     shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
+    shut_down_gl_context.dismiss();
     shut_down_time.dismiss();
     shut_down_input.dismiss();
 
@@ -87,6 +95,7 @@ auto SystemLayer::on_detach() -> void
     // Shut down order should be the reverse of initialization order.
     Input::shut_down();
     Time::shut_down();
+    gl::Context::shut_down();
     Window::shut_down();
     TemporaryStorage::shut_down();
     Logger::shut_down();

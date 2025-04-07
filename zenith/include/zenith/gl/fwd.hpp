@@ -17,6 +17,7 @@ class ShaderStorageBuffer;
 
 struct Version;
 enum class Profile : u8;
+class Context;
 
 enum class ShaderType : u16;
 struct ShaderSources;

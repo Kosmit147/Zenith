@@ -5,7 +5,6 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/ecs/components.hpp"
-#include "zenith/gl/context.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
 #include "zenith/gl/util.hpp"
@@ -77,12 +76,6 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
 auto Renderer::init() -> Result<void, String>
 {
     ZTH_INTERNAL_INFO("Initializing renderer...");
-
-#if !defined(ZTH_DIST_BUILD)
-    gl::set_debug_context();
-#endif
-
-    gl::log_context_info();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
