@@ -27,6 +27,7 @@ auto TemporaryStorage::shut_down() -> void
     ZTH_CORE_INFO("Shutting down temporary storage...");
     reset();
     _buffer.free();
+    _buffer_ptr = nullptr;
     ZTH_CORE_INFO("Temporary storage shut down.");
 }
 

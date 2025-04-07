@@ -154,24 +154,14 @@ auto Renderer::clear() -> void
 
 auto Renderer::begin_scene(const CameraComponent& camera, const TransformComponent& camera_transform) -> void
 {
-    renderer->_draw_commands.clear();
-    renderer->_batches.clear();
-
-    renderer->_directional_lights.clear();
-    renderer->_point_lights.clear();
-    renderer->_spot_lights.clear();
-    renderer->_ambient_lights.clear();
-
-    clear();
-
     auto view = camera.view(camera_transform);
     auto projection = camera.projection();
     auto view_projection = projection * view;
 
+    renderer->_current_camera_position = camera_transform.translation();
     renderer->_current_camera_view = view;
     renderer->_current_camera_projection = projection;
     renderer->_current_camera_view_projection = view_projection;
-    upload_camera_data(camera_transform.translation(), view_projection);
 }
 
 auto Renderer::end_scene() -> void
@@ -246,6 +236,11 @@ auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& tran
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
 
+auto Renderer::current_camera_position() -> glm::vec3
+{
+    return renderer->_current_camera_position;
+}
+
 auto Renderer::current_camera_view() -> const glm::mat4&
 {
     return renderer->_current_camera_view;
@@ -263,11 +258,16 @@ auto Renderer::current_camera_view_projection() -> const glm::mat4&
 
 auto Renderer::render() -> void
 {
+    clear();
+
+    upload_camera_data(renderer->_current_camera_position, renderer->_current_camera_view_projection);
     upload_light_data();
     batch_draw_commands();
 
     for (const auto& batch : renderer->_batches)
         render_batch(batch);
+
+    reset_renderer_state();
 }
 
 auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void
@@ -330,7 +330,7 @@ auto Renderer::batch_draw_commands() -> void
 
 auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
-    auto& instance_data = renderer->_instance_data;
+    auto& instance_data = renderer->_temporary_instance_data;
     auto& instance_buffer = renderer->_instance_buffer;
 
     ZTH_ASSERT(batch.vertex_array->vertex_buffer() != nullptr);
@@ -508,6 +508,17 @@ auto Renderer::upload_ambient_lights_data() -> void
 
         offset += renderer->_ambient_lights_ssbo.buffer_data(data, offset);
     }
+}
+
+auto Renderer::reset_renderer_state() -> void
+{
+    renderer->_draw_commands.clear();
+    renderer->_batches.clear(); // Should clear the batches before the next frame because they use temporary storage.
+
+    renderer->_directional_lights.clear();
+    renderer->_point_lights.clear();
+    renderer->_spot_lights.clear();
+    renderer->_ambient_lights.clear();
 }
 
 } // namespace zth

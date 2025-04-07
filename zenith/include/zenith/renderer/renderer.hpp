@@ -9,6 +9,7 @@
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/fwd.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/shader_data.hpp"
@@ -35,11 +36,12 @@ struct DrawCommand
 };
 
 // Draw commands which use the same vertex array get merged into a render batch in order to utilize instanced rendering.
+// Make sure that a render batch is destroyed before the next frame starts since it uses temporary storage.
 struct RenderBatch
 {
     const gl::VertexArray* vertex_array;
     const Material* material;
-    Vector<const glm::mat4*> transforms;
+    TemporaryVector<const glm::mat4*> transforms;
 };
 
 struct DirectionalLightRenderData
@@ -127,15 +129,17 @@ public:
     static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
         -> void;
 
+    [[nodiscard]] static auto current_camera_position() -> glm::vec3;
     [[nodiscard]] static auto current_camera_view() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_projection() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_view_projection() -> const glm::mat4&;
     [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
 
 private:
-    glm::mat4 _current_camera_view;
-    glm::mat4 _current_camera_projection;
-    glm::mat4 _current_camera_view_projection;
+    glm::vec3 _current_camera_position{ 0.0f };
+    glm::mat4 _current_camera_view{ 1.0f };
+    glm::mat4 _current_camera_projection{ 1.0f };
+    glm::mat4 _current_camera_view_projection{ 1.0f };
 
     Vector<DirectionalLightRenderData> _directional_lights;
     Vector<PointLightRenderData> _point_lights;
@@ -162,7 +166,7 @@ private:
     // Right now we're drawing everything using instanced rendering, even if the number of objects to draw is only 1 as
     // there doesn't appear to be any drawback to doing so. Crucially, this means that every vertex array needs to be
     // bound to the renderer's instance buffer before issuing the draw call.
-    Vector<InstanceVertex> _instance_data;
+    Vector<InstanceVertex> _temporary_instance_data;
     gl::InstanceBuffer _instance_buffer =
         gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size, sizeof(InstanceVertex));
 
@@ -191,6 +195,10 @@ private:
     static auto upload_point_lights_data() -> void;
     static auto upload_spot_lights_data() -> void;
     static auto upload_ambient_lights_data() -> void;
+
+    // reset_renderer_state should be called after rendering was finished and before the next frame starts since we need
+    // to clean up objects which use temporary storage.
+    static auto reset_renderer_state() -> void;
 };
 
 } // namespace zth
