@@ -117,12 +117,12 @@ private:
 };
 
 // @todo: Replace / improve.
-class DebugToolsPanel
+class DebugPanel
 {
 public:
-    explicit DebugToolsPanel(StringView label = "Debug Tools");
-    ZTH_NO_COPY_NO_MOVE(DebugToolsPanel)
-    ~DebugToolsPanel() = default;
+    explicit DebugPanel(StringView label = "Debug");
+    ZTH_NO_COPY_NO_MOVE(DebugPanel)
+    ~DebugPanel() = default;
 
     auto display() -> void;
 

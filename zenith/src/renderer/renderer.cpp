@@ -99,6 +99,12 @@ auto Renderer::init() -> Result<void, String>
     return {};
 }
 
+auto Renderer::start_frame() -> void
+{
+    renderer->_draw_calls_last_frame = renderer->_draw_calls_this_frame;
+    renderer->_draw_calls_this_frame = 0;
+}
+
 auto Renderer::on_window_event(const Event& event) -> void
 {
     ZTH_ASSERT(event.category() == EventCategory::WindowEvent);
@@ -125,13 +131,13 @@ auto Renderer::shut_down() -> void
 
 auto Renderer::set_wireframe_mode(bool enabled) -> void
 {
-    _wireframe_mode_enabled = enabled;
-    glPolygonMode(GL_FRONT_AND_BACK, _wireframe_mode_enabled ? GL_LINE : GL_FILL);
+    renderer->_wireframe_mode_enabled = enabled;
+    glPolygonMode(GL_FRONT_AND_BACK, renderer->_wireframe_mode_enabled ? GL_LINE : GL_FILL);
 }
 
 auto Renderer::toggle_wireframe_mode() -> void
 {
-    set_wireframe_mode(!_wireframe_mode_enabled);
+    set_wireframe_mode(!renderer->_wireframe_mode_enabled);
 }
 
 auto Renderer::set_clear_color(glm::vec4 color) -> void
@@ -160,6 +166,7 @@ auto Renderer::begin_scene(const CameraComponent& camera, const TransformCompone
 auto Renderer::end_scene() -> void
 {
     render();
+    reset_renderer_state();
 }
 
 auto Renderer::submit_light(const LightComponent& light, const TransformComponent& light_transform) -> void
@@ -249,6 +256,16 @@ auto Renderer::current_camera_view_projection() -> const glm::mat4&
     return renderer->_current_camera_view_projection;
 }
 
+auto Renderer::wireframe_mode_enabled() -> bool
+{
+    return renderer->_wireframe_mode_enabled;
+}
+
+auto Renderer::draw_calls_last_frame() -> u32
+{
+    return renderer->_draw_calls_last_frame;
+}
+
 auto Renderer::render() -> void
 {
     clear();
@@ -259,8 +276,6 @@ auto Renderer::render() -> void
 
     for (const auto& batch : renderer->_batches)
         render_batch(batch);
-
-    reset_renderer_state();
 }
 
 auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material& material) -> void
@@ -270,6 +285,8 @@ auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material&
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
                    gl::to_gl_enum(vertex_array.index_data_type()), nullptr);
+
+    renderer->_draw_calls_this_frame++;
 }
 
 auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Material& material, u32 instances) -> void
@@ -279,6 +296,8 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
 
     glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
                             gl::to_gl_enum(vertex_array.index_data_type()), nullptr, static_cast<GLsizei>(instances));
+
+    renderer->_draw_calls_this_frame++;
 }
 
 auto Renderer::batch_draw_commands() -> void

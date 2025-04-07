@@ -104,6 +104,7 @@ public:
 
 public:
     [[nodiscard]] static auto init() -> Result<void, String>;
+    static auto start_frame() -> void;
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 
@@ -133,7 +134,8 @@ public:
     [[nodiscard]] static auto current_camera_view() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_projection() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_view_projection() -> const glm::mat4&;
-    [[nodiscard]] static auto wireframe_mode_enabled() { return _wireframe_mode_enabled; }
+    [[nodiscard]] static auto wireframe_mode_enabled() -> bool;
+    [[nodiscard]] static auto draw_calls_last_frame() -> u32;
 
 private:
     glm::vec3 _current_camera_position{ 0.0f };
@@ -173,7 +175,9 @@ private:
     Vector<DrawCommand> _draw_commands;
     Vector<RenderBatch> _batches;
 
-    static inline bool _wireframe_mode_enabled = false;
+    bool _wireframe_mode_enabled = false;
+    u32 _draw_calls_this_frame = 0;
+    u32 _draw_calls_last_frame = 0;
 
 private:
     explicit Renderer() = default;

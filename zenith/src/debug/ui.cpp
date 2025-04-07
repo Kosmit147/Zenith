@@ -7,6 +7,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
+#include "zenith/gl/context.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/light.hpp"
@@ -555,14 +556,17 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
     ImGui::End();
 }
 
-DebugToolsPanel::DebugToolsPanel(StringView label) : _label(label) {}
+DebugPanel::DebugPanel(StringView label) : _label(label) {}
 
-auto DebugToolsPanel::display() -> void
+auto DebugPanel::display() -> void
 {
-    ImGui::Begin(_label.data());
+    ImGui::Begin(_label.c_str());
 
-    auto fps = ImGui::GetIO().Framerate;
-    ImGui::Text("FPS: %0.0f", fps);
+    auto fps_text = format_to_temporary("FPS: {:.2f}", ImGui::GetIO().Framerate);
+    ImGui::TextUnformatted(fps_text.c_str());
+
+    auto draw_calls_text = format_to_temporary("Draw Calls: {}", Renderer::draw_calls_last_frame());
+    ImGui::TextUnformatted(draw_calls_text.c_str());
 
     bool frame_rate_limit_enabled;
 
@@ -594,6 +598,16 @@ auto DebugToolsPanel::display() -> void
     if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
         Renderer::set_wireframe_mode(wireframe_mode_enabled);
 
+    auto vendor_text = format_to_temporary("Vendor: {}", gl::Context::vendor_string());
+    auto renderer_text = format_to_temporary("Renderer: {}", gl::Context::renderer_string());
+    auto version_text = format_to_temporary("Version: {}", gl::Context::version_string());
+    auto glsl_version_text = format_to_temporary("GLSL Version: {}", gl::Context::glsl_version_string());
+
+    ImGui::TextUnformatted(vendor_text.c_str());
+    ImGui::TextUnformatted(renderer_text.c_str());
+    ImGui::TextUnformatted(version_text.c_str());
+    ImGui::TextUnformatted(glsl_version_text.c_str());
+
     ImGui::End();
 }
 
@@ -604,7 +618,7 @@ auto MaterialPanel::display() -> void
     const auto& materials = materials::materials();
     const auto& material_names = materials::material_names;
 
-    ImGui::Begin(_label.data());
+    ImGui::Begin(_label.c_str());
 
     if (ImGui::BeginCombo("Preset", material_names[_material_selected_idx]))
     {
@@ -725,9 +739,10 @@ ScenePicker::ScenePicker(StringView label) : _label(label) {}
 
 auto ScenePicker::display() -> void
 {
-    ImGui::Begin(_label.data());
+    ImGui::Begin(_label.c_str());
 
-    ImGui::Text("%s", _scene_names[_selected_scene_idx].c_str());
+    auto scene_name_text = format_to_temporary("{}", _scene_names[_selected_scene_idx]);
+    ImGui::TextUnformatted(scene_name_text.c_str());
 
     auto prev_scene_label = format_to_temporary("Prev");
     ImGui::TextUnformatted(prev_scene_label.c_str());
