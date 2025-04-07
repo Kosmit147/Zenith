@@ -17,6 +17,7 @@ namespace zth {
 template<typename T> struct is_asset : std::false_type {};
 template<typename T> constexpr auto is_asset_v = is_asset<T>::value;
 
+template<> struct is_asset<Mesh> : std::true_type {};
 template<> struct is_asset<Material> : std::true_type {};
 template<> struct is_asset<gl::Shader> : std::true_type {};
 template<> struct is_asset<gl::Texture2D> : std::true_type {};
@@ -53,6 +54,7 @@ public:
     template<Asset A> static auto remove(StringView identifier) -> bool;
 
 private:
+    static AssetMap<Mesh> _meshes;
     static AssetMap<Material> _materials;
     static AssetMap<gl::Shader> _shaders;
     static AssetMap<gl::Texture2D> _textures;
@@ -61,9 +63,16 @@ private:
     template<Asset A> [[nodiscard]] static auto get_asset_map() -> AssetMap<A>&;
 };
 
+template<> auto AssetManager::get_asset_map<Mesh>() -> AssetMap<Mesh>&;
 template<> auto AssetManager::get_asset_map<Material>() -> AssetMap<Material>&;
 template<> auto AssetManager::get_asset_map<gl::Shader>() -> AssetMap<gl::Shader>&;
 template<> auto AssetManager::get_asset_map<gl::Texture2D>() -> AssetMap<gl::Texture2D>&;
+
+extern template auto AssetManager::add<Mesh>(StringView, const Mesh&) -> Optional<Reference<Mesh>>;
+extern template auto AssetManager::add<Mesh>(StringView, Mesh&&) -> Optional<Reference<Mesh>>;
+extern template auto AssetManager::get<Mesh>(StringView) -> Optional<Reference<Mesh>>;
+extern template auto AssetManager::get_unchecked<Mesh>(StringView) -> Mesh&;
+extern template auto AssetManager::remove<Mesh>(StringView) -> bool;
 
 extern template auto AssetManager::add<Material>(StringView, const Material&) -> Optional<Reference<Material>>;
 extern template auto AssetManager::add<Material>(StringView, Material&&) -> Optional<Reference<Material>>;
