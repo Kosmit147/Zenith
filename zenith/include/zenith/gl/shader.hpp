@@ -123,7 +123,7 @@ auto Shader::set_unif(StringView name, const auto& val) const -> void
     if (auto location = get_unif_location(name))
         set_unif(location, val);
     else [[unlikely]]
-        ZTH_CORE_DEBUG("Uniform with name {} not present in shader {}.", name, _id);
+        ZTH_INTERNAL_DEBUG("Uniform with name {} not present in shader {}.", name, _id);
 }
 
 [[nodiscard]] auto to_gl_enum(ShaderType shader_type) -> GLenum;

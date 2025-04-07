@@ -57,7 +57,7 @@ void FlyCamera::on_event(EntityHandle actor, const Event& event)
 
 auto FlyCamera::on_update(EntityHandle actor) -> void
 {
-    auto& transform = actor.get<TransformComponent>();
+    auto& transform = actor.transform();
 
     {
         // Move around.

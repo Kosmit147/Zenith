@@ -112,7 +112,7 @@ template<typename T>
 
 // We don't have a Temporary pointing to a T[], like a unique_ptr can, because then we don't know how many Ts we have to
 // destruct. If we wanted to support that, we would have to store additional metadata containing information about the
-// number of constructed Ts.
+// number of constructed Ts. This metadata could potentially be stored in the deleter.
 // @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
 // because then we don't have to actually store the additional metadata.
 template<typename T>

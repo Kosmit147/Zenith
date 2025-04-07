@@ -21,17 +21,17 @@ StringHashMap<String> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing shader preprocessor...");
+    ZTH_INTERNAL_INFO("Initializing shader preprocessor...");
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
-    ZTH_CORE_INFO("Shader preprocessor initialized.");
+    ZTH_INTERNAL_INFO("Shader preprocessor initialized.");
     return {};
 }
 
 auto ShaderPreprocessor::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down shader preprocessor...");
+    ZTH_INTERNAL_INFO("Shutting down shader preprocessor...");
     _sources.clear();
-    ZTH_CORE_INFO("Shader preprocessor shut down.");
+    ZTH_INTERNAL_INFO("Shader preprocessor shut down.");
 }
 
 auto ShaderPreprocessor::preprocess(StringView source) -> Result<String, PreprocessShaderError>
@@ -44,7 +44,7 @@ auto ShaderPreprocessor::add_source(StringView name, StringView source) -> bool
     auto [_, success] = _sources.emplace(name, source);
 
     if (!success)
-        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
+        ZTH_INTERNAL_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
 
     return success;
 }
@@ -54,7 +54,7 @@ auto ShaderPreprocessor::add_source(StringView name, String&& source) -> bool
     auto [_, success] = _sources.emplace(name, std::move(source));
 
     if (!success)
-        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
+        ZTH_INTERNAL_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\".", name);
 
     return success;
 }
@@ -66,7 +66,7 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
     if (!filename)
     {
         // @robustness: string() throws.
-        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source from file \"{}\".", path.string());
+        ZTH_INTERNAL_ERROR("[Shader Preprocessor] Couldn't add shader source from file \"{}\".", path.string());
         return false;
     }
 
@@ -80,8 +80,8 @@ auto ShaderPreprocessor::add_source_from_file(StringView name, const std::filesy
     if (!data)
     {
         // @robustness: string() throws.
-        ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\" from file \"{}\".", name,
-                       path.string());
+        ZTH_INTERNAL_ERROR("[Shader Preprocessor] Couldn't add shader source \"{}\" from file \"{}\".", name,
+                           path.string());
         return false;
     }
 
@@ -96,7 +96,7 @@ auto ShaderPreprocessor::get_source(StringView name) -> Optional<Reference<const
         return source;
     }
 
-    ZTH_CORE_ERROR("[Shader Preprocessor] Couldn't get shader source \"{}\".", name);
+    ZTH_INTERNAL_ERROR("[Shader Preprocessor] Couldn't get shader source \"{}\".", name);
     return nil;
 }
 

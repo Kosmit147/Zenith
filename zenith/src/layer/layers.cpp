@@ -48,7 +48,7 @@ auto SystemLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_logger{ [] { Logger::shut_down(); } };
 
-    ZTH_CORE_INFO("Initializing system layer...");
+    ZTH_INTERNAL_INFO("Initializing system layer...");
 
     result = TemporaryStorage::init();
     if (!result)
@@ -76,13 +76,13 @@ auto SystemLayer::on_attach() -> Result<void, String>
     shut_down_time.dismiss();
     shut_down_input.dismiss();
 
-    ZTH_CORE_INFO("System layer initialized...");
+    ZTH_INTERNAL_INFO("System layer initialized...");
     return {};
 }
 
 auto SystemLayer::on_detach() -> void
 {
-    ZTH_CORE_INFO("Shutting down system layer...");
+    ZTH_INTERNAL_INFO("Shutting down system layer...");
 
     // Shut down order should be the reverse of initialization order.
     Input::shut_down();
@@ -134,7 +134,7 @@ auto RuntimeLayer::on_render() -> void
 
 auto RuntimeLayer::on_attach() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing runtime layer...");
+    ZTH_INTERNAL_INFO("Initializing runtime layer...");
 
     auto result = Random::init();
     if (!result)
@@ -167,13 +167,13 @@ auto RuntimeLayer::on_attach() -> Result<void, String>
     shut_down_renderer.dismiss();
     shut_down_scene_manager.dismiss();
 
-    ZTH_CORE_INFO("Runtime layer initialized...");
+    ZTH_INTERNAL_INFO("Runtime layer initialized...");
     return {};
 }
 
 auto RuntimeLayer::on_detach() -> void
 {
-    ZTH_CORE_INFO("Shutting down runtime layer...");
+    ZTH_INTERNAL_INFO("Shutting down runtime layer...");
 
     // Shut down order should be the reverse of initialization order.
     SceneManager::shut_down();
@@ -182,7 +182,7 @@ auto RuntimeLayer::on_detach() -> void
     ShaderPreprocessor::shut_down();
     Random::shut_down();
 
-    ZTH_CORE_INFO("Runtime layer shut down.");
+    ZTH_INTERNAL_INFO("Runtime layer shut down.");
 }
 
 // --- Debug Layer
@@ -219,7 +219,7 @@ auto DebugLayer::on_update() -> void
 
 auto DebugLayer::on_attach() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing runtime layer...");
+    ZTH_INTERNAL_INFO("Initializing runtime layer...");
 
     auto result = ImGuiRenderer::init();
     if (!result)
@@ -228,15 +228,15 @@ auto DebugLayer::on_attach() -> Result<void, String>
 
     shut_down_imgui_renderer.dismiss();
 
-    ZTH_CORE_INFO("Runtime layer initialized...");
+    ZTH_INTERNAL_INFO("Runtime layer initialized...");
     return {};
 }
 
 auto DebugLayer::on_detach() -> void
 {
-    ZTH_CORE_INFO("Shutting down debug layer...");
+    ZTH_INTERNAL_INFO("Shutting down debug layer...");
     ImGuiRenderer::shut_down();
-    ZTH_CORE_INFO("Debug layer shut down.");
+    ZTH_INTERNAL_INFO("Debug layer shut down.");
 }
 
 auto DebugLayer::on_key_pressed_event(const KeyPressedEvent& event) -> void

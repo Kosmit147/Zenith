@@ -2027,16 +2027,16 @@ MeshList::MeshList(const gl::InstanceBuffer& instance_buffer)
 
 auto load_meshes(const gl::InstanceBuffer& instance_buffer) -> void
 {
-    ZTH_CORE_INFO("Loading meshes...");
+    ZTH_INTERNAL_INFO("Loading meshes...");
     mesh_list = std::make_unique<MeshList>(instance_buffer);
-    ZTH_CORE_INFO("Meshes loaded.");
+    ZTH_INTERNAL_INFO("Meshes loaded.");
 }
 
 auto unload_meshes() -> void
 {
-    ZTH_CORE_INFO("Unloading meshes...");
+    ZTH_INTERNAL_INFO("Unloading meshes...");
     mesh_list.reset();
-    ZTH_CORE_INFO("Meshes unloaded.");
+    ZTH_INTERNAL_INFO("Meshes unloaded.");
 }
 
 #define ZTH_MESH_GETTER(mesh_name)                                                                                     \

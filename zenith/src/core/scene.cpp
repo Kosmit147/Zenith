@@ -56,7 +56,7 @@ auto Scene::render() -> void
 
     if (camera_entity_id == null_entity)
     {
-        ZTH_CORE_WARN("[Scene] No entity with a CameraComponent found.");
+        ZTH_INTERNAL_WARN("[Scene] No entity with a CameraComponent found.");
         Renderer::clear();
         return;
     }
@@ -104,7 +104,7 @@ auto Scene::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle
 
 auto SceneManager::init() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Scene manager initialized.");
+    ZTH_INTERNAL_INFO("Scene manager initialized.");
     return {};
 }
 
@@ -145,7 +145,7 @@ auto SceneManager::update() -> void
 {
     if (!_scene)
     {
-        ZTH_CORE_WARN("[Scene Manager] No scene loaded.");
+        ZTH_INTERNAL_WARN("[Scene Manager] No scene loaded.");
         return;
     }
 
@@ -170,7 +170,7 @@ auto SceneManager::on_render() -> void
 
 auto SceneManager::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down scene manager...");
+    ZTH_INTERNAL_INFO("Shutting down scene manager...");
 
     _queued_scene.reset();
 
@@ -179,7 +179,7 @@ auto SceneManager::shut_down() -> void
 
     _scene.reset();
 
-    ZTH_CORE_INFO("Scene manager shut down.");
+    ZTH_INTERNAL_INFO("Scene manager shut down.");
 }
 
 auto SceneManager::queue_scene(std::unique_ptr<Scene>&& scene) -> void

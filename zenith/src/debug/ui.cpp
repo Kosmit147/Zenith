@@ -53,7 +53,7 @@ auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_
     return value_changed;
 }
 
-template<typename Component> auto display_component(EntityHandle entity) -> void
+template<typename Component> auto display_component_for_entity_in_inspector(EntityHandle entity) -> void
 {
     ZTH_ASSERT(entity.any_of<Component>());
 
@@ -466,34 +466,27 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
     {
-        // TagComponent and TransformComponent are mandatory.
-        static_assert(IntegralComponent<TagComponent>);
-        static_assert(IntegralComponent<TransformComponent>);
-
-        auto& tag = entity.get<TagComponent>();
-        edit_component(tag);
-
-        auto& transform = entity.get<TransformComponent>();
-        display_component<TransformComponent>(entity);
+        edit_component(entity.tag());
+        display_component_for_entity_in_inspector<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
-            gizmo.display(transform);
+            gizmo.display(entity.transform());
     }
 
     if (entity.any_of<CameraComponent>())
-        display_component<CameraComponent>(entity);
+        display_component_for_entity_in_inspector<CameraComponent>(entity);
 
     if (entity.any_of<LightComponent>())
-        display_component<LightComponent>(entity);
+        display_component_for_entity_in_inspector<LightComponent>(entity);
 
     if (entity.any_of<MeshComponent>())
-        display_component<MeshComponent>(entity);
+        display_component_for_entity_in_inspector<MeshComponent>(entity);
 
     if (entity.any_of<MaterialComponent>())
-        display_component<MaterialComponent>(entity);
+        display_component_for_entity_in_inspector<MaterialComponent>(entity);
 
     if (entity.any_of<ScriptComponent>())
-        display_component<ScriptComponent>(entity);
+        display_component_for_entity_in_inspector<ScriptComponent>(entity);
 
     ImGui::SeparatorText("##");
 

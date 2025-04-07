@@ -36,13 +36,13 @@ auto Logger::init(const LoggerSpec& logger_spec) -> Result<void, String>
         return Error{ format("Failed to initialize logger: {}", e.what()) };
     }
 
-    ZTH_CORE_INFO("Logger initialized.");
+    ZTH_INTERNAL_INFO("Logger initialized.");
     return {};
 }
 
 auto Logger::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down logger...");
+    ZTH_INTERNAL_INFO("Shutting down logger...");
 
     _client_logger.reset();
     _core_logger.reset();
