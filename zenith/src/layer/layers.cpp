@@ -115,6 +115,7 @@ auto RuntimeLayer::render() -> void
 
 auto RuntimeLayer::on_frame_start() -> void
 {
+    Renderer::start_frame();
     SceneManager::start_frame();
 }
 
@@ -222,7 +223,7 @@ auto DebugLayer::on_update() -> void
         if (scene)
             _scene_hierarchy_panel.display(scene->get().registry());
 
-        _debug_tools_panel.display();
+        _debug_panel.display();
     }
 }
 

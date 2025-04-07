@@ -72,7 +72,7 @@ public:
 
 private:
     debug::SceneHierarchyPanel _scene_hierarchy_panel;
-    debug::DebugToolsPanel _debug_tools_panel;
+    debug::DebugPanel _debug_panel;
 
     bool _debug_mode_on = false;
 
