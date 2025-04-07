@@ -41,14 +41,14 @@ auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]
     switch (severity)
     {
     case GL_DEBUG_SEVERITY_NOTIFICATION:
-        ZTH_CORE_INFO("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_INFO("[OpenGL] {}: {}", type_str, message);
         break;
     case GL_DEBUG_SEVERITY_LOW:
     case GL_DEBUG_SEVERITY_MEDIUM:
-        ZTH_CORE_WARN("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_WARN("[OpenGL] {}: {}", type_str, message);
         break;
     case GL_DEBUG_SEVERITY_HIGH:
-        ZTH_CORE_ERROR("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_ERROR("[OpenGL] {}: {}", type_str, message);
         ZTH_DEBUG_BREAK;
         break;
     default:
@@ -80,12 +80,12 @@ auto log_context_info() -> void
     auto version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
     auto glsl_version = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    ZTH_CORE_INFO("[OpenGL] Context info:\n"
-                  "\tVendor: {}\n"
-                  "\tRenderer: {}\n"
-                  "\tVersion: {}\n"
-                  "\tGLSL Version: {}",
-                  vendor, renderer, version, glsl_version);
+    ZTH_INTERNAL_INFO("[OpenGL] Context info:\n"
+                      "\tVendor: {}\n"
+                      "\tRenderer: {}\n"
+                      "\tVersion: {}\n"
+                      "\tGLSL Version: {}",
+                      vendor, renderer, version, glsl_version);
 }
 
 } // namespace gl

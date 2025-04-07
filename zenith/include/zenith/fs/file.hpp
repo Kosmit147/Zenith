@@ -21,7 +21,7 @@ auto load_to(const std::filesystem::path& path) -> Optional<Container>
 
     if (!std::filesystem::exists(path))
     {
-        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_INTERNAL_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return nil;
     }
 
@@ -29,7 +29,7 @@ auto load_to(const std::filesystem::path& path) -> Optional<Container>
 
     if (!file.is_open())
     {
-        ZTH_CORE_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        ZTH_INTERNAL_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
         return nil;
     }
 

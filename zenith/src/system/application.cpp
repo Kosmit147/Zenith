@@ -28,13 +28,13 @@ Application::Application(const ApplicationSpec& spec) : fixed_update_time(spec.f
     if (!result)
         throw Exception{ result.error() };
 
-    ZTH_CORE_INFO("Application initialized.");
+    ZTH_INTERNAL_INFO("Application initialized.");
     cleanup.dismiss();
 }
 
 Application::~Application()
 {
-    ZTH_CORE_INFO("Shutting down application...");
+    ZTH_INTERNAL_INFO("Shutting down application...");
 
     pop_all_overlays();
     pop_all_layers();

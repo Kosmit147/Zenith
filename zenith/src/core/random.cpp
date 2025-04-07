@@ -9,15 +9,15 @@ std::mt19937_64 Random::_generator;
 
 auto Random::init() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing random number generator...");
+    ZTH_INTERNAL_INFO("Initializing random number generator...");
     _generator.seed(_random_device());
-    ZTH_CORE_INFO("Random number generator initialized.");
+    ZTH_INTERNAL_INFO("Random number generator initialized.");
     return {};
 }
 
 auto Random::shut_down() -> void
 {
-    ZTH_CORE_INFO("Random number generator shut down.");
+    ZTH_INTERNAL_INFO("Random number generator shut down.");
 }
 
 template auto Random::get_int<u16>(u16, u16) -> u16;

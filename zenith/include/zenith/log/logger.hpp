@@ -35,15 +35,15 @@ private:
 
 } // namespace zth
 
-// macros for Zenith
-#define ZTH_CORE_TRACE(...) ::zth::Logger::core_logger().trace(__VA_ARGS__)
-#define ZTH_CORE_DEBUG(...) ::zth::Logger::core_logger().debug(__VA_ARGS__)
-#define ZTH_CORE_INFO(...) ::zth::Logger::core_logger().info(__VA_ARGS__)
-#define ZTH_CORE_WARN(...) ::zth::Logger::core_logger().warn(__VA_ARGS__)
-#define ZTH_CORE_ERROR(...) ::zth::Logger::core_logger().error(__VA_ARGS__)
-#define ZTH_CORE_CRITICAL(...) ::zth::Logger::core_logger().critical(__VA_ARGS__)
+// Macros for Zenith.
+#define ZTH_INTERNAL_TRACE(...) ::zth::Logger::core_logger().trace(__VA_ARGS__)
+#define ZTH_INTERNAL_DEBUG(...) ::zth::Logger::core_logger().debug(__VA_ARGS__)
+#define ZTH_INTERNAL_INFO(...) ::zth::Logger::core_logger().info(__VA_ARGS__)
+#define ZTH_INTERNAL_WARN(...) ::zth::Logger::core_logger().warn(__VA_ARGS__)
+#define ZTH_INTERNAL_ERROR(...) ::zth::Logger::core_logger().error(__VA_ARGS__)
+#define ZTH_INTERNAL_CRITICAL(...) ::zth::Logger::core_logger().critical(__VA_ARGS__)
 
-// macros for clients
+// Macros for clients.
 #define ZTH_TRACE(...) ::zth::Logger::client_logger().trace(__VA_ARGS__)
 #define ZTH_DEBUG(...) ::zth::Logger::client_logger().debug(__VA_ARGS__)
 #define ZTH_INFO(...) ::zth::Logger::client_logger().info(__VA_ARGS__)
@@ -53,10 +53,16 @@ private:
 
 #if defined(ZTH_DIST_BUILD)
 
-#undef ZTH_CORE_TRACE
-#undef ZTH_CORE_DEBUG
+#undef ZTH_INTERNAL_TRACE
+#undef ZTH_INTERNAL_DEBUG
 
-#define ZTH_CORE_TRACE(...) ZTH_NOP
-#define ZTH_CORE_DEBUG(...) ZTH_NOP
+#define ZTH_INTERNAL_TRACE(...) ZTH_NOP
+#define ZTH_INTERNAL_DEBUG(...) ZTH_NOP
+
+#undef ZTH_TRACE
+#undef ZTH_DEBUG
+
+#define ZTH_TRACE(...) ZTH_NOP
+#define ZTH_DEBUG(...) ZTH_NOP
 
 #endif

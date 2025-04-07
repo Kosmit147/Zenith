@@ -22,7 +22,7 @@ Shader::Shader(const ShaderSources& sources)
 
     if (!program)
     {
-        ZTH_CORE_WARN("[Shader] Shader compilation failed. Switching to fallback shader.");
+        ZTH_INTERNAL_WARN("[Shader] Shader compilation failed. Switching to fallback shader.");
 
         program = create_fallback_program();
 
@@ -40,7 +40,7 @@ Shader::Shader(const ShaderSourcePaths& paths)
 
     if (!program)
     {
-        ZTH_CORE_WARN("[Shader] Shader compilation failed. Switching to fallback shader.");
+        ZTH_INTERNAL_WARN("[Shader] Shader compilation failed. Switching to fallback shader.");
 
         program = create_fallback_program();
 
@@ -209,7 +209,7 @@ auto Shader::create_shader(const StringView source, ShaderType type) -> Optional
 
     if (!preprocessed_source)
     {
-        ZTH_CORE_ERROR("[Shader] Failed to preprocess shader source: {}", preprocessed_source.error());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to preprocess shader source: {}", preprocessed_source.error());
         ZTH_DEBUG_BREAK;
         return nil;
     }
@@ -245,7 +245,7 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
         // glGetShaderInfoLog returns a null-terminated string.
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
 
-        ZTH_CORE_ERROR("[Shader] Failed to compile {} shader: {}", type, info_log.data());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to compile {} shader: {}", type, info_log.data());
         ZTH_DEBUG_BREAK;
         return false;
     }
@@ -285,13 +285,14 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (!vertex_source)
     {
-        ZTH_CORE_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_path.string());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_path.string());
         return nil;
     }
 
     if (!fragment_source)
     {
-        ZTH_CORE_ERROR("[Shader] Failed to load fragment shader source from file {}.", paths.fragment_path.string());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to load fragment shader source from file {}.",
+                           paths.fragment_path.string());
         return nil;
     }
 
@@ -312,8 +313,8 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!tess_control_source)
         {
-            ZTH_CORE_ERROR("[Shader] Failed to load tesselation control shader source from file {}.",
-                           paths.tess_control_path->string());
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation control shader source from file {}.",
+                               paths.tess_control_path->string());
             return nil;
         }
 
@@ -326,8 +327,8 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!tess_evaluation_source)
         {
-            ZTH_CORE_ERROR("[Shader] Failed to load tesselation evaluation shader source from file {}.",
-                           paths.tess_evaluation_path->string());
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation evaluation shader source from file {}.",
+                               paths.tess_evaluation_path->string());
             return nil;
         }
 
@@ -340,8 +341,8 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!geometry_source)
         {
-            ZTH_CORE_ERROR("[Shader] Failed to load geometry shader source from file {}.",
-                           paths.geometry_path->string());
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load geometry shader source from file {}.",
+                               paths.geometry_path->string());
             return nil;
         }
 
@@ -392,7 +393,7 @@ auto Shader::link_program(ProgramId id) -> bool
         // glGetProgramInfoLog returns a null-terminated string.
         glGetProgramInfoLog(id, max_length, &max_length, info_log.data());
 
-        ZTH_CORE_ERROR("[Shader] Failed to link shader: {}", info_log.data());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to link shader: {}", info_log.data());
         ZTH_DEBUG_BREAK;
         return false;
     }
@@ -417,7 +418,7 @@ auto Shader::create_fallback_program() -> Optional<ProgramId>
 
     if (!program)
     {
-        ZTH_CORE_CRITICAL("[Shader] Failed to compile fallback shader.");
+        ZTH_INTERNAL_CRITICAL("[Shader] Failed to compile fallback shader.");
         return nil;
     }
 

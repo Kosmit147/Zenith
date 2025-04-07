@@ -43,7 +43,7 @@ namespace {
 
 auto Window::init(const WindowSpec& spec) -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing window...");
+    ZTH_INTERNAL_INFO("Initializing window...");
 
     if (spec.gl_version != gl::Version{ 4, 6 })
     {
@@ -109,18 +109,18 @@ auto Window::init(const WindowSpec& spec) -> Result<void, String>
     destroy_window.dismiss();
     terminate_glfw.dismiss();
 
-    ZTH_CORE_INFO("Window initialized.");
+    ZTH_INTERNAL_INFO("Window initialized.");
     return {};
 }
 
 auto Window::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down window...");
+    ZTH_INTERNAL_INFO("Shutting down window...");
 
     glfwDestroyWindow(_window);
     glfwTerminate();
 
-    ZTH_CORE_INFO("Window shut down.");
+    ZTH_INTERNAL_INFO("Window shut down.");
 }
 
 auto Window::should_close() -> bool

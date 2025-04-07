@@ -12,7 +12,7 @@ namespace zth {
 
 auto ImGuiRenderer::init() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing ImGui renderer...");
+    ZTH_INTERNAL_INFO("Initializing ImGui renderer...");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -25,7 +25,7 @@ auto ImGuiRenderer::init() -> Result<void, String>
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    ZTH_CORE_INFO("ImGui renderer initialized.");
+    ZTH_INTERNAL_INFO("ImGui renderer initialized.");
     return {};
 }
 
@@ -57,13 +57,13 @@ auto ImGuiRenderer::render() -> void
 
 auto ImGuiRenderer::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down ImGui renderer...");
+    ZTH_INTERNAL_INFO("Shutting down ImGui renderer...");
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    ZTH_CORE_INFO("ImGui renderer shut down.");
+    ZTH_INTERNAL_INFO("ImGui renderer shut down.");
 }
 
 } // namespace zth

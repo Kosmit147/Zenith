@@ -34,7 +34,7 @@ template<Asset A> auto AssetManager::emplace(StringView identifier, auto&&... ar
 
     if (!success)
     {
-        ZTH_CORE_ERROR("[Asset Manager] Couldn't emplace {} \"{}\".", get_asset_type_string<A>(), identifier);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't emplace {} \"{}\".", get_asset_type_string<A>(), identifier);
         return nil;
     }
 
@@ -53,7 +53,7 @@ auto AssetManager::add(StringView identifier, const A& asset) -> Optional<Refere
 
     if (!success)
     {
-        ZTH_CORE_ERROR("[Asset Manager] Couldn't add {} \"{}\".", get_asset_type_string<A>(), identifier);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} \"{}\".", get_asset_type_string<A>(), identifier);
         return nil;
     }
 
@@ -72,7 +72,7 @@ auto AssetManager::add(StringView identifier, A&& asset) -> Optional<Reference<A
 
     if (!success)
     {
-        ZTH_CORE_ERROR("[Asset Manager] Couldn't add {} \"{}\".", get_asset_type_string<A>(), identifier);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} \"{}\".", get_asset_type_string<A>(), identifier);
         return nil;
     }
 
@@ -90,7 +90,7 @@ template<Asset A> auto AssetManager::get(StringView identifier) -> Optional<Refe
         return asset_ref;
     }
 
-    ZTH_CORE_ERROR("[Asset Manager] Couldn't get {} \"{}\".", get_asset_type_string<A>(), identifier);
+    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} \"{}\".", get_asset_type_string<A>(), identifier);
     return nil;
 }
 

@@ -76,7 +76,7 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
 
 auto Renderer::init() -> Result<void, String>
 {
-    ZTH_CORE_INFO("Initializing renderer...");
+    ZTH_INTERNAL_INFO("Initializing renderer...");
 
 #if !defined(ZTH_DIST_BUILD)
     gl::set_debug_context();
@@ -102,7 +102,7 @@ auto Renderer::init() -> Result<void, String>
 
     materials::load_materials();
 
-    ZTH_CORE_INFO("Renderer initialized.");
+    ZTH_INTERNAL_INFO("Renderer initialized.");
     return {};
 }
 
@@ -119,7 +119,7 @@ auto Renderer::on_window_event(const Event& event) -> void
 
 auto Renderer::shut_down() -> void
 {
-    ZTH_CORE_INFO("Shutting down renderer...");
+    ZTH_INTERNAL_INFO("Shutting down renderer...");
 
     materials::unload_materials();
     meshes::unload_meshes();
@@ -127,7 +127,7 @@ auto Renderer::shut_down() -> void
 
     renderer.reset();
 
-    ZTH_CORE_INFO("Renderer shut down.");
+    ZTH_INTERNAL_INFO("Renderer shut down.");
 }
 
 auto Renderer::set_wireframe_mode(bool enabled) -> void
