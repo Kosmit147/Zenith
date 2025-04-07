@@ -19,10 +19,10 @@ namespace zth {
 
 // --- System Layer
 // 1. Logger
-// 2. Window
-// 3. Time
-// 4. Input
-// 5. TemporaryStorage
+// 2. TemporaryStorage
+// 3. Window
+// 4. Time
+// 5. Input
 
 SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
     : _logger_spec(logger_spec), _window_spec(window_spec)
@@ -30,9 +30,9 @@ SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window
 
 auto SystemLayer::on_frame_start() -> void
 {
+    TemporaryStorage::start_frame();
     Time::start_frame();
     Input::start_frame();
-    TemporaryStorage::start_frame();
 }
 
 auto SystemLayer::on_event(const Event& event) -> void
@@ -50,6 +50,11 @@ auto SystemLayer::on_attach() -> Result<void, String>
 
     ZTH_CORE_INFO("Initializing system layer...");
 
+    result = TemporaryStorage::init();
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_temporary_storage{ [] { TemporaryStorage::shut_down(); } };
+
     result = Window::init(_window_spec);
     if (!result)
         return Error{ result.error() };
@@ -65,16 +70,11 @@ auto SystemLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_input{ [] { Input::shut_down(); } };
 
-    result = TemporaryStorage::init();
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_temporary_storage{ [] { TemporaryStorage::shut_down(); } };
-
     shut_down_logger.dismiss();
+    shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
     shut_down_time.dismiss();
     shut_down_input.dismiss();
-    shut_down_temporary_storage.dismiss();
 
     ZTH_CORE_INFO("System layer initialized...");
     return {};
@@ -85,10 +85,10 @@ auto SystemLayer::on_detach() -> void
     ZTH_CORE_INFO("Shutting down system layer...");
 
     // Shut down order should be the reverse of initialization order.
-    TemporaryStorage::shut_down();
     Input::shut_down();
     Time::shut_down();
     Window::shut_down();
+    TemporaryStorage::shut_down();
     Logger::shut_down();
 }
 

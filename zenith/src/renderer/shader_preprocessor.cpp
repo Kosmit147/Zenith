@@ -75,7 +75,7 @@ auto ShaderPreprocessor::add_source_from_file(const std::filesystem::path& path)
 
 auto ShaderPreprocessor::add_source_from_file(StringView name, const std::filesystem::path& path) -> bool
 {
-    auto data = fs::load_to_string(path);
+    auto data = fs::load_to<String>(path);
 
     if (!data)
     {
@@ -85,7 +85,7 @@ auto ShaderPreprocessor::add_source_from_file(StringView name, const std::filesy
         return false;
     }
 
-    return add_source(name, *data);
+    return add_source(name, std::move(*data));
 }
 
 auto ShaderPreprocessor::get_source(StringView name) -> Optional<Reference<const String>>
