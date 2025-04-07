@@ -6,6 +6,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"
 #include "zenith/fs/file.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/shader_preprocessor.hpp"
 #include "zenith/util/defer.hpp"
 
@@ -239,7 +240,7 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
         GLint max_length = 0;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        Vector<GLchar> info_log(max_length);
+        TemporaryVector<GLchar> info_log(max_length);
 
         // glGetShaderInfoLog returns a null-terminated string.
         glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
@@ -277,8 +278,8 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> Option
 
 auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Optional<ProgramId>
 {
-    auto vertex_source = fs::load_to_string(paths.vertex_path);
-    auto fragment_source = fs::load_to_string(paths.fragment_path);
+    auto vertex_source = fs::load_to<TemporaryString>(paths.vertex_path);
+    auto fragment_source = fs::load_to<TemporaryString>(paths.fragment_path);
 
     // @robustness: .string() throws.
 
@@ -301,13 +302,13 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     // These variables cannot be moved to inner scope as we need them to live until the call to
     // create_shader_program_from_sources.
-    Optional<String> tess_control_source;
-    Optional<String> tess_evaluation_source;
-    Optional<String> geometry_source;
+    Optional<TemporaryString> tess_control_source;
+    Optional<TemporaryString> tess_evaluation_source;
+    Optional<TemporaryString> geometry_source;
 
     if (paths.tess_control_path)
     {
-        tess_control_source = fs::load_to_string(*paths.tess_control_path);
+        tess_control_source = fs::load_to<TemporaryString>(*paths.tess_control_path);
 
         if (!tess_control_source)
         {
@@ -321,7 +322,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (paths.tess_evaluation_path)
     {
-        tess_evaluation_source = fs::load_to_string(*paths.tess_evaluation_path);
+        tess_evaluation_source = fs::load_to<TemporaryString>(*paths.tess_evaluation_path);
 
         if (!tess_evaluation_source)
         {
@@ -335,7 +336,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (paths.geometry_path)
     {
-        geometry_source = fs::load_to_string(*paths.geometry_path);
+        geometry_source = fs::load_to<TemporaryString>(*paths.geometry_path);
 
         if (!geometry_source)
         {
@@ -386,7 +387,7 @@ auto Shader::link_program(ProgramId id) -> bool
         GLint max_length = 0;
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &max_length);
 
-        Vector<GLchar> info_log(max_length);
+        TemporaryVector<GLchar> info_log(max_length);
 
         // glGetProgramInfoLog returns a null-terminated string.
         glGetProgramInfoLog(id, max_length, &max_length, info_log.data());

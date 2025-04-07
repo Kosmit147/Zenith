@@ -5,6 +5,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/fs/file.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth::gl {
@@ -28,7 +29,7 @@ Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParam
 
 Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& params)
 {
-    auto maybe_data = fs::load_raw(path);
+    auto maybe_data = fs::load_to<TemporaryVector<u8>>(path);
 
     if (!maybe_data)
     {
