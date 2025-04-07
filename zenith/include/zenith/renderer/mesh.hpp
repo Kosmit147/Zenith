@@ -6,7 +6,6 @@
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_array.hpp"
-#include "zenith/util/macros.hpp"
 
 namespace zth {
 
@@ -36,7 +35,8 @@ public:
     explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
                   gl::InstanceBuffer&& instance_buffer) = delete;
 
-    ZTH_NO_COPY(Mesh)
+    Mesh(const Mesh& other);
+    auto operator=(const Mesh& other) -> Mesh&;
 
     Mesh(Mesh&& other) noexcept;
     auto operator=(Mesh&& other) noexcept -> Mesh&;

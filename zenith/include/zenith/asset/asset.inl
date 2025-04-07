@@ -12,6 +12,11 @@ template<Asset A> constexpr auto get_asset_type_string() -> const char*
     static_assert(false, "not implemented");
 }
 
+template<> constexpr auto get_asset_type_string<Mesh>() -> const char*
+{
+    return "mesh";
+}
+
 template<> constexpr auto get_asset_type_string<Material>() -> const char*
 {
     return "material";

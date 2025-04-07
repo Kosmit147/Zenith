@@ -21,6 +21,33 @@ Mesh::Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_s
       _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
 {}
 
+Mesh::Mesh(const Mesh& other)
+    : _vertex_buffer(other._vertex_buffer), _index_buffer(other._index_buffer),
+      _vertex_array(other._vertex_array.layout(), _vertex_buffer, _index_buffer)
+{
+    auto* instance_buffer = other._vertex_array.instance_buffer();
+
+    if (instance_buffer)
+        _vertex_array.bind_instance_buffer(*instance_buffer);
+}
+
+auto Mesh::operator=(const Mesh& other) -> Mesh&
+{
+    if (this == &other)
+        return *this;
+
+    _vertex_buffer = other._vertex_buffer;
+    _index_buffer = other._index_buffer;
+    _vertex_array = gl::VertexArray{ other._vertex_array.layout(), _vertex_buffer, _index_buffer };
+
+    auto* instance_buffer = other._vertex_array.instance_buffer();
+
+    if (instance_buffer)
+        _vertex_array.bind_instance_buffer(*instance_buffer);
+
+    return *this;
+}
+
 Mesh::Mesh(Mesh&& other) noexcept
     : _vertex_buffer(std::move(other._vertex_buffer)), _index_buffer(std::move(other._index_buffer)),
       _vertex_array(std::move(other._vertex_array))
