@@ -2,11 +2,8 @@
 
 #include <glad/glad.h>
 
-#include <ranges>
-
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
-#include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_layout.hpp"
 
 namespace zth::gl {
@@ -15,14 +12,14 @@ struct VertexArrayLayout
 {
     VertexLayout vertex_buffer_layout{};
     VertexLayout instance_buffer_layout{};
-
-    template<std::ranges::contiguous_range VertexData>
-    [[nodiscard]] constexpr static auto derive_from_vertex_data() -> VertexArrayLayout;
 };
 
 // We're using separate attribute format from OpenGL 4.3 and newer, which means that vertex layouts are bound to vertex
 // arrays instead of vertex buffers. Therefore, you can use the same vertex array with different vertex buffers without
 // having to specify the layout again as long as the layouts of the vertex buffers are the same.
+//
+// The instance buffer's layout starts at index one past the last index of the vertex buffer's layout.
+// rebind_layout() should be called after binding a vertex buffer or an instance buffer.
 class VertexArray
 {
 public:
@@ -33,15 +30,13 @@ public:
 
 public:
     explicit VertexArray();
-    explicit VertexArray(const VertexArrayLayout& layout);
 
-    explicit VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
-                         const IndexBuffer& index_buffer);
-    explicit VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
-                         const IndexBuffer& index_buffer, const InstanceBuffer& instance_buffer);
+    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer);
+    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
+                         const InstanceBuffer& instance_buffer);
 
-    explicit VertexArray(const VertexArrayLayout&, VertexBuffer&&, IndexBuffer&&) = delete;
-    explicit VertexArray(const VertexArrayLayout&, VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&) = delete;
+    explicit VertexArray(VertexBuffer&&, IndexBuffer&&) = delete;
+    explicit VertexArray(VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&) = delete;
 
     VertexArray(const VertexArray& other);
     auto operator=(const VertexArray& other) -> VertexArray&;
@@ -62,7 +57,7 @@ public:
     auto bind_index_buffer(IndexBuffer&&) = delete;
     auto bind_instance_buffer(InstanceBuffer&&) = delete;
 
-    auto bind_layout(const VertexArrayLayout& layout) -> void;
+    auto rebind_layout() -> void;
 
     auto unbind_vertex_buffer() -> void;
     auto unbind_index_buffer() -> void;
@@ -73,11 +68,12 @@ public:
     [[nodiscard]] auto count() const -> u32;
     [[nodiscard]] auto index_data_type() const -> DataType;
 
+    // @todo: These should return optionals.
     [[nodiscard]] auto vertex_buffer() const { return _vertex_buffer; }
     [[nodiscard]] auto index_buffer() const { return _index_buffer; }
     [[nodiscard]] auto instance_buffer() const { return _instance_buffer; }
 
-    [[nodiscard]] auto layout() const -> auto& { return _layout; }
+    [[nodiscard]] auto layout() const -> VertexArrayLayout;
 
 private:
     VertexArrayId _id = GL_NONE;
@@ -86,8 +82,6 @@ private:
     const IndexBuffer* _index_buffer = nullptr;
     const InstanceBuffer* _instance_buffer = nullptr;
 
-    VertexArrayLayout _layout{};
-
 private:
     auto create() noexcept -> void;
     auto destroy() const noexcept -> void;
@@ -95,13 +89,5 @@ private:
     auto bind_vertex_buffer_layout() const -> void;
     auto bind_instance_buffer_layout() const -> void;
 };
-
-template<std::ranges::contiguous_range VertexData>
-[[nodiscard]] constexpr auto VertexArrayLayout::derive_from_vertex_data() -> VertexArrayLayout
-{
-    using VertexType = std::ranges::range_value_t<VertexData>;
-    return VertexArrayLayout{ .vertex_buffer_layout = VertexLayout::derive_from_vertex<VertexType>(),
-                              .instance_buffer_layout = {} };
-}
 
 } // namespace zth::gl

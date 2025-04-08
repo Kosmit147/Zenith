@@ -1,7 +1,8 @@
 #include "zenith/gl/vertex_array.hpp"
 
-#include "zenith/core/typedefs.hpp"
+#include "zenith/core/assert.hpp"
 #include "zenith/gl/buffer.hpp"
+#include "zenith/gl/util.hpp"
 
 namespace zth::gl {
 
@@ -10,27 +11,24 @@ VertexArray::VertexArray()
     create();
 }
 
-VertexArray::VertexArray(const VertexArrayLayout& layout) : VertexArray()
-{
-    bind_layout(layout);
-}
-
-VertexArray::VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
-                         const IndexBuffer& index_buffer)
-    : VertexArray(layout)
+VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer) : VertexArray()
 {
     bind_vertex_buffer(vertex_buffer);
     bind_index_buffer(index_buffer);
+    rebind_layout();
 }
 
-VertexArray::VertexArray(const VertexArrayLayout& layout, const VertexBuffer& vertex_buffer,
-                         const IndexBuffer& index_buffer, const InstanceBuffer& instance_buffer)
-    : VertexArray(layout, vertex_buffer, index_buffer)
+VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
+                         const InstanceBuffer& instance_buffer)
+    : VertexArray()
 {
+    bind_vertex_buffer(vertex_buffer);
+    bind_index_buffer(index_buffer);
     bind_instance_buffer(instance_buffer);
+    rebind_layout();
 }
 
-VertexArray::VertexArray(const VertexArray& other) : VertexArray(other._layout)
+VertexArray::VertexArray(const VertexArray& other) : VertexArray()
 {
     if (other._vertex_buffer)
         bind_vertex_buffer(*other._vertex_buffer);
@@ -40,6 +38,8 @@ VertexArray::VertexArray(const VertexArray& other) : VertexArray(other._layout)
 
     if (other._instance_buffer)
         bind_instance_buffer(*other._instance_buffer);
+
+    rebind_layout();
 }
 
 auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
@@ -64,7 +64,7 @@ auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
     if (other._instance_buffer)
         bind_instance_buffer(*other._instance_buffer);
 
-    bind_layout(other._layout);
+    rebind_layout();
 
     return *this;
 }
@@ -72,7 +72,7 @@ auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
 VertexArray::VertexArray(VertexArray&& other) noexcept
     : _id(std::exchange(other._id, GL_NONE)), _vertex_buffer(std::exchange(other._vertex_buffer, nullptr)),
       _index_buffer(std::exchange(other._index_buffer, nullptr)),
-      _instance_buffer(std::exchange(other._instance_buffer, nullptr)), _layout(std::move(other._layout))
+      _instance_buffer(std::exchange(other._instance_buffer, nullptr))
 {}
 
 auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
@@ -83,7 +83,6 @@ auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
     _vertex_buffer = std::exchange(other._vertex_buffer, nullptr);
     _index_buffer = std::exchange(other._index_buffer, nullptr);
     _instance_buffer = std::exchange(other._instance_buffer, nullptr);
-    _layout = std::move(other._layout);
 
     return *this;
 }
@@ -123,12 +122,13 @@ auto VertexArray::bind_instance_buffer(const InstanceBuffer& instance_buffer) ->
                               static_cast<GLsizei>(_instance_buffer->stride()));
 }
 
-auto VertexArray::bind_layout(const VertexArrayLayout& layout) -> void
+auto VertexArray::rebind_layout() -> void
 {
-    _layout = layout;
+    if (_vertex_buffer)
+        bind_vertex_buffer_layout();
 
-    bind_vertex_buffer_layout();
-    bind_instance_buffer_layout();
+    if (_instance_buffer)
+        bind_instance_buffer_layout();
 }
 
 auto VertexArray::unbind_vertex_buffer() -> void
@@ -172,6 +172,19 @@ auto VertexArray::index_data_type() const -> DataType
     return _index_buffer->index_data_type();
 }
 
+auto VertexArray::layout() const -> VertexArrayLayout
+{
+    VertexArrayLayout layout{};
+
+    if (_vertex_buffer)
+        layout.vertex_buffer_layout = _vertex_buffer->layout();
+
+    if (_instance_buffer)
+        layout.instance_buffer_layout = _instance_buffer->layout();
+
+    return layout;
+}
+
 auto VertexArray::create() noexcept -> void
 {
     glCreateVertexArrays(1, &_id);
@@ -184,10 +197,14 @@ auto VertexArray::destroy() const noexcept -> void
 
 auto VertexArray::bind_vertex_buffer_layout() const -> void
 {
+    ZTH_ASSERT(_vertex_buffer != nullptr);
+
+    auto& layout = _vertex_buffer->layout();
+
     GLuint index = 0;
     GLuint offset = 0;
 
-    for (auto& elem : _layout.vertex_buffer_layout)
+    for (auto& elem : layout)
     {
         auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 
@@ -205,10 +222,17 @@ auto VertexArray::bind_vertex_buffer_layout() const -> void
 
 auto VertexArray::bind_instance_buffer_layout() const -> void
 {
-    GLuint index = static_cast<GLuint>(_layout.vertex_buffer_layout.size());
+    ZTH_ASSERT(_instance_buffer != nullptr);
+
+    auto& layout = _instance_buffer->layout();
+
+    GLuint index = 0;
     GLuint offset = 0;
 
-    for (auto& elem : _layout.instance_buffer_layout)
+    if (_vertex_buffer)
+        index += static_cast<GLuint>(_vertex_buffer->layout().count());
+
+    for (auto& elem : layout)
     {
         auto [count, type, size, slots_occupied] = get_vertex_layout_element_info(elem);
 

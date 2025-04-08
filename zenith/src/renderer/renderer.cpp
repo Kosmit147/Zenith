@@ -87,12 +87,7 @@ auto Renderer::init() -> Result<void, String>
     set_clear_color(colors::transparent);
 
     shaders::load_shaders();
-
-    // We need to pass in the instance buffer as every vertex array needs to be bound to it because we're always doing
-    // instanced rendering. As the vertex arrays in meshes are constant, they need to be initialized with the instance
-    // buffer in this call.
-    meshes::load_meshes(renderer->_instance_buffer);
-
+    meshes::load_meshes();
     materials::load_materials();
 
     ZTH_INTERNAL_INFO("Renderer initialized.");
@@ -264,6 +259,11 @@ auto Renderer::wireframe_mode_enabled() -> bool
 auto Renderer::draw_calls_last_frame() -> u32
 {
     return renderer->_draw_calls_last_frame;
+}
+
+auto Renderer::instance_buffer() -> const gl::InstanceBuffer&
+{
+    return renderer->_instance_buffer;
 }
 
 auto Renderer::render() -> void

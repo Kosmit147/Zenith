@@ -74,41 +74,38 @@ auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) 
 
 // --------------------------- VertexBuffer ---------------------------
 
-auto VertexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data) -> VertexBuffer
-{
-    VertexBuffer buffer;
-    buffer.init_static_with_data(data);
-    return buffer;
-}
-
-auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage)
+auto VertexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout)
     -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_dynamic_with_data(data, usage);
+    buffer.init_static_with_data(data, layout);
     return buffer;
 }
 
-auto VertexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
+auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
+                                            BufferUsage usage) -> VertexBuffer
 {
-    _buffer.init_static_with_data(data);
-    _stride_bytes = derive_stride<decltype(data)>();
+    VertexBuffer buffer;
+    buffer.init_dynamic_with_data(data, layout, usage);
+    return buffer;
 }
 
-auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+auto VertexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout) -> void
+{
+    _buffer.init_static_with_data(data);
+    _layout = layout;
+}
+
+auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
+                                          BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_data(data, usage);
-    _stride_bytes = derive_stride<decltype(data)>();
+    _layout = layout;
 }
 
 auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
-}
-
-template<std::ranges::contiguous_range VertexData> constexpr auto VertexBuffer::derive_stride() -> u32
-{
-    return sizeof(std::ranges::range_value_t<VertexData>);
 }
 
 // --------------------------- IndexBuffer ---------------------------
@@ -160,18 +157,19 @@ template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::de
 
 // --------------------------- InstanceBuffer ---------------------------
 
-auto InstanceBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data) -> InstanceBuffer
-{
-    InstanceBuffer buffer;
-    buffer.init_static_with_data(data);
-    return buffer;
-}
-
-auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage)
+auto InstanceBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout)
     -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic_with_data(data, usage);
+    buffer.init_static_with_data(data, layout);
+    return buffer;
+}
+
+auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
+                                              BufferUsage usage) -> InstanceBuffer
+{
+    InstanceBuffer buffer;
+    buffer.init_dynamic_with_data(data, layout, usage);
     return buffer;
 }
 

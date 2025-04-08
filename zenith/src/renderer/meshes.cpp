@@ -2019,16 +2019,16 @@ std::unique_ptr<MeshList> mesh_list;
 
 } // namespace
 
-MeshList::MeshList(const gl::InstanceBuffer& instance_buffer)
-    : cube_mesh(cube_vertices, cube_indices, StandardVertex::instanced_layout, instance_buffer),
-      pyramid_mesh(pyramid_vertices, pyramid_indices, StandardVertex::instanced_layout, instance_buffer),
-      sphere_mesh(sphere_vertices, sphere_indices, StandardVertex::instanced_layout, instance_buffer)
+MeshList::MeshList()
+    : cube_mesh(cube_vertices, StandardVertex::layout, cube_indices),
+      pyramid_mesh(pyramid_vertices, StandardVertex::layout, pyramid_indices),
+      sphere_mesh(sphere_vertices, StandardVertex::layout, sphere_indices)
 {}
 
-auto load_meshes(const gl::InstanceBuffer& instance_buffer) -> void
+auto load_meshes() -> void
 {
     ZTH_INTERNAL_INFO("Loading meshes...");
-    mesh_list = std::make_unique<MeshList>(instance_buffer);
+    mesh_list = std::make_unique<MeshList>();
     ZTH_INTERNAL_INFO("Meshes loaded.");
 }
 

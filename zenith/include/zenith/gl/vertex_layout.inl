@@ -46,11 +46,14 @@ template<> constexpr auto to_vertex_layout_elem<const glm::mat4>() -> VertexLayo
     return VertexLayoutElement::Mat4;
 }
 
-constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> elems) : _elements(elems) {}
-
 constexpr auto VertexLayout::push(VertexLayoutElement elem) -> VertexLayoutElement&
 {
     return _elements.push_back(elem);
+}
+
+constexpr auto VertexLayout::set_stride(u32 stride_bytes) -> void
+{
+    _stride_bytes = stride_bytes;
 }
 
 constexpr auto VertexLayout::clear() -> void
@@ -63,85 +66,114 @@ template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() 
     constexpr auto dummy_vertex = VertexType{};
     constexpr auto arity = meta::struct_arity<VertexType>();
 
+    VertexLayout result;
+    result.set_stride(sizeof(VertexType));
+
     if constexpr (arity == 0)
     {
-        return {};
+        static_assert(false, "empty vertex");
     }
     else if constexpr (arity == 1)
     {
         [[maybe_unused]] auto& [e1] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
     }
     else if constexpr (arity == 2)
     {
         [[maybe_unused]] auto& [e1, e2] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
     }
     else if constexpr (arity == 3)
     {
         [[maybe_unused]] auto& [e1, e2, e3] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
     }
     else if constexpr (arity == 4)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
     }
     else if constexpr (arity == 5)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
     }
     else if constexpr (arity == 6)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
+        result.push(to_vertex_layout_elem<decltype(e6)>());
     }
     else if constexpr (arity == 7)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
-                 to_vertex_layout_elem<decltype(e7)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
+        result.push(to_vertex_layout_elem<decltype(e6)>());
+        result.push(to_vertex_layout_elem<decltype(e7)>());
     }
     else if constexpr (arity == 8)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
-                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
+        result.push(to_vertex_layout_elem<decltype(e6)>());
+        result.push(to_vertex_layout_elem<decltype(e7)>());
+        result.push(to_vertex_layout_elem<decltype(e8)>());
     }
     else if constexpr (arity == 9)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8, e9] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
-                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>(),
-                 to_vertex_layout_elem<decltype(e9)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
+        result.push(to_vertex_layout_elem<decltype(e6)>());
+        result.push(to_vertex_layout_elem<decltype(e7)>());
+        result.push(to_vertex_layout_elem<decltype(e8)>());
+        result.push(to_vertex_layout_elem<decltype(e9)>());
     }
     else if constexpr (arity == 10)
     {
         [[maybe_unused]] auto& [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10] = dummy_vertex;
-        return { to_vertex_layout_elem<decltype(e1)>(), to_vertex_layout_elem<decltype(e2)>(),
-                 to_vertex_layout_elem<decltype(e3)>(), to_vertex_layout_elem<decltype(e4)>(),
-                 to_vertex_layout_elem<decltype(e5)>(), to_vertex_layout_elem<decltype(e6)>(),
-                 to_vertex_layout_elem<decltype(e7)>(), to_vertex_layout_elem<decltype(e8)>(),
-                 to_vertex_layout_elem<decltype(e9)>(), to_vertex_layout_elem<decltype(e10)>() };
+        result.push(to_vertex_layout_elem<decltype(e1)>());
+        result.push(to_vertex_layout_elem<decltype(e2)>());
+        result.push(to_vertex_layout_elem<decltype(e3)>());
+        result.push(to_vertex_layout_elem<decltype(e4)>());
+        result.push(to_vertex_layout_elem<decltype(e5)>());
+        result.push(to_vertex_layout_elem<decltype(e6)>());
+        result.push(to_vertex_layout_elem<decltype(e7)>());
+        result.push(to_vertex_layout_elem<decltype(e8)>());
+        result.push(to_vertex_layout_elem<decltype(e9)>());
+        result.push(to_vertex_layout_elem<decltype(e10)>());
     }
     else
     {
         static_assert(false, "not implemented");
-        return {};
     }
+
+    return result;
 }
 
 } // namespace zth::gl

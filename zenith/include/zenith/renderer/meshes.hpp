@@ -1,6 +1,5 @@
 #pragma once
 
-#include "zenith/gl/fwd.hpp"
 #include "zenith/renderer/mesh.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -12,12 +11,12 @@ struct MeshList
     Mesh pyramid_mesh;
     Mesh sphere_mesh;
 
-    explicit MeshList(const gl::InstanceBuffer& instance_buffer);
+    explicit MeshList();
     ZTH_NO_COPY_NO_MOVE(MeshList)
     ~MeshList() = default;
 };
 
-auto load_meshes(const gl::InstanceBuffer& instance_buffer) -> void;
+auto load_meshes() -> void;
 auto unload_meshes() -> void;
 
 [[nodiscard]] auto meshes() -> const MeshList&;
