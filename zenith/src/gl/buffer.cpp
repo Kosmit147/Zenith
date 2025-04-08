@@ -289,82 +289,73 @@ auto Buffer::calculate_growth(u32 old_size_bytes) -> u32
 
 // --------------------------- VertexBuffer ---------------------------
 
-auto VertexBuffer::create_static_with_size(u32 size_bytes, u32 stride_bytes) -> VertexBuffer
+auto VertexBuffer::create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_static_with_size(size_bytes, stride_bytes);
+    buffer.init_static_with_size(size_bytes, layout);
     return buffer;
 }
 
-auto VertexBuffer::create_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes) -> VertexBuffer
-{
-    VertexBuffer buffer;
-    buffer.init_static_with_data(data, data_size_bytes, stride_bytes);
-    return buffer;
-}
-
-auto VertexBuffer::create_dynamic(u32 stride_bytes, BufferUsage usage) -> VertexBuffer
-{
-    VertexBuffer buffer;
-    buffer.init_dynamic(stride_bytes, usage);
-    return buffer;
-}
-
-auto VertexBuffer::create_dynamic_with_size(u32 size_bytes, u32 stride_bytes, BufferUsage usage) -> VertexBuffer
-{
-    VertexBuffer buffer;
-    buffer.init_dynamic_with_size(size_bytes, stride_bytes, usage);
-    return buffer;
-}
-
-auto VertexBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes, BufferUsage usage)
+auto VertexBuffer::create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
     -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_dynamic_with_data(data, data_size_bytes, stride_bytes, usage);
+    buffer.init_static_with_data(data, data_size_bytes, layout);
     return buffer;
 }
 
-VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
-    : _buffer(std::move(other._buffer)), _stride_bytes(std::exchange(other._stride_bytes, 0))
-{}
-
-auto VertexBuffer::operator=(VertexBuffer&& other) noexcept -> VertexBuffer&
+auto VertexBuffer::create_dynamic(const VertexLayout& layout, BufferUsage usage) -> VertexBuffer
 {
-    _buffer = std::move(other._buffer);
-    _stride_bytes = std::exchange(other._stride_bytes, 0);
-    return *this;
+    VertexBuffer buffer;
+    buffer.init_dynamic(layout, usage);
+    return buffer;
 }
 
-auto VertexBuffer::init_static_with_size(u32 size_bytes, u32 stride_bytes) -> void
+auto VertexBuffer::create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout, BufferUsage usage)
+    -> VertexBuffer
+{
+    VertexBuffer buffer;
+    buffer.init_dynamic_with_size(size_bytes, layout, usage);
+    return buffer;
+}
+
+auto VertexBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout,
+                                            BufferUsage usage) -> VertexBuffer
+{
+    VertexBuffer buffer;
+    buffer.init_dynamic_with_data(data, data_size_bytes, layout, usage);
+    return buffer;
+}
+
+auto VertexBuffer::init_static_with_size(u32 size_bytes, const VertexLayout& layout) -> void
 {
     _buffer.init_static_with_size(size_bytes);
-    _stride_bytes = stride_bytes;
+    _layout = layout;
 }
 
-auto VertexBuffer::init_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes) -> void
+auto VertexBuffer::init_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout) -> void
 {
     _buffer.init_static_with_data(data, data_size_bytes);
-    _stride_bytes = stride_bytes;
+    _layout = layout;
 }
 
-auto VertexBuffer::init_dynamic(u32 stride_bytes, BufferUsage usage) -> void
+auto VertexBuffer::init_dynamic(const VertexLayout& layout, BufferUsage usage) -> void
 {
     _buffer.init_dynamic(usage);
-    _stride_bytes = stride_bytes;
+    _layout = layout;
 }
 
-auto VertexBuffer::init_dynamic_with_size(u32 size_bytes, u32 stride_bytes, BufferUsage usage) -> void
+auto VertexBuffer::init_dynamic_with_size(u32 size_bytes, const VertexLayout& layout, BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_size(size_bytes, usage);
-    _stride_bytes = stride_bytes;
+    _layout = layout;
 }
 
-auto VertexBuffer::init_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes, BufferUsage usage)
-    -> void
+auto VertexBuffer::init_dynamic_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout,
+                                          BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_data(data, data_size_bytes, usage);
-    _stride_bytes = stride_bytes;
+    _layout = layout;
 }
 
 auto VertexBuffer::buffer_data(const void* data, u32 data_size_bytes, u32 offset) -> u32
@@ -375,7 +366,7 @@ auto VertexBuffer::buffer_data(const void* data, u32 data_size_bytes, u32 offset
 auto VertexBuffer::free() noexcept -> void
 {
     _buffer.free();
-    _stride_bytes = 0;
+    _layout.clear();
 }
 
 auto VertexBuffer::bind() const -> void
@@ -388,9 +379,14 @@ auto VertexBuffer::unbind() -> void
     glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 }
 
+auto VertexBuffer::set_layout(const VertexLayout& layout) -> void
+{
+    _layout = layout;
+}
+
 auto VertexBuffer::set_stride(u32 stride_bytes) -> void
 {
-    _stride_bytes = stride_bytes;
+    _layout.set_stride(stride_bytes);
 }
 
 // --------------------------- IndexBuffer ---------------------------
@@ -512,39 +508,41 @@ auto IndexBuffer::set_count(u32 count) -> void
 
 // --------------------------- InstanceBuffer ---------------------------
 
-auto InstanceBuffer::create_static_with_size(u32 size_bytes, u32 stride_bytes) -> InstanceBuffer
+auto InstanceBuffer::create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_static_with_size(size_bytes, stride_bytes);
+    buffer.init_static_with_size(size_bytes, layout);
     return buffer;
 }
 
-auto InstanceBuffer::create_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes) -> InstanceBuffer
+auto InstanceBuffer::create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
+    -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_static_with_data(data, data_size_bytes, stride_bytes);
+    buffer.init_static_with_data(data, data_size_bytes, layout);
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic(u32 stride_bytes, BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic(const VertexLayout& layout, BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic(stride_bytes, usage);
+    buffer.init_dynamic(layout, usage);
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_size(u32 size_bytes, u32 stride_bytes, BufferUsage usage) -> InstanceBuffer
+auto InstanceBuffer::create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout, BufferUsage usage)
+    -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic_with_size(size_bytes, stride_bytes, usage);
+    buffer.init_dynamic_with_size(size_bytes, layout, usage);
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes,
+auto InstanceBuffer::create_dynamic_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout,
                                               BufferUsage usage) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic_with_data(data, data_size_bytes, stride_bytes, usage);
+    buffer.init_dynamic_with_data(data, data_size_bytes, layout, usage);
     return buffer;
 }
 

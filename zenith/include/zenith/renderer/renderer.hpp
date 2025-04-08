@@ -137,6 +137,8 @@ public:
     [[nodiscard]] static auto wireframe_mode_enabled() -> bool;
     [[nodiscard]] static auto draw_calls_last_frame() -> u32;
 
+    [[nodiscard]] static auto instance_buffer() -> const gl::InstanceBuffer&;
+
 private:
     glm::vec3 _current_camera_position{ 0.0f };
     glm::mat4 _current_camera_view{ 1.0f };
@@ -167,10 +169,10 @@ private:
 
     // Right now we're drawing everything using instanced rendering, even if the number of objects to draw is only 1 as
     // there doesn't appear to be any drawback to doing so. Crucially, this means that every vertex array needs to be
-    // bound to the renderer's instance buffer before issuing the draw call.
+    // bound to the renderer's instance buffer.
     Vector<InstanceVertex> _temporary_instance_data;
     gl::InstanceBuffer _instance_buffer =
-        gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size, sizeof(InstanceVertex));
+        gl::InstanceBuffer::create_dynamic_with_size(initial_instance_buffer_size, InstanceVertex::layout);
 
     Vector<DrawCommand> _draw_commands;
     Vector<RenderBatch> _batches;

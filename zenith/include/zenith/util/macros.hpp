@@ -26,6 +26,18 @@
     ZTH_DEFAULT_COPY(type)                                                                                             \
     ZTH_DEFAULT_MOVE(type)
 
+#define ZTH_DEFAULT_COPY_CONSTEXPR(type)                                                                               \
+    constexpr type(const type&) = default;                                                                             \
+    constexpr auto operator=(const type&)->type& = default;
+
+#define ZTH_DEFAULT_MOVE_CONSTEXPR(type)                                                                               \
+    constexpr type(type&&) = default;                                                                                  \
+    constexpr auto operator=(type&&)->type& = default;
+
+#define ZTH_DEFAULT_COPY_DEFAULT_MOVE_CONSTEXPR(type)                                                                  \
+    ZTH_DEFAULT_COPY_CONSTEXPR(type)                                                                                   \
+    ZTH_DEFAULT_MOVE_CONSTEXPR(type)
+
 // ZTH_NOP
 
 #define ZTH_NOP ((void)0)

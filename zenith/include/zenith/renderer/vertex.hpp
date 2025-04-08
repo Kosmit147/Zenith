@@ -5,7 +5,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "zenith/gl/vertex_array.hpp"
 #include "zenith/gl/vertex_layout.hpp"
 
 namespace zth {
@@ -31,14 +30,8 @@ struct StandardVertex
     glm::vec2 tex_coords;
 
     static const gl::VertexLayout layout;
-    static const gl::VertexArrayLayout instanced_layout;
 };
 
 inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::derive_from_vertex<StandardVertex>();
-
-inline const gl::VertexArrayLayout StandardVertex::instanced_layout = {
-    .vertex_buffer_layout = StandardVertex::layout,
-    .instance_buffer_layout = InstanceVertex::layout,
-};
 
 } // namespace zth

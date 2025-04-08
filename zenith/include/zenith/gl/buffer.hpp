@@ -7,6 +7,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/util.hpp"
+#include "zenith/gl/vertex_layout.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
 
@@ -169,47 +170,47 @@ class VertexBuffer
 public:
     explicit VertexBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 stride_bytes) -> VertexBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes)
+    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
         -> VertexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> VertexBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
+                                                      const VertexLayout& layout) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic(u32 stride_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw)
         -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, u32 stride_bytes,
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes,
+    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
+                                                       const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                                       const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
-    ZTH_DEFAULT_COPY(VertexBuffer)
-
-    VertexBuffer(VertexBuffer&& other) noexcept;
-    auto operator=(VertexBuffer&& other) noexcept -> VertexBuffer&;
+    ZTH_DEFAULT_COPY_DEFAULT_MOVE(VertexBuffer)
 
     ~VertexBuffer() = default;
 
-    auto init_static_with_size(u32 size_bytes, u32 stride_bytes) -> void;
+    auto init_static_with_size(u32 size_bytes, const VertexLayout& layout) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes) -> void;
+    auto init_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout) -> void;
 
-    auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
+    auto init_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout) -> void;
 
-    auto init_dynamic(u32 stride_bytes, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    auto init_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_size(u32 size_bytes, u32 stride_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
-        -> void;
-
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes,
+    auto init_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout,
+                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+
+    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
@@ -224,6 +225,7 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
+    auto set_layout(const VertexLayout& layout) -> void;
     auto set_stride(u32 stride_bytes) -> void;
 
     [[nodiscard]] auto native_handle() const { return _buffer.native_handle(); }
@@ -233,14 +235,12 @@ public:
     [[nodiscard]] auto is_dynamic() const { return _buffer.is_dynamic(); }
     [[nodiscard]] auto is_initialized() const { return _buffer.is_initialized(); }
     [[nodiscard]] auto state() const { return _buffer.state(); }
-    [[nodiscard]] auto stride() const { return _stride_bytes; }
+    [[nodiscard]] auto layout() const -> auto& { return _layout; }
+    [[nodiscard]] auto stride() const { return _layout.stride(); }
 
 private:
     Buffer _buffer;
-    u32 _stride_bytes = 0;
-
-private:
-    template<std::ranges::contiguous_range VertexData> [[nodiscard]] constexpr static auto derive_stride() -> u32;
+    VertexLayout _layout;
 };
 
 // --------------------------- IndexBuffer ---------------------------
@@ -318,14 +318,13 @@ public:
     [[nodiscard]] auto index_data_type() const { return _index_data_type; }
     [[nodiscard]] auto count() const { return _count; }
 
+    template<std::ranges::contiguous_range IndexData>
+    [[nodiscard]] constexpr static auto derive_index_data_type() -> DataType;
+
 private:
     Buffer _buffer;
     DataType _index_data_type = DataType::None;
     u32 _count = 0;
-
-private:
-    template<std::ranges::contiguous_range IndexData>
-    [[nodiscard]] constexpr static auto derive_index_data_type() -> DataType;
 };
 
 // --------------------------- InstanceBuffer ---------------------------
@@ -335,23 +334,26 @@ class InstanceBuffer : public VertexBuffer
 public:
     explicit InstanceBuffer() = default;
 
-    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 stride_bytes) -> InstanceBuffer;
+    [[nodiscard]] static auto create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes)
+    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
         -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> InstanceBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
+                                                      const VertexLayout& layout) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic(u32 stride_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
+    [[nodiscard]] static auto create_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw)
         -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, u32 stride_bytes,
+    [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes, u32 stride_bytes,
+    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
+                                                       const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
+                                                       const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(InstanceBuffer)

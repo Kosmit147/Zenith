@@ -9,31 +9,17 @@
 
 namespace zth {
 
+// Every mesh's vertex array gets implicitly bound to the renderer's instance buffer.
 class Mesh
 {
 public:
-    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
-                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout);
+    explicit Mesh() = default;
 
-    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
-                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout,
-                  const gl::InstanceBuffer& instance_buffer);
+    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, const gl::VertexLayout& vertex_layout,
+                  const void* index_data, usize index_data_size_bytes, gl::DataType index_data_type);
 
     template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
-    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data,
-                  const gl::VertexArrayLayout& layout = gl::VertexArrayLayout::derive_from_vertex_data<VertexData>());
-
-    template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
-    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
-                  const gl::InstanceBuffer& instance_buffer);
-
-    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, usize vertex_stride, const void* index_data,
-                  usize index_data_size_bytes, gl::DataType index_data_type, const gl::VertexArrayLayout& layout,
-                  gl::InstanceBuffer&& instance_buffer) = delete;
-
-    template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
-    explicit Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
-                  gl::InstanceBuffer&& instance_buffer) = delete;
+    explicit Mesh(const VertexData& vertex_data, const gl::VertexLayout& vertex_layout, const IndexData& index_data);
 
     Mesh(const Mesh& other);
     auto operator=(const Mesh& other) -> Mesh&;
@@ -54,18 +40,10 @@ private:
 };
 
 template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
-Mesh::Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout)
-    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
-      _vertex_array(layout, _vertex_buffer, _index_buffer)
-{}
-
-template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
-Mesh::Mesh(const VertexData& vertex_data, const IndexData& index_data, const gl::VertexArrayLayout& layout,
-           const gl::InstanceBuffer& instance_buffer)
-    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data)),
-      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data)),
-      _vertex_array(layout, _vertex_buffer, _index_buffer, instance_buffer)
+Mesh::Mesh(const VertexData& vertex_data, const gl::VertexLayout& vertex_layout, const IndexData& index_data)
+    : Mesh(std::data(vertex_data), std::size(vertex_data) * sizeof(std::ranges::range_value_t<VertexData>),
+           vertex_layout, std::data(index_data), std::size(index_data) * sizeof(std::ranges::range_value_t<IndexData>),
+           gl::IndexBuffer::derive_index_data_type<IndexData>())
 {}
 
 } // namespace zth

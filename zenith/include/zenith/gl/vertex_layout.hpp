@@ -1,7 +1,5 @@
 #pragma once
 
-#include <initializer_list>
-
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/util.hpp"
 #include "zenith/stl/vector.hpp"
@@ -37,19 +35,22 @@ public:
 
 public:
     constexpr VertexLayout() = default;
-    constexpr VertexLayout(std::initializer_list<VertexLayoutElement> elems);
     template<typename VertexType> [[nodiscard]] constexpr static auto derive_from_vertex() -> VertexLayout;
 
     constexpr auto push(VertexLayoutElement elem) -> VertexLayoutElement&;
+    constexpr auto set_stride(u32 stride_bytes) -> void;
     constexpr auto clear() -> void;
 
-    [[nodiscard]] constexpr auto size() const { return _elements.size(); }
+    [[nodiscard]] constexpr auto count() const { return _elements.size(); }
 
     [[nodiscard]] constexpr auto begin(this auto&& self) -> decltype(auto) { return self._elements.begin(); }
     [[nodiscard]] constexpr auto end(this auto&& self) -> decltype(auto) { return self._elements.end(); }
 
+    [[nodiscard]] constexpr auto stride() const { return _stride_bytes; }
+
 private:
     InPlaceVector<VertexLayoutElement, max_element_count> _elements;
+    u32 _stride_bytes = 0;
 };
 
 [[nodiscard]] auto get_vertex_layout_element_info(VertexLayoutElement elem) -> VertexLayoutElementInfo;
