@@ -22,16 +22,16 @@ constinit const TextureMinFilter TextureMinFilter::linear_mipmap_linear = { Text
 constinit const TextureMagFilter TextureMagFilter::nearest = { TextureFilteringMode::Nearest };
 constinit const TextureMagFilter TextureMagFilter::linear = { TextureFilteringMode::Linear };
 
-Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParams& params)
+Texture2D::Texture2D(const void* file_data, usize data_size_bytes, const TextureParams& params)
 {
-    init_from_memory(data, data_size_bytes, params);
+    init_from_file(file_data, data_size_bytes, params);
 }
 
 Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& params)
 {
-    auto maybe_data = fs::read_to<TemporaryVector<u8>>(path, std::ios::binary);
+    auto file_data = fs::read_to<TemporaryVector<u8>>(path, std::ios::binary);
 
-    if (!maybe_data)
+    if (!file_data)
     {
         // @robustness: .string() throws.
         ZTH_INTERNAL_ERROR("[Texture] Failed to load texture from file {}.", path.string());
@@ -39,13 +39,13 @@ Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& par
         return;
     }
 
-    std::span data{ *maybe_data };
-    init_from_memory(data.data(), data.size_bytes(), params);
+    std::span data{ *file_data };
+    init_from_file(data.data(), data.size_bytes(), params);
 }
 
-auto Texture2D::from_memory(const void* data, usize data_size_bytes, const TextureParams& params) -> Texture2D
+auto Texture2D::from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> Texture2D
 {
-    return Texture2D{ data, data_size_bytes, params };
+    return Texture2D{ file_data, data_size_bytes, params };
 }
 
 auto Texture2D::from_file(const std::filesystem::path& path, const TextureParams& params) -> Texture2D
@@ -86,14 +86,14 @@ auto Texture2D::destroy() const noexcept -> void
     glDeleteTextures(1, &_id);
 }
 
-auto Texture2D::init_from_memory(const void* data, usize data_size_bytes, const TextureParams& params) -> void
+auto Texture2D::init_from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> void
 {
     stbi_set_flip_vertically_on_load(true);
     Defer unset_flip_vertically_on_load{ [] { stbi_set_flip_vertically_on_load(false); } };
 
     int width, height, channels;
-    auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(data), static_cast<int>(data_size_bytes), &width,
-                                       &height, &channels, 0);
+    auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(file_data), static_cast<int>(data_size_bytes),
+                                       &width, &height, &channels, 0);
 
     if (!image)
     {

@@ -83,14 +83,14 @@ class Texture2D
 public:
     using TextureId = GLuint;
 
-    explicit Texture2D(const void* data, usize data_size_bytes, const TextureParams& params = {});
-    explicit Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params = {});
+    explicit Texture2D(const void* file_data, usize data_size_bytes, const TextureParams& params = {});
+    explicit Texture2D(std::ranges::contiguous_range auto&& file_data, const TextureParams& params = {});
     explicit Texture2D(const std::filesystem::path& path, const TextureParams& params = {});
 
-    [[nodiscard]] static auto from_memory(const void* data, usize data_size_bytes, const TextureParams& params = {})
+    [[nodiscard]] static auto from_file(const void* file_data, usize data_size_bytes, const TextureParams& params = {})
         -> Texture2D;
-    [[nodiscard]] static auto from_memory(std::ranges::contiguous_range auto&& data, const TextureParams& params = {})
-        -> Texture2D;
+    [[nodiscard]] static auto from_file(std::ranges::contiguous_range auto&& file_data,
+                                        const TextureParams& params = {}) -> Texture2D;
     [[nodiscard]] static auto from_file(const std::filesystem::path& path, const TextureParams& params = {})
         -> Texture2D;
 
@@ -113,7 +113,7 @@ private:
     auto create() noexcept -> void;
     auto destroy() const noexcept -> void;
 
-    auto init_from_memory(const void* data, usize data_size_bytes, const TextureParams& params) -> void;
+    auto init_from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> void;
 };
 
 [[nodiscard]] auto to_gl_int(TextureWrapMode wrap) -> GLint;
@@ -123,13 +123,14 @@ private:
 [[nodiscard]] auto to_gl_enum(TextureFormat tex_format) -> GLenum;
 [[nodiscard]] auto texture_format_from_channels(u32 channels) -> TextureFormat;
 
-Texture2D::Texture2D(std::ranges::contiguous_range auto&& data, const TextureParams& params)
-    : Texture2D(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), params)
+Texture2D::Texture2D(std::ranges::contiguous_range auto&& file_data, const TextureParams& params)
+    : Texture2D(std::data(file_data), std::size(file_data) * sizeof(std::ranges::range_value_t<decltype(file_data)>),
+                params)
 {}
 
-auto Texture2D::from_memory(std::ranges::contiguous_range auto&& data, const TextureParams& params) -> Texture2D
+auto Texture2D::from_file(std::ranges::contiguous_range auto&& file_data, const TextureParams& params) -> Texture2D
 {
-    return Texture2D{ data, params };
+    return Texture2D{ file_data, params };
 }
 
 } // namespace zth::gl

@@ -46,20 +46,9 @@ template<> constexpr auto to_vertex_layout_elem<const glm::mat4>() -> VertexLayo
     return VertexLayoutElement::Mat4;
 }
 
-constexpr auto VertexLayout::push(VertexLayoutElement elem) -> VertexLayoutElement&
-{
-    return _elements.push_back(elem);
-}
-
-constexpr auto VertexLayout::set_stride(u32 stride_bytes) -> void
-{
-    _stride_bytes = stride_bytes;
-}
-
-constexpr auto VertexLayout::clear() -> void
-{
-    _elements.clear();
-}
+constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> elements, u32 stride_bytes)
+    : _elements(elements), _stride_bytes(stride_bytes)
+{}
 
 template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() -> VertexLayout
 {
@@ -174,6 +163,21 @@ template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() 
     }
 
     return result;
+}
+
+constexpr auto VertexLayout::push(VertexLayoutElement elem) -> VertexLayoutElement&
+{
+    return _elements.push_back(elem);
+}
+
+constexpr auto VertexLayout::set_stride(u32 stride_bytes) -> void
+{
+    _stride_bytes = stride_bytes;
+}
+
+constexpr auto VertexLayout::clear() -> void
+{
+    _elements.clear();
 }
 
 } // namespace zth::gl
