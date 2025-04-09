@@ -42,6 +42,12 @@
 
 // A component can be any user-defined type. It is not needed to announce the existence of a component before using it.
 
+// The registry is not thread safe as it is. However:
+// - As long as a thread iterates over entities that have component X or assigns / removes that component from a set of
+// entities, another thread can safely do the same with components Y and Z.
+// - Similarly, a single set of components can be iterated by multiple threads as long as the components are neither
+// assigned nor removed in the meantime.
+
 namespace zth {
 
 // clang-format off
