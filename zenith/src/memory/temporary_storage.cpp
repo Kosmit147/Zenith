@@ -11,9 +11,9 @@ Vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
 
 auto TemporaryStorage::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Initializing temporary storage...");
+    ZTH_INTERNAL_TRACE("Initializing temporary storage...");
     reset();
-    ZTH_INTERNAL_INFO("Temporary storage initialized.");
+    ZTH_INTERNAL_TRACE("Temporary storage initialized.");
     return {};
 }
 
@@ -24,11 +24,11 @@ auto TemporaryStorage::start_frame() -> void
 
 auto TemporaryStorage::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Shutting down temporary storage...");
+    ZTH_INTERNAL_TRACE("Shutting down temporary storage...");
     reset();
     _buffer.free();
     _buffer_ptr = nullptr;
-    ZTH_INTERNAL_INFO("Temporary storage shut down.");
+    ZTH_INTERNAL_TRACE("Temporary storage shut down.");
 }
 
 auto TemporaryStorage::reset() -> void

@@ -15,18 +15,18 @@ AssetManager::AssetMap<gl::Texture2D> AssetManager::_textures;
 
 auto AssetManager::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Asset manager initialized.");
+    ZTH_INTERNAL_TRACE("Asset manager initialized.");
     return {};
 }
 
 auto AssetManager::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Shutting down asset manager...");
+    ZTH_INTERNAL_TRACE("Shutting down asset manager...");
     _meshes.clear();
     _materials.clear();
     _shaders.clear();
     _textures.clear();
-    ZTH_INTERNAL_INFO("Asset manager shut down.");
+    ZTH_INTERNAL_TRACE("Asset manager shut down.");
 }
 
 template<> auto AssetManager::get_asset_map<Mesh>() -> AssetMap<Mesh>&

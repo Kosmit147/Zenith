@@ -28,16 +28,16 @@ ShaderList::ShaderList()
 
 auto load_shaders() -> void
 {
-    ZTH_INTERNAL_INFO("Loading shaders...");
+    ZTH_INTERNAL_TRACE("Loading shaders...");
     shader_list = std::make_unique<ShaderList>();
-    ZTH_INTERNAL_INFO("Shaders loaded.");
+    ZTH_INTERNAL_TRACE("Shaders loaded.");
 }
 
 auto unload_shaders() -> void
 {
-    ZTH_INTERNAL_INFO("Unloading shaders...");
+    ZTH_INTERNAL_TRACE("Unloading shaders...");
     shader_list.reset();
-    ZTH_INTERNAL_INFO("Shaders unloaded.");
+    ZTH_INTERNAL_TRACE("Shaders unloaded.");
 }
 
 auto shaders() -> const ShaderList&

@@ -12,7 +12,7 @@ std::unordered_map<MouseButton, bool> Input::_mouse_button_states;
 
 auto Input::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Initializing input system...");
+    ZTH_INTERNAL_TRACE("Initializing input system...");
 
     for (auto key : key_enumerations)
         _key_states.insert({ key, false });
@@ -24,7 +24,7 @@ auto Input::init() -> Result<void, String>
     _mouse_pos = Window::mouse_pos();
     _prev_mouse_pos = Window::mouse_pos();
 
-    ZTH_INTERNAL_INFO("Input system initialized.");
+    ZTH_INTERNAL_TRACE("Input system initialized.");
     return {};
 }
 
@@ -88,7 +88,7 @@ auto Input::on_input_event(const Event& event) -> void
 
 auto Input::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Input system shut down.");
+    ZTH_INTERNAL_TRACE("Input system shut down.");
 }
 
 auto Input::is_key_pressed(Key key) -> bool

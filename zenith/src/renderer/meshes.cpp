@@ -2027,16 +2027,16 @@ MeshList::MeshList()
 
 auto load_meshes() -> void
 {
-    ZTH_INTERNAL_INFO("Loading meshes...");
+    ZTH_INTERNAL_TRACE("Loading meshes...");
     mesh_list = std::make_unique<MeshList>();
-    ZTH_INTERNAL_INFO("Meshes loaded.");
+    ZTH_INTERNAL_TRACE("Meshes loaded.");
 }
 
 auto unload_meshes() -> void
 {
-    ZTH_INTERNAL_INFO("Unloading meshes...");
+    ZTH_INTERNAL_TRACE("Unloading meshes...");
     mesh_list.reset();
-    ZTH_INTERNAL_INFO("Meshes unloaded.");
+    ZTH_INTERNAL_TRACE("Meshes unloaded.");
 }
 
 #define ZTH_MESH_GETTER(mesh_name)                                                                                     \

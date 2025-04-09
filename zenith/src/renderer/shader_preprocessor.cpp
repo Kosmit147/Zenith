@@ -21,17 +21,17 @@ StringHashMap<String> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Initializing shader preprocessor...");
+    ZTH_INTERNAL_TRACE("Initializing shader preprocessor...");
     add_source("zth_defines.glsl", embedded::shaders::defines_glsl);
-    ZTH_INTERNAL_INFO("Shader preprocessor initialized.");
+    ZTH_INTERNAL_TRACE("Shader preprocessor initialized.");
     return {};
 }
 
 auto ShaderPreprocessor::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Shutting down shader preprocessor...");
+    ZTH_INTERNAL_TRACE("Shutting down shader preprocessor...");
     _sources.clear();
-    ZTH_INTERNAL_INFO("Shader preprocessor shut down.");
+    ZTH_INTERNAL_TRACE("Shader preprocessor shut down.");
 }
 
 auto ShaderPreprocessor::preprocess(StringView source) -> Result<String, PreprocessShaderError>
