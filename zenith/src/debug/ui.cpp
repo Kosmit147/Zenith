@@ -14,6 +14,7 @@
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/materials.hpp"
 #include "zenith/renderer/renderer.hpp"
+#include "zenith/stl/string_algorithm.hpp"
 #include "zenith/system/input.hpp"
 #include "zenith/system/window.hpp"
 
@@ -522,9 +523,17 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
 {
     ImGui::Begin("Scene Hierarchy");
 
+    ImGui::InputText("Search", &_search);
+
     for (auto entity_id : registry.view<EntityId>())
     {
         const auto& tag = registry.get<const TagComponent>(entity_id);
+
+        if (!_search.empty())
+        {
+            if (!case_insensitive_contains(tag.tag, _search))
+                continue;
+        }
 
         auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity_id));
 

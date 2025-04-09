@@ -114,6 +114,7 @@ public:
 
 private:
     EntityId _selected_entity_id = null_entity;
+    String _search;
 };
 
 // @todo: Replace / improve.
