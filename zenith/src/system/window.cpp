@@ -70,6 +70,7 @@ auto Window::init(const WindowSpec& spec) -> Result<void, String>
     glfwWindowHint(GLFW_OPENGL_PROFILE, to_glfw_enum(spec.gl_profile));
     glfwWindowHint(GLFW_RESIZABLE, to_glfw_enum(spec.resizable));
     glfwWindowHint(GLFW_MAXIMIZED, to_glfw_enum(spec.maximized));
+    glfwWindowHint(GLFW_SAMPLES, static_cast<int>(spec.samples));
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
 
 #if !defined(ZTH_DIST_BUILD)

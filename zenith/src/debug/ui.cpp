@@ -592,11 +592,45 @@ auto DebugPanel::display() -> void
             Window::set_frame_rate_limit(_frame_rate_limit);
     }
 
-    auto label = format_to_temporary("Wireframe");
-    auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
+    {
+        auto label = format_to_temporary("Blending");
+        auto blending_enabled = Renderer::blending_enabled();
 
-    if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
-        Renderer::set_wireframe_mode(wireframe_mode_enabled);
+        if (ImGui::Checkbox(label.c_str(), &blending_enabled))
+            Renderer::set_blending_enabled(blending_enabled);
+    }
+
+    {
+        auto label = format_to_temporary("Depth Test");
+        auto depth_test_enabled = Renderer::depth_test_enabled();
+
+        if (ImGui::Checkbox(label.c_str(), &depth_test_enabled))
+            Renderer::set_depth_test_enabled(depth_test_enabled);
+    }
+
+    {
+        auto label = format_to_temporary("Face Culling");
+        auto face_culling_enabled = Renderer::face_culling_enabled();
+
+        if (ImGui::Checkbox(label.c_str(), &face_culling_enabled))
+            Renderer::set_face_culling_enabled(face_culling_enabled);
+    }
+
+    {
+        auto label = format_to_temporary("Multisampling");
+        auto multisampling_enabled = Renderer::multisampling_enabled();
+
+        if (ImGui::Checkbox(label.c_str(), &multisampling_enabled))
+            Renderer::set_multisampling_enabled(multisampling_enabled);
+    }
+
+    {
+        auto label = format_to_temporary("Wireframe");
+        auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
+
+        if (ImGui::Checkbox(label.c_str(), &wireframe_mode_enabled))
+            Renderer::set_wireframe_mode_enabled(wireframe_mode_enabled);
+    }
 
     auto vendor_text = format_to_temporary("Vendor: {}", gl::Context::vendor_string());
     auto renderer_text = format_to_temporary("Renderer: {}", gl::Context::renderer_string());

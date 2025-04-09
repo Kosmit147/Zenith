@@ -108,10 +108,13 @@ public:
     static auto on_window_event(const Event& event) -> void;
     static auto shut_down() -> void;
 
-    static auto set_wireframe_mode(bool enabled) -> void;
-    static auto toggle_wireframe_mode() -> void;
-
+    static auto set_blending_enabled(bool enabled) -> void;
+    static auto set_depth_test_enabled(bool enabled) -> void;
+    static auto set_face_culling_enabled(bool enabled) -> void;
+    static auto set_multisampling_enabled(bool enabled) -> void;
+    static auto set_wireframe_mode_enabled(bool enabled) -> void;
     static auto set_clear_color(glm::vec4 color) -> void;
+
     static auto clear() -> void;
 
     static auto begin_scene(const CameraComponent& camera, const TransformComponent& camera_transform) -> void;
@@ -134,7 +137,13 @@ public:
     [[nodiscard]] static auto current_camera_view() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_projection() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_view_projection() -> const glm::mat4&;
+
+    [[nodiscard]] static auto blending_enabled() -> bool;
+    [[nodiscard]] static auto depth_test_enabled() -> bool;
+    [[nodiscard]] static auto face_culling_enabled() -> bool;
+    [[nodiscard]] static auto multisampling_enabled() -> bool;
     [[nodiscard]] static auto wireframe_mode_enabled() -> bool;
+
     [[nodiscard]] static auto draw_calls_last_frame() -> u32;
 
     [[nodiscard]] static auto instance_buffer() -> const gl::InstanceBuffer&;
@@ -177,7 +186,12 @@ private:
     Vector<DrawCommand> _draw_commands;
     Vector<RenderBatch> _batches;
 
+    bool _blending_enabled = false;
+    bool _depth_test_enabled = false;
+    bool _face_culling_enabled = false;
+    bool _multisampling_enabled = false;
     bool _wireframe_mode_enabled = false;
+
     u32 _draw_calls_this_frame = 0;
     u32 _draw_calls_last_frame = 0;
 
