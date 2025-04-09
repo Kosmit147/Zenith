@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <fstream>
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
@@ -14,22 +15,23 @@ namespace zth::fs {
 
 template<std::ranges::range Container>
     requires(std::ranges::output_range<Container, std::ranges::range_value_t<Container>>)
-auto load_to(const std::filesystem::path& path) -> Optional<Container>
+auto read_to(const std::filesystem::path& path, std::ios::openmode mode = std::ios::in) -> Optional<Container>
 {
-    // @todo: Optimization pass.
     // @robustness: std::filesystem::exists() and std::filesystem::path::string() throw.
+
+    auto log_error = [&] { ZTH_INTERNAL_ERROR("[Filesystem] Couldn't read from file: \"{}\".", path.string()); };
 
     if (!std::filesystem::exists(path))
     {
-        ZTH_INTERNAL_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        log_error();
         return nil;
     }
 
-    std::ifstream file(path);
+    std::ifstream file(path, mode);
 
     if (!file.is_open())
     {
-        ZTH_INTERNAL_ERROR("[Filesystem] Couldn't load file from path: \"{}\".", path.string());
+        log_error();
         return nil;
     }
 
@@ -37,15 +39,24 @@ auto load_to(const std::filesystem::path& path) -> Optional<Container>
     result.reserve(std::filesystem::file_size(path));
     result.insert(result.end(), std::istreambuf_iterator{ file }, {});
 
+    if (!file.good())
+    {
+        log_error();
+        return nil;
+    }
+
     return zth::make_optional(result);
 }
 
+auto write_to(const std::filesystem::path& path, const void* data, usize data_size_bytes,
+              std::ios::openmode mode = std::ios::out) -> bool;
+
+auto write_to(const std::filesystem::path& path, std::ranges::contiguous_range auto&& data,
+              std::ios::openmode mode = std::ios::out) -> bool
+{
+    return write_to(path, std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), mode);
+}
+
 [[nodiscard]] auto extract_filename(const std::filesystem::path& path) -> Optional<String>;
-
-extern template auto load_to<String>(const std::filesystem::path&) -> Optional<String>;
-extern template auto load_to<Vector<u8>>(const std::filesystem::path&) -> Optional<Vector<u8>>;
-
-extern template auto load_to<TemporaryString>(const std::filesystem::path&) -> Optional<TemporaryString>;
-extern template auto load_to<TemporaryVector<u8>>(const std::filesystem::path&) -> Optional<TemporaryVector<u8>>;
 
 } // namespace zth::fs

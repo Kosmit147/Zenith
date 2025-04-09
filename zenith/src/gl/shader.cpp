@@ -278,8 +278,8 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> Option
 
 auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Optional<ProgramId>
 {
-    auto vertex_source = fs::load_to<TemporaryString>(paths.vertex_path);
-    auto fragment_source = fs::load_to<TemporaryString>(paths.fragment_path);
+    auto vertex_source = fs::read_to<TemporaryString>(paths.vertex_path);
+    auto fragment_source = fs::read_to<TemporaryString>(paths.fragment_path);
 
     // @robustness: .string() throws.
 
@@ -309,7 +309,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (paths.tess_control_path)
     {
-        tess_control_source = fs::load_to<TemporaryString>(*paths.tess_control_path);
+        tess_control_source = fs::read_to<TemporaryString>(*paths.tess_control_path);
 
         if (!tess_control_source)
         {
@@ -323,7 +323,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (paths.tess_evaluation_path)
     {
-        tess_evaluation_source = fs::load_to<TemporaryString>(*paths.tess_evaluation_path);
+        tess_evaluation_source = fs::read_to<TemporaryString>(*paths.tess_evaluation_path);
 
         if (!tess_evaluation_source)
         {
@@ -337,7 +337,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (paths.geometry_path)
     {
-        geometry_source = fs::load_to<TemporaryString>(*paths.geometry_path);
+        geometry_source = fs::read_to<TemporaryString>(*paths.geometry_path);
 
         if (!geometry_source)
         {
