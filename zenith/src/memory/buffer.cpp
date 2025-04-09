@@ -253,7 +253,7 @@ auto DynamicBuffer::reallocate_at_least(size_type min_capacity_bytes) noexcept -
 
 auto DynamicBuffer::calculate_growth(size_type old_size_bytes) noexcept -> size_type
 {
-    return old_size_bytes * 2;
+    return old_size_bytes + old_size_bytes / 2;
 }
 
 } // namespace zth::memory
