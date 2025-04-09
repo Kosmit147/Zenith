@@ -29,7 +29,7 @@ Texture2D::Texture2D(const void* data, usize data_size_bytes, const TextureParam
 
 Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& params)
 {
-    auto maybe_data = fs::load_to<TemporaryVector<u8>>(path);
+    auto maybe_data = fs::read_to<TemporaryVector<u8>>(path, std::ios::binary);
 
     if (!maybe_data)
     {
