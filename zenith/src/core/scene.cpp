@@ -104,7 +104,7 @@ auto Scene::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle
 
 auto SceneManager::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Scene manager initialized.");
+    ZTH_INTERNAL_TRACE("Scene manager initialized.");
     return {};
 }
 
@@ -170,7 +170,7 @@ auto SceneManager::on_render() -> void
 
 auto SceneManager::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Shutting down scene manager...");
+    ZTH_INTERNAL_TRACE("Shutting down scene manager...");
 
     _queued_scene.reset();
 
@@ -179,7 +179,7 @@ auto SceneManager::shut_down() -> void
 
     _scene.reset();
 
-    ZTH_INTERNAL_INFO("Scene manager shut down.");
+    ZTH_INTERNAL_TRACE("Scene manager shut down.");
 }
 
 auto SceneManager::queue_scene(std::unique_ptr<Scene>&& scene) -> void

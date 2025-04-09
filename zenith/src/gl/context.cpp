@@ -60,7 +60,7 @@ auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]
 
 auto Context::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Initializing OpenGL context...");
+    ZTH_INTERNAL_TRACE("Initializing OpenGL context...");
 
     retrieve_context_variables();
 
@@ -70,13 +70,13 @@ auto Context::init() -> Result<void, String>
 
     log_context_info();
 
-    ZTH_INTERNAL_INFO("OpenGL context initialized.");
+    ZTH_INTERNAL_TRACE("OpenGL context initialized.");
     return {};
 }
 
 auto Context::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("OpenGL context shut down.");
+    ZTH_INTERNAL_TRACE("OpenGL context shut down.");
 }
 
 auto Context::set_debug_context() -> void

@@ -7,7 +7,7 @@ namespace zth {
 
 auto Time::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_INFO("Time system initialized.");
+    ZTH_INTERNAL_TRACE("Time system initialized.");
     return {};
 }
 
@@ -20,7 +20,7 @@ auto Time::start_frame() -> void
 
 auto Time::shut_down() -> void
 {
-    ZTH_INTERNAL_INFO("Time system shut down.");
+    ZTH_INTERNAL_TRACE("Time system shut down.");
 }
 
 } // namespace zth
