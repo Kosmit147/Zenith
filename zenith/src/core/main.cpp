@@ -21,10 +21,6 @@ auto main() -> int
         auto app = create_application();
         app->run();
     }
-    catch (const spdlog::spdlog_ex& e)
-    {
-        std::println(std::cerr, "CRITICAL ERROR: {}", e.what());
-    }
     catch (const Exception& e)
     {
         std::println(std::cerr, "CRITICAL ERROR: {}\n{}", e.what(), e.stacktrace());

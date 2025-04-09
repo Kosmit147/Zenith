@@ -14,6 +14,8 @@ std::shared_ptr<spdlog::logger> Logger::_client_logger;
 
 auto Logger::init(const LoggerSpec& logger_spec) -> Result<void, String>
 {
+    // spdlog throws exceptions only during the construction of a logger or a sink.
+
     try
     {
         auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
