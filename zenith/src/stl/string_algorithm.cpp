@@ -68,6 +68,21 @@ auto find_substr_between_at_offset(StringView text, usize offset, char opening_d
     return FindSubstrResult{ .found_at = found_at, .result = text.substr(found_at, length) };
 }
 
+auto case_insensitive_find(StringView text, StringView search) -> Optional<usize>
+{
+    auto found = std::ranges::search(text, search, case_insensitive_equal);
+
+    if (found.empty())
+        return nil;
+
+    return std::distance(text.begin(), found.begin());
+}
+
+auto case_insensitive_contains(StringView text, StringView search) -> bool
+{
+    return case_insensitive_find(text, search).has_value();
+}
+
 } // namespace zth
 
 ZTH_DEFINE_FORMATTER(zth::FindSubstrResult, result)
