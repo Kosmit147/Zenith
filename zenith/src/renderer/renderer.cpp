@@ -77,13 +77,13 @@ auto Renderer::init() -> Result<void, String>
 {
     ZTH_INTERNAL_INFO("Initializing renderer...");
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-
     renderer.reset(new Renderer);
 
+    set_blending_enabled(true);
+    set_depth_test_enabled(true);
+    set_face_culling_enabled(true);
+    set_multisampling_enabled(true);
+    set_wireframe_mode_enabled(false);
     set_clear_color(colors::transparent);
 
     shaders::load_shaders();
@@ -124,15 +124,65 @@ auto Renderer::shut_down() -> void
     ZTH_INTERNAL_INFO("Renderer shut down.");
 }
 
-auto Renderer::set_wireframe_mode(bool enabled) -> void
+auto Renderer::set_blending_enabled(bool enabled) -> void
 {
-    renderer->_wireframe_mode_enabled = enabled;
-    glPolygonMode(GL_FRONT_AND_BACK, renderer->_wireframe_mode_enabled ? GL_LINE : GL_FILL);
+    if (enabled)
+    {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+
+    renderer->_blending_enabled = enabled;
 }
 
-auto Renderer::toggle_wireframe_mode() -> void
+auto Renderer::set_depth_test_enabled(bool enabled) -> void
 {
-    set_wireframe_mode(!renderer->_wireframe_mode_enabled);
+    if (enabled)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+
+    renderer->_depth_test_enabled = enabled;
+}
+
+auto Renderer::set_face_culling_enabled(bool enabled) -> void
+{
+    if (enabled)
+    {
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
+        glEnable(GL_CULL_FACE);
+    }
+    else
+    {
+        glDisable(GL_CULL_FACE);
+    }
+
+    renderer->_face_culling_enabled = enabled;
+}
+
+auto Renderer::set_multisampling_enabled(bool enabled) -> void
+{
+    if (enabled)
+        glEnable(GL_MULTISAMPLE);
+    else
+        glDisable(GL_MULTISAMPLE);
+
+    renderer->_multisampling_enabled = enabled;
+}
+
+auto Renderer::set_wireframe_mode_enabled(bool enabled) -> void
+{
+    if (enabled)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    renderer->_wireframe_mode_enabled = enabled;
 }
 
 auto Renderer::set_clear_color(glm::vec4 color) -> void
@@ -249,6 +299,26 @@ auto Renderer::current_camera_projection() -> const glm::mat4&
 auto Renderer::current_camera_view_projection() -> const glm::mat4&
 {
     return renderer->_current_camera_view_projection;
+}
+
+auto Renderer::blending_enabled() -> bool
+{
+    return renderer->_blending_enabled;
+}
+
+auto Renderer::depth_test_enabled() -> bool
+{
+    return renderer->_depth_test_enabled;
+}
+
+auto Renderer::face_culling_enabled() -> bool
+{
+    return renderer->_face_culling_enabled;
+}
+
+auto Renderer::multisampling_enabled() -> bool
+{
+    return renderer->_multisampling_enabled;
 }
 
 auto Renderer::wireframe_mode_enabled() -> bool

@@ -29,6 +29,7 @@ struct WindowSpec
     bool resizable = true;
     bool maximized = false;
     bool cursor_enabled = false;
+    u32 samples = 4;
     bool transparent_framebuffer = false;
     Optional<WindowAspectRatio> forced_aspect_ratio = nil;
 };
