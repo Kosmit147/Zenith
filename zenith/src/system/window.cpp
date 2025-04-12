@@ -73,7 +73,7 @@ auto Window::init(const WindowSpec& spec) -> Result<void, String>
     glfwWindowHint(GLFW_SAMPLES, static_cast<int>(spec.samples));
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, to_glfw_enum(spec.transparent_framebuffer));
 
-#if !defined(ZTH_DIST_BUILD)
+#if defined(ZTH_GL_DEBUG)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 

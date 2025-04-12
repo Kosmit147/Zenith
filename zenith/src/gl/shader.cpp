@@ -267,9 +267,8 @@ auto Shader::create_program_from_sources(const ShaderSources& sources) -> Option
     if (!program)
         return nil;
 
-#if !defined(ZTH_DIST_BUILD)
-    // We're not deleting the shaders in non-distribution builds because that lets us look at their source code when
-    // using API debugging tools.
+#if defined(ZTH_GL_DEBUG)
+    // If we don't delete the shaders we can look at their source code when using API debugging tools.
     shaders_cleanup.dismiss();
 #endif
 

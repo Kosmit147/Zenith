@@ -64,7 +64,7 @@ auto Context::init() -> Result<void, String>
 
     retrieve_context_variables();
 
-#if !defined(ZTH_DIST_BUILD)
+#if defined(ZTH_GL_DEBUG)
     set_debug_context();
 #endif
 

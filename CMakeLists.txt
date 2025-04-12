@@ -10,25 +10,46 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 option(ZTH_DEVELOPER ${PROJECT_IS_TOP_LEVEL})
-option(ZTH_DIST_BUILD OFF)
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(B_PRODUCTION_MODE OFF) # For battery-embed.
+if(NOT CMAKE_BUILD_TYPE)
+    message(WARNING "No build type set. Defaulting to Release.")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+if(MSVC)
+    # Replace /Ob1 with /Ob2 in RelWithDebInfo builds to allow the compiler to inline any function that it wants to.
+
+    string(REPLACE "/Ob1" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /Ob2")
+
+    string(REPLACE "/Ob1" "" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} /Ob2")
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(ZTH_DEBUG_BUILD)
-elseif(CMAKE_BUILD_TYPE MATCHES "Release"
-        OR CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo"
-        OR CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+
+    set(ZTH_ASSERTIONS_DEFAULT ON)
+    set(ZTH_GL_DEBUG_DEFAULT ON)
+    set(ZTH_DEBUG_LOGGING_DEFAULT ON)
+
     set(B_PRODUCTION_MODE OFF) # For battery-embed.
-    add_compile_definitions(NDEBUG)
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION On)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release"
+           OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
+           OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+    add_compile_definitions(ZTH_RELEASE_BUILD)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+
+    set(ZTH_ASSERTIONS_DEFAULT OFF)
+    set(ZTH_GL_DEBUG_DEFAULT OFF)
+    set(ZTH_DEBUG_LOGGING_DEFAULT OFF)
+
+    set(B_PRODUCTION_MODE ON) # For battery-embed.
 endif()
 
-if(ZTH_DIST_BUILD)
-    set(B_PRODUCTION_MODE ON) # For battery-embed.
-    add_compile_definitions(ZTH_DIST_BUILD)
-else()
-    message(WARNING "ZTH_DIST_BUILD is off. Enable ZTH_DIST_BUILD option to strip all debugging features when deploying your application.")
-endif()
+set(ZTH_ASSERTIONS ${ZTH_ASSERTIONS_DEFAULT} CACHE BOOL "Enable assertions and debug breaks")
+set(ZTH_GL_DEBUG ${ZTH_GL_DEBUG_DEFAULT} CACHE BOOL "Enable OpenGL debugging features")
+set(ZTH_DEBUG_LOGGING ${ZTH_DEBUG_LOGGING_DEFAULT} CACHE BOOL "Enable debug logging")
 
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
@@ -36,7 +57,10 @@ if(MSVC)
 	set(ENTT_INCLUDE_NATVIS TRUE)
 endif()
 
-add_subdirectory("dependencies/Catch2")
+if(ZTH_DEVELOPER)
+	add_subdirectory("dependencies/Catch2")
+endif()
+
 add_subdirectory("dependencies/embed")
 add_subdirectory("dependencies/entt")
 add_subdirectory("dependencies/glad")
@@ -51,6 +75,5 @@ if(ZTH_DEVELOPER)
     add_subdirectory("testbed")
     add_subdirectory("sandbox")
     add_subdirectory("unit_tester")
+	enable_testing()
 endif()
-
-enable_testing()

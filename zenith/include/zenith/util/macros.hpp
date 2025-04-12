@@ -58,6 +58,8 @@
 
 // @refactor: Use std::breakpoint instead once we're on C++26.
 
+#if defined(ZTH_ASSERTIONS)
+
 #if defined(_MSC_VER)
 
 #define ZTH_DEBUG_BREAK __debugbreak()
@@ -76,9 +78,8 @@
 
 #endif
 
-#if defined(ZTH_DIST_BUILD)
+#else
 
-#undef ZTH_DEBUG_BREAK
 #define ZTH_DEBUG_BREAK ZTH_NOP
 
 #endif

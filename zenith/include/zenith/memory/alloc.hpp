@@ -74,7 +74,7 @@ auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 
 auto reallocate(auto*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexcept -> void
 {
-#if !defined(ZTH_DIST_BUILD)
+#if defined(ZTH_ASSERTIONS)
     if (ptr == nullptr)
         ZTH_ASSERT(buffer_size_bytes == 0);
 #endif
