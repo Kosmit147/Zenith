@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util/defer.hpp"
+#include "util/hashed_string.hpp"
 #include "util/macros.hpp"
 #include "util/meta.hpp"
 #include "util/optional.hpp"
