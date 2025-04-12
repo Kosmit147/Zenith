@@ -64,10 +64,12 @@ constexpr std::array container_positions = { glm::vec3{ 0.0f, 0.0f, 0.0f },    g
                                              glm::vec3{ 1.3f, -2.0f, -2.5f },  glm::vec3{ 1.5f, 2.0f, -2.5f },
                                              glm::vec3{ 1.5f, 0.2f, -1.5f },   glm::vec3{ -1.3f, 1.0f, -1.5f } };
 
-constexpr auto container_diffuse_map_asset_id = "container_diffuse_map";
-constexpr auto container_specular_map_asset_id = "container_specular_map";
-constexpr auto container_material_asset_id = "container_material";
-constexpr auto point_light_material_asset_id = "point_light_material";
+using namespace zth::hashed_string_literals;
+
+constexpr auto container_diffuse_map_asset_id = "container_diffuse_map"_hs;
+constexpr auto container_specular_map_asset_id = "container_specular_map"_hs;
+constexpr auto container_material_asset_id = "container_material"_hs;
+constexpr auto point_light_material_asset_id = "point_light_material"_hs;
 
 } // namespace
 

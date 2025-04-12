@@ -8,6 +8,11 @@
 
 namespace zth {
 
+template<> AssetId AssetManager::_next_id<Mesh> = 0;
+template<> AssetId AssetManager::_next_id<Material> = 0;
+template<> AssetId AssetManager::_next_id<gl::Shader> = 0;
+template<> AssetId AssetManager::_next_id<gl::Texture2D> = 0;
+
 AssetManager::AssetMap<Mesh> AssetManager::_meshes;
 AssetManager::AssetMap<Material> AssetManager::_materials;
 AssetManager::AssetMap<gl::Shader> AssetManager::_shaders;
@@ -22,10 +27,13 @@ auto AssetManager::init() -> Result<void, String>
 auto AssetManager::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down asset manager...");
+
     _meshes.clear();
     _materials.clear();
+
     _shaders.clear();
     _textures.clear();
+
     ZTH_INTERNAL_TRACE("Asset manager shut down.");
 }
 
@@ -48,27 +56,5 @@ template<> auto AssetManager::get_asset_map<gl::Texture2D>() -> AssetMap<gl::Tex
 {
     return _textures;
 }
-
-template auto AssetManager::add<Mesh>(StringView, const Mesh&) -> Optional<Reference<Mesh>>;
-template auto AssetManager::add<Mesh>(StringView, Mesh&&) -> Optional<Reference<Mesh>>;
-template auto AssetManager::get<Mesh>(StringView) -> Optional<Reference<Mesh>>;
-template auto AssetManager::get_unchecked<Mesh>(StringView) -> Mesh&;
-template auto AssetManager::remove<Mesh>(StringView) -> bool;
-
-template auto AssetManager::add<Material>(StringView, const Material&) -> Optional<Reference<Material>>;
-template auto AssetManager::add<Material>(StringView, Material&&) -> Optional<Reference<Material>>;
-template auto AssetManager::get<Material>(StringView) -> Optional<Reference<Material>>;
-template auto AssetManager::get_unchecked<Material>(StringView) -> Material&;
-template auto AssetManager::remove<Material>(StringView) -> bool;
-
-template auto AssetManager::add<gl::Shader>(StringView, gl::Shader&&) -> Optional<Reference<gl::Shader>>;
-template auto AssetManager::get<gl::Shader>(StringView) -> Optional<Reference<gl::Shader>>;
-template auto AssetManager::get_unchecked<gl::Shader>(StringView) -> gl::Shader&;
-template auto AssetManager::remove<gl::Shader>(StringView) -> bool;
-
-template auto AssetManager::add<gl::Texture2D>(StringView, gl::Texture2D&&) -> Optional<Reference<gl::Texture2D>>;
-template auto AssetManager::get<gl::Texture2D>(StringView) -> Optional<Reference<gl::Texture2D>>;
-template auto AssetManager::get_unchecked<gl::Texture2D>(StringView) -> gl::Texture2D&;
-template auto AssetManager::remove<gl::Texture2D>(StringView) -> bool;
 
 } // namespace zth
