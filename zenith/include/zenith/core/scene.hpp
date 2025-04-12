@@ -27,7 +27,7 @@ public:
     auto render() -> void;
 
     auto create_entity(const String& tag) -> EntityHandle;
-    auto create_entity(String&& tag) -> EntityHandle;
+    auto create_entity(String&& tag = "Entity") -> EntityHandle;
 
     [[nodiscard]] auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
     [[nodiscard]] auto find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>;
