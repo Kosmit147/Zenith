@@ -1,5 +1,6 @@
 #pragma once
 
+#include "util/color.hpp"
 #include "util/defer.hpp"
 #include "util/hashed_string.hpp"
 #include "util/macros.hpp"
