@@ -25,7 +25,7 @@ auto Logger::init(const LoggerSpec& logger_spec) -> Result<void, String>
         _core_logger = std::make_shared<spdlog::logger>(logger_spec.core_logger_label, sink_list);
         _client_logger = std::make_shared<spdlog::logger>(logger_spec.client_logger_label, sink_list);
 
-#if !defined(ZTH_DIST_BUILD)
+#if defined(ZTH_DEBUG_LOGGING)
         _core_logger->set_level(spdlog::level::trace);
         _client_logger->set_level(spdlog::level::trace);
 #else
