@@ -33,9 +33,7 @@ template<> constexpr auto get_asset_type_string<gl::Texture2D>() -> const char*
 template<Asset A> auto AssetManager::emplace(auto&&... args) -> Optional<std::pair<AssetId, A&>>
 {
     auto id = generate_id<A>();
-    return emplace<A>(id, std::forward<decltype(args)>(args)...).transform([&](auto&& asset_ref) {
-        return std::pair<AssetId, A&>(id, asset_ref);
-    });
+    return attach_id(emplace<A>(id, std::forward<decltype(args)>(args)...), id);
 }
 
 template<Asset A> auto AssetManager::emplace(AssetId id, auto&&... args) -> Optional<Reference<A>>
@@ -45,7 +43,7 @@ template<Asset A> auto AssetManager::emplace(AssetId id, auto&&... args) -> Opti
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't emplace {} {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't emplace {} with id {}.", get_asset_type_string<A>(), id);
         return nil;
     }
 
@@ -63,9 +61,7 @@ template<Asset A>
 auto AssetManager::add(const A& asset) -> Optional<std::pair<AssetId, A&>>
 {
     auto id = generate_id<A>();
-    return add<A>(id, std::forward<decltype(asset)>(asset)).transform([&](auto&& asset_ref) {
-        return std::pair<AssetId, A&>(id, asset_ref);
-    });
+    return attach_id(add<A>(id, std::forward<decltype(asset)>(asset)), id);
 }
 
 template<Asset A>
@@ -73,9 +69,7 @@ template<Asset A>
 auto AssetManager::add(A&& asset) -> Optional<std::pair<AssetId, A&>>
 {
     auto id = generate_id<A>();
-    return add<A>(id, std::forward<decltype(asset)>(asset)).transform([&](auto&& asset_ref) {
-        return std::pair<AssetId, A&>(id, asset_ref);
-    });
+    return attach_id(add<A>(id, std::forward<decltype(asset)>(asset)), id);
 }
 
 template<Asset A>
@@ -89,7 +83,7 @@ auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<A>>
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} with id {}.", get_asset_type_string<A>(), id);
         return nil;
     }
 
@@ -108,7 +102,7 @@ auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<A>>
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} with id {}.", get_asset_type_string<A>(), id);
         return nil;
     }
 
@@ -140,7 +134,7 @@ template<Asset A> auto AssetManager::get(AssetId id) -> Optional<Reference<A>>
         return asset_ref;
     }
 
-    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} {}.", get_asset_type_string<A>(), id);
+    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} with id {}.", get_asset_type_string<A>(), id);
     return nil;
 }
 
@@ -182,6 +176,12 @@ template<Asset A> auto AssetManager::generate_id() -> AssetId
 template<Asset A> auto AssetManager::get_asset_map() -> AssetMap<A>&
 {
     static_assert(false, "type is not an asset");
+}
+
+template<Asset A>
+auto AssetManager::attach_id(Optional<Reference<A>>&& asset_ref, AssetId id) -> Optional<std::pair<AssetId, A&>>
+{
+    return std::move(asset_ref).transform([&](auto&& ref) { return std::pair<AssetId, A&>{ id, ref }; });
 }
 
 } // namespace zth
