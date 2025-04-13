@@ -60,11 +60,11 @@ target_precompile_headers(zenith_core PRIVATE "src/pch.hpp")
 set_property(TARGET zenith_core PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 set(ZTH_PRIVATE_DEFINITIONS
-	_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # For battery::embed.
+    _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # For battery::embed.
 )
 
 set(ZTH_PUBLIC_DEFINITIONS
-	GLM_ENABLE_EXPERIMENTAL # For matrix decomposition.
+    GLM_ENABLE_EXPERIMENTAL # For matrix decomposition.
 )
 
 if(ZTH_ASSERTIONS)
@@ -93,8 +93,8 @@ target_link_libraries(zenith_core PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(zenith_core PUBLIC stb_image)
 
 add_library(
-	zenith STATIC
-	"src/core/main.cpp"
+    zenith STATIC
+    "src/core/main.cpp"
 )
 
 target_compile_features(zenith PRIVATE cxx_std_23)

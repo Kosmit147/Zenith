@@ -93,6 +93,9 @@ private:
 private:
     template<Asset A> [[nodiscard]] static auto generate_id() -> AssetId;
     template<Asset A> [[nodiscard]] static auto get_asset_map() -> AssetMap<A>&;
+    template<Asset A>
+    [[nodiscard]] static auto attach_id(Optional<Reference<A>>&& asset_ref, AssetId id)
+        -> Optional<std::pair<AssetId, A&>>;
 };
 
 template<> auto AssetManager::get_asset_map<Mesh>() -> AssetMap<Mesh>&;

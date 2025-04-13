@@ -17,7 +17,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(MSVC)
-    # Replace /Ob1 with /Ob2 in RelWithDebInfo builds to allow the compiler to inline any function that it wants to.
+    # Replace /Ob1 with /Ob2 in RelWithDebInfo builds to enable full inlining.
 
     string(REPLACE "/Ob1" "" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /Ob2")
@@ -27,8 +27,6 @@ if(MSVC)
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions(ZTH_DEBUG_BUILD)
-
     set(ZTH_ASSERTIONS_DEFAULT ON)
     set(ZTH_GL_DEBUG_DEFAULT ON)
     set(ZTH_DEBUG_LOGGING_DEFAULT ON)
@@ -37,7 +35,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release"
            OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"
            OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    add_compile_definitions(ZTH_RELEASE_BUILD)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 
     set(ZTH_ASSERTIONS_DEFAULT OFF)
@@ -54,11 +51,11 @@ set(ZTH_DEBUG_LOGGING ${ZTH_DEBUG_LOGGING_DEFAULT} CACHE BOOL "Enable debug logg
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
 if(MSVC)
-	set(ENTT_INCLUDE_NATVIS TRUE)
+    set(ENTT_INCLUDE_NATVIS TRUE)
 endif()
 
 if(ZTH_DEVELOPER)
-	add_subdirectory("dependencies/Catch2")
+    add_subdirectory("dependencies/Catch2")
 endif()
 
 add_subdirectory("dependencies/embed")
@@ -75,5 +72,5 @@ if(ZTH_DEVELOPER)
     add_subdirectory("testbed")
     add_subdirectory("sandbox")
     add_subdirectory("unit_tester")
-	enable_testing()
+    enable_testing()
 endif()
