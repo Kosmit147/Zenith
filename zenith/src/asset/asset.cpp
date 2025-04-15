@@ -8,15 +8,15 @@
 
 namespace zth {
 
-template<> AssetId AssetManager::_next_id<Mesh> = 0;
-template<> AssetId AssetManager::_next_id<Material> = 0;
-template<> AssetId AssetManager::_next_id<gl::Shader> = 0;
-template<> AssetId AssetManager::_next_id<gl::Texture2D> = 0;
+template<> AssetManager::AssetStorage<Mesh> AssetManager::_storage<Mesh>;
+template<> AssetManager::AssetStorage<Material> AssetManager::_storage<Material>;
+template<> AssetManager::AssetStorage<gl::Shader> AssetManager::_storage<gl::Shader>;
+template<> AssetManager::AssetStorage<gl::Texture2D> AssetManager::_storage<gl::Texture2D>;
 
-AssetManager::AssetMap<Mesh> AssetManager::_meshes;
-AssetManager::AssetMap<Material> AssetManager::_materials;
-AssetManager::AssetMap<gl::Shader> AssetManager::_shaders;
-AssetManager::AssetMap<gl::Texture2D> AssetManager::_textures;
+template<> StringView AssetManager::_asset_type_str<Mesh> = "mesh";
+template<> StringView AssetManager::_asset_type_str<Material> = "material";
+template<> StringView AssetManager::_asset_type_str<gl::Shader> = "shader";
+template<> StringView AssetManager::_asset_type_str<gl::Texture2D> = "texture";
 
 auto AssetManager::init() -> Result<void, String>
 {
@@ -28,33 +28,12 @@ auto AssetManager::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down asset manager...");
 
-    _meshes.clear();
-    _materials.clear();
-
-    _shaders.clear();
-    _textures.clear();
+    _storage<Mesh>.clear();
+    _storage<Material>.clear();
+    _storage<gl::Shader>.clear();
+    _storage<gl::Texture2D>.clear();
 
     ZTH_INTERNAL_TRACE("Asset manager shut down.");
-}
-
-template<> auto AssetManager::get_asset_map<Mesh>() -> AssetMap<Mesh>&
-{
-    return _meshes;
-}
-
-template<> auto AssetManager::get_asset_map<Material>() -> AssetMap<Material>&
-{
-    return _materials;
-}
-
-template<> auto AssetManager::get_asset_map<gl::Shader>() -> AssetMap<gl::Shader>&
-{
-    return _shaders;
-}
-
-template<> auto AssetManager::get_asset_map<gl::Texture2D>() -> AssetMap<gl::Texture2D>&
-{
-    return _textures;
 }
 
 } // namespace zth
