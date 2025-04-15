@@ -1,187 +1,118 @@
 #pragma once
 
+#include <utility>
+
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 
 namespace zth {
 
-template<Asset A> [[nodiscard]] constexpr auto get_asset_type_string() -> const char*
+template<Asset A> auto AssetManager::emplace(AssetId id, auto&&... args) -> Optional<Reference<std::shared_ptr<A>>>
 {
-    static_assert(false, "not implemented");
+    return add<A>(id, std::make_shared<A>(std::forward<decltype(args)>(args)...));
 }
 
-template<> constexpr auto get_asset_type_string<Mesh>() -> const char*
+template<Asset A>
+auto AssetManager::add(AssetId id, const std::shared_ptr<A>& handle) -> Optional<Reference<std::shared_ptr<A>>>
 {
-    return "mesh";
-}
-
-template<> constexpr auto get_asset_type_string<Material>() -> const char*
-{
-    return "material";
-}
-
-template<> constexpr auto get_asset_type_string<gl::Shader>() -> const char*
-{
-    return "shader";
-}
-
-template<> constexpr auto get_asset_type_string<gl::Texture2D>() -> const char*
-{
-    return "texture";
-}
-
-template<Asset A> auto AssetManager::emplace(auto&&... args) -> Optional<std::pair<AssetId, A&>>
-{
-    auto id = generate_id<A>();
-    return attach_id(emplace<A>(id, std::forward<decltype(args)>(args)...), id);
-}
-
-template<Asset A> auto AssetManager::emplace(AssetId id, auto&&... args) -> Optional<Reference<A>>
-{
-    auto& map = get_asset_map<A>();
-    auto [kv, success] = map.try_emplace(id, std::forward<decltype(args)>(args)...);
+    auto [kv, success] = _storage<A>.emplace(id, handle);
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't emplace {} with id {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
         return nil;
     }
 
-    auto& [_, asset_ref] = *kv;
-    return asset_ref;
+    auto [_, ref] = *kv;
+    static_assert(std::is_reference_v<decltype(ref)>);
+    return ref;
 }
 
-template<Asset A> auto AssetManager::emplace(HashedString id, auto&&... args) -> Optional<Reference<A>>
+template<Asset A>
+auto AssetManager::add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Reference<std::shared_ptr<A>>>
 {
-    return emplace<A>(static_cast<AssetId>(id), std::forward<decltype(args)>(args)...);
+    auto [kv, success] = _storage<A>.emplace(id, std::move(handle));
+
+    if (!success)
+    {
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
+        return nil;
+    }
+
+    auto [_, ref] = *kv;
+    static_assert(std::is_reference_v<decltype(ref)>);
+    return ref;
 }
 
 template<Asset A>
     requires(!std::is_reference_v<A>)
-auto AssetManager::add(const A& asset) -> Optional<std::pair<AssetId, A&>>
-{
-    auto id = generate_id<A>();
-    return attach_id(add<A>(id, std::forward<decltype(asset)>(asset)), id);
-}
-
-template<Asset A>
-    requires(!std::is_reference_v<A>)
-auto AssetManager::add(A&& asset) -> Optional<std::pair<AssetId, A&>>
-{
-    auto id = generate_id<A>();
-    return attach_id(add<A>(id, std::forward<decltype(asset)>(asset)), id);
-}
-
-template<Asset A>
-    requires(!std::is_reference_v<A>)
-auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<A>>
+auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<std::shared_ptr<A>>>
 {
     static_assert(std::is_lvalue_reference_v<decltype(asset)>);
 
-    auto& map = get_asset_map<A>();
-    auto [kv, success] = map.emplace(id, asset);
+    auto [kv, success] = _storage<A>.emplace(id, asset);
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} with id {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
         return nil;
     }
 
-    auto& [_, asset_ref] = *kv;
-    return asset_ref;
+    auto [_, ref] = *kv;
+    static_assert(std::is_reference_v<decltype(ref)>);
+    return ref;
 }
 
 template<Asset A>
     requires(!std::is_reference_v<A>)
-auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<A>>
+auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<std::shared_ptr<A>>>
 {
     static_assert(std::is_rvalue_reference_v<decltype(asset)>);
 
-    auto& map = get_asset_map<A>();
-    auto [kv, success] = map.emplace(id, std::move(asset));
+    auto [kv, success] = _storage<A>.emplace(id, std::move(asset));
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} with id {}.", get_asset_type_string<A>(), id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
         return nil;
     }
 
-    auto& [_, asset_ref] = *kv;
-    return asset_ref;
+    auto [_, ref] = *kv;
+    static_assert(std::is_reference_v<decltype(ref)>);
+    return ref;
 }
 
-template<Asset A>
-    requires(!std::is_reference_v<A>)
-auto AssetManager::add(HashedString id, const A& asset) -> Optional<Reference<A>>
+template<Asset A> auto AssetManager::get(AssetId id) -> Optional<std::shared_ptr<A>>
 {
-    return add<A>(static_cast<AssetId>(id), std::forward<decltype(asset)>(asset));
-}
-
-template<Asset A>
-    requires(!std::is_reference_v<A>)
-auto AssetManager::add(HashedString id, A&& asset) -> Optional<Reference<A>>
-{
-    return add<A>(static_cast<AssetId>(id), std::forward<decltype(asset)>(asset));
-}
-
-template<Asset A> auto AssetManager::get(AssetId id) -> Optional<Reference<A>>
-{
-    auto& map = get_asset_map<A>();
-
-    if (auto kv = map.find(id); kv != map.end())
+    if (auto kv = _storage<A>.find(id); kv != _storage<A>.end())
     {
-        auto& [_, asset_ref] = *kv;
-        return asset_ref;
+        auto [_, ref] = *kv;
+        static_assert(std::is_reference_v<decltype(ref)>);
+        return ref;
     }
 
-    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} with id {}.", get_asset_type_string<A>(), id);
+    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} with id {}.", _asset_type_str<A>, id);
     return nil;
 }
 
-template<Asset A> auto AssetManager::get_unchecked(AssetId id) -> A&
+template<Asset A> auto AssetManager::get_unchecked(AssetId id) -> std::shared_ptr<A>
 {
-    auto& map = get_asset_map<A>();
-    auto kv = map.find(id);
-    ZTH_ASSERT(kv != map.end());
-    auto& [_, asset_ref] = *kv;
-    return asset_ref;
+    auto kv = _storage<A>.find(id);
+    ZTH_ASSERT(kv != _storage<A>.end());
+    auto [_, ref] = *kv;
+    static_assert(std::is_reference_v<decltype(ref)>);
+    return ref;
 }
 
 template<Asset A> auto AssetManager::remove(AssetId id) -> bool
 {
-    auto& map = get_asset_map<A>();
-    auto elems_erased = map.erase(id);
+    auto elems_erased = _storage<A>.erase(id);
     return elems_erased != 0;
 }
 
 template<Asset A> auto AssetManager::contains(AssetId id) -> bool
 {
-    auto& map = get_asset_map<A>();
-    return map.contains(id);
-}
-
-template<Asset A> auto AssetManager::generate_id() -> AssetId
-{
-    auto& map = get_asset_map<A>();
-
-    while (true)
-    {
-        auto id = _next_id<A> ++;
-
-        if (!contains<A>(id))
-            return id;
-    }
-}
-
-template<Asset A> auto AssetManager::get_asset_map() -> AssetMap<A>&
-{
-    static_assert(false, "type is not an asset");
-}
-
-template<Asset A>
-auto AssetManager::attach_id(Optional<Reference<A>>&& asset_ref, AssetId id) -> Optional<std::pair<AssetId, A&>>
-{
-    return std::move(asset_ref).transform([&](auto&& ref) { return std::pair<AssetId, A&>{ id, ref }; });
+    return _storage<A>.contains(id);
 }
 
 } // namespace zth
