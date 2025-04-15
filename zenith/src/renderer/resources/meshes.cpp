@@ -1,4 +1,4 @@
-#include "zenith/renderer/meshes.hpp"
+#include "zenith/renderer/resources/meshes.hpp"
 
 #include "zenith/log/logger.hpp"
 #include "zenith/renderer/mesh.hpp"
