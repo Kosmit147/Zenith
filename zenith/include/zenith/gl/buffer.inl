@@ -145,12 +145,12 @@ auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 off
 
 template<typename T> auto IndexBuffer::set_index_data_type() -> void
 {
-    set_index_data_type(to_data_type<T>());
+    set_index_data_type(to_data_type<T>);
 }
 
 template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::derive_index_data_type() -> DataType
 {
-    constexpr auto data_type = to_data_type<std::ranges::range_value_t<IndexData>>();
+    constexpr auto data_type = to_data_type<std::ranges::range_value_t<IndexData>>;
     static_assert(is_an_index_data_type(data_type), "data type must be ubyte, ushort or uint");
     return data_type;
 }

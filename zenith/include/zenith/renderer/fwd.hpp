@@ -16,19 +16,7 @@ struct AmbientLight;
 
 struct Material;
 
-namespace materials {
-
-struct MaterialList;
-
-} // namespace materials
-
 class Mesh;
-
-namespace meshes {
-
-struct MeshList;
-
-} // namespace meshes
 
 struct DrawCommand;
 struct RenderBatch;
@@ -37,12 +25,6 @@ struct PointLightRenderData;
 struct SpotLightRenderData;
 struct AmbientLightRenderData;
 class Renderer;
-
-namespace shaders {
-
-struct ShaderList;
-
-} // namespace shaders
 
 struct LightPropertiesShaderData;
 struct LightAttenuationShaderData;
