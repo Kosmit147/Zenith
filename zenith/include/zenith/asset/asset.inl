@@ -7,13 +7,14 @@
 
 namespace zth {
 
-template<Asset A> auto AssetManager::emplace(AssetId id, auto&&... args) -> Optional<Reference<std::shared_ptr<A>>>
+template<Asset A>
+auto AssetManager::emplace(AssetId id, auto&&... args) -> Optional<Reference<const std::shared_ptr<A>>>
 {
     return add<A>(id, std::make_shared<A>(std::forward<decltype(args)>(args)...));
 }
 
 template<Asset A>
-auto AssetManager::add(AssetId id, const std::shared_ptr<A>& handle) -> Optional<Reference<std::shared_ptr<A>>>
+auto AssetManager::add(AssetId id, const std::shared_ptr<A>& handle) -> Optional<Reference<const std::shared_ptr<A>>>
 {
     auto [kv, success] = _storage<A>.emplace(id, handle);
 
@@ -29,7 +30,7 @@ auto AssetManager::add(AssetId id, const std::shared_ptr<A>& handle) -> Optional
 }
 
 template<Asset A>
-auto AssetManager::add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Reference<std::shared_ptr<A>>>
+auto AssetManager::add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Reference<const std::shared_ptr<A>>>
 {
     auto [kv, success] = _storage<A>.emplace(id, std::move(handle));
 
@@ -46,7 +47,7 @@ auto AssetManager::add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Refe
 
 template<Asset A>
     requires(!std::is_reference_v<A>)
-auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<std::shared_ptr<A>>>
+auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<const std::shared_ptr<A>>>
 {
     static_assert(std::is_lvalue_reference_v<decltype(asset)>);
 
@@ -65,7 +66,7 @@ auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<std::sh
 
 template<Asset A>
     requires(!std::is_reference_v<A>)
-auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<std::shared_ptr<A>>>
+auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<const std::shared_ptr<A>>>
 {
     static_assert(std::is_rvalue_reference_v<decltype(asset)>);
 

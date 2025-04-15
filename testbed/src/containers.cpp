@@ -85,12 +85,12 @@ Containers::Containers()
 
     auto container_material = zth::AssetManager::emplace<zth::Material>(
         container_material_asset_id,
-        zth::Material{ .diffuse_map = &*container_diffuse,
-                       .specular_map = &*container_specular })->get();
+        zth::Material{ .diffuse_map = container_diffuse,
+                       .specular_map = container_specular })->get();
 
     auto point_light_material = zth::AssetManager::emplace<zth::Material>(
         point_light_material_asset_id,
-        zth::Material{ .shader = &zth::shaders::flat_color() })->get();
+        zth::Material{ .shader = zth::shaders::flat_color() })->get();
 
     // clang-format on
 
@@ -107,8 +107,8 @@ Containers::Containers()
     // --- Point Light ---
     _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
     _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
-    _point_light.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
-    _point_light.emplace_or_replace<zth::MaterialComponent>(&*point_light_material);
+    _point_light.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light.emplace_or_replace<zth::MaterialComponent>(point_light_material);
 
     // --- Ambient Light ---
     _ambient_light.emplace_or_replace<zth::LightComponent>(ambient_light_light_component);
@@ -117,10 +117,10 @@ Containers::Containers()
 
     for (const auto [i, position] : container_positions | std::views::enumerate)
     {
-        auto& container = _containers.emplace_back(create_entity(zth::format("Container {}", i)));
+        auto container = create_entity(zth::format("Container {}", i));
 
-        container.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
-        container.emplace_or_replace<zth::MaterialComponent>(&*container_material);
+        container.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+        container.emplace_or_replace<zth::MaterialComponent>(container_material);
 
         const auto rotation_axis = glm::normalize(glm::vec3{ 1.0f, 0.3f, 0.5f });
         auto angle = 0.35f * static_cast<float>(i);

@@ -86,9 +86,9 @@ auto Renderer::init() -> Result<void, String>
     set_wireframe_mode_enabled(false);
     set_clear_color(colors::transparent);
 
-    shaders::load_shaders();
-    meshes::load_meshes();
-    materials::load_materials();
+    shaders::load();
+    meshes::load();
+    materials::load();
 
     ZTH_INTERNAL_TRACE("Renderer initialized.");
     return {};
@@ -115,9 +115,10 @@ auto Renderer::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down renderer...");
 
-    materials::unload_materials();
-    meshes::unload_meshes();
-    shaders::unload_shaders();
+    // Unload order should be the opposite of load order.
+    materials::unload();
+    meshes::unload();
+    shaders::unload();
 
     renderer.reset();
 

@@ -42,21 +42,21 @@ public:
     [[nodiscard]] static auto init() -> Result<void, String>;
     static auto shut_down() -> void;
 
-    template<Asset A> static auto emplace(AssetId id, auto&&... args) -> Optional<Reference<std::shared_ptr<A>>>;
+    template<Asset A> static auto emplace(AssetId id, auto&&... args) -> Optional<Reference<const std::shared_ptr<A>>>;
 
     template<Asset A>
-    static auto add(AssetId id, const std::shared_ptr<A>& handle) -> Optional<Reference<std::shared_ptr<A>>>;
+    static auto add(AssetId id, const std::shared_ptr<A>& handle) -> Optional<Reference<const std::shared_ptr<A>>>;
 
     template<Asset A>
-    static auto add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Reference<std::shared_ptr<A>>>;
-
-    template<Asset A>
-        requires(!std::is_reference_v<A>)
-    static auto add(AssetId id, const A& asset) -> Optional<Reference<std::shared_ptr<A>>>;
+    static auto add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Reference<const std::shared_ptr<A>>>;
 
     template<Asset A>
         requires(!std::is_reference_v<A>)
-    static auto add(AssetId id, A&& asset) -> Optional<Reference<std::shared_ptr<A>>>;
+    static auto add(AssetId id, const A& asset) -> Optional<Reference<const std::shared_ptr<A>>>;
+
+    template<Asset A>
+        requires(!std::is_reference_v<A>)
+    static auto add(AssetId id, A&& asset) -> Optional<Reference<const std::shared_ptr<A>>>;
 
     template<Asset A> [[nodiscard]] static auto get(AssetId id) -> Optional<std::shared_ptr<A>>;
     template<Asset A> [[nodiscard]] static auto get_unchecked(AssetId id) -> std::shared_ptr<A>;

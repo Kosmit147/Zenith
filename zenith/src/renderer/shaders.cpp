@@ -2,55 +2,67 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/embedded/shaders.hpp"
+#include "zenith/gl/shader.hpp"
 #include "zenith/log/logger.hpp"
 
 namespace zth::shaders {
 
 namespace {
 
-std::unique_ptr<ShaderList> shader_list;
+ShadersArray shaders_array;
 
 } // namespace
 
-// clang-format off
-ShaderList::ShaderList()
-    : fallback({
-          .vertex_source = embedded::shaders::fallback_vert,
-          .fragment_source = embedded::shaders::fallback_frag }),
-      flat_color({
-          .vertex_source = embedded::shaders::flat_color_vert,
-          .fragment_source = embedded::shaders::flat_color_frag }),
-      standard({
-          .vertex_source = embedded::shaders::standard_vert,
-          .fragment_source = embedded::shaders::standard_frag })
-{}
-// clang-format on
-
-auto load_shaders() -> void
+auto load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading shaders...");
-    shader_list = std::make_unique<ShaderList>();
+
+    shaders_array[fallback_shader_index] =
+        std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::fallback_vert,
+                                                        .fragment_source = embedded::shaders::fallback_frag });
+
+    shaders_array[flat_color_shader_index] =
+        std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::flat_color_vert,
+                                                        .fragment_source = embedded::shaders::flat_color_frag });
+
+    shaders_array[standard_shader_index] =
+        std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::standard_vert,
+                                                        .fragment_source = embedded::shaders::standard_frag });
+
+#if defined(ZTH_ASSERTIONS)
+    for (auto& shader : shaders_array)
+    {
+        // Make sure all the shaders were initialized.
+        ZTH_ASSERT(shader != nullptr);
+    }
+#endif
+
     ZTH_INTERNAL_TRACE("Shaders loaded.");
 }
 
-auto unload_shaders() -> void
+auto unload() -> void
 {
     ZTH_INTERNAL_TRACE("Unloading shaders...");
-    shader_list.reset();
+
+    for (auto& shader : shaders_array)
+    {
+        ZTH_ASSERT(shader != nullptr); // All the shaders should have been initialized.
+        shader.reset();
+    }
+
     ZTH_INTERNAL_TRACE("Shaders unloaded.");
 }
 
-auto shaders() -> const ShaderList&
+auto all() -> const ShadersArray&
 {
-    ZTH_ASSERT(shader_list != nullptr);
-    return *shader_list;
+    return shaders_array;
 }
 
 #define ZTH_SHADER_GETTER(shader_name)                                                                                 \
-    auto shader_name() -> const gl::Shader&                                                                            \
+    auto shader_name() -> const std::shared_ptr<const gl::Shader>&                                                     \
     {                                                                                                                  \
-        ZTH_ASSERT(shader_list != nullptr);                                                                            \
-        return shader_list->shader_name;                                                                               \
+        ZTH_ASSERT(shaders_array[shader_name##_shader_index] != nullptr);                                              \
+        return shaders_array[shader_name##_shader_index];                                                              \
     }
 
 ZTH_SHADER_GETTER(fallback);

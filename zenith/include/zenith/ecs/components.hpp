@@ -116,14 +116,14 @@ public:
     [[nodiscard]] static auto display_label() -> const char*;
 
 private:
-    std::unique_ptr<Script> _script; // script should never be null.
+    std::unique_ptr<Script> _script; // script cannot be null.
 };
 
 // --------------------------- MeshComponent ---------------------------
 
 struct MeshComponent
 {
-    const Mesh* mesh;
+    std::shared_ptr<const Mesh> mesh; // mesh cannot be null.
 
     [[nodiscard]] static auto display_label() -> const char*;
 };
@@ -132,7 +132,7 @@ struct MeshComponent
 
 struct MaterialComponent
 {
-    const Material* material;
+    std::shared_ptr<const Material> material; // material cannot be null.
 
     [[nodiscard]] static auto display_label() -> const char*;
 };

@@ -1,6 +1,5 @@
 #include "main_scene.hpp"
 
-#include "embedded.hpp"
 #include "zenith/script/camera_controller.hpp"
 
 namespace {
@@ -46,17 +45,9 @@ const auto point_light_3_transform_component = zth::TransformComponent{
 
 const auto point_light_3_light_component = zth::LightComponent{ zth::PointLight{} };
 
-const auto cobble_diffuse_map_params = zth::gl::TextureParams{
-    .min_filter = zth::gl::TextureMinFilter::nearest_mipmap_linear,
-    .mag_filter = zth::gl::TextureMagFilter::nearest,
-};
-
 } // namespace
 
 MainScene::MainScene()
-    : _point_light_1_material{ .shader = &zth::shaders::flat_color() },
-      _point_light_2_material{ .shader = &zth::shaders::flat_color() },
-      _point_light_3_material{ .shader = &zth::shaders::flat_color() }
 {
     // --- Camera ---
 
@@ -66,8 +57,8 @@ MainScene::MainScene()
 
     // --- Cube ---
 
-    _cube.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
-    _cube.emplace_or_replace<zth::MaterialComponent>(&_cube_material);
+    _cube.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+    _cube.emplace_or_replace<zth::MaterialComponent>(_cube_material);
 
     // --- Lights ---
 
@@ -76,53 +67,27 @@ MainScene::MainScene()
 
     _point_light_1.emplace_or_replace<zth::TransformComponent>(point_light_1_transform_component);
     _point_light_1.emplace_or_replace<zth::LightComponent>(point_light_1_light_component);
-    _point_light_1.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
-    _point_light_1.emplace_or_replace<zth::MaterialComponent>(&_point_light_1_material);
+    _point_light_1.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_1.emplace_or_replace<zth::MaterialComponent>(_point_light_1_material);
 
     _point_light_2.emplace_or_replace<zth::TransformComponent>(point_light_2_transform_component);
     _point_light_2.emplace_or_replace<zth::LightComponent>(point_light_2_light_component);
-    _point_light_2.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
-    _point_light_2.emplace_or_replace<zth::MaterialComponent>(&_point_light_2_material);
+    _point_light_2.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_2.emplace_or_replace<zth::MaterialComponent>(_point_light_2_material);
 
     _point_light_3.emplace_or_replace<zth::TransformComponent>(point_light_3_transform_component);
     _point_light_3.emplace_or_replace<zth::LightComponent>(point_light_3_light_component);
-    _point_light_3.emplace_or_replace<zth::MeshComponent>(&zth::meshes::sphere_mesh());
-    _point_light_3.emplace_or_replace<zth::MaterialComponent>(&_point_light_3_material);
-
-    _diffuse_maps.emplace_back(embedded::cobble_diffuse_map_data, cobble_diffuse_map_params);
-    _diffuse_maps.emplace_back(embedded::container_diffuse_map_data);
-    _diffuse_maps.emplace_back(embedded::container2_diffuse_map_data);
-    _diffuse_maps.emplace_back(embedded::emoji_diffuse_map_data);
-    _diffuse_maps.emplace_back(embedded::wall_diffuse_map_data);
-
-    std::size_t i = 0;
-    _material_panel.add_diffuse_map("Cobble", _diffuse_maps[i++]);
-    _material_panel.add_diffuse_map("Container", _diffuse_maps[i++]);
-    _material_panel.add_diffuse_map("Container2", _diffuse_maps[i++]);
-    _material_panel.add_diffuse_map("Emoji", _diffuse_maps[i++]);
-    _material_panel.add_diffuse_map("Wall", _diffuse_maps[i++]);
-
-    _specular_maps.emplace_back(embedded::container2_specular_map_data);
-    _material_panel.add_specular_map("Container2", _specular_maps[0]);
-
-    _emission_maps.emplace_back(embedded::matrix_emission_map_data);
-    _material_panel.add_emission_map("Matrix", _emission_maps[0]);
+    _point_light_3.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_3.emplace_or_replace<zth::MaterialComponent>(_point_light_3_material);
 }
 
 auto MainScene::on_update() -> void
 {
-    display_ui();
-
     auto& light_component_1 = _point_light_1.get<const zth::LightComponent>();
     auto& light_component_2 = _point_light_2.get<const zth::LightComponent>();
     auto& light_component_3 = _point_light_3.get<const zth::LightComponent>();
 
-    _point_light_1_material.albedo = light_component_1.point_light().properties.color;
-    _point_light_2_material.albedo = light_component_2.point_light().properties.color;
-    _point_light_3_material.albedo = light_component_3.point_light().properties.color;
-}
-
-auto MainScene::display_ui() -> void
-{
-    _material_panel.display();
+    _point_light_1_material->albedo = light_component_1.point_light().properties.color;
+    _point_light_2_material->albedo = light_component_2.point_light().properties.color;
+    _point_light_3_material->albedo = light_component_3.point_light().properties.color;
 }

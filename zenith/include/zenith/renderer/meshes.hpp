@@ -1,28 +1,26 @@
 #pragma once
 
-#include "zenith/renderer/mesh.hpp"
-#include "zenith/util/macros.hpp"
+#include <array>
+#include <memory>
+
+#include "zenith/core/typedefs.hpp"
+#include "zenith/renderer/fwd.hpp"
 
 namespace zth::meshes {
 
-struct MeshList
-{
-    Mesh cube_mesh;
-    Mesh pyramid_mesh;
-    Mesh sphere_mesh;
+constexpr usize cube_mesh_index = 0;
+constexpr usize pyramid_mesh_index = 1;
+constexpr usize sphere_mesh_index = 2;
 
-    explicit MeshList();
-    ZTH_NO_COPY_NO_MOVE(MeshList)
-    ~MeshList() = default;
-};
+using MeshesArray = std::array<std::shared_ptr<const Mesh>, sphere_mesh_index + 1>;
 
-auto load_meshes() -> void;
-auto unload_meshes() -> void;
+auto load() -> void;
+auto unload() -> void;
 
-[[nodiscard]] auto meshes() -> const MeshList&;
+[[nodiscard]] auto all() -> const MeshesArray&;
 
-[[nodiscard]] auto cube_mesh() -> const Mesh&;
-[[nodiscard]] auto pyramid_mesh() -> const Mesh&;
-[[nodiscard]] auto sphere_mesh() -> const Mesh&;
+[[nodiscard]] auto cube() -> const std::shared_ptr<const Mesh>&;
+[[nodiscard]] auto pyramid() -> const std::shared_ptr<const Mesh>&;
+[[nodiscard]] auto sphere() -> const std::shared_ptr<const Mesh>&;
 
 } // namespace zth::meshes

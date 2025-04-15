@@ -18,14 +18,16 @@ const auto camera_camera_component = zth::CameraComponent{
 
 } // namespace
 
-MainScene::MainScene() : _cube_texture(wall_texture), _cube_material{ .diffuse_map = &_cube_texture }
+MainScene::MainScene()
+    : _cube_texture{ std::make_shared<zth::gl::Texture2D>(wall_texture) },
+      _cube_material{ std::make_shared<zth::Material>(zth::Material{ .diffuse_map = _cube_texture }) }
 {
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
     _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
 
-    _cube.emplace_or_replace<zth::MeshComponent>(&zth::meshes::cube_mesh());
-    _cube.emplace_or_replace<zth::MaterialComponent>(&_cube_material);
+    _cube.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+    _cube.emplace_or_replace<zth::MaterialComponent>(_cube_material);
 
     _light.emplace_or_replace<zth::TransformComponent>(glm::vec3{ 0.0f },
                                                        glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));

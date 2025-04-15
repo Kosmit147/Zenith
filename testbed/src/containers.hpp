@@ -12,7 +12,6 @@ public:
 
 private:
     zth::EntityHandle _camera = create_entity("Camera");
-    zth::Vector<zth::EntityHandle> _containers;
 
     zth::EntityHandle _directional_light = create_entity("Directional Light");
     zth::EntityHandle _point_light = create_entity("Point Light");
