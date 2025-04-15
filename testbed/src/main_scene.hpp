@@ -11,14 +11,13 @@ private:
     zth::EntityHandle _camera = create_entity("Camera");
     zth::EntityHandle _cube = create_entity("Cube");
 
-    zth::Vector<zth::gl::Texture2D> _diffuse_maps;
-    zth::Vector<zth::gl::Texture2D> _specular_maps;
-    zth::Vector<zth::gl::Texture2D> _emission_maps;
-
-    zth::Material _cube_material;
-    zth::Material _point_light_1_material;
-    zth::Material _point_light_2_material;
-    zth::Material _point_light_3_material;
+    std::shared_ptr<zth::Material> _cube_material = std::make_shared<zth::Material>();
+    std::shared_ptr<zth::Material> _point_light_1_material =
+        std::make_shared<zth::Material>(zth::Material{ .shader = zth::shaders::flat_color() });
+    std::shared_ptr<zth::Material> _point_light_2_material =
+        std::make_shared<zth::Material>(zth::Material{ .shader = zth::shaders::flat_color() });
+    std::shared_ptr<zth::Material> _point_light_3_material =
+        std::make_shared<zth::Material>(zth::Material{ .shader = zth::shaders::flat_color() });
 
     zth::EntityHandle _directional_light = create_entity("Directional Light");
 
@@ -26,9 +25,6 @@ private:
     zth::EntityHandle _point_light_2 = create_entity("Point Light 2");
     zth::EntityHandle _point_light_3 = create_entity("Point Light 3");
 
-    zth::debug::MaterialPanel _material_panel{ _cube_material };
-
 private:
     auto on_update() -> void override;
-    auto display_ui() -> void;
 };

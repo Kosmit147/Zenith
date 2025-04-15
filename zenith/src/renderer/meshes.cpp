@@ -1,6 +1,7 @@
 #include "zenith/renderer/meshes.hpp"
 
 #include "zenith/log/logger.hpp"
+#include "zenith/renderer/mesh.hpp"
 #include "zenith/renderer/vertex.hpp"
 
 namespace zth::meshes {
@@ -2015,39 +2016,57 @@ const std::array<GLushort, 3072> sphere_indices = {
     525, 526, 558, 525, 559, 558, 526, 527, 559, 526, 560, 559, 527
 };
 
-std::unique_ptr<MeshList> mesh_list;
+MeshesArray meshes_array;
 
 } // namespace
 
-MeshList::MeshList()
-    : cube_mesh(cube_vertices, StandardVertex::layout, cube_indices),
-      pyramid_mesh(pyramid_vertices, StandardVertex::layout, pyramid_indices),
-      sphere_mesh(sphere_vertices, StandardVertex::layout, sphere_indices)
-{}
-
-auto load_meshes() -> void
+auto load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading meshes...");
-    mesh_list = std::make_unique<MeshList>();
+
+    meshes_array[cube_mesh_index] = std::make_shared<Mesh>(cube_vertices, StandardVertex::layout, cube_indices);
+    meshes_array[pyramid_mesh_index] =
+        std::make_shared<Mesh>(pyramid_vertices, StandardVertex::layout, pyramid_indices);
+    meshes_array[sphere_mesh_index] = std::make_shared<Mesh>(sphere_vertices, StandardVertex::layout, sphere_indices);
+
+#if defined(ZTH_ASSERTIONS)
+    for (auto& mesh : meshes_array)
+    {
+        // Make sure all the meshes were initialized.
+        ZTH_ASSERT(mesh != nullptr);
+    }
+#endif
+
     ZTH_INTERNAL_TRACE("Meshes loaded.");
 }
 
-auto unload_meshes() -> void
+auto unload() -> void
 {
     ZTH_INTERNAL_TRACE("Unloading meshes...");
-    mesh_list.reset();
+
+    for (auto& mesh : meshes_array)
+    {
+        ZTH_ASSERT(mesh != nullptr); // All the meshes should have been initialized.
+        mesh.reset();
+    }
+
     ZTH_INTERNAL_TRACE("Meshes unloaded.");
 }
 
+auto all() -> const MeshesArray&
+{
+    return meshes_array;
+}
+
 #define ZTH_MESH_GETTER(mesh_name)                                                                                     \
-    auto mesh_name() -> const Mesh&                                                                                    \
+    auto mesh_name() -> const std::shared_ptr<const Mesh>&                                                             \
     {                                                                                                                  \
-        ZTH_ASSERT(mesh_list != nullptr);                                                                              \
-        return mesh_list->mesh_name;                                                                                   \
+        ZTH_ASSERT(meshes_array[mesh_name##_mesh_index] != nullptr);                                                   \
+        return meshes_array[mesh_name##_mesh_index];                                                                   \
     }
 
-ZTH_MESH_GETTER(cube_mesh);
-ZTH_MESH_GETTER(pyramid_mesh);
-ZTH_MESH_GETTER(sphere_mesh);
+ZTH_MESH_GETTER(cube);
+ZTH_MESH_GETTER(pyramid);
+ZTH_MESH_GETTER(sphere);
 
 } // namespace zth::meshes

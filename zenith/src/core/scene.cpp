@@ -77,7 +77,11 @@ auto Scene::render() -> void
     auto meshes = _registry.group<const TransformComponent, const MeshComponent, const MaterialComponent>();
 
     for (auto&& [_, transform, mesh, material] : meshes.each())
+    {
+        ZTH_ASSERT(mesh.mesh != nullptr);
+        ZTH_ASSERT(material.material != nullptr);
         Renderer::submit(*mesh.mesh, transform.transform(), *material.material);
+    }
 
     Renderer::end_scene();
 }

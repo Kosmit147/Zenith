@@ -1,96 +1,70 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/renderer/material.hpp"
-#include "zenith/util/macros.hpp"
+#include "zenith/renderer/fwd.hpp"
 
 namespace zth::materials {
 
-struct MaterialList
-{
-    // @volatile: Keep in sync with material_names array.
-    // @volatile: Make sure to update materials_start and materials_end after modifying this list.
+constexpr usize plain_material_index = 0;
+constexpr usize emerald_material_index = 1;
+constexpr usize jade_material_index = 2;
+constexpr usize obsidian_material_index = 3;
+constexpr usize pearl_material_index = 4;
+constexpr usize ruby_material_index = 5;
+constexpr usize turquoise_material_index = 6;
+constexpr usize brass_material_index = 7;
+constexpr usize bronze_material_index = 8;
+constexpr usize chrome_material_index = 9;
+constexpr usize copper_material_index = 10;
+constexpr usize gold_material_index = 11;
+constexpr usize silver_material_index = 12;
+constexpr usize black_plastic_material_index = 13;
+constexpr usize cyan_plastic_material_index = 14;
+constexpr usize green_plastic_material_index = 15;
+constexpr usize red_plastic_material_index = 16;
+constexpr usize white_plastic_material_index = 17;
+constexpr usize yellow_plastic_material_index = 18;
+constexpr usize black_rubber_material_index = 19;
+constexpr usize cyan_rubber_material_index = 20;
+constexpr usize green_rubber_material_index = 21;
+constexpr usize red_rubber_material_index = 22;
+constexpr usize white_rubber_material_index = 23;
+constexpr usize yellow_rubber_material_index = 24;
 
-    Material plain;
-    Material emerald;
-    Material jade;
-    Material obsidian;
-    Material pearl;
-    Material ruby;
-    Material turquoise;
-    Material brass;
-    Material bronze;
-    Material chrome;
-    Material copper;
-    Material gold;
-    Material silver;
-    Material black_plastic;
-    Material cyan_plastic;
-    Material green_plastic;
-    Material red_plastic;
-    Material white_plastic;
-    Material yellow_plastic;
-    Material black_rubber;
-    Material cyan_rubber;
-    Material green_rubber;
-    Material red_rubber;
-    Material white_rubber;
-    Material yellow_rubber;
+using MaterialsArray = std::array<std::shared_ptr<const Material>, yellow_rubber_material_index + 1>;
 
-    const Material* const materials_start = &plain;
-    const Material* const materials_end = &yellow_rubber + 1;
+auto load() -> void;
+auto unload() -> void;
 
-    explicit MaterialList();
-    ZTH_NO_COPY_NO_MOVE(MaterialList)
-    ~MaterialList() = default;
+[[nodiscard]] auto all() -> const MaterialsArray&;
 
-    [[nodiscard]] auto operator[](usize index) const -> const Material&;
-    [[nodiscard]] auto size() const -> usize;
-
-    [[nodiscard]] auto begin() const { return materials_start; }
-    [[nodiscard]] auto end() const { return materials_end; }
-};
-
-constexpr std::array material_names = {
-    // @volatile: Keep in sync with MaterialList. The order must be the same for UI to work properly.
-
-    "plain",        "emerald",       "jade",         "obsidian",      "pearl",          "ruby",         "turquoise",
-    "brass",        "bronze",        "chrome",       "copper",        "gold",           "silver",       "black_plastic",
-    "cyan_plastic", "green_plastic", "red_plastic",  "white_plastic", "yellow_plastic", "black_rubber", "cyan_rubber",
-    "green_rubber", "red_rubber",    "white_rubber", "yellow_rubber",
-};
-
-auto load_materials() -> void;
-auto unload_materials() -> void;
-
-[[nodiscard]] auto materials() -> const MaterialList&;
-
-[[nodiscard]] auto plain() -> const Material&;
-[[nodiscard]] auto emerald() -> const Material&;
-[[nodiscard]] auto jade() -> const Material&;
-[[nodiscard]] auto obsidian() -> const Material&;
-[[nodiscard]] auto pearl() -> const Material&;
-[[nodiscard]] auto ruby() -> const Material&;
-[[nodiscard]] auto turquoise() -> const Material&;
-[[nodiscard]] auto brass() -> const Material&;
-[[nodiscard]] auto bronze() -> const Material&;
-[[nodiscard]] auto chrome() -> const Material&;
-[[nodiscard]] auto copper() -> const Material&;
-[[nodiscard]] auto gold() -> const Material&;
-[[nodiscard]] auto silver() -> const Material&;
-[[nodiscard]] auto black_plastic() -> const Material&;
-[[nodiscard]] auto cyan_plastic() -> const Material&;
-[[nodiscard]] auto green_plastic() -> const Material&;
-[[nodiscard]] auto red_plastic() -> const Material&;
-[[nodiscard]] auto white_plastic() -> const Material&;
-[[nodiscard]] auto yellow_plastic() -> const Material&;
-[[nodiscard]] auto black_rubber() -> const Material&;
-[[nodiscard]] auto cyan_rubber() -> const Material&;
-[[nodiscard]] auto green_rubber() -> const Material&;
-[[nodiscard]] auto red_rubber() -> const Material&;
-[[nodiscard]] auto white_rubber() -> const Material&;
-[[nodiscard]] auto yellow_rubber() -> const Material&;
+[[nodiscard]] auto plain() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto emerald() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto jade() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto obsidian() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto pearl() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto ruby() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto turquoise() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto brass() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto bronze() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto chrome() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto copper() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto gold() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto silver() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto black_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto cyan_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto green_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto red_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto white_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto yellow_plastic() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto black_rubber() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto cyan_rubber() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto green_rubber() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto red_rubber() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto white_rubber() -> const std::shared_ptr<const Material>&;
+[[nodiscard]] auto yellow_rubber() -> const std::shared_ptr<const Material>&;
 
 } // namespace zth::materials

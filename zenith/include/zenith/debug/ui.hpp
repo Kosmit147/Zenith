@@ -15,7 +15,6 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/ecs/fwd.hpp"
-#include "zenith/gl/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
@@ -117,7 +116,6 @@ private:
     String _search;
 };
 
-// @todo: Replace / improve.
 class DebugPanel
 {
 public:
@@ -132,44 +130,6 @@ private:
     u32 _frame_rate_limit = 60;
 };
 
-// @todo: Replace / improve.
-class MaterialPanel
-{
-public:
-    explicit MaterialPanel(Material& material, StringView label = "Material");
-    ZTH_NO_COPY_NO_MOVE(MaterialPanel)
-    ~MaterialPanel() = default;
-
-    auto display() -> void;
-
-    auto add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void;
-    auto add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void;
-    auto add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void;
-
-private:
-    String _label;
-    Material& _material;
-    usize _material_selected_idx = 0;
-
-    static constexpr i16 _no_map_selected = -1;
-    i16 _diffuse_map_selected_idx = _no_map_selected;
-    i16 _specular_map_selected_idx = _no_map_selected;
-    i16 _emission_map_selected_idx = _no_map_selected;
-
-    Vector<String> _diffuse_map_names;
-    Vector<const gl::Texture2D*> _diffuse_maps;
-    Vector<String> _specular_map_names;
-    Vector<const gl::Texture2D*> _specular_maps;
-    Vector<String> _emission_map_names;
-    Vector<const gl::Texture2D*> _emission_maps;
-
-private:
-    auto set_diffuse_map(i16 idx) -> void;
-    auto set_specular_map(i16 idx) -> void;
-    auto set_emission_map(i16 idx) -> void;
-};
-
-// @todo: Replace / improve.
 class ScenePicker
 {
 public:

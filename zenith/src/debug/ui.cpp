@@ -11,8 +11,6 @@
 #include "zenith/log/format.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/light.hpp"
-#include "zenith/renderer/material.hpp"
-#include "zenith/renderer/materials.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
 #include "zenith/system/input.hpp"
@@ -652,130 +650,6 @@ auto DebugPanel::display() -> void
     ImGui::TextUnformatted(glsl_version_text.c_str());
 
     ImGui::End();
-}
-
-MaterialPanel::MaterialPanel(Material& material, StringView label) : _label(label), _material(material) {}
-
-auto MaterialPanel::display() -> void
-{
-    const auto& materials = materials::materials();
-    const auto& material_names = materials::material_names;
-
-    ImGui::Begin(_label.c_str());
-
-    if (ImGui::BeginCombo("Preset", material_names[_material_selected_idx]))
-    {
-        for (usize i = 0; i < material_names.size(); i++)
-        {
-            const auto is_selected = _material_selected_idx == i;
-
-            if (ImGui::Selectable(material_names[i], is_selected))
-            {
-                _material_selected_idx = i;
-                _diffuse_map_selected_idx = -1;
-                _specular_map_selected_idx = -1;
-                _emission_map_selected_idx = -1;
-                _material = materials[_material_selected_idx];
-            }
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    pick_color("Albedo", _material.albedo);
-
-    auto map_picker = [](StringView label, i16 selected_idx, const Vector<String>& map_names) {
-        constexpr auto none_selected_label = "None";
-        Optional<i16> pick = nil;
-
-        StringView selected_map_name = none_selected_label;
-
-        if (selected_idx >= 0)
-            selected_map_name = map_names[selected_idx];
-
-        if (ImGui::BeginCombo(label.data(), selected_map_name.data()))
-        {
-            {
-                const auto is_selected = selected_idx == _no_map_selected;
-
-                if (ImGui::Selectable(none_selected_label, is_selected))
-                    pick = _no_map_selected;
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            for (i16 i = 0; i < static_cast<i16>(map_names.size()); i++)
-            {
-                const auto is_selected = selected_idx == i;
-
-                if (ImGui::Selectable(map_names[i].c_str(), is_selected))
-                    pick = i;
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            ImGui::EndCombo();
-        }
-
-        return pick;
-    };
-
-    if (auto pick = map_picker("Diffuse Map", _diffuse_map_selected_idx, _diffuse_map_names))
-        set_diffuse_map(*pick);
-
-    if (auto pick = map_picker("Specular Map", _specular_map_selected_idx, _specular_map_names))
-        set_specular_map(*pick);
-
-    if (auto pick = map_picker("Emission Map", _emission_map_selected_idx, _emission_map_names))
-        set_emission_map(*pick);
-
-    drag_vec("Ambient", _material.ambient, light_ambient_drag_speed);
-    drag_vec("Diffuse", _material.diffuse);
-    drag_vec("Specular", _material.specular);
-    drag_float("Shininess", _material.shininess, material_shininess_drag_speed);
-
-    ImGui::End();
-}
-
-auto MaterialPanel::add_diffuse_map(StringView name, const gl::Texture2D& diffuse_map) -> void
-{
-    _diffuse_map_names.emplace_back(name);
-    _diffuse_maps.push_back(&diffuse_map);
-}
-
-auto MaterialPanel::add_specular_map(StringView name, const gl::Texture2D& specular_map) -> void
-{
-    _specular_map_names.emplace_back(name);
-    _specular_maps.push_back(&specular_map);
-}
-
-auto MaterialPanel::add_emission_map(StringView name, const gl::Texture2D& emission_map) -> void
-{
-    _emission_map_names.emplace_back(name);
-    _emission_maps.push_back(&emission_map);
-}
-
-auto MaterialPanel::set_diffuse_map(i16 idx) -> void
-{
-    _diffuse_map_selected_idx = idx;
-    _material.diffuse_map = idx >= 0 ? _diffuse_maps[idx] : nullptr;
-}
-
-auto MaterialPanel::set_specular_map(i16 idx) -> void
-{
-    _specular_map_selected_idx = idx;
-    _material.specular_map = idx >= 0 ? _specular_maps[idx] : nullptr;
-}
-
-auto MaterialPanel::set_emission_map(i16 idx) -> void
-{
-    _emission_map_selected_idx = idx;
-    _material.emission_map = idx >= 0 ? _emission_maps[idx] : nullptr;
 }
 
 ScenePicker::ScenePicker(StringView label) : _label(label) {}

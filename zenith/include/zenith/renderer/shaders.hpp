@@ -1,28 +1,26 @@
 #pragma once
 
-#include "zenith/gl/shader.hpp"
-#include "zenith/util/macros.hpp"
+#include <array>
+#include <memory>
+
+#include "zenith/core/typedefs.hpp"
+#include "zenith/gl/fwd.hpp"
 
 namespace zth::shaders {
 
-struct ShaderList
-{
-    gl::Shader fallback;
-    gl::Shader flat_color;
-    gl::Shader standard;
+constexpr usize fallback_shader_index = 0;
+constexpr usize flat_color_shader_index = 1;
+constexpr usize standard_shader_index = 2;
 
-    explicit ShaderList();
-    ZTH_NO_COPY_NO_MOVE(ShaderList)
-    ~ShaderList() = default;
-};
+using ShadersArray = std::array<std::shared_ptr<const gl::Shader>, standard_shader_index + 1>;
 
-auto load_shaders() -> void;
-auto unload_shaders() -> void;
+auto load() -> void;
+auto unload() -> void;
 
-[[nodiscard]] auto shaders() -> const ShaderList&;
+[[nodiscard]] auto all() -> const ShadersArray&;
 
-[[nodiscard]] auto fallback() -> const gl::Shader&;
-[[nodiscard]] auto flat_color() -> const gl::Shader&;
-[[nodiscard]] auto standard() -> const gl::Shader&;
+[[nodiscard]] auto fallback() -> const std::shared_ptr<const gl::Shader>&;
+[[nodiscard]] auto flat_color() -> const std::shared_ptr<const gl::Shader>&;
+[[nodiscard]] auto standard() -> const std::shared_ptr<const gl::Shader>&;
 
 } // namespace zth::shaders
