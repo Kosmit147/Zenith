@@ -10,8 +10,8 @@
 
 namespace zth {
 
-#define ZTH_UBO_FIELD(type, name) alignas(::zth::gl::get_std140_field_alignment<type>()) type name
-#define ZTH_SSBO_FIELD(type, name) alignas(::zth::gl::get_std430_field_alignment<type>()) type name
+#define ZTH_UBO_FIELD(type, name) alignas(::zth::gl::std140_field_alignment<type>) type name
+#define ZTH_SSBO_FIELD(type, name) alignas(::zth::gl::std430_field_alignment<type>) type name
 #define ZTH_PAD(bytes)                                                                                                 \
     ::zth::byte ZTH_UNIQUE_NAME(pad)[bytes] {}
 
