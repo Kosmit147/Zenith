@@ -3,9 +3,9 @@
 #include <stb_image/stb_image.h>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/fs/file.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/temporary_storage.hpp"
+#include "zenith/system/file.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth::gl {

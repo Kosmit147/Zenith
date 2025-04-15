@@ -7,7 +7,6 @@
 #include "zenith/debug.hpp"
 #include "zenith/ecs.hpp"
 #include "zenith/embedded.hpp"
-#include "zenith/fs.hpp"
 #include "zenith/gl.hpp"
 #include "zenith/layer.hpp"
 #include "zenith/log.hpp"
