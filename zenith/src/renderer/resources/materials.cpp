@@ -1,11 +1,11 @@
-#include "zenith/renderer/materials.hpp"
+#include "zenith/renderer/resources/materials.hpp"
 
 #include <glm/vec3.hpp>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/renderer/material.hpp"
-#include "zenith/renderer/shaders.hpp"
+#include "zenith/renderer/resources/shaders.hpp"
 
 namespace zth::materials {
 

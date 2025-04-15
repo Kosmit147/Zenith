@@ -13,10 +13,10 @@
 #include "zenith/math/matrix.hpp"
 #include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/material.hpp"
-#include "zenith/renderer/materials.hpp"
 #include "zenith/renderer/mesh.hpp"
-#include "zenith/renderer/meshes.hpp"
-#include "zenith/renderer/shaders.hpp"
+#include "zenith/renderer/resources/materials.hpp"
+#include "zenith/renderer/resources/meshes.hpp"
+#include "zenith/renderer/resources/shaders.hpp"
 #include "zenith/system/event.hpp"
 
 namespace zth {

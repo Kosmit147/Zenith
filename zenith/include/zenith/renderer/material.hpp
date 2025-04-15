@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "zenith/gl/fwd.hpp"
-#include "zenith/renderer/shaders.hpp"
+#include "zenith/renderer/resources/shaders.hpp"
 
 namespace zth {
 
