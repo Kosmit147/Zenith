@@ -26,6 +26,7 @@ add_library(
 	"src/memory/alloc.cpp"
 	"src/memory/buffer.cpp"
 	"src/memory/temporary_storage.cpp"
+	"src/renderer/resources/buffers.cpp"
 	"src/renderer/resources/materials.cpp"
 	"src/renderer/resources/meshes.cpp"
 	"src/renderer/resources/shaders.cpp"

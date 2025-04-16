@@ -14,6 +14,7 @@
 #include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/mesh.hpp"
+#include "zenith/renderer/resources/buffers.hpp"
 #include "zenith/renderer/resources/materials.hpp"
 #include "zenith/renderer/resources/meshes.hpp"
 #include "zenith/renderer/resources/shaders.hpp"
@@ -77,6 +78,8 @@ auto Renderer::init() -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing renderer...");
 
+    buffers::create();
+
     renderer.reset(new Renderer);
 
     set_blending_enabled(true);
@@ -121,6 +124,8 @@ auto Renderer::shut_down() -> void
     shaders::unload();
 
     renderer.reset();
+
+    buffers::destroy();
 
     ZTH_INTERNAL_TRACE("Renderer shut down.");
 }
