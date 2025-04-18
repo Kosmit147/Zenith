@@ -30,6 +30,7 @@ add_library(
 	"src/renderer/resources/materials.cpp"
 	"src/renderer/resources/meshes.cpp"
 	"src/renderer/resources/shaders.cpp"
+	"src/renderer/resources/textures.cpp"
 	"src/renderer/imgui_renderer.cpp"
 	"src/renderer/light.cpp"
 	"src/renderer/mesh.cpp"

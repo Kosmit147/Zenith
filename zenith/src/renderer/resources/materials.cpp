@@ -19,6 +19,14 @@ auto load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading materials...");
 
+#if defined(ZTH_ASSERTIONS)
+    for (auto& material : materials_array)
+    {
+        // Materials should not be initialized when we call this function.
+        ZTH_ASSERT(material == nullptr);
+    }
+#endif
+
     materials_array[plain_material_index] = std::make_shared<Material>(); // Default material.
 
     materials_array[emerald_material_index] = std::make_shared<Material>(Material{

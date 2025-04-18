@@ -78,10 +78,12 @@ Containers::Containers()
     // clang-format off
 
     auto container_diffuse = zth::AssetManager::emplace<zth::gl::Texture2D>(
-        container_diffuse_map_asset_id, embedded::container2_diffuse_map_data)->get();
+        container_diffuse_map_asset_id,
+        zth::gl::Texture2D::from_file_data(std::as_bytes(embedded::container2_diffuse_map_data)))->get();
 
     auto container_specular = zth::AssetManager::emplace<zth::gl::Texture2D>(
-        container_specular_map_asset_id, embedded::container2_specular_map_data)->get();
+        container_specular_map_asset_id,
+        zth::gl::Texture2D::from_file_data(std::as_bytes(embedded::container2_specular_map_data)))->get();
 
     auto container_material = zth::AssetManager::emplace<zth::Material>(
         container_material_asset_id,

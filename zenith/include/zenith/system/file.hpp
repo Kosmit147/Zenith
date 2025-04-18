@@ -3,56 +3,69 @@
 #include <filesystem>
 #include <fstream>
 #include <ranges>
+#include <system_error>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
+#include "zenith/util/defer.hpp"
 #include "zenith/util/optional.hpp"
 
 namespace zth::fs {
 
-template<std::ranges::range Container>
-    requires(std::ranges::output_range<Container, std::ranges::range_value_t<Container>>)
-auto read_to(const std::filesystem::path& path, std::ios::openmode mode = std::ios::in) -> Optional<Container>
+// Reads from files in binary mode by default.
+template<std::ranges::contiguous_range Container>
+auto read_to(const std::filesystem::path& path, std::ios::openmode mode = std::ios::in | std::ios::binary)
+    -> Optional<Container>
 {
-    // @robustness: std::filesystem::exists() and std::filesystem::path::string() throw.
+    // @robustness: std::filesystem::path::string() throws.
 
-    auto log_error = [&] { ZTH_INTERNAL_ERROR("[Filesystem] Couldn't read from file: \"{}\".", path.string()); };
+    Defer log_error{ [&] { ZTH_INTERNAL_ERROR("[Filesystem] Couldn't read from file: \"{}\".", path.string()); } };
 
-    if (!std::filesystem::exists(path))
-    {
-        log_error();
+    std::error_code error_code;
+    std::filesystem::directory_entry file_entry{ path, error_code };
+
+    if (error_code)
         return nil;
-    }
 
-    std::ifstream file(path, mode);
+    std::ifstream file{ path, mode };
 
     if (!file.is_open())
-    {
-        log_error();
         return nil;
-    }
 
+    auto file_size = file_entry.file_size();
     Container result;
-    result.reserve(std::filesystem::file_size(path));
-    result.insert(result.end(), std::istreambuf_iterator{ file }, {});
 
-    if (!file.good())
+    if constexpr (sizeof(std::ranges::range_value_t<Container>) == 1)
     {
-        log_error();
-        return nil;
+        result.resize(file_size);
+        file.read(reinterpret_cast<char*>(result.data()), static_cast<std::streamsize>(file_size));
+
+        if (file.gcount() != static_cast<std::streamsize>(file_size))
+            return nil;
+    }
+    else
+    {
+        result.reserve(file_size);
+        result.insert(result.end(), std::istreambuf_iterator{ file }, {});
     }
 
+    if (file.fail())
+        return nil;
+
+    log_error.dismiss();
     return zth::make_optional(result);
 }
 
+// Writes to files in binary mode by default. Automatically creates new directories.
 auto write_to(const std::filesystem::path& path, const void* data, usize data_size_bytes,
-              std::ios::openmode mode = std::ios::out) -> bool;
+              std::ios::openmode mode = std::ios::out | std::ios::binary) -> bool;
 
+// Writes to files in binary mode by default. Automatically creates new directories.
 auto write_to(const std::filesystem::path& path, std::ranges::contiguous_range auto&& data,
-              std::ios::openmode mode = std::ios::out) -> bool
+              std::ios::openmode mode = std::ios::out | std::ios::binary) -> bool
 {
     return write_to(path, std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), mode);
 }

@@ -2024,6 +2024,14 @@ auto load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading meshes...");
 
+#if defined(ZTH_ASSERTIONS)
+    for (auto& mesh : meshes_array)
+    {
+        // Meshes should not be initialized when we call this function.
+        ZTH_ASSERT(mesh == nullptr);
+    }
+#endif
+
     meshes_array[cube_mesh_index] = std::make_shared<Mesh>(cube_vertices, StandardVertex::layout, cube_indices);
     meshes_array[pyramid_mesh_index] =
         std::make_shared<Mesh>(pyramid_vertices, StandardVertex::layout, pyramid_indices);
