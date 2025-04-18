@@ -177,4 +177,10 @@ auto DynamicBuffer::buffer_data(std::ranges::contiguous_range auto&& data, size_
     return buffer_data(std::data(data), data_size_bytes, offset);
 }
 
+static_assert(std::ranges::contiguous_range<StaticBuffer<1>>);
+static_assert(std::ranges::contiguous_range<Buffer>);
+static_assert(std::ranges::contiguous_range<DynamicBuffer>);
+static_assert(std::ranges::contiguous_range<SmallBuffer<1>>);
+static_assert(std::ranges::contiguous_range<SmallDynamicBuffer<1>>);
+
 } // namespace zth::memory
