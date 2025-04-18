@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <ranges>
 #include <utility>
 
 #include "zenith/core/assert.hpp"
@@ -213,5 +214,9 @@ constexpr auto InPlaceVector<T, Capacity>::swap_impl(InPlaceVector& smaller, InP
     smaller._end = std::uninitialized_move(leftover, bigger.end(), smaller.end());
     bigger._end = leftover;
 }
+
+static_assert(std::ranges::contiguous_range<Vector<int>>);
+static_assert(std::ranges::contiguous_range<SmallVector<int, 1>>);
+static_assert(std::ranges::contiguous_range<InPlaceVector<int, 1>>);
 
 } // namespace zth
