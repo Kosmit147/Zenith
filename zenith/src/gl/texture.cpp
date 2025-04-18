@@ -22,35 +22,59 @@ constinit const TextureMinFilter TextureMinFilter::linear_mipmap_linear = { Text
 constinit const TextureMagFilter TextureMagFilter::nearest = { TextureFilteringMode::Nearest };
 constinit const TextureMagFilter TextureMagFilter::linear = { TextureFilteringMode::Linear };
 
-Texture2D::Texture2D(const void* file_data, usize data_size_bytes, const TextureParams& params)
+auto Texture2D::from_rgb(std::span<const float> data, u32 width, u32 height, const TextureParams& params) -> Texture2D
 {
-    init_from_file(file_data, data_size_bytes, params);
+    return Texture2D{ FromRgbTag{}, data, width, height, params };
 }
 
-Texture2D::Texture2D(const std::filesystem::path& path, const TextureParams& params)
+auto Texture2D::from_rgba(std::span<const float> data, u32 width, u32 height, const TextureParams& params) -> Texture2D
 {
-    auto file_data = fs::read_to<TemporaryVector<u8>>(path, std::ios::binary);
 
-    if (!file_data)
-    {
-        // @robustness: .string() throws.
-        ZTH_INTERNAL_ERROR("[Texture] Failed to load texture from file {}.", path.string());
-        ZTH_DEBUG_BREAK;
-        return;
-    }
-
-    std::span data{ *file_data };
-    init_from_file(data.data(), data.size_bytes(), params);
+    return Texture2D{ FromRgbaTag{}, data, width, height, params };
 }
 
-auto Texture2D::from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> Texture2D
+auto Texture2D::from_rgb(std::span<const glm::vec3> data, u32 width, u32 height, const TextureParams& params)
+    -> Texture2D
 {
-    return Texture2D{ file_data, data_size_bytes, params };
+    return Texture2D{ FromRgbTag{}, data, width, height, params };
+}
+
+auto Texture2D::from_rgba(std::span<const glm::vec4> data, u32 width, u32 height, const TextureParams& params)
+    -> Texture2D
+{
+    return Texture2D{ FromRgbaTag{}, data, width, height, params };
+}
+
+auto Texture2D::from_rgb8(std::span<const u8> data, u32 width, u32 height, const TextureParams& params) -> Texture2D
+{
+    return Texture2D{ FromRgb8Tag{}, data, width, height, params };
+}
+
+auto Texture2D::from_rgba8(std::span<const u8> data, u32 width, u32 height, const TextureParams& params) -> Texture2D
+{
+    return Texture2D{ FromRgba8Tag{}, data, width, height, params };
+}
+
+auto Texture2D::from_rgb8(std::span<const glm::vec<3, u8>> data, u32 width, u32 height, const TextureParams& params)
+    -> Texture2D
+{
+    return Texture2D{ FromRgb8Tag{}, data, width, height, params };
+}
+
+auto Texture2D::from_rgba8(std::span<const glm::vec<4, u8>> data, u32 width, u32 height, const TextureParams& params)
+    -> Texture2D
+{
+    return Texture2D{ FromRgba8Tag{}, data, width, height, params };
 }
 
 auto Texture2D::from_file(const std::filesystem::path& path, const TextureParams& params) -> Texture2D
 {
-    return Texture2D{ path, params };
+    return Texture2D{ FromFileTag{}, path, params };
+}
+
+auto Texture2D::from_file_data(std::span<const byte> file_data, const TextureParams& params) -> Texture2D
+{
+    return Texture2D{ FromFileDataTag{}, file_data, params };
 }
 
 Texture2D::Texture2D(Texture2D&& other) noexcept : _id(std::exchange(other._id, GL_NONE)) {}
@@ -76,6 +100,68 @@ auto Texture2D::unbind(u32 slot) -> void
     glBindTextureUnit(slot, GL_NONE);
 }
 
+Texture2D::Texture2D(FromRgbTag, std::span<const float> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::Float, width, height, TextureFormat::Rgb, params);
+}
+
+Texture2D::Texture2D(FromRgbaTag, std::span<const float> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::Float, width, height, TextureFormat::Rgba, params);
+}
+
+Texture2D::Texture2D(FromRgbTag, std::span<const glm::vec3> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::Float, width, height, TextureFormat::Rgb, params);
+}
+
+Texture2D::Texture2D(FromRgbaTag, std::span<const glm::vec4> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::Float, width, height, TextureFormat::Rgba, params);
+}
+
+Texture2D::Texture2D(FromRgb8Tag, std::span<const u8> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::UnsignedByte, width, height, TextureFormat::Rgb, params);
+}
+
+Texture2D::Texture2D(FromRgba8Tag, std::span<const u8> data, u32 width, u32 height, const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::UnsignedByte, width, height, TextureFormat::Rgba, params);
+}
+
+Texture2D::Texture2D(FromRgb8Tag, std::span<const glm::vec<3, u8>> data, u32 width, u32 height,
+                     const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::UnsignedByte, width, height, TextureFormat::Rgb, params);
+}
+
+Texture2D::Texture2D(FromRgba8Tag, std::span<const glm::vec<4, u8>> data, u32 width, u32 height,
+                     const TextureParams& params)
+{
+    create_from_pixels(std::as_bytes(data), DataType::UnsignedByte, width, height, TextureFormat::Rgba, params);
+}
+
+Texture2D::Texture2D(FromFileTag, const std::filesystem::path& path, const TextureParams& params)
+{
+    auto file_data = fs::read_to<TemporaryVector<byte>>(path);
+
+    if (!file_data)
+    {
+        // @robustness: .string() throws.
+        ZTH_INTERNAL_ERROR("[Texture] Failed to load texture from file {}.", path.string());
+        ZTH_DEBUG_BREAK;
+        return;
+    }
+
+    create_from_file_data(*file_data, params);
+}
+
+Texture2D::Texture2D(FromFileDataTag, std::span<const byte> file_data, const TextureParams& params)
+{
+    create_from_file_data(file_data, params);
+}
+
 auto Texture2D::create() noexcept -> void
 {
     glCreateTextures(GL_TEXTURE_2D, 1, &_id);
@@ -86,14 +172,14 @@ auto Texture2D::destroy() const noexcept -> void
     glDeleteTextures(1, &_id);
 }
 
-auto Texture2D::init_from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> void
+auto Texture2D::create_from_file_data(std::span<const byte> file_data, const TextureParams& params) -> void
 {
     stbi_set_flip_vertically_on_load(true);
     Defer unset_flip_vertically_on_load{ [] { stbi_set_flip_vertically_on_load(false); } };
 
     int width, height, channels;
-    auto image = stbi_load_from_memory(static_cast<const stbi_uc*>(file_data), static_cast<int>(data_size_bytes),
-                                       &width, &height, &channels, 0);
+    auto image = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(file_data.data()),
+                                       static_cast<int>(file_data.size_bytes()), &width, &height, &channels, 0);
 
     if (!image)
     {
@@ -102,7 +188,24 @@ auto Texture2D::init_from_file(const void* file_data, usize data_size_bytes, con
         return;
     }
 
-    Defer free_image{ [&] { stbi_image_free(image); } };
+    auto image_data = std::as_bytes(
+        std::span{ image, static_cast<usize>(width) * static_cast<usize>(height) * static_cast<usize>(channels) });
+    create_from_pixels(image_data, DataType::UnsignedByte, width, height,
+                       texture_format_from_channels(static_cast<u32>(channels)), params);
+    stbi_image_free(image);
+}
+
+auto Texture2D::create_from_pixels(std::span<const byte> pixels, DataType type, u32 width, u32 height,
+                                   TextureFormat format, const TextureParams& params) noexcept -> void
+{
+#if defined(ZTH_ASSERTIONS)
+    {
+        auto pixel_count = static_cast<usize>(width) * static_cast<usize>(height);
+        auto bytes_per_pixel = static_cast<usize>(channels_in_texture_format(format)) * size_of_data_type(type);
+
+        ZTH_ASSERT(pixels.size_bytes() == pixel_count * bytes_per_pixel);
+    }
+#endif
 
     create();
 
@@ -111,10 +214,10 @@ auto Texture2D::init_from_file(const void* file_data, usize data_size_bytes, con
     glTextureParameteri(_id, GL_TEXTURE_MIN_FILTER, to_gl_int(params.min_filter));
     glTextureParameteri(_id, GL_TEXTURE_MAG_FILTER, to_gl_int(params.mag_filter));
 
-    glTextureStorage2D(_id, 1, to_gl_enum(params.internal_format), width, height);
-
-    auto format = texture_format_from_channels(static_cast<u32>(channels));
-    glTextureSubImage2D(_id, 0, 0, 0, width, height, to_gl_enum(format), GL_UNSIGNED_BYTE, image);
+    glTextureStorage2D(_id, 1, to_gl_enum(params.internal_format), static_cast<GLsizei>(width),
+                       static_cast<GLsizei>(height));
+    glTextureSubImage2D(_id, 0, 0, 0, static_cast<GLsizei>(width), static_cast<GLsizei>(height), to_gl_enum(format),
+                        to_gl_enum(type), pixels.data());
     glGenerateTextureMipmap(_id);
 }
 
@@ -160,9 +263,9 @@ auto to_gl_int(TextureMinFilter min_filter) -> GLint
     return res;
 }
 
-auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum
+auto to_gl_enum(SizedTextureFormat format) -> GLenum
 {
-    switch (tex_format)
+    switch (format)
     {
         using enum SizedTextureFormat;
     case R8:
@@ -179,9 +282,9 @@ auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum
     std::unreachable();
 }
 
-auto to_gl_enum(TextureFormat tex_format) -> GLenum
+auto to_gl_enum(TextureFormat format) -> GLenum
 {
-    switch (tex_format)
+    switch (format)
     {
         using enum TextureFormat;
     case R:
@@ -215,6 +318,25 @@ auto texture_format_from_channels(u32 channels) -> TextureFormat
 
     ZTH_ASSERT(false);
     std::unreachable();
+}
+
+auto channels_in_texture_format(TextureFormat format) -> u32
+{
+    switch (format)
+    {
+        using enum TextureFormat;
+    case R:
+        return 1;
+    case Rg:
+        return 2;
+    case Rgb:
+        return 3;
+    case Rgba:
+        return 4;
+    }
+
+    ZTH_ASSERT(false);
+    return 0;
 }
 
 } // namespace zth::gl

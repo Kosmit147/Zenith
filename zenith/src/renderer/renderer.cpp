@@ -18,6 +18,7 @@
 #include "zenith/renderer/resources/materials.hpp"
 #include "zenith/renderer/resources/meshes.hpp"
 #include "zenith/renderer/resources/shaders.hpp"
+#include "zenith/renderer/resources/textures.hpp"
 #include "zenith/system/event.hpp"
 
 namespace zth {
@@ -79,6 +80,7 @@ auto Renderer::init() -> Result<void, String>
     ZTH_INTERNAL_TRACE("Initializing renderer...");
 
     buffers::create();
+    textures::create();
 
     renderer.reset(new Renderer);
 
@@ -125,6 +127,7 @@ auto Renderer::shut_down() -> void
 
     renderer.reset();
 
+    textures::destroy();
     buffers::destroy();
 
     ZTH_INTERNAL_TRACE("Renderer shut down.");

@@ -1,11 +1,14 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <filesystem>
-#include <ranges>
+#include <span>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/gl/util.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth::gl {
@@ -83,15 +86,27 @@ class Texture2D
 public:
     using TextureId = GLuint;
 
-    explicit Texture2D(const void* file_data, usize data_size_bytes, const TextureParams& params = {});
-    explicit Texture2D(std::ranges::contiguous_range auto&& file_data, const TextureParams& params = {});
-    explicit Texture2D(const std::filesystem::path& path, const TextureParams& params = {});
-
-    [[nodiscard]] static auto from_file(const void* file_data, usize data_size_bytes, const TextureParams& params = {})
-        -> Texture2D;
-    [[nodiscard]] static auto from_file(std::ranges::contiguous_range auto&& file_data,
+    [[nodiscard]] static auto from_rgb(std::span<const float> data, u32 width, u32 height,
+                                       const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgba(std::span<const float> data, u32 width, u32 height,
                                         const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgb(std::span<const glm::vec3> data, u32 width, u32 height,
+                                       const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgba(std::span<const glm::vec4> data, u32 width, u32 height,
+                                        const TextureParams& params = {}) -> Texture2D;
+
+    [[nodiscard]] static auto from_rgb8(std::span<const u8> data, u32 width, u32 height,
+                                        const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgba8(std::span<const u8> data, u32 width, u32 height,
+                                         const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgb8(std::span<const glm::vec<3, u8>> data, u32 width, u32 height,
+                                        const TextureParams& params = {}) -> Texture2D;
+    [[nodiscard]] static auto from_rgba8(std::span<const glm::vec<4, u8>> data, u32 width, u32 height,
+                                         const TextureParams& params = {}) -> Texture2D;
+
     [[nodiscard]] static auto from_file(const std::filesystem::path& path, const TextureParams& params = {})
+        -> Texture2D;
+    [[nodiscard]] static auto from_file_data(std::span<const byte> file_data, const TextureParams& params = {})
         -> Texture2D;
 
     ZTH_NO_COPY(Texture2D)
@@ -107,30 +122,51 @@ public:
     [[nodiscard]] auto native_handle() const { return _id; }
 
 private:
+    // clang-format off
+
+    struct FromRgbTag {};
+    struct FromRgbaTag {};
+    struct FromRgb8Tag {};
+    struct FromRgba8Tag {};
+
+    struct FromFileTag {};
+    struct FromFileDataTag {};
+
+    // clang-format on
+
     TextureId _id = GL_NONE;
 
 private:
+    explicit Texture2D(FromRgbTag, std::span<const float> data, u32 width, u32 height, const TextureParams& params);
+    explicit Texture2D(FromRgbaTag, std::span<const float> data, u32 width, u32 height, const TextureParams& params);
+    explicit Texture2D(FromRgbTag, std::span<const glm::vec3> data, u32 width, u32 height, const TextureParams& params);
+    explicit Texture2D(FromRgbaTag, std::span<const glm::vec4> data, u32 width, u32 height,
+                       const TextureParams& params);
+
+    explicit Texture2D(FromRgb8Tag, std::span<const u8> data, u32 width, u32 height, const TextureParams& params);
+    explicit Texture2D(FromRgba8Tag, std::span<const u8> data, u32 width, u32 height, const TextureParams& params);
+    explicit Texture2D(FromRgb8Tag, std::span<const glm::vec<3, u8>> data, u32 width, u32 height,
+                       const TextureParams& params);
+    explicit Texture2D(FromRgba8Tag, std::span<const glm::vec<4, u8>> data, u32 width, u32 height,
+                       const TextureParams& params);
+
+    explicit Texture2D(FromFileTag, const std::filesystem::path& path, const TextureParams& params);
+    explicit Texture2D(FromFileDataTag, std::span<const byte> file_data, const TextureParams& params);
+
     auto create() noexcept -> void;
     auto destroy() const noexcept -> void;
 
-    auto init_from_file(const void* file_data, usize data_size_bytes, const TextureParams& params) -> void;
+    auto create_from_file_data(std::span<const byte> file_data, const TextureParams& params) -> void;
+    auto create_from_pixels(std::span<const byte> pixels, DataType type, u32 width, u32 height, TextureFormat format,
+                            const TextureParams& params) noexcept -> void;
 };
 
 [[nodiscard]] auto to_gl_int(TextureWrapMode wrap) -> GLint;
 [[nodiscard]] auto to_gl_int(TextureMagFilter mag_filter) -> GLint;
 [[nodiscard]] auto to_gl_int(TextureMinFilter min_filter) -> GLint;
-[[nodiscard]] auto to_gl_enum(SizedTextureFormat tex_format) -> GLenum;
-[[nodiscard]] auto to_gl_enum(TextureFormat tex_format) -> GLenum;
+[[nodiscard]] auto to_gl_enum(SizedTextureFormat format) -> GLenum;
+[[nodiscard]] auto to_gl_enum(TextureFormat format) -> GLenum;
 [[nodiscard]] auto texture_format_from_channels(u32 channels) -> TextureFormat;
-
-Texture2D::Texture2D(std::ranges::contiguous_range auto&& file_data, const TextureParams& params)
-    : Texture2D(std::data(file_data), std::size(file_data) * sizeof(std::ranges::range_value_t<decltype(file_data)>),
-                params)
-{}
-
-auto Texture2D::from_file(std::ranges::contiguous_range auto&& file_data, const TextureParams& params) -> Texture2D
-{
-    return Texture2D{ file_data, params };
-}
+[[nodiscard]] auto channels_in_texture_format(TextureFormat format) -> u32;
 
 } // namespace zth::gl

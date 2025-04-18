@@ -17,6 +17,14 @@ auto load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading shaders...");
 
+#if defined(ZTH_ASSERTIONS)
+    for (auto& shader : shaders_array)
+    {
+        // Shaders should not be initialized when we call this function.
+        ZTH_ASSERT(shader == nullptr);
+    }
+#endif
+
     shaders_array[fallback_shader_index] =
         std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::fallback_vert,
                                                         .fragment_source = embedded::shaders::fallback_frag });
