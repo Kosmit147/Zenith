@@ -8,7 +8,15 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth::memory {
+namespace zth {
+
+template<typename A>
+concept Allocator = requires(A allocator, usize n) {
+    { *allocator.allocate(n) } -> std::same_as<typename A::value_type&>;
+    { allocator.deallocate(allocator.allocate(n), n) };
+} && std::copy_constructible<A> && std::equality_comparable<A>;
+
+namespace memory {
 
 // Custom allocation functions, which call allocation functions from C standard library under the hood, but don't
 // exhibit any implementation-defined behavior.
@@ -59,6 +67,8 @@ template<typename T> struct CustomAllocator
     auto allocate(std::size_t count) const noexcept -> T*;
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
+
+static_assert(Allocator<CustomAllocator<int>>);
 
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 {
@@ -115,4 +125,6 @@ auto CustomAllocator<T>::deallocate(T* ptr, [[maybe_unused]] std::size_t count) 
     memory::deallocate(ptr);
 }
 
-} // namespace zth::memory
+} // namespace memory
+
+} // namespace zth

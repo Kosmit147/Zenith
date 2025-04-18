@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/memory/alloc.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/stl/range.hpp"
 #include "zenith/util/optional.hpp"
@@ -19,14 +20,13 @@ namespace zth {
 
 // A resizable array.
 // @todo: Implement Vector.
-template<std::movable T, typename Allocator = std::allocator<T>> using Vector = std::vector<T, Allocator>;
+template<std::movable T, Allocator A = std::allocator<T>> using Vector = std::vector<T, A>;
 
 // A vector which stores its data on the stack, if the number of stored objects is not greater than Capacity, or on the
 // heap otherwise. Implements contiguous range interface.
 // Not currently implemented.
 // @todo: Implement SmallVector.
-template<std::movable T, usize StackCapacity, typename Allocator = std::allocator<T>>
-using SmallVector = Vector<T, Allocator>;
+template<std::movable T, usize StackCapacity, Allocator A = std::allocator<T>> using SmallVector = Vector<T, A>;
 
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
 // Implements contiguous range interface.
