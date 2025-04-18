@@ -9,6 +9,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/memory/alloc.hpp"
 #include "zenith/memory/buffer.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/string.hpp"
@@ -68,6 +69,8 @@ template<typename T> struct TemporaryStorageAllocator
     auto allocate(std::size_t count) const noexcept -> T*;
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
+
+static_assert(Allocator<TemporaryStorageAllocator<int>>);
 
 // @cleanup: We should move these aliases somewhere else because they force us to include a lot of headers in this file.
 template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;

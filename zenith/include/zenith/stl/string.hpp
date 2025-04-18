@@ -5,11 +5,12 @@
 #include <string_view>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/memory/alloc.hpp"
 
 namespace zth {
 
-template<typename Char = char, typename CharTraits = std::char_traits<Char>, typename Allocator = std::allocator<Char>>
-using GenericString = std::basic_string<Char, CharTraits, Allocator>;
+template<typename Char = char, typename CharTraits = std::char_traits<Char>, Allocator A = std::allocator<Char>>
+using GenericString = std::basic_string<Char, CharTraits, A>;
 template<typename Char = char> using GenericStringView = std::basic_string_view<Char>;
 
 using String = GenericString<char, std::char_traits<char>, std::allocator<char>>;
