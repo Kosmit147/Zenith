@@ -9,7 +9,7 @@
 
 namespace zth {
 
-template<typename Char = char, typename CharTraits = std::char_traits<Char>, Allocator A = std::allocator<Char>>
+template<typename Char = char, typename CharTraits = std::char_traits<Char>, memory::Allocator A = std::allocator<Char>>
 using GenericString = std::basic_string<Char, CharTraits, A>;
 template<typename Char = char> using GenericStringView = std::basic_string_view<Char>;
 

@@ -176,17 +176,17 @@ auto SceneManager::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down scene manager...");
 
-    _queued_scene.reset();
+    _queued_scene.free();
 
     if (_scene)
         _scene->on_unload();
 
-    _scene.reset();
+    _scene.free();
 
     ZTH_INTERNAL_TRACE("Scene manager shut down.");
 }
 
-auto SceneManager::queue_scene(std::unique_ptr<Scene>&& scene) -> void
+auto SceneManager::queue_scene(UniquePtr<Scene>&& scene) -> void
 {
     _queued_scene = std::move(scene);
 }
@@ -201,7 +201,6 @@ auto SceneManager::scene() -> Optional<Reference<Scene>>
 
 auto SceneManager::scene_unchecked() -> Scene&
 {
-    ZTH_ASSERT(_scene != nullptr);
     return *_scene;
 }
 

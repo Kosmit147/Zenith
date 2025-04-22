@@ -7,7 +7,7 @@
 namespace zth {
 
 memory::Buffer TemporaryStorage::_buffer{ initial_capacity };
-Vector<std::unique_ptr<byte[]>> TemporaryStorage::_overflow_allocations;
+Vector<UniquePtr<byte[]>> TemporaryStorage::_overflow_allocations;
 
 auto TemporaryStorage::init() -> Result<void, String>
 {
@@ -46,7 +46,6 @@ auto TemporaryStorage::reset_with_new_capacity(usize new_capacity) -> void
 
 auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 {
-    ZTH_ASSERT(_buffer_ptr != nullptr);
     ZTH_ASSERT(math::is_power_of_2(alignment));
 
     if (size_bytes == 0) [[unlikely]]
@@ -58,7 +57,7 @@ auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 
 auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
 {
-    ZTH_ASSERT(_buffer_ptr != nullptr);
+    // Handles the case when _buffer_ptr is nullptr as well.
 
     if (size_bytes == 0) [[unlikely]]
         return nullptr;
@@ -78,19 +77,19 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
     return result;
 }
 
-auto TemporaryStorage::space_left() -> usize
+auto TemporaryStorage::memory_left() -> usize
 {
     return std::distance(_buffer_ptr, end());
 }
 
-auto TemporaryStorage::space_used() -> usize
+auto TemporaryStorage::memory_used() -> usize
 {
     return std::distance(begin(), _buffer_ptr);
 }
 
 auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*
 {
-    _overflow_allocations.push_back(std::make_unique_for_overwrite<byte[]>(size_bytes));
+    _overflow_allocations.push_back(make_unique_for_overwrite<byte[]>(size_bytes));
     return _overflow_allocations.back().get();
 }
 

@@ -237,17 +237,15 @@ auto TransformComponent::update_transform() -> void
 
 // --------------------------- ScriptComponent ---------------------------
 
-ScriptComponent::ScriptComponent(std::unique_ptr<Script>&& script) : _script(std::move(script)) {}
+ScriptComponent::ScriptComponent(UniquePtr<Script>&& script) : _script{ std::move(script) } {}
 
 auto ScriptComponent::script() -> Script&
 {
-    ZTH_ASSERT(_script != nullptr);
     return *_script;
 }
 
 auto ScriptComponent::script() const -> const Script&
 {
-    ZTH_ASSERT(_script != nullptr);
     return *_script;
 }
 
@@ -295,16 +293,17 @@ auto CameraComponent::display_label() -> const char*
 
 // --------------------------- LightComponent ---------------------------
 
-LightComponent::LightComponent() : _type(LightType::Point), _point_light(PointLight{}) {}
+LightComponent::LightComponent() : _type{ LightType::Point }, _point_light{ PointLight{} } {}
 
-LightComponent::LightComponent(const DirectionalLight& light) : _type(LightType::Directional), _directional_light(light)
+LightComponent::LightComponent(const DirectionalLight& light)
+    : _type{ LightType::Directional }, _directional_light{ light }
 {}
 
-LightComponent::LightComponent(const PointLight& light) : _type(LightType::Point), _point_light(light) {}
+LightComponent::LightComponent(const PointLight& light) : _type{ LightType::Point }, _point_light{ light } {}
 
-LightComponent::LightComponent(const SpotLight& light) : _type(LightType::Spot), _spot_light(light) {}
+LightComponent::LightComponent(const SpotLight& light) : _type{ LightType::Spot }, _spot_light{ light } {}
 
-LightComponent::LightComponent(const AmbientLight& light) : _type(LightType::Ambient), _ambient_light(light) {}
+LightComponent::LightComponent(const AmbientLight& light) : _type{ LightType::Ambient }, _ambient_light{ light } {}
 
 auto LightComponent::set_light(LightType type) -> void
 {

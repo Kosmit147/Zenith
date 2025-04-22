@@ -4,7 +4,7 @@
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/memory/fwd.hpp"
+#include "zenith/memory/memory.hpp"
 #include "zenith/stl/range.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -13,7 +13,7 @@ namespace zth::memory {
 // @todo: Implement iterators.
 // @todo: Implement reverse iterators (rbegin, rend).
 
-template<usize Size, usize Alignment /* = minimal_alignment */>
+template<usize Size, usize Alignment = minimal_alignment>
 class alignas(Alignment) StaticBuffer : public ContiguousRangeInterface
 {
 public:

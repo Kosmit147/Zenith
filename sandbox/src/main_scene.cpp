@@ -25,7 +25,7 @@ MainScene::MainScene()
 {
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
-    _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
+    _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<zth::scripts::FlyCamera>());
 
     _cube.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
     _cube.emplace_or_replace<zth::MaterialComponent>(_cube_material);
@@ -34,5 +34,5 @@ MainScene::MainScene()
                                                        glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
     _light.emplace_or_replace<zth::LightComponent>(zth::DirectionalLight{});
 
-    _cube.emplace_or_replace<zth::ScriptComponent>(std::make_unique<CubeScript>());
+    _cube.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<CubeScript>());
 }

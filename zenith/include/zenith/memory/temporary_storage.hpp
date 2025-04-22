@@ -2,8 +2,6 @@
 
 #include <cstddef>
 #include <iterator>
-#include <memory>
-#include <ranges>
 #include <type_traits>
 #include <utility>
 
@@ -11,6 +9,7 @@
 #include "zenith/log/format.hpp"
 #include "zenith/memory/alloc.hpp"
 #include "zenith/memory/buffer.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
@@ -39,8 +38,8 @@ public:
     [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> void*;
 
     [[nodiscard]] static auto capacity() -> usize { return _buffer.size(); }
-    [[nodiscard]] static auto space_left() -> usize;
-    [[nodiscard]] static auto space_used() -> usize;
+    [[nodiscard]] static auto memory_left() -> usize;
+    [[nodiscard]] static auto memory_used() -> usize;
 
     [[nodiscard]] static auto begin() -> decltype(auto) { return _buffer.begin(); }
     [[nodiscard]] static auto end() -> decltype(auto) { return _buffer.end(); }
@@ -48,7 +47,7 @@ public:
 private:
     static memory::Buffer _buffer;
     static inline byte* _buffer_ptr = nullptr;
-    static Vector<std::unique_ptr<byte[]>> _overflow_allocations;
+    static Vector<UniquePtr<byte[]>> _overflow_allocations;
 
 private:
     [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> void*;
@@ -58,11 +57,15 @@ private:
 template<typename T> struct TemporaryStorageAllocator
 {
     // A minimal allocator implementation.
+    static_assert(!std::is_const_v<T>);
+    static_assert(!std::is_function_v<T>);
+    static_assert(!std::is_reference_v<T>);
 
     using value_type = T;
 
     TemporaryStorageAllocator() noexcept = default;
     template<typename U> TemporaryStorageAllocator(const TemporaryStorageAllocator<U>&) noexcept {}
+
     template<typename U> auto operator==(const TemporaryStorageAllocator<U>&) const noexcept -> bool { return true; }
     template<typename U> auto operator!=(const TemporaryStorageAllocator<U>&) const noexcept -> bool { return false; }
 
@@ -70,58 +73,26 @@ template<typename T> struct TemporaryStorageAllocator
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
-static_assert(Allocator<TemporaryStorageAllocator<int>>);
+static_assert(memory::Allocator<TemporaryStorageAllocator<int>>);
 
 // @cleanup: We should move these aliases somewhere else because they force us to include a lot of headers in this file.
-template<typename T> using Temporary = std::unique_ptr<T, memory::DestroyingDeleter<T>>;
+template<typename T> using Temporary = UniquePtr<T, TemporaryStorageAllocator<std::remove_extent_t<T>>>;
 using TemporaryString = GenericString<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = Vector<T, TemporaryStorageAllocator<T>>;
 
-// @cleanup: These make_temporary functions could probably be generalized and could take in an allocator with which to
-// construct the object as a template parameter.
-// @todo: Implement make_temporary_for_overwrite (analogous to std::make_unique_for_overwrite).
-
 template<typename T>
+    requires(!std::is_unbounded_array_v<T>)
 [[nodiscard]] auto make_temporary(auto&&... args) -> Temporary<T>
-    requires(!std::is_array_v<T>)
 {
-    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
-    std::construct_at(ptr, std::forward<decltype(args)>(args)...);
-    return Temporary<T>{ ptr };
+    return make_unique<T, TemporaryStorageAllocator<T>>(std::forward<decltype(args)>(args)...);
 }
 
-// Specialization for array types.
 template<typename T>
-[[nodiscard]] auto make_temporary() -> Temporary<T>
-    requires(std::is_bounded_array_v<T>)
-{
-    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
-    std::ranges::uninitialized_default_construct(*ptr);
-    return Temporary<T>{ ptr };
-}
-
-// Specialization for array types.
-template<typename T>
-[[nodiscard]] auto make_temporary(auto&&... args) -> Temporary<T>
-    requires(std::is_bounded_array_v<T>)
-{
-    auto ptr = static_cast<T*>(TemporaryStorage::allocate(sizeof(T), alignof(T)));
-
-    for (auto& elem : *ptr)
-        std::construct_at(std::addressof(elem), std::forward<decltype(args)>(args)...);
-
-    return Temporary<T>{ ptr };
-}
-
-// We don't have a Temporary pointing to a T[], like a unique_ptr can, because then we don't know how many Ts we have to
-// destruct. If we wanted to support that, we would have to store additional metadata containing information about the
-// number of constructed Ts. This metadata could potentially be stored in the deleter.
-// @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
-// because then we don't have to actually store the additional metadata.
-template<typename T>
-[[nodiscard]] auto make_temporary(auto&&...) -> Temporary<T>
     requires(std::is_unbounded_array_v<T>)
-= delete;
+[[nodiscard]] auto make_temporary(usize count) -> Temporary<T>
+{
+    return make_unique<T, TemporaryStorageAllocator<std::remove_extent_t<T>>>(count);
+}
 
 template<typename... Args>
 [[nodiscard]] auto format_to_temporary(fmt::format_string<Args...> fmt, Args&&... args) -> TemporaryString

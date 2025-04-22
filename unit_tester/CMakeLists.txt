@@ -6,6 +6,7 @@ include(Catch)
 
 add_executable(
 	unit_tester
+	"src/memory/managed.cpp"
 	"src/memory/memory.cpp"
 	"src/meta/type.cpp"
 	"src/renderer/shader_preprocessor.cpp"

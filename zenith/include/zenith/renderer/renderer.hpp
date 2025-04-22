@@ -78,6 +78,9 @@ struct AmbientLightRenderData
 
 class Renderer
 {
+private:
+    struct Passkey {}; // Allows constructing an instance of the Renderer through make_unique.
+
 public:
     // @volatile: Keep in sync with constants declared in zth_defines.glsl.
 
@@ -103,6 +106,8 @@ public:
     static constexpr usize initial_instance_buffer_size = sizeof(InstanceVertex) * 1000;
 
 public:
+    explicit Renderer(Passkey);
+
     [[nodiscard]] static auto init() -> Result<void, String>;
     static auto start_frame() -> void;
     static auto on_window_event(const Event& event) -> void;
