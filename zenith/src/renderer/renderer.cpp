@@ -11,6 +11,7 @@
 #include "zenith/gl/vertex_array.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/mesh.hpp"
@@ -25,7 +26,7 @@ namespace zth {
 
 namespace {
 
-std::unique_ptr<Renderer> renderer;
+UniquePtr<Renderer> renderer;
 
 } // namespace
 
@@ -75,6 +76,9 @@ auto DrawCommand::operator>=(const DrawCommand& other) const -> bool
     return *this > other || *this == other;
 }
 
+// This constructor exists only for the purpose of allowing make_unique to construct an instance of the Renderer.
+Renderer::Renderer(Passkey) : Renderer() {}
+
 auto Renderer::init() -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing renderer...");
@@ -82,7 +86,7 @@ auto Renderer::init() -> Result<void, String>
     buffers::create();
     textures::create();
 
-    renderer.reset(new Renderer);
+    renderer = make_unique<Renderer>(Passkey{});
 
     set_blending_enabled(true);
     set_depth_test_enabled(true);
@@ -125,7 +129,7 @@ auto Renderer::shut_down() -> void
     meshes::unload();
     shaders::unload();
 
-    renderer.reset();
+    renderer.free();
 
     textures::destroy();
     buffers::destroy();

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-
+#include "zenith/memory/managed.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
@@ -36,7 +35,7 @@ private:
 class LayerStack
 {
 public:
-    [[nodiscard]] auto push(std::unique_ptr<Layer>&& layer) -> Result<Reference<Layer>, String>;
+    [[nodiscard]] auto push(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
     // Returns false if layer stack is empty and there are no layers left to remove.
     auto pop() -> bool;
 
@@ -50,7 +49,7 @@ public:
     auto render() -> void;
 
 private:
-    Vector<std::unique_ptr<Layer>> _layers;
+    Vector<UniquePtr<Layer>> _layers;
 };
 
 } // namespace zth

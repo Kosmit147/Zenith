@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
-
 #include "zenith/ecs/ecs.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
@@ -63,14 +62,14 @@ public:
     static auto on_render() -> void;
     static auto shut_down() -> void;
 
-    static auto queue_scene(std::unique_ptr<Scene>&& scene) -> void;
+    static auto queue_scene(UniquePtr<Scene>&& scene) -> void;
 
     [[nodiscard]] static auto scene() -> Optional<Reference<Scene>>;
     [[nodiscard]] static auto scene_unchecked() -> Scene&;
 
 private:
-    static inline std::unique_ptr<Scene> _scene = nullptr;
-    static inline std::unique_ptr<Scene> _queued_scene = nullptr;
+    static inline UniquePtr<Scene> _scene = nullptr;
+    static inline UniquePtr<Scene> _queued_scene = nullptr;
 };
 
 } // namespace zth

@@ -9,13 +9,13 @@
 
 #include <concepts>
 #include <functional>
-#include <memory>
 
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
@@ -152,7 +152,7 @@ private:
     usize _scene_count = 0;
 
     Vector<String> _scene_names;
-    Vector<std::function<std::unique_ptr<Scene>()>> _scene_constructors;
+    Vector<std::function<UniquePtr<Scene>()>> _scene_constructors;
 
 private:
     auto load_scene(usize idx) const -> void;
@@ -163,7 +163,7 @@ auto ScenePicker::add_scene(StringView name)
     requires(std::derived_from<T, Scene>)
 {
     _scene_names.emplace_back(name);
-    _scene_constructors.emplace_back(std::make_unique<T>);
+    _scene_constructors.emplace_back(make_unique<T>);
     _scene_count++;
 }
 

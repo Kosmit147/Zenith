@@ -9,6 +9,7 @@
 
 #include "zenith/log/format.hpp"
 #include "zenith/math/quaternion.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/script/script.hpp"
@@ -108,7 +109,7 @@ private:
 class ScriptComponent
 {
 public:
-    explicit ScriptComponent(std::unique_ptr<Script>&& script);
+    explicit ScriptComponent(UniquePtr<Script>&& script);
 
     [[nodiscard]] auto script() -> Script&;
     [[nodiscard]] auto script() const -> const Script&;
@@ -116,7 +117,7 @@ public:
     [[nodiscard]] static auto display_label() -> const char*;
 
 private:
-    std::unique_ptr<Script> _script; // script cannot be null.
+    UniquePtr<Script> _script; // script cannot be null.
 };
 
 // --------------------------- MeshComponent ---------------------------

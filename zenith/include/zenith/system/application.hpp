@@ -1,10 +1,9 @@
 #pragma once
 
-#include <memory>
-
 #include "zenith/core/typedefs.hpp"
 #include "zenith/layer/layer.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/memory/managed.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/window.hpp"
@@ -16,9 +15,9 @@
 // user_application is the class derived from zth::Application defined by the user.
 #define ZTH_IMPLEMENT_APP(user_application)                                                                            \
     namespace zth {                                                                                                    \
-    [[nodiscard]] auto create_application() -> std::unique_ptr<Application>                                            \
+    [[nodiscard]] auto create_application() -> ::zth::UniquePtr<::zth::Application>                                    \
     {                                                                                                                  \
-        return std::make_unique<::user_application>();                                                                 \
+        return ::zth::make_unique<::user_application>();                                                               \
     }                                                                                                                  \
     }
 
@@ -41,11 +40,11 @@ public:
     ZTH_NO_COPY_NO_MOVE(Application)
     virtual ~Application();
 
-    auto push_layer(std::unique_ptr<Layer>&& layer) -> Result<Reference<Layer>, String>;
+    auto push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
     // Returns false if layer stack is empty and there are no layers left to remove.
     auto pop_layer() -> bool;
 
-    auto push_overlay(std::unique_ptr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
+    auto push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
     // Returns false if overlay stack is empty and there are no overlays left to remove.
     auto pop_overlay() -> bool;
 

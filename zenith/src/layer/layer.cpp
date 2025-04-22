@@ -4,7 +4,7 @@
 
 namespace zth {
 
-auto LayerStack::push(std::unique_ptr<Layer>&& layer) -> Result<Reference<Layer>, String>
+auto LayerStack::push(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>
 {
     auto& attached_layer = *_layers.emplace_back(std::move(layer));
     auto attach_result = attached_layer.on_attach();

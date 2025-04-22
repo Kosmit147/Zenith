@@ -20,13 +20,13 @@ namespace zth {
 
 // A resizable array.
 // @todo: Implement Vector.
-template<std::movable T, Allocator A = std::allocator<T>> using Vector = std::vector<T, A>;
+template<std::movable T, memory::Allocator A = std::allocator<T>> using Vector = std::vector<T, A>;
 
 // A vector which stores its data on the stack, if the number of stored objects is not greater than Capacity, or on the
 // heap otherwise. Implements contiguous range interface.
 // Not currently implemented.
 // @todo: Implement SmallVector.
-template<std::movable T, usize StackCapacity, Allocator A = std::allocator<T>> using SmallVector = Vector<T, A>;
+template<std::movable T, usize StackCapacity, memory::Allocator A = std::allocator<T>> using SmallVector = Vector<T, A>;
 
 // A vector which stores its data on the stack. The amount of stored objects cannot go above the specified Capacity.
 // Implements contiguous range interface.

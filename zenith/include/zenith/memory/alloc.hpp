@@ -1,14 +1,15 @@
 #pragma once
 
 #include <concepts>
-#include <memory>
+#include <cstdlib>
+#include <cstring>
 #include <type_traits>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth {
+namespace zth::memory {
 
 template<typename A>
 concept Allocator = requires(A allocator, usize n) {
@@ -16,7 +17,8 @@ concept Allocator = requires(A allocator, usize n) {
     { allocator.deallocate(allocator.allocate(n), n) };
 } && std::copy_constructible<A> && std::equality_comparable<A>;
 
-namespace memory {
+template<typename A>
+concept StatelessAllocator = Allocator<A> && std::is_empty_v<A>;
 
 // Custom allocation functions, which call allocation functions from C standard library under the hood, but don't
 // exhibit any implementation-defined behavior.
@@ -31,31 +33,12 @@ auto reallocate(auto*& ptr, usize new_size_bytes, usize buffer_size_bytes) noexc
 // This function sets ptr to nullptr.
 auto deallocate(auto*& ptr) noexcept -> void;
 
-// Destructs an object and deallocates the memory using our custom allocation functions. Handles pointers to arrays, but
-// not arrays of dynamic size (T[]).
-// @todo: Handle arrays of dynamic size (T[]). We should take into account whether the type is trivially destructible,
-// because then we don't have to actually store the additional metadata nor call any destructors. We could either store
-// the information about the number of objects to destruct the same way the standard operator delete[] does, or store
-// the number of allocated objects as part of the state of the deleter.
-template<std::destructible T>
-    requires(!std::is_unbounded_array_v<T>)
-struct CustomDeleter
-{
-public:
-    CustomDeleter() noexcept = default;
-
-    template<typename U>
-    CustomDeleter(const CustomDeleter<U>&) noexcept
-        requires(std::convertible_to<U*, T*>)
-    {}
-
-    // std::destructible ensures that T's destructor doesn't throw.
-    auto operator()(T* ptr) const noexcept -> void;
-};
-
 template<typename T> struct CustomAllocator
 {
     // A minimal allocator implementation.
+    static_assert(!std::is_const_v<T>);
+    static_assert(!std::is_function_v<T>);
+    static_assert(!std::is_reference_v<T>);
 
     using value_type = T;
 
@@ -68,7 +51,7 @@ template<typename T> struct CustomAllocator
     auto deallocate(T* ptr, std::size_t count) const noexcept -> void;
 };
 
-static_assert(Allocator<CustomAllocator<int>>);
+static_assert(StatelessAllocator<CustomAllocator<int>>);
 
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 {
@@ -106,14 +89,6 @@ auto deallocate(auto*& ptr) noexcept -> void
     ptr = nullptr;
 }
 
-template<std::destructible T>
-    requires(!std::is_unbounded_array_v<T>)
-auto CustomDeleter<T>::operator()(T* ptr) const noexcept -> void
-{
-    std::destroy_at(ptr);
-    deallocate(ptr);
-}
-
 template<typename T> auto CustomAllocator<T>::allocate(std::size_t count) const noexcept -> T*
 {
     return static_cast<T*>(memory::allocate(count * sizeof(T)));
@@ -125,6 +100,4 @@ auto CustomAllocator<T>::deallocate(T* ptr, [[maybe_unused]] std::size_t count) 
     memory::deallocate(ptr);
 }
 
-} // namespace memory
-
-} // namespace zth
+} // namespace zth::memory

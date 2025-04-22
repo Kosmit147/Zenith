@@ -53,7 +53,7 @@ MainScene::MainScene()
 
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
-    _camera.emplace_or_replace<zth::ScriptComponent>(std::make_unique<zth::scripts::FlyCamera>());
+    _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<zth::scripts::FlyCamera>());
 
     // --- Cube ---
 

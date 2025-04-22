@@ -5,7 +5,6 @@
 #include "ecs/fwd.hpp"
 #include "gl/fwd.hpp"
 #include "layer/fwd.hpp"
-#include "memory/fwd.hpp"
 #include "renderer/fwd.hpp"
 #include "script/fwd.hpp"
 #include "stl/fwd.hpp"

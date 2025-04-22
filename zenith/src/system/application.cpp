@@ -16,15 +16,15 @@ Application::Application(const ApplicationSpec& spec) : fixed_update_time(spec.f
         pop_all_layers();
     } };
 
-    auto result = push_layer(std::make_unique<SystemLayer>(spec.logger_spec, spec.window_spec));
+    auto result = push_layer(make_unique<SystemLayer>(spec.logger_spec, spec.window_spec));
     if (!result)
         throw Exception{ result.error() };
 
-    result = push_layer(std::make_unique<RuntimeLayer>());
+    result = push_layer(make_unique<RuntimeLayer>());
     if (!result)
         throw Exception{ result.error() };
 
-    result = push_overlay(std::make_unique<DebugLayer>());
+    result = push_overlay(make_unique<DebugLayer>());
     if (!result)
         throw Exception{ result.error() };
 
@@ -40,7 +40,7 @@ Application::~Application()
     pop_all_layers();
 }
 
-auto Application::push_layer(std::unique_ptr<Layer>&& layer) -> Result<Reference<Layer>, String>
+auto Application::push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>
 {
     return _layers.push(std::move(layer));
 }
@@ -50,7 +50,7 @@ auto Application::pop_layer() -> bool
     return _layers.pop();
 }
 
-auto Application::push_overlay(std::unique_ptr<Layer>&& overlay) -> Result<Reference<Layer>, String>
+auto Application::push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>
 {
     return _overlays.push(std::move(overlay));
 }
