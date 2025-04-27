@@ -4,6 +4,7 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/memory/buffer.hpp"
 #include "zenith/memory/temporary_storage.hpp"
 #include "zenith/system/file.hpp"
 #include "zenith/util/defer.hpp"
@@ -144,7 +145,7 @@ Texture2D::Texture2D(FromRgba8Tag, std::span<const glm::vec<4, u8>> data, u32 wi
 
 Texture2D::Texture2D(FromFileTag, const std::filesystem::path& path, const TextureParams& params)
 {
-    auto file_data = fs::read_to<TemporaryVector<byte>>(path);
+    auto file_data = fs::read_to<TemporaryBuffer>(path);
 
     if (!file_data)
     {

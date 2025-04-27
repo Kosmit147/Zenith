@@ -24,7 +24,6 @@ add_library(
 	"src/math/matrix.cpp"
 	"src/math/quaternion.cpp"
 	"src/memory/alloc.cpp"
-	"src/memory/buffer.cpp"
 	"src/memory/temporary_storage.cpp"
 	"src/renderer/resources/buffers.cpp"
 	"src/renderer/resources/materials.cpp"

@@ -45,7 +45,7 @@ public:
     [[nodiscard]] static auto end() -> decltype(auto) { return _buffer.end(); }
 
 private:
-    static memory::Buffer _buffer;
+    static memory::Buffer<> _buffer;
     static inline byte* _buffer_ptr = nullptr;
     static Vector<UniquePtr<byte[]>> _overflow_allocations;
 
@@ -79,6 +79,9 @@ static_assert(memory::Allocator<TemporaryStorageAllocator<int>>);
 template<typename T> using Temporary = UniquePtr<T, TemporaryStorageAllocator<std::remove_extent_t<T>>>;
 using TemporaryString = GenericString<char, std::char_traits<char>, TemporaryStorageAllocator<char>>;
 template<typename T> using TemporaryVector = Vector<T, TemporaryStorageAllocator<T>>;
+
+using TemporaryBuffer = memory::Buffer<TemporaryStorageAllocator<byte>>;
+using TemporaryDynamicBuffer = memory::DynamicBuffer<TemporaryStorageAllocator<byte>>;
 
 template<typename T>
     requires(!std::is_unbounded_array_v<T>)

@@ -14,10 +14,14 @@
 namespace zth {
 
 // An allocator-aware unique pointer. This unique pointer is implemented differently to the standard library's one as it
-// doesn't just manage the object, it handles allocation and deallocation as well using the specified allocator.
+// doesn't just manage the object, it handles allocation and deallocation as well using the specified allocator. Assumes
+// that the specified allocator doesn't fail.
 template<typename T, memory::StatelessAllocator A = std::allocator<std::remove_extent_t<T>>> class UniquePtr
 {
 public:
+    static_assert(std::same_as<T, typename A::value_type>,
+                  "allocator's value type must be the same as unique pointer's value type");
+
     explicit UniquePtr() noexcept = default;
     UniquePtr(std::nullptr_t) noexcept;
 
