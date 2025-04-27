@@ -1,9 +1,12 @@
 #pragma once
 
 #include <array>
+#include <concepts>
+#include <memory>
 #include <ranges>
 
 #include "zenith/core/typedefs.hpp"
+#include "zenith/memory/alloc.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/range.hpp"
 #include "zenith/util/macros.hpp"
@@ -62,9 +65,12 @@ public:
     auto buffer_data(std::ranges::contiguous_range auto&& data, size_type offset = 0) noexcept -> size_type;
 };
 
-class Buffer : public ContiguousRangeInterface
+// Assumes that the specified allocator doesn't fail.
+template<StatelessAllocator A = std::allocator<byte>> class Buffer : public ContiguousRangeInterface
 {
 public:
+    static_assert(std::same_as<byte, typename A::value_type>, "allocator's value type must be byte");
+
     using value_type = byte;
     using size_type = usize;
     using difference_type = isize;
@@ -124,9 +130,12 @@ private:
     auto reallocate(size_type size_bytes) noexcept -> void;
 };
 
-class DynamicBuffer : public ContiguousRangeInterface
+// Assumes that the specified allocator doesn't fail.
+template<StatelessAllocator A = std::allocator<byte>> class DynamicBuffer : public ContiguousRangeInterface
 {
 public:
+    static_assert(std::same_as<byte, typename A::value_type>, "allocator's value type must be byte");
+
     using value_type = byte;
     using size_type = usize;
     using difference_type = isize;
@@ -188,17 +197,17 @@ private:
 
 private:
     auto allocate(size_type capacity_bytes) noexcept -> void;
-    auto reallocate_exactly(size_type new_capacity_bytes) noexcept -> void;
+    auto reallocate_exactly(size_type capacity_bytes) noexcept -> void;
     auto reallocate_at_least(size_type min_capacity_bytes) noexcept -> void;
 
     [[nodiscard]] static auto calculate_growth(size_type old_size_bytes) noexcept -> size_type;
 };
 
 // @todo: Implement SmallBuffer.
-template<usize StackCapacity> using SmallBuffer = Buffer;
+template<usize StackCapacity, StatelessAllocator A = std::allocator<byte>> using SmallBuffer = Buffer<A>;
 
 // @todo: Implement SmallDynamicBuffer.
-template<usize StackCapacity> using SmallDynamicBuffer = DynamicBuffer;
+template<usize StackCapacity, StatelessAllocator A = std::allocator<byte>> using SmallDynamicBuffer = DynamicBuffer<A>;
 
 } // namespace zth::memory
 

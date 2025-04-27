@@ -15,16 +15,15 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T, A>::null() 
 
 template<typename T, memory::StatelessAllocator A> auto UniquePtr<T, A>::construct_new(auto&&... args) -> UniquePtr
 {
-    A allocator{};
-    auto ptr = std::allocator_traits<A>::allocate(allocator, 1);
-    std::allocator_traits<A>::construct(allocator, ptr, std::forward<decltype(args)>(args)...);
+    auto* ptr = memory::allocate_and_construct_object_using_allocator(A{}, std::forward<decltype(args)>(args)...);
+    ZTH_ASSERT(ptr != nullptr);
     return UniquePtr{ ptr };
 }
 
 template<typename T, memory::StatelessAllocator A> auto UniquePtr<T, A>::allocate_for_overwrite() -> UniquePtr
 {
-    A allocator{};
-    auto ptr = std::allocator_traits<A>::allocate(allocator, 1);
+    auto* ptr = memory::allocate_using_allocator(A{});
+    ZTH_ASSERT(ptr != nullptr);
     return UniquePtr{ ptr };
 }
 
@@ -89,10 +88,7 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T, A>::free() 
     if (!_ptr)
         return;
 
-    A allocator{};
-    std::allocator_traits<A>::destroy(allocator, _ptr);
-    std::allocator_traits<A>::deallocate(allocator, _ptr, 1);
-
+    memory::destroy_and_deallocate_object_using_allocator(A{}, _ptr);
     _ptr = nullptr;
 }
 
@@ -112,21 +108,16 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::null(
 
 template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::construct_new(usize count) -> UniquePtr
 {
-    A allocator{};
-    auto ptr = std::allocator_traits<A>::allocate(allocator, count);
-
-    auto end = ptr + count;
-    for (auto current = ptr; current != end; ++current)
-        std::allocator_traits<A>::construct(allocator, current);
-
+    auto* ptr = memory::allocate_and_construct_objects_using_allocator(A{}, count);
+    ZTH_ASSERT(ptr != nullptr);
     return UniquePtr{ ptr, count };
 }
 
 template<typename T, memory::StatelessAllocator A>
 auto UniquePtr<T[], A>::allocate_for_overwrite(usize count) -> UniquePtr
 {
-    A allocator{};
-    auto ptr = std::allocator_traits<A>::allocate(allocator, count);
+    auto* ptr = memory::allocate_using_allocator(A{}, count);
+    ZTH_ASSERT(ptr != nullptr);
     return UniquePtr{ ptr, count };
 }
 
@@ -207,14 +198,7 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::free(
         return;
 
     ZTH_ASSERT(_count != 0);
-
-    A allocator{};
-
-    auto end = _ptr + _count;
-    for (auto current = _ptr; current != end; ++current)
-        std::allocator_traits<A>::destroy(allocator, current);
-
-    std::allocator_traits<A>::deallocate(allocator, _ptr, _count);
+    memory::destroy_and_deallocate_objects_using_allocator(A{}, _ptr, _count);
     _ptr = nullptr;
     _count = 0;
 }

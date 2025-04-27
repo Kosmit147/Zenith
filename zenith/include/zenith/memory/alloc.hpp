@@ -3,7 +3,9 @@
 #include <concepts>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <type_traits>
+#include <utility>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
@@ -13,12 +15,53 @@ namespace zth::memory {
 
 template<typename A>
 concept Allocator = requires(A allocator, usize n) {
-    { *allocator.allocate(n) } -> std::same_as<typename A::value_type&>;
+    { *allocator.allocate(n) } -> std::same_as<typename std::remove_cvref_t<A>::value_type&>;
     { allocator.deallocate(allocator.allocate(n), n) };
 } && std::copy_constructible<A> && std::equality_comparable<A>;
 
 template<typename A>
 concept StatelessAllocator = Allocator<A> && std::is_empty_v<A>;
+
+template<typename T, typename Alloc>
+concept AllocatableWith = Allocator<Alloc> && std::same_as<T, typename std::remove_cvref_t<Alloc>::value_type>;
+
+template<Allocator A> [[nodiscard]] auto allocate_using_allocator(A&& allocator, usize count = 1) -> auto*;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto deallocate_using_allocator(A&& allocator, T* memory, usize count = 1) -> void;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto construct_object_using_allocator(A&& allocator, T* location, auto&&... args) -> void;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto construct_objects_using_allocator(A&& allocator, T* location, usize count) -> void;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_object_using_allocator(A&& allocator, T* location) -> void;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_objects_using_allocator(A&& allocator, T* location, usize count) -> void;
+
+// Assumes that the allocator doesn't fail.
+template<Allocator A>
+[[nodiscard]] auto allocate_and_construct_object_using_allocator(A&& allocator, auto&&... args) -> auto*;
+
+// Assumes that the allocator doesn't fail.
+template<Allocator A>
+[[nodiscard]] auto allocate_and_construct_objects_using_allocator(A&& allocator, usize count) -> auto*;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_and_deallocate_object_using_allocator(A&& allocator, T* location) -> void;
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_and_deallocate_objects_using_allocator(A&& allocator, T* location, usize count) -> void;
 
 // Custom allocation functions, which call allocation functions from C standard library under the hood, but don't
 // exhibit any implementation-defined behavior.
@@ -52,6 +95,85 @@ template<typename T> struct CustomAllocator
 };
 
 static_assert(StatelessAllocator<CustomAllocator<int>>);
+
+template<Allocator A> auto allocate_using_allocator(A&& allocator, usize count) -> auto*
+{
+    return std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::allocate(allocator, count);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto deallocate_using_allocator(A&& allocator, T* memory, usize count) -> void
+{
+    std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::deallocate(allocator, memory, count);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto construct_object_using_allocator(A&& allocator, T* location, auto&&... args) -> void
+{
+    std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::construct(allocator, location,
+                                                                               std::forward<decltype(args)>(args)...);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto construct_objects_using_allocator(A&& allocator, T* location, usize count) -> void
+{
+    auto end = location + count;
+    for (; location != end; ++location)
+        construct_object_using_allocator(allocator, location);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_object_using_allocator(A&& allocator, T* location) -> void
+{
+    std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::destroy(allocator, location);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_objects_using_allocator(A&& allocator, T* location, usize count) -> void
+{
+    auto end = location + count;
+    for (; location != end; ++location)
+        destroy_object_using_allocator(allocator, location);
+}
+
+template<Allocator A> auto allocate_and_construct_object_using_allocator(A&& allocator, auto&&... args) -> auto*
+{
+    auto* location = allocate_using_allocator(allocator);
+    ZTH_ASSERT(location != nullptr);
+    construct_object_using_allocator(allocator, location, std::forward<decltype(args)>(args)...);
+    return location;
+}
+
+template<Allocator A> auto allocate_and_construct_objects_using_allocator(A&& allocator, usize count) -> auto*
+{
+    auto* location = allocate_using_allocator(allocator, count);
+    ZTH_ASSERT(location != nullptr);
+    construct_objects_using_allocator(allocator, location, count);
+    return location;
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_and_deallocate_object_using_allocator(A&& allocator, T* location) -> void
+{
+    ZTH_ASSERT(location != nullptr);
+    destroy_object_using_allocator(allocator, location);
+    deallocate_using_allocator(allocator, location);
+}
+
+template<Allocator A, typename T>
+    requires AllocatableWith<T, A>
+auto destroy_and_deallocate_objects_using_allocator(A&& allocator, T* location, usize count) -> void
+{
+    ZTH_ASSERT(location != nullptr);
+    destroy_objects_using_allocator(allocator, location, count);
+    deallocate_using_allocator(allocator, location, count);
+}
 
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void
 {

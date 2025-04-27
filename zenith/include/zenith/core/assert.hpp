@@ -15,9 +15,10 @@
         {}                                                                                                             \
         else [[unlikely]]                                                                                              \
         {                                                                                                              \
-            std::source_location location = std::source_location::current();                                           \
-            std::cerr << location.file_name() << '(' << location.line() << ':' << location.column() << ") `"           \
-                      << location.function_name() << "`:\nAssertion failed: (" << #__VA_ARGS__ << ")\n";               \
+            std::source_location source_location = std::source_location::current();                                    \
+            std::cerr << source_location.file_name() << '(' << source_location.line() << ':'                           \
+                      << source_location.column() << ") `" << source_location.function_name()                          \
+                      << "`:\nAssertion failed: (" << #__VA_ARGS__ << ")\n";                                           \
             ZTH_DEBUG_BREAK;                                                                                           \
             std::abort();                                                                                              \
         }                                                                                                              \

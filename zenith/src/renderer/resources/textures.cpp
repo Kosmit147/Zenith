@@ -15,9 +15,9 @@ std::shared_ptr<const gl::Texture2D> white_texture = nullptr;
 std::shared_ptr<const gl::Texture2D> black_texture = nullptr;
 std::shared_ptr<const gl::Texture2D> transparent_texture = nullptr;
 
-constexpr std::array white_texture_data = { glm::vec3{ 1.0f } };
-constexpr std::array black_texture_data = { glm::vec3{ 0.0f } };
-constexpr std::array transparent_texture_data = { glm::vec4{ 0.0f } };
+constexpr std::array white_texture_data = { glm::vec3{ 1.0f, 1.0f, 1.0f } };
+constexpr std::array black_texture_data = { glm::vec3{ 0.0f, 0.0f, 0.0f } };
+constexpr std::array transparent_texture_data = { glm::vec4{ 0.0f, 0.0f, 0.0f, 0.0f } };
 
 } // namespace
 
