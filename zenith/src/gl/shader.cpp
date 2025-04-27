@@ -86,11 +86,11 @@ auto Shader::retrieve_unif_info() -> void
     if (uniform_count == 0)
         return;
 
-    GLint max_unif_name_len = 0;
-    glGetProgramiv(_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_unif_name_len);
+    GLint max_unif_name_length = 0;
+    glGetProgramiv(_id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_unif_name_length);
+    // max_unif_name_length includes the null byte.
 
-    // @speed: Use temporary storage.
-    auto uniform_name = std::make_unique<char[]>(static_cast<std::size_t>(max_unif_name_len));
+    auto uniform_name = make_temporary_for_overwrite<GLchar[]>(max_unif_name_length);
 
     for (GLint i = 0; i < uniform_count; i++)
     {
@@ -98,7 +98,7 @@ auto Shader::retrieve_unif_info() -> void
         GLsizei unif_size;
         GLenum unif_type;
 
-        glGetActiveUniform(_id, i, max_unif_name_len, &unif_name_length, &unif_size, &unif_type, uniform_name.get());
+        glGetActiveUniform(_id, i, max_unif_name_length, &unif_name_length, &unif_size, &unif_type, uniform_name.get());
 
         UniformInfo uniform_info = {
             .location = glGetUniformLocation(_id, uniform_name.get()),
