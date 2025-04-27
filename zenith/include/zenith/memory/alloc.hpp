@@ -112,6 +112,7 @@ template<Allocator A, typename T>
     requires AllocatableWith<T, A>
 auto construct_object_using_allocator(A&& allocator, T* location, auto&&... args) -> void
 {
+    ZTH_ASSERT(location != nullptr);
     std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::construct(allocator, location,
                                                                                std::forward<decltype(args)>(args)...);
 }
@@ -120,6 +121,11 @@ template<Allocator A, typename T>
     requires AllocatableWith<T, A>
 auto construct_objects_using_allocator(A&& allocator, T* location, usize count) -> void
 {
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(location != nullptr);
+#endif
+
     auto end = location + count;
     for (; location != end; ++location)
         construct_object_using_allocator(allocator, location);
@@ -129,6 +135,7 @@ template<Allocator A, typename T>
     requires AllocatableWith<T, A>
 auto destroy_object_using_allocator(A&& allocator, T* location) -> void
 {
+    ZTH_ASSERT(location != nullptr);
     std::allocator_traits<std::remove_cvref_t<decltype(allocator)>>::destroy(allocator, location);
 }
 
@@ -136,6 +143,11 @@ template<Allocator A, typename T>
     requires AllocatableWith<T, A>
 auto destroy_objects_using_allocator(A&& allocator, T* location, usize count) -> void
 {
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(location != nullptr);
+#endif
+
     auto end = location + count;
     for (; location != end; ++location)
         destroy_object_using_allocator(allocator, location);
@@ -152,7 +164,12 @@ template<Allocator A> auto allocate_and_construct_object_using_allocator(A&& all
 template<Allocator A> auto allocate_and_construct_objects_using_allocator(A&& allocator, usize count) -> auto*
 {
     auto* location = allocate_using_allocator(allocator, count);
-    ZTH_ASSERT(location != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(location != nullptr);
+#endif
+
     construct_objects_using_allocator(allocator, location, count);
     return location;
 }
@@ -170,7 +187,11 @@ template<Allocator A, typename T>
     requires AllocatableWith<T, A>
 auto destroy_and_deallocate_objects_using_allocator(A&& allocator, T* location, usize count) -> void
 {
-    ZTH_ASSERT(location != nullptr);
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(location != nullptr);
+#endif
+
     destroy_objects_using_allocator(allocator, location, count);
     deallocate_using_allocator(allocator, location, count);
 }
