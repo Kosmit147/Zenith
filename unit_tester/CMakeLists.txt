@@ -8,12 +8,12 @@ add_executable(
 	unit_tester
 	"src/memory/managed.cpp"
 	"src/memory/memory.cpp"
-	"src/meta/type.cpp"
 	"src/renderer/shader_preprocessor.cpp"
 	"src/stl/string_algorithm.cpp"
 	"src/stl/string_hasher.cpp"
 	"src/stl/vector.cpp"
 	"src/util/defer.cpp"
+	"src/util/meta.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")
