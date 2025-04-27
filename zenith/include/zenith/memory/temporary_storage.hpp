@@ -97,6 +97,20 @@ template<typename T>
     return make_unique<T, TemporaryStorageAllocator<std::remove_extent_t<T>>>(count);
 }
 
+template<typename T>
+    requires(!std::is_unbounded_array_v<T>)
+[[nodiscard]] auto make_temporary_for_overwrite(auto&&... args) -> Temporary<T>
+{
+    return make_unique_for_overwrite<T, TemporaryStorageAllocator<T>>(std::forward<decltype(args)>(args)...);
+}
+
+template<typename T>
+    requires(std::is_unbounded_array_v<T>)
+[[nodiscard]] auto make_temporary_for_overwrite(usize count) -> Temporary<T>
+{
+    return make_unique_for_overwrite<T, TemporaryStorageAllocator<std::remove_extent_t<T>>>(count);
+}
+
 template<typename... Args>
 [[nodiscard]] auto format_to_temporary(fmt::format_string<Args...> fmt, Args&&... args) -> TemporaryString
 {
