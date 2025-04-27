@@ -109,7 +109,12 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::null(
 template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::construct_new(usize count) -> UniquePtr
 {
     auto* ptr = memory::allocate_and_construct_objects_using_allocator(A{}, count);
-    ZTH_ASSERT(ptr != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(ptr != nullptr);
+#endif
+
     return UniquePtr{ ptr, count };
 }
 
@@ -117,7 +122,12 @@ template<typename T, memory::StatelessAllocator A>
 auto UniquePtr<T[], A>::allocate_for_overwrite(usize count) -> UniquePtr
 {
     auto* ptr = memory::allocate_using_allocator(A{}, count);
-    ZTH_ASSERT(ptr != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (count != 0)
+        ZTH_ASSERT(ptr != nullptr);
+#endif
+
     return UniquePtr{ ptr, count };
 }
 
@@ -197,7 +207,6 @@ template<typename T, memory::StatelessAllocator A> auto UniquePtr<T[], A>::free(
     if (!_ptr)
         return;
 
-    ZTH_ASSERT(_count != 0);
     memory::destroy_and_deallocate_objects_using_allocator(A{}, _ptr, _count);
     _ptr = nullptr;
     _count = 0;
