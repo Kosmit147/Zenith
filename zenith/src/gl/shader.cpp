@@ -237,15 +237,15 @@ auto Shader::compile_shader(ShaderId id, ShaderType type) -> bool
 
     if (is_compiled == GL_FALSE)
     {
-        GLint max_length = 0;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &max_length);
+        GLint info_log_length = 0;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &info_log_length);
 
-        TemporaryVector<GLchar> info_log(max_length);
+        auto info_log = make_temporary_for_overwrite<GLchar[]>(info_log_length);
 
         // glGetShaderInfoLog returns a null-terminated string.
-        glGetShaderInfoLog(id, max_length, &max_length, info_log.data());
+        glGetShaderInfoLog(id, info_log_length, &info_log_length, info_log.get());
 
-        ZTH_INTERNAL_ERROR("[Shader] Failed to compile {} shader: {}", type, info_log.data());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to compile {} shader: {}", type, info_log.get());
         ZTH_DEBUG_BREAK;
         return false;
     }
@@ -384,15 +384,15 @@ auto Shader::link_program(ProgramId id) -> bool
 
     if (is_linked == GL_FALSE)
     {
-        GLint max_length = 0;
-        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &max_length);
+        GLint info_log_length = 0;
+        glGetProgramiv(id, GL_INFO_LOG_LENGTH, &info_log_length);
 
-        TemporaryVector<GLchar> info_log(max_length);
+        auto info_log = make_temporary_for_overwrite<GLchar[]>(info_log_length);
 
         // glGetProgramInfoLog returns a null-terminated string.
-        glGetProgramInfoLog(id, max_length, &max_length, info_log.data());
+        glGetProgramInfoLog(id, info_log_length, &info_log_length, info_log.get());
 
-        ZTH_INTERNAL_ERROR("[Shader] Failed to link shader: {}", info_log.data());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to link shader: {}", info_log.get());
         ZTH_DEBUG_BREAK;
         return false;
     }
