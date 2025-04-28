@@ -64,7 +64,8 @@ public:
     constexpr ~InPlaceVector() noexcept(std::is_nothrow_destructible_v<value_type>);
 
     // --- ContiguousRange implementation
-    [[nodiscard]] constexpr auto data(this auto&& self) noexcept -> auto*;
+    [[nodiscard]] constexpr auto data() noexcept -> pointer;
+    [[nodiscard]] constexpr auto data() const noexcept -> const_pointer;
     [[nodiscard]] constexpr auto begin(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] constexpr auto end(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] constexpr auto cbegin() const noexcept -> const_iterator;
