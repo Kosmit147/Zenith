@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
-#include <type_traits>
 #include <utility>
 
 #include "zenith/core/assert.hpp"
@@ -166,12 +165,14 @@ template<StatelessAllocator A> Buffer<A>::~Buffer()
     free();
 }
 
-template<StatelessAllocator A> auto Buffer<A>::data(this auto&& self) noexcept -> auto*
+template<StatelessAllocator A> auto Buffer<A>::data() noexcept -> pointer
 {
-    using return_type =
-        std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
+    return _data;
+}
 
-    return static_cast<return_type>(self._data);
+template<StatelessAllocator A> auto Buffer<A>::data() const noexcept -> const_pointer
+{
+    return _data;
 }
 
 template<StatelessAllocator A> auto Buffer<A>::begin(this auto&& self) noexcept -> decltype(auto)
@@ -344,12 +345,14 @@ template<StatelessAllocator A> DynamicBuffer<A>::~DynamicBuffer()
     free();
 }
 
-template<StatelessAllocator A> auto DynamicBuffer<A>::data(this auto&& self) noexcept -> auto*
+template<StatelessAllocator A> auto DynamicBuffer<A>::data() noexcept -> pointer
 {
-    using return_type =
-        std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
+    return _data;
+}
 
-    return static_cast<return_type>(self._data);
+template<StatelessAllocator A> auto DynamicBuffer<A>::data() const noexcept -> const_pointer
+{
+    return _data;
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::begin(this auto&& self) noexcept -> decltype(auto)
