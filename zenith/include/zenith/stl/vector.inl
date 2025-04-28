@@ -83,13 +83,15 @@ constexpr InPlaceVector<T, Capacity>::~InPlaceVector() noexcept(std::is_nothrow_
     clear();
 }
 
-template<std::movable T, usize Capacity>
-constexpr auto InPlaceVector<T, Capacity>::data(this auto&& self) noexcept -> auto*
+template<std::movable T, usize Capacity> constexpr auto InPlaceVector<T, Capacity>::data() noexcept -> pointer
 {
-    using return_type =
-        std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, const_pointer, pointer>;
+    return reinterpret_cast<pointer>(_data.data());
+}
 
-    return reinterpret_cast<return_type>(self._data.data());
+template<std::movable T, usize Capacity>
+constexpr auto InPlaceVector<T, Capacity>::data() const noexcept -> const_pointer
+{
+    return reinterpret_cast<const_pointer>(_data.data());
 }
 
 template<std::movable T, usize Capacity>
