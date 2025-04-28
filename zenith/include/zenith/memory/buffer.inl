@@ -238,14 +238,24 @@ auto Buffer<A>::buffer_data(std::ranges::contiguous_range auto&& data, size_type
 template<StatelessAllocator A> auto Buffer<A>::allocate(size_type size_bytes) noexcept -> void
 {
     _data = allocate_using_allocator(A{}, size_bytes); // We deliberately don't construct any objects.
-    ZTH_ASSERT(_data != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (size_bytes != 0)
+        ZTH_ASSERT(_data != nullptr);
+#endif
+
     _size_bytes = size_bytes;
 }
 
 template<StatelessAllocator A> auto Buffer<A>::reallocate(size_type size_bytes) noexcept -> void
 {
     auto* new_data = allocate_using_allocator(A{}, size_bytes); // We deliberately don't construct any objects.
-    ZTH_ASSERT(new_data != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (size_bytes != 0)
+        ZTH_ASSERT(new_data != nullptr);
+#endif
+
     std::memcpy(new_data, _data, std::min(_size_bytes, size_bytes));
     destroy_and_deallocate_objects_using_allocator(A{}, _data, _size_bytes);
     _size_bytes = size_bytes;
@@ -425,14 +435,24 @@ template<StatelessAllocator A> auto DynamicBuffer<A>::clear() noexcept -> void
 template<StatelessAllocator A> auto DynamicBuffer<A>::allocate(size_type capacity_bytes) noexcept -> void
 {
     _data = allocate_using_allocator(A{}, capacity_bytes); // We deliberately don't construct any objects.
-    ZTH_ASSERT(_data != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (capacity_bytes != 0)
+        ZTH_ASSERT(_data != nullptr);
+#endif
+
     _capacity_bytes = capacity_bytes;
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::reallocate_exactly(size_type capacity_bytes) noexcept -> void
 {
     auto* new_data = allocate_using_allocator(A{}, capacity_bytes); // We deliberately don't construct any objects.
-    ZTH_ASSERT(new_data != nullptr);
+
+#if defined(ZTH_ASSERTIONS)
+    if (capacity_bytes != 0)
+        ZTH_ASSERT(new_data != nullptr);
+#endif
+
     std::memcpy(new_data, _data, std::min(_size_bytes, capacity_bytes));
     destroy_and_deallocate_objects_using_allocator(A{}, _data, _capacity_bytes);
     _capacity_bytes = capacity_bytes;
