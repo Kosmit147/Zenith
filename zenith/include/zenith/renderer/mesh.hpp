@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ranges>
+#include <span>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
@@ -15,8 +16,8 @@ class Mesh
 public:
     explicit Mesh() = default;
 
-    explicit Mesh(const void* vertex_data, usize vertex_data_size_bytes, const gl::VertexLayout& vertex_layout,
-                  const void* index_data, usize index_data_size_bytes, gl::DataType index_data_type);
+    explicit Mesh(std::span<const byte> vertex_data, const gl::VertexLayout& vertex_layout,
+                  std::span<const byte> index_data, gl::DataType index_data_type);
 
     template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
     explicit Mesh(const VertexData& vertex_data, const gl::VertexLayout& vertex_layout, const IndexData& index_data);
@@ -41,8 +42,7 @@ private:
 
 template<std::ranges::contiguous_range VertexData, std::ranges::contiguous_range IndexData>
 Mesh::Mesh(const VertexData& vertex_data, const gl::VertexLayout& vertex_layout, const IndexData& index_data)
-    : Mesh(std::data(vertex_data), std::size(vertex_data) * sizeof(std::ranges::range_value_t<VertexData>),
-           vertex_layout, std::data(index_data), std::size(index_data) * sizeof(std::ranges::range_value_t<IndexData>),
+    : Mesh(std::as_bytes(std::span{ vertex_data }), vertex_layout, std::as_bytes(std::span{ index_data }),
            gl::IndexBuffer::derive_index_data_type<IndexData>())
 {}
 

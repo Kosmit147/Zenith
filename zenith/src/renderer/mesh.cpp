@@ -4,18 +4,16 @@
 
 namespace zth {
 
-Mesh::Mesh(const void* vertex_data, usize vertex_data_size_bytes, const gl::VertexLayout& vertex_layout,
-           const void* index_data, usize index_data_size_bytes, gl::DataType index_data_type)
-    : _vertex_buffer(gl::VertexBuffer::create_static_with_data(vertex_data, static_cast<u32>(vertex_data_size_bytes),
-                                                               vertex_layout)),
-      _index_buffer(gl::IndexBuffer::create_static_with_data(index_data, static_cast<u32>(index_data_size_bytes),
-                                                             index_data_type)),
-      _vertex_array(_vertex_buffer, _index_buffer, Renderer::instance_buffer())
+Mesh::Mesh(std::span<const byte> vertex_data, const gl::VertexLayout& vertex_layout, std::span<const byte> index_data,
+           gl::DataType index_data_type)
+    : _vertex_buffer{ gl::VertexBuffer::create_static_with_data(vertex_data, vertex_layout) },
+      _index_buffer{ gl::IndexBuffer::create_static_with_data(index_data, index_data_type) },
+      _vertex_array{ _vertex_buffer, _index_buffer, Renderer::instance_buffer() }
 {}
 
 Mesh::Mesh(const Mesh& other)
-    : _vertex_buffer(other._vertex_buffer), _index_buffer(other._index_buffer),
-      _vertex_array(_vertex_buffer, _index_buffer, Renderer::instance_buffer())
+    : _vertex_buffer{ other._vertex_buffer }, _index_buffer{ other._index_buffer },
+      _vertex_array{ _vertex_buffer, _index_buffer, Renderer::instance_buffer() }
 {}
 
 auto Mesh::operator=(const Mesh& other) -> Mesh&
@@ -31,8 +29,8 @@ auto Mesh::operator=(const Mesh& other) -> Mesh&
 }
 
 Mesh::Mesh(Mesh&& other) noexcept
-    : _vertex_buffer(std::move(other._vertex_buffer)), _index_buffer(std::move(other._index_buffer)),
-      _vertex_array(std::move(other._vertex_array))
+    : _vertex_buffer{ std::move(other._vertex_buffer) }, _index_buffer{ std::move(other._index_buffer) },
+      _vertex_array{ std::move(other._vertex_array) }
 {
     // Make sure that the references in the vertex array are set again after moving the buffers. We don't have to rebind
     // the layout.
