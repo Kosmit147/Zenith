@@ -2,8 +2,7 @@
 
 namespace zth::fs {
 
-auto write_to(const std::filesystem::path& path, const void* data, usize data_size_bytes, std::ios::openmode mode)
-    -> bool
+auto write_to(const std::filesystem::path& path, std::span<const byte> data, std::ios::openmode mode) -> bool
 {
     // @robustness: std::filesystem::path::string() throws.
 
@@ -20,7 +19,7 @@ auto write_to(const std::filesystem::path& path, const void* data, usize data_si
     if (!file.is_open())
         return false;
 
-    file.write(static_cast<const char*>(data), static_cast<std::streamsize>(data_size_bytes));
+    file.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size_bytes()));
 
     if (file.fail())
         return false;

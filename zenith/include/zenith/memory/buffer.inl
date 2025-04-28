@@ -9,27 +9,26 @@
 
 namespace zth::memory {
 
-template<usize Size, usize Alignment>
-StaticBuffer<Size, Alignment>::StaticBuffer(const void* data, size_type data_size_bytes) noexcept
+template<usize Size, usize Alignment> StaticBuffer<Size, Alignment>::StaticBuffer(std::span<const byte> data) noexcept
 {
-    buffer_data(data, data_size_bytes);
+    buffer_data(data);
 }
 
 template<usize Size, usize Alignment>
 StaticBuffer<Size, Alignment>::StaticBuffer(std::ranges::contiguous_range auto&& data) noexcept
-    : StaticBuffer(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>))
+    : StaticBuffer(std::as_bytes(std::span{ data }))
 {}
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::with_data(const void* data, size_type data_size_bytes) noexcept -> StaticBuffer
+auto StaticBuffer<Size, Alignment>::with_data(std::span<const byte> data) noexcept -> StaticBuffer
 {
-    return StaticBuffer{ data, data_size_bytes };
+    return StaticBuffer{ data };
 }
 
 template<usize Size, usize Alignment>
 auto StaticBuffer<Size, Alignment>::with_data(auto&& data) noexcept -> StaticBuffer
 {
-    return StaticBuffer{ std::addressof(data), sizeof(data) };
+    return StaticBuffer{ std::as_bytes(std::span{ std::addressof(data), 1 }) };
 }
 
 template<usize Size, usize Alignment>
@@ -66,27 +65,24 @@ template<usize Size, usize Alignment> auto StaticBuffer<Size, Alignment>::cend()
 }
 
 template<usize Size, usize Alignment>
-auto StaticBuffer<Size, Alignment>::buffer_data(const void* data, size_type data_size_bytes, size_type offset) noexcept
-    -> size_type
+auto StaticBuffer<Size, Alignment>::buffer_data(std::span<const byte> data, size_type offset) noexcept -> size_type
 {
-    ZTH_ASSERT(offset + data_size_bytes <= Size);
-    std::memcpy(this->data() + offset, data, data_size_bytes);
-    return data_size_bytes;
+    ZTH_ASSERT(offset + data.size_bytes() <= Size);
+    std::memcpy(this->data() + offset, data.data(), data.size_bytes());
+    return data.size_bytes();
 }
 
 template<usize Size, usize Alignment>
 auto StaticBuffer<Size, Alignment>::buffer_data(auto&& data, size_type offset) noexcept -> size_type
 {
-    return buffer_data(std::addressof(data), sizeof(data), offset);
+    return buffer_data(std::as_bytes(std::span{ std::addressof(data), 1 }), offset);
 }
 
 template<usize Size, usize Alignment>
 auto StaticBuffer<Size, Alignment>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept
     -> size_type
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = std::size(data) * sizeof(T);
-    return buffer_data(std::data(data), data_size_bytes, offset);
+    return buffer_data(std::as_bytes(std::span{ data }), offset);
 }
 
 template<StatelessAllocator A> Buffer<A>::Buffer(size_type size_bytes) noexcept
@@ -94,15 +90,13 @@ template<StatelessAllocator A> Buffer<A>::Buffer(size_type size_bytes) noexcept
     allocate(size_bytes);
 }
 
-template<StatelessAllocator A>
-Buffer<A>::Buffer(const void* data, size_type data_size_bytes) noexcept : Buffer(data_size_bytes)
+template<StatelessAllocator A> Buffer<A>::Buffer(std::span<const byte> data) noexcept : Buffer(data.size_bytes())
 {
-    buffer_data(data, data_size_bytes);
+    buffer_data(data);
 }
 
 template<StatelessAllocator A>
-Buffer<A>::Buffer(std::ranges::contiguous_range auto&& data) noexcept
-    : Buffer(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>))
+Buffer<A>::Buffer(std::ranges::contiguous_range auto&& data) noexcept : Buffer(std::as_bytes(std::span{ data }))
 {}
 
 template<StatelessAllocator A> auto Buffer<A>::with_size(size_type size_bytes) noexcept -> Buffer
@@ -110,14 +104,14 @@ template<StatelessAllocator A> auto Buffer<A>::with_size(size_type size_bytes) n
     return Buffer{ size_bytes };
 }
 
-template<StatelessAllocator A> auto Buffer<A>::with_data(const void* data, size_type data_size_bytes) noexcept -> Buffer
+template<StatelessAllocator A> auto Buffer<A>::with_data(std::span<const byte> data) noexcept -> Buffer
 {
-    return Buffer{ data, data_size_bytes };
+    return Buffer{ data };
 }
 
 template<StatelessAllocator A> auto Buffer<A>::with_data(auto&& data) noexcept -> Buffer
 {
-    return Buffer{ std::addressof(data), sizeof(data) };
+    return Buffer{ std::as_bytes(std::span{ std::addressof(data), 1 }) };
 }
 
 template<StatelessAllocator A> auto Buffer<A>::with_data(std::ranges::contiguous_range auto&& data) noexcept -> Buffer
@@ -216,24 +210,22 @@ template<StatelessAllocator A> auto Buffer<A>::free() noexcept -> void
 }
 
 template<StatelessAllocator A>
-auto Buffer<A>::buffer_data(const void* data, size_type data_size_bytes, size_type offset) noexcept -> size_type
+auto Buffer<A>::buffer_data(std::span<const byte> data, size_type offset) noexcept -> size_type
 {
-    ZTH_ASSERT(offset + data_size_bytes <= _size_bytes);
-    std::memcpy(_data + offset, data, data_size_bytes);
-    return data_size_bytes;
+    ZTH_ASSERT(offset + data.size_bytes() <= _size_bytes);
+    std::memcpy(_data + offset, data.data(), data.size_bytes());
+    return data.size_bytes();
 }
 
 template<StatelessAllocator A> auto Buffer<A>::buffer_data(auto&& data, size_type offset) noexcept -> size_type
 {
-    return buffer_data(std::addressof(data), sizeof(data), offset);
+    return buffer_data(std::as_bytes(std::span{ std::addressof(data), 1 }), offset);
 }
 
 template<StatelessAllocator A>
 auto Buffer<A>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept -> size_type
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = std::size(data) * sizeof(T);
-    return buffer_data(std::data(data), data_size_bytes, offset);
+    return buffer_data(std::as_bytes(std::span{ data }), offset);
 }
 
 template<StatelessAllocator A> auto Buffer<A>::allocate(size_type size_bytes) noexcept -> void
@@ -268,14 +260,14 @@ template<StatelessAllocator A> DynamicBuffer<A>::DynamicBuffer(size_type size_by
 }
 
 template<StatelessAllocator A>
-DynamicBuffer<A>::DynamicBuffer(const void* data, size_type data_size_bytes) noexcept : DynamicBuffer(data_size_bytes)
+DynamicBuffer<A>::DynamicBuffer(std::span<const byte> data) noexcept : DynamicBuffer(data.size_bytes())
 {
-    buffer_data(data, data_size_bytes);
+    buffer_data(data);
 }
 
 template<StatelessAllocator A>
 DynamicBuffer<A>::DynamicBuffer(std::ranges::contiguous_range auto&& data) noexcept
-    : DynamicBuffer(std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>))
+    : DynamicBuffer(std::as_bytes(std::span{ data }))
 {}
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::with_size(size_type size_bytes) noexcept -> DynamicBuffer
@@ -283,15 +275,14 @@ template<StatelessAllocator A> auto DynamicBuffer<A>::with_size(size_type size_b
     return DynamicBuffer{ size_bytes };
 }
 
-template<StatelessAllocator A>
-auto DynamicBuffer<A>::with_data(const void* data, size_type data_size_bytes) noexcept -> DynamicBuffer
+template<StatelessAllocator A> auto DynamicBuffer<A>::with_data(std::span<const byte> data) noexcept -> DynamicBuffer
 {
-    return DynamicBuffer{ data, data_size_bytes };
+    return DynamicBuffer{ data };
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::with_data(auto&& data) noexcept -> DynamicBuffer
 {
-    return DynamicBuffer{ std::addressof(data), sizeof(data) };
+    return DynamicBuffer{ std::as_bytes(std::span{ std::addressof(data), 1 }) };
 }
 
 template<StatelessAllocator A>
@@ -410,24 +401,22 @@ template<StatelessAllocator A> auto DynamicBuffer<A>::free() noexcept -> void
 }
 
 template<StatelessAllocator A>
-auto DynamicBuffer<A>::buffer_data(const void* data, size_type data_size_bytes, size_type offset) noexcept -> size_type
+auto DynamicBuffer<A>::buffer_data(std::span<const byte> data, size_type offset) noexcept -> size_type
 {
-    resize_to_at_least(offset + data_size_bytes);
-    std::memcpy(_data + offset, data, data_size_bytes);
-    return data_size_bytes;
+    resize_to_at_least(offset + data.size_bytes());
+    std::memcpy(_data + offset, data.data(), data.size_bytes());
+    return data.size_bytes();
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::buffer_data(auto&& data, size_type offset) noexcept -> size_type
 {
-    return buffer_data(std::addressof(data), sizeof(data), offset);
+    return buffer_data(std::as_bytes(std::span{ std::addressof(data), 1 }), offset);
 }
 
 template<StatelessAllocator A>
 auto DynamicBuffer<A>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept -> size_type
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = std::size(data) * sizeof(T);
-    return buffer_data(std::data(data), data_size_bytes, offset);
+    return buffer_data(std::as_bytes(std::span{ data }), offset);
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::clear() noexcept -> void

@@ -4,6 +4,7 @@
 #include <concepts>
 #include <memory>
 #include <ranges>
+#include <span>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/memory/alloc.hpp"
@@ -36,10 +37,10 @@ public:
 
 public:
     explicit StaticBuffer() noexcept = default;
-    explicit StaticBuffer(const void* data, size_type data_size_bytes) noexcept;
+    explicit StaticBuffer(std::span<const byte> data) noexcept;
     explicit StaticBuffer(std::ranges::contiguous_range auto&& data) noexcept;
 
-    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) noexcept -> StaticBuffer;
+    [[nodiscard]] static auto with_data(std::span<const byte> data) noexcept -> StaticBuffer;
     [[nodiscard]] static auto with_data(auto&& data) noexcept -> StaticBuffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) noexcept -> StaticBuffer;
 
@@ -58,7 +59,7 @@ public:
 
     // --- StaticBuffer implementation
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) noexcept -> size_type;
+    auto buffer_data(std::span<const byte> data, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.
     auto buffer_data(auto&& data, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.
@@ -83,11 +84,11 @@ public:
 
     explicit Buffer() noexcept = default;
     explicit Buffer(size_type size_bytes) noexcept;
-    explicit Buffer(const void* data, size_type data_size_bytes) noexcept;
+    explicit Buffer(std::span<const byte> data) noexcept;
     explicit Buffer(std::ranges::contiguous_range auto&& data) noexcept;
 
     [[nodiscard]] static auto with_size(size_type size_bytes) noexcept -> Buffer;
-    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) noexcept -> Buffer;
+    [[nodiscard]] static auto with_data(std::span<const byte> data) noexcept -> Buffer;
     [[nodiscard]] static auto with_data(auto&& data) noexcept -> Buffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) noexcept -> Buffer;
 
@@ -115,7 +116,7 @@ public:
     auto free() noexcept -> void;
 
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) noexcept -> size_type;
+    auto buffer_data(std::span<const byte>, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.
     auto buffer_data(auto&& data, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.
@@ -149,11 +150,11 @@ public:
 
     explicit DynamicBuffer() noexcept = default;
     explicit DynamicBuffer(size_type size_bytes) noexcept;
-    explicit DynamicBuffer(const void* data, size_type data_size_bytes) noexcept;
+    explicit DynamicBuffer(std::span<const byte> data) noexcept;
     explicit DynamicBuffer(std::ranges::contiguous_range auto&& data) noexcept;
 
     [[nodiscard]] static auto with_size(size_type size_bytes) noexcept -> DynamicBuffer;
-    [[nodiscard]] static auto with_data(const void* data, size_type data_size_bytes) noexcept -> DynamicBuffer;
+    [[nodiscard]] static auto with_data(std::span<const byte> data) noexcept -> DynamicBuffer;
     [[nodiscard]] static auto with_data(auto&& data) noexcept -> DynamicBuffer;
     [[nodiscard]] static auto with_data(std::ranges::contiguous_range auto&& data) noexcept -> DynamicBuffer;
 
@@ -183,7 +184,7 @@ public:
     auto free() noexcept -> void;
 
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, size_type data_size_bytes, size_type offset = 0) noexcept -> size_type;
+    auto buffer_data(std::span<const byte> data, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.
     auto buffer_data(auto&& data, size_type offset = 0) noexcept -> size_type;
     // Returns the number of bytes written.

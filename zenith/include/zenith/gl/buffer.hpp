@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include <ranges>
+#include <span>
 #include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
@@ -72,7 +73,7 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes) -> Buffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> Buffer;
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data) -> Buffer;
 
     [[nodiscard]] static auto create_static_with_data(auto&& data) -> Buffer;
 
@@ -83,7 +84,7 @@ public:
     [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
         -> Buffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> Buffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(auto&& data, BufferUsage usage = BufferUsage::dynamic_draw)
@@ -102,7 +103,7 @@ public:
 
     auto init_static_with_size(u32 size_bytes) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
+    auto init_static_with_data(std::span<const byte> data) -> void;
 
     auto init_static_with_data(auto&& data) -> void;
 
@@ -112,8 +113,7 @@ public:
 
     auto init_dynamic_with_size(u32 size_bytes, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
-        -> void;
+    auto init_dynamic_with_data(std::span<const byte> data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto init_dynamic_with_data(auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
@@ -121,7 +121,7 @@ public:
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     // Returns the number of bytes written.
-    auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
+    auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     // Returns the number of bytes written.
     auto buffer_data(auto&& data, u32 offset = 0) -> u32;
     // Returns the number of bytes written.
@@ -154,8 +154,8 @@ private:
 
     auto copy_initialize(const Buffer& other) -> void;
 
-    auto buffer_data_static(const void* data, u32 data_size_bytes, u32 offset) -> u32;
-    auto buffer_data_dynamic(const void* data, u32 data_size_bytes, u32 offset) -> u32;
+    auto buffer_data_static(std::span<const byte> data, u32 offset) -> u32;
+    auto buffer_data_dynamic(std::span<const byte> data, u32 offset) -> u32;
 
     auto reallocate_exactly(u32 new_capacity_bytes) -> void;
     auto reallocate_at_least(u32 min_capacity_bytes) -> void;
@@ -172,7 +172,7 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, const VertexLayout& layout)
         -> VertexBuffer;
 
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
@@ -184,8 +184,7 @@ public:
     [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
-                                                       const VertexLayout& layout,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
@@ -198,7 +197,7 @@ public:
 
     auto init_static_with_size(u32 size_bytes, const VertexLayout& layout) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout) -> void;
+    auto init_static_with_data(std::span<const byte> data, const VertexLayout& layout) -> void;
 
     auto init_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout) -> void;
 
@@ -207,13 +206,13 @@ public:
     auto init_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout,
+    auto init_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
+    auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
@@ -252,8 +251,7 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes, DataType type) -> IndexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, DataType type)
-        -> IndexBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, DataType type) -> IndexBuffer;
 
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
 
@@ -263,7 +261,7 @@ public:
     [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, DataType type,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes, DataType type,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, DataType type,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
@@ -278,7 +276,7 @@ public:
 
     auto init_static_with_size(u32 size_bytes, DataType type) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes, DataType type) -> void;
+    auto init_static_with_data(std::span<const byte> data, DataType type) -> void;
 
     auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
 
@@ -286,13 +284,13 @@ public:
 
     auto init_dynamic_with_size(u32 size_bytes, DataType type, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, DataType type,
+    auto init_dynamic_with_data(std::span<const byte> data, DataType type,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
+    auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
@@ -336,7 +334,7 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes, const VertexLayout& layout) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, const VertexLayout& layout)
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, const VertexLayout& layout)
         -> InstanceBuffer;
 
     [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
@@ -348,8 +346,7 @@ public:
     [[nodiscard]] static auto create_dynamic_with_size(u32 size_bytes, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
-                                                       const VertexLayout& layout,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
     [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
@@ -372,10 +369,9 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 binding_point) -> UniformBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> UniformBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data) -> UniformBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point)
-        -> UniformBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, u32 binding_point) -> UniformBuffer;
 
     [[nodiscard]] static auto create_static_with_data(auto&& data) -> UniformBuffer;
 
@@ -394,9 +390,9 @@ public:
 
     auto init_static_with_size(u32 size_bytes, u32 binding_point) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
+    auto init_static_with_data(std::span<const byte> data) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point) -> void;
+    auto init_static_with_data(std::span<const byte> data, u32 binding_point) -> void;
 
     auto init_static_with_data(auto&& data) -> void;
 
@@ -406,7 +402,7 @@ public:
 
     auto init_static_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point) -> void;
 
-    auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
+    auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(auto&& data, u32 offset = 0) -> u32;
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
@@ -439,9 +435,9 @@ public:
 
     [[nodiscard]] static auto create_static_with_size(u32 size_bytes, u32 binding_point) -> ShaderStorageBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes) -> ShaderStorageBuffer;
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data) -> ShaderStorageBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point)
+    [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, u32 binding_point)
         -> ShaderStorageBuffer;
 
     [[nodiscard]] static auto create_static_with_data(auto&& data) -> ShaderStorageBuffer;
@@ -465,11 +461,11 @@ public:
                                                        BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data,
                                                        BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(const void* data, u32 data_size_bytes, u32 binding_point,
+    [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, u32 binding_point,
                                                        BufferUsage usage = BufferUsage::dynamic_draw)
         -> ShaderStorageBuffer;
 
@@ -496,9 +492,9 @@ public:
 
     auto init_static_with_size(u32 size_bytes, u32 binding_point) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes) -> void;
+    auto init_static_with_data(std::span<const byte> data) -> void;
 
-    auto init_static_with_data(const void* data, u32 data_size_bytes, u32 binding_point) -> void;
+    auto init_static_with_data(std::span<const byte> data, u32 binding_point) -> void;
 
     auto init_static_with_data(auto&& data) -> void;
 
@@ -517,10 +513,9 @@ public:
     auto init_dynamic_with_size(u32 size_bytes, u32 binding_point, BufferUsage usage = BufferUsage::dynamic_draw)
         -> void;
 
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, BufferUsage usage = BufferUsage::dynamic_draw)
-        -> void;
+    auto init_dynamic_with_data(std::span<const byte> data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(const void* data, u32 data_size_bytes, u32 binding_point,
+    auto init_dynamic_with_data(std::span<const byte> data, u32 binding_point,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
     auto init_dynamic_with_data(auto&& data, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
@@ -533,7 +528,7 @@ public:
     auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, u32 binding_point,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto buffer_data(const void* data, u32 data_size_bytes, u32 offset = 0) -> u32;
+    auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(auto&& data, u32 offset = 0) -> u32;
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 

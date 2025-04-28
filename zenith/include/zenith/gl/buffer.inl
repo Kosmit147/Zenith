@@ -38,38 +38,32 @@ auto Buffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
 
 auto Buffer::init_static_with_data(auto&& data) -> void
 {
-    init_static_with_data(std::addressof(data), sizeof(data));
+    init_static_with_data(std::as_bytes(std::span{ std::addressof(data), 1 }));
 }
 
 auto Buffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
-    init_static_with_data(std::data(data), data_size_bytes);
+    init_static_with_data(std::as_bytes(std::span{ data }));
 }
 
 auto Buffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
 {
-    init_dynamic_with_data(std::addressof(data), sizeof(data), usage);
+    init_dynamic_with_data(std::as_bytes(std::span{ std::addressof(data), 1 }), usage);
 }
 
 auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
-    init_dynamic_with_data(std::data(data), data_size_bytes, usage);
+    init_dynamic_with_data(std::as_bytes(std::span{ data }), usage);
 }
 
 auto Buffer::buffer_data(auto&& data, u32 offset) -> u32
 {
-    return buffer_data(std::addressof(data), sizeof(data), offset);
+    return buffer_data(std::as_bytes(std::span{ std::addressof(data), 1 }), offset);
 }
 
 auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
-    using T = std::ranges::range_value_t<decltype(data)>;
-    auto data_size_bytes = static_cast<u32>(std::size(data) * sizeof(T));
-    return buffer_data(std::data(data), data_size_bytes, offset);
+    return buffer_data(std::as_bytes(std::span{ data }), offset);
 }
 
 // --------------------------- VertexBuffer ---------------------------

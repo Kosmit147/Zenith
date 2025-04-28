@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <ranges>
+#include <span>
 #include <system_error>
 
 #include "zenith/core/typedefs.hpp"
@@ -60,14 +61,14 @@ auto read_to(const std::filesystem::path& path, std::ios::openmode mode = std::i
 }
 
 // Writes to files in binary mode by default. Automatically creates new directories.
-auto write_to(const std::filesystem::path& path, const void* data, usize data_size_bytes,
+auto write_to(const std::filesystem::path& path, std::span<const byte> data,
               std::ios::openmode mode = std::ios::out | std::ios::binary) -> bool;
 
 // Writes to files in binary mode by default. Automatically creates new directories.
 auto write_to(const std::filesystem::path& path, std::ranges::contiguous_range auto&& data,
               std::ios::openmode mode = std::ios::out | std::ios::binary) -> bool
 {
-    return write_to(path, std::data(data), std::size(data) * sizeof(std::ranges::range_value_t<decltype(data)>), mode);
+    return write_to(path, std::as_bytes(std::span{ data }), mode);
 }
 
 [[nodiscard]] auto extract_filename(const std::filesystem::path& path) -> Optional<String>;
