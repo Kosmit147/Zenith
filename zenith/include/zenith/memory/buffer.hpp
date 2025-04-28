@@ -100,7 +100,8 @@ public:
     ~Buffer();
 
     // --- ContiguousRange implementation
-    [[nodiscard]] auto data(this auto&& self) noexcept -> auto*;
+    [[nodiscard]] auto data() noexcept -> pointer;
+    [[nodiscard]] auto data() const noexcept -> const_pointer;
     [[nodiscard]] auto begin(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] auto end(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] auto cbegin() const noexcept -> const_iterator;
@@ -165,7 +166,8 @@ public:
     ~DynamicBuffer();
 
     // --- ContiguousRange implementation
-    [[nodiscard]] auto data(this auto&& self) noexcept -> auto*;
+    [[nodiscard]] auto data() noexcept -> pointer;
+    [[nodiscard]] auto data() const noexcept -> const_pointer;
     [[nodiscard]] auto begin(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] auto end(this auto&& self) noexcept -> decltype(auto);
     [[nodiscard]] auto cbegin() const noexcept -> const_iterator;
