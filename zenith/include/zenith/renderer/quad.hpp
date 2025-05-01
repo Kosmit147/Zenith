@@ -30,8 +30,11 @@ constexpr std::array<usize, indices_per_quad> quad_indices = { 0, 1, 2, 0, 2, 3 
     return vertex_count + vertex_count / 2;
 }
 
-[[nodiscard]] constexpr auto max_value_of_quads_index_buffer_index(usize quad_count)
+[[nodiscard]] constexpr auto max_value_of_quads_index_buffer_index(usize quad_count) -> usize
 {
+    if (quad_count == 0)
+        return 0;
+
     return quad_count * vertices_per_quad - 1;
 }
 
