@@ -9,6 +9,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/temporary_storage.hpp"
+#include "zenith/stl/span.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/defer.hpp"
@@ -68,7 +69,7 @@ auto write_to(const std::filesystem::path& path, std::span<const byte> data,
 auto write_to(const std::filesystem::path& path, std::ranges::contiguous_range auto&& data,
               std::ios::openmode mode = std::ios::out | std::ios::binary) -> bool
 {
-    return write_to(path, std::as_bytes(std::span{ data }), mode);
+    return write_to(path, make_dynamic_span(std::as_bytes(std::span{ data })), mode);
 }
 
 [[nodiscard]] auto extract_filename(const std::filesystem::path& path) -> Optional<String>;

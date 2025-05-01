@@ -5,6 +5,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/gl/vertex_layout.hpp"
+#include "zenith/util/optional.hpp"
 
 namespace zth::gl {
 
@@ -20,6 +21,8 @@ struct VertexArrayLayout
 //
 // The instance buffer's layout starts at index one past the last index of the vertex buffer's layout.
 // rebind_layout() should be called after binding a vertex buffer or an instance buffer.
+//
+// If the count of vertices to draw is not set, the count() method returns the number of indices in the index buffer.
 class VertexArray
 {
 public:
@@ -32,11 +35,17 @@ public:
     explicit VertexArray();
 
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer);
+    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, u32 count);
+
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
                          const InstanceBuffer& instance_buffer);
+    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
+                         const InstanceBuffer& instance_buffer, u32 count);
 
     explicit VertexArray(VertexBuffer&&, IndexBuffer&&) = delete;
+    explicit VertexArray(VertexBuffer&&, IndexBuffer&&, u32) = delete;
     explicit VertexArray(VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&) = delete;
+    explicit VertexArray(VertexBuffer&&, IndexBuffer&&, InstanceBuffer&&, u32) = delete;
 
     VertexArray(const VertexArray& other);
     auto operator=(const VertexArray& other) -> VertexArray&;
@@ -64,9 +73,12 @@ public:
     auto unbind_instance_buffer() -> void;
     auto unbind_all_buffers() -> void;
 
+    auto set_count(u32 count) -> void;
+    auto set_count(Nil) -> void;
+
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto count() const -> u32;
-    [[nodiscard]] auto index_data_type() const -> DataType;
+    [[nodiscard]] auto indexing_data_type() const -> DataType;
 
     // @todo: These should return optionals.
     [[nodiscard]] auto vertex_buffer() const { return _vertex_buffer; }
@@ -77,6 +89,7 @@ public:
 
 private:
     VertexArrayId _id = GL_NONE;
+    Optional<u32> _count = nil;
 
     const VertexBuffer* _vertex_buffer = nullptr;
     const IndexBuffer* _index_buffer = nullptr;

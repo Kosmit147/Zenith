@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <glm/fwd.hpp>
 
+#include <limits>
+
 #include "zenith/core/assert.hpp"
 #include "zenith/core/typedefs.hpp"
 
@@ -63,7 +65,7 @@ template<> constexpr auto to_data_type<GLdouble> = DataType::Double;
     return GL_NONE;
 }
 
-[[nodiscard]] constexpr auto is_an_index_data_type(DataType type) -> bool
+[[nodiscard]] constexpr auto is_an_indexing_data_type(DataType type) -> bool
 {
     using enum DataType;
     return type == UnsignedByte || type == UnsignedShort || type == UnsignedInt;
@@ -96,6 +98,31 @@ template<> constexpr auto to_data_type<GLdouble> = DataType::Double;
 
     ZTH_ASSERT(false);
     return 0;
+}
+
+// Returns the smallest unsigned integral data type that can store the given number.
+[[nodiscard]] constexpr auto smallest_indexing_data_type(usize number) -> DataType
+{
+    if (number <= std::numeric_limits<u8>::max())
+    {
+        static_assert(size_of_data_type(DataType::UnsignedByte) == sizeof(u8));
+        return DataType::UnsignedByte;
+    }
+
+    if (number <= std::numeric_limits<u16>::max())
+    {
+        static_assert(size_of_data_type(DataType::UnsignedShort) == sizeof(u16));
+        return DataType::UnsignedShort;
+    }
+
+    if (number <= std::numeric_limits<u32>::max())
+    {
+        static_assert(size_of_data_type(DataType::UnsignedInt) == sizeof(u32));
+        return DataType::UnsignedInt;
+    }
+
+    ZTH_CONSTEVAL_OR_REGULAR_ASSERT(false);
+    return DataType::None;
 }
 
 template<typename T> constexpr usize std140_field_alignment = 16; // In the default case we assume T is a struct.

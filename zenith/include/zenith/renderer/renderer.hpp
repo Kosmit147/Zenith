@@ -135,6 +135,8 @@ public:
     // The submitted references must all be valid until the renderer finishes rendering the scene.
     static auto submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
     // The submitted references must all be valid until the renderer finishes rendering the scene.
+    static auto submit(const QuadMesh& mesh, const glm::mat4& transform, const Material& material) -> void;
+    // The submitted references must all be valid until the renderer finishes rendering the scene.
     static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
         -> void;
 

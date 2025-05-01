@@ -74,9 +74,20 @@ auto Scene::render() -> void
         Renderer::submit_light(light, transform);
     }
 
-    auto meshes = _registry.group<const TransformComponent, const MeshComponent, const MaterialComponent>();
+    auto meshes =
+        _registry.group<const MeshComponent>(GetComponents<const TransformComponent, const MaterialComponent>{});
 
-    for (auto&& [_, transform, mesh, material] : meshes.each())
+    for (auto&& [_, mesh, transform, material] : meshes.each())
+    {
+        ZTH_ASSERT(mesh.mesh != nullptr);
+        ZTH_ASSERT(material.material != nullptr);
+        Renderer::submit(*mesh.mesh, transform.transform(), *material.material);
+    }
+
+    auto quad_meshes =
+        _registry.group<const QuadMeshComponent>(GetComponents<const TransformComponent, const MaterialComponent>{});
+
+    for (auto&& [_, mesh, transform, material] : quad_meshes.each())
     {
         ZTH_ASSERT(mesh.mesh != nullptr);
         ZTH_ASSERT(material.material != nullptr);

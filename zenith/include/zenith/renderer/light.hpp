@@ -85,9 +85,3 @@ struct AmbientLight
 } // namespace zth
 
 ZTH_DECLARE_FORMATTER(zth::LightType);
-ZTH_DECLARE_FORMATTER(zth::LightProperties);
-ZTH_DECLARE_FORMATTER(zth::LightAttenuation);
-ZTH_DECLARE_FORMATTER(zth::DirectionalLight);
-ZTH_DECLARE_FORMATTER(zth::PointLight);
-ZTH_DECLARE_FORMATTER(zth::SpotLight);
-ZTH_DECLARE_FORMATTER(zth::AmbientLight);

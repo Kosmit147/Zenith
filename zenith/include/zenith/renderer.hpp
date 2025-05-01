@@ -7,6 +7,7 @@
 #include "renderer/light.hpp"
 #include "renderer/material.hpp"
 #include "renderer/mesh.hpp"
+#include "renderer/quad.hpp"
 #include "renderer/renderer.hpp"
 #include "renderer/resources.hpp"
 #include "renderer/shader_data.hpp"

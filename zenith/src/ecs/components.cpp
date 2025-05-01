@@ -3,7 +3,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "zenith/core/assert.hpp"
-#include "zenith/log/formatters.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/math/vector.hpp"
 
@@ -254,6 +253,13 @@ auto ScriptComponent::display_label() -> const char*
     return "Script";
 }
 
+// --------------------------- QuadMeshComponent ---------------------------
+
+auto QuadMeshComponent::display_label() -> const char*
+{
+    return "Quad Mesh";
+}
+
 // --------------------------- MeshComponent ---------------------------
 
 auto MeshComponent::display_label() -> const char*
@@ -403,80 +409,3 @@ auto LightComponent::display_label() -> const char*
 }
 
 } // namespace zth
-
-ZTH_DEFINE_FORMATTER(zth::TagComponent, tag)
-{
-    return ZTH_FORMAT_OUT("TagComponent {{\n"
-                          "\t.tag = {},\n"
-                          "}}",
-                          tag.tag);
-}
-
-ZTH_DEFINE_FORMATTER(zth::TransformComponent, transform)
-{
-    return ZTH_FORMAT_OUT("TransformComponent {{\n"
-                          "\t.translation = {},\n"
-                          "\t.rotation = {},\n"
-                          "\t.scale = {},\n"
-                          "\t.transform = {},\n"
-                          "}}",
-                          transform.translation(), transform.rotation(), transform.scale(), transform.transform());
-}
-
-ZTH_DEFINE_FORMATTER(zth::ScriptComponent, script)
-{
-    return ZTH_FORMAT_OUT("ScriptComponent(\"{}\")", script.script().display_label());
-}
-
-ZTH_DEFINE_FORMATTER(zth::MeshComponent, mesh)
-{
-    // @todo
-
-    (void)mesh;
-    return ZTH_FORMAT_OUT("not implemented");
-}
-
-ZTH_DEFINE_FORMATTER(zth::MaterialComponent, material)
-{
-    // @todo
-
-    (void)material;
-    return ZTH_FORMAT_OUT("not implemented");
-}
-
-ZTH_DEFINE_FORMATTER(zth::CameraComponent, camera)
-{
-    return ZTH_FORMAT_OUT("CameraComponent {{\n"
-                          "\t.aspect_ratio = {},\n"
-                          "\t.fov = {},\n"
-                          "\t.near = {},\n"
-                          "\t.far = {},\n"
-                          "}}",
-                          camera.aspect_ratio, camera.fov, camera.near, camera.far);
-}
-
-ZTH_DEFINE_FORMATTER(zth::LightComponent, light)
-{
-    ZTH_FORMAT_OUT("LightComponent {{\n"
-                   "\t.type = {},\n",
-                   light.type());
-
-    switch (light.type())
-    {
-        using enum zth::LightType;
-    case Directional:
-        ZTH_FORMAT_OUT("\t.directional_light = {},\n", light.directional_light());
-        break;
-    case Point:
-        ZTH_FORMAT_OUT("\t.point_light = {},\n", light.point_light());
-        break;
-    case Spot:
-        ZTH_FORMAT_OUT("\t.spot_light = {},\n", light.spot_light());
-        break;
-    case Ambient:
-        ZTH_FORMAT_OUT("\t.ambient_light = {},\n", light.ambient_light());
-        break;
-    }
-
-    return ZTH_FORMAT_OUT("}}");
-}

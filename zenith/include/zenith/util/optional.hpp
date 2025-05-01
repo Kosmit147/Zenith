@@ -7,6 +7,7 @@
 namespace zth {
 
 template<typename T> using Optional = std::optional<T>;
+using Nil = std::nullopt_t;
 constexpr auto nil = std::nullopt;
 
 [[nodiscard]] constexpr auto make_optional(auto&& value) -> decltype(auto)

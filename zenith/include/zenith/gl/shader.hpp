@@ -135,4 +135,3 @@ auto Shader::set_unif(StringView name, const auto& val) const -> void
 } // namespace zth
 
 ZTH_DECLARE_FORMATTER(zth::gl::ShaderType);
-ZTH_DECLARE_FORMATTER(zth::gl::ShaderSourcePaths);
