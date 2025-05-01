@@ -49,7 +49,12 @@
     {                                                                                                                  \
         if (std::is_constant_evaluated())                                                                              \
         {                                                                                                              \
-            throw "Compile-time assertion failed: (" #__VA_ARGS__ ")";                                                 \
+            if ((__VA_ARGS__))                                                                                         \
+            {}                                                                                                         \
+            else                                                                                                       \
+            {                                                                                                          \
+                throw "Compile-time assertion failed: (" #__VA_ARGS__ ")";                                             \
+            }                                                                                                          \
         }                                                                                                              \
         else                                                                                                           \
         {                                                                                                              \
