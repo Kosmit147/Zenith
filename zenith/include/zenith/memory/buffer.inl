@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/stl/span.hpp"
 
 namespace zth::memory {
 
@@ -16,7 +17,7 @@ template<usize Size, usize Alignment> StaticBuffer<Size, Alignment>::StaticBuffe
 
 template<usize Size, usize Alignment>
 StaticBuffer<Size, Alignment>::StaticBuffer(std::ranges::contiguous_range auto&& data) noexcept
-    : StaticBuffer(std::as_bytes(std::span{ data }))
+    : StaticBuffer(make_dynamic_span(std::as_bytes(std::span{ data })))
 {}
 
 template<usize Size, usize Alignment>
@@ -82,7 +83,7 @@ template<usize Size, usize Alignment>
 auto StaticBuffer<Size, Alignment>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept
     -> size_type
 {
-    return buffer_data(std::as_bytes(std::span{ data }), offset);
+    return buffer_data(make_dynamic_span(std::as_bytes(std::span{ data })), offset);
 }
 
 template<StatelessAllocator A> Buffer<A>::Buffer(size_type size_bytes) noexcept
@@ -96,7 +97,8 @@ template<StatelessAllocator A> Buffer<A>::Buffer(std::span<const byte> data) noe
 }
 
 template<StatelessAllocator A>
-Buffer<A>::Buffer(std::ranges::contiguous_range auto&& data) noexcept : Buffer(std::as_bytes(std::span{ data }))
+Buffer<A>::Buffer(std::ranges::contiguous_range auto&& data) noexcept
+    : Buffer(make_dynamic_span(std::as_bytes(std::span{ data })))
 {}
 
 template<StatelessAllocator A> auto Buffer<A>::with_size(size_type size_bytes) noexcept -> Buffer
@@ -225,7 +227,7 @@ template<StatelessAllocator A> auto Buffer<A>::buffer_data(auto&& data, size_typ
 template<StatelessAllocator A>
 auto Buffer<A>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept -> size_type
 {
-    return buffer_data(std::as_bytes(std::span{ data }), offset);
+    return buffer_data(make_dynamic_span(std::as_bytes(std::span{ data })), offset);
 }
 
 template<StatelessAllocator A> auto Buffer<A>::allocate(size_type size_bytes) noexcept -> void
@@ -267,7 +269,7 @@ DynamicBuffer<A>::DynamicBuffer(std::span<const byte> data) noexcept : DynamicBu
 
 template<StatelessAllocator A>
 DynamicBuffer<A>::DynamicBuffer(std::ranges::contiguous_range auto&& data) noexcept
-    : DynamicBuffer(std::as_bytes(std::span{ data }))
+    : DynamicBuffer(make_dynamic_span(std::as_bytes(std::span{ data })))
 {}
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::with_size(size_type size_bytes) noexcept -> DynamicBuffer
@@ -416,7 +418,7 @@ template<StatelessAllocator A> auto DynamicBuffer<A>::buffer_data(auto&& data, s
 template<StatelessAllocator A>
 auto DynamicBuffer<A>::buffer_data(std::ranges::contiguous_range auto&& data, size_type offset) noexcept -> size_type
 {
-    return buffer_data(std::as_bytes(std::span{ data }), offset);
+    return buffer_data(make_dynamic_span(std::as_bytes(std::span{ data })), offset);
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::clear() noexcept -> void

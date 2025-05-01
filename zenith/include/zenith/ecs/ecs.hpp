@@ -69,8 +69,8 @@ template<> struct is_integral_component<const DeletionMarkerComponent> : std::tr
 template<typename T>
 concept IntegralComponent = is_integral_component_v<T>;
 
-template<typename... Components> using GetComponent = entt::get_t<Components...>;
-template<typename... Components> using ExcludeComponent = entt::exclude_t<Components...>;
+template<typename... Components> using GetComponents = entt::get_t<Components...>;
+template<typename... Components> using ExcludeComponents = entt::exclude_t<Components...>;
 
 using EntityId = entt::entity;
 constexpr auto null_entity = entt::null;
@@ -179,12 +179,12 @@ public:
     auto destroy_now_unchecked(EntityHandle& entity) -> void;
 
     template<typename... Components, typename... Exclude>
-    [[nodiscard]] auto view(this auto&& self, ExcludeComponent<Exclude...> exclude = ExcludeComponent{})
+    [[nodiscard]] auto view(this auto&& self, ExcludeComponents<Exclude...> exclude = ExcludeComponents{})
         -> decltype(auto);
 
     template<typename... Components, typename... Get, typename... Exclude>
-    [[nodiscard]] auto group(this auto&& self, GetComponent<Get...> get = GetComponent{},
-                             ExcludeComponent<Exclude...> exclude = ExcludeComponent{}) -> decltype(auto);
+    [[nodiscard]] auto group(this auto&& self, GetComponents<Get...> get = GetComponents{},
+                             ExcludeComponents<Exclude...> exclude = ExcludeComponents{}) -> decltype(auto);
 
     template<typename... Components> auto sort() -> void;
 

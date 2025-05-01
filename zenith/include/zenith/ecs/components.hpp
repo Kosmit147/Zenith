@@ -7,7 +7,6 @@
 
 #include <memory>
 
-#include "zenith/log/format.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/memory/managed.hpp"
 #include "zenith/renderer/fwd.hpp"
@@ -120,6 +119,15 @@ private:
     UniquePtr<Script> _script; // script cannot be null.
 };
 
+// --------------------------- QuadMeshComponent ---------------------------
+
+struct QuadMeshComponent
+{
+    std::shared_ptr<const QuadMesh> mesh; // mesh cannot be null.
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
 // --------------------------- MeshComponent ---------------------------
 
 struct MeshComponent
@@ -203,11 +211,3 @@ private:
 struct DeletionMarkerComponent {};
 
 } // namespace zth
-
-ZTH_DECLARE_FORMATTER(zth::TagComponent);
-ZTH_DECLARE_FORMATTER(zth::TransformComponent);
-ZTH_DECLARE_FORMATTER(zth::ScriptComponent);
-ZTH_DECLARE_FORMATTER(zth::MeshComponent);
-ZTH_DECLARE_FORMATTER(zth::MaterialComponent);
-ZTH_DECLARE_FORMATTER(zth::CameraComponent);
-ZTH_DECLARE_FORMATTER(zth::LightComponent);

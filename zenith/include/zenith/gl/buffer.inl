@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/stl/span.hpp"
 
 namespace zth::gl {
 
@@ -43,7 +44,7 @@ auto Buffer::init_static_with_data(auto&& data) -> void
 
 auto Buffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
-    init_static_with_data(std::as_bytes(std::span{ data }));
+    init_static_with_data(make_dynamic_span(std::as_bytes(std::span{ data })));
 }
 
 auto Buffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
@@ -53,7 +54,7 @@ auto Buffer::init_dynamic_with_data(auto&& data, BufferUsage usage) -> void
 
 auto Buffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
-    init_dynamic_with_data(std::as_bytes(std::span{ data }), usage);
+    init_dynamic_with_data(make_dynamic_span(std::as_bytes(std::span{ data })), usage);
 }
 
 auto Buffer::buffer_data(auto&& data, u32 offset) -> u32
@@ -63,7 +64,7 @@ auto Buffer::buffer_data(auto&& data, u32 offset) -> u32
 
 auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
 {
-    return buffer_data(std::as_bytes(std::span{ data }), offset);
+    return buffer_data(make_dynamic_span(std::as_bytes(std::span{ data })), offset);
 }
 
 // --------------------------- VertexBuffer ---------------------------
@@ -121,15 +122,13 @@ auto IndexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& 
 auto IndexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
 {
     _buffer.init_static_with_data(data);
-    set_index_data_type(derive_index_data_type<decltype(data)>());
-    _count = static_cast<u32>(std::size(data));
+    set_indexing_data_type(derive_indexing_data_type<decltype(data)>());
 }
 
 auto IndexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_data(data, usage);
-    set_index_data_type(derive_index_data_type<decltype(data)>());
-    _count = static_cast<u32>(std::size(data));
+    set_indexing_data_type(derive_indexing_data_type<decltype(data)>());
 }
 
 auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
@@ -137,15 +136,15 @@ auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 off
     return _buffer.buffer_data(data, offset);
 }
 
-template<typename T> auto IndexBuffer::set_index_data_type() -> void
+template<typename T> auto IndexBuffer::set_indexing_data_type() -> void
 {
-    set_index_data_type(to_data_type<T>);
+    set_indexing_data_type(to_data_type<T>);
 }
 
-template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::derive_index_data_type() -> DataType
+template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::derive_indexing_data_type() -> DataType
 {
     constexpr auto data_type = to_data_type<std::ranges::range_value_t<IndexData>>;
-    static_assert(is_an_index_data_type(data_type), "data type must be ubyte, ushort or uint");
+    static_assert(is_an_indexing_data_type(data_type), "data type must be ubyte, ushort or uint");
     return data_type;
 }
 

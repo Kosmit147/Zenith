@@ -33,6 +33,7 @@ add_library(
 	"src/renderer/imgui_renderer.cpp"
 	"src/renderer/light.cpp"
 	"src/renderer/mesh.cpp"
+	"src/renderer/quad.cpp"
 	"src/renderer/renderer.cpp"
 	"src/renderer/shader_preprocessor.cpp"
 	"src/script/camera_controller.cpp"

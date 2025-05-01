@@ -402,6 +402,11 @@ auto VertexBuffer::set_stride(u32 stride_bytes) -> void
     _layout.set_stride(stride_bytes);
 }
 
+auto VertexBuffer::count() const -> u32
+{
+    return size_bytes() / stride();
+}
+
 // --------------------------- IndexBuffer ---------------------------
 
 auto IndexBuffer::create_static_with_size(u32 size_bytes, DataType type) -> IndexBuffer
@@ -440,48 +445,44 @@ auto IndexBuffer::create_dynamic_with_data(std::span<const byte> data, DataType 
 }
 
 IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
-    : _buffer(std::move(other._buffer)), _index_data_type(std::exchange(other._index_data_type, DataType::None)),
-      _count(std::exchange(other._count, 0))
+    : _buffer(std::move(other._buffer)), _indexing_data_type(std::exchange(other._indexing_data_type, DataType::None))
 {}
 
 auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&
 {
     _buffer = std::move(other._buffer);
-    _index_data_type = std::exchange(other._index_data_type, DataType::None);
-    _count = std::exchange(other._count, 0);
+    _indexing_data_type = std::exchange(other._indexing_data_type, DataType::None);
     return *this;
 }
 
 auto IndexBuffer::init_static_with_size(u32 size_bytes, DataType type) -> void
 {
     _buffer.init_static_with_size(size_bytes);
-    set_index_data_type(type);
+    set_indexing_data_type(type);
 }
 
 auto IndexBuffer::init_static_with_data(std::span<const byte> data, DataType type) -> void
 {
     _buffer.init_static_with_data(data);
-    set_index_data_type(type);
-    _count = static_cast<u32>(data.size_bytes() / size_of_data_type(type));
+    set_indexing_data_type(type);
 }
 
 auto IndexBuffer::init_dynamic(DataType type, BufferUsage usage) -> void
 {
     _buffer.init_dynamic(usage);
-    set_index_data_type(type);
+    set_indexing_data_type(type);
 }
 
 auto IndexBuffer::init_dynamic_with_size(u32 size_bytes, DataType type, BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_size(size_bytes, usage);
-    set_index_data_type(type);
+    set_indexing_data_type(type);
 }
 
 auto IndexBuffer::init_dynamic_with_data(std::span<const byte> data, DataType type, BufferUsage usage) -> void
 {
     _buffer.init_dynamic_with_data(data, usage);
-    set_index_data_type(type);
-    _count = static_cast<u32>(data.size_bytes() / size_of_data_type(type));
+    set_indexing_data_type(type);
 }
 
 auto IndexBuffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
@@ -492,8 +493,7 @@ auto IndexBuffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
 auto IndexBuffer::free() noexcept -> void
 {
     _buffer.free();
-    _index_data_type = DataType::None;
-    _count = 0;
+    _indexing_data_type = DataType::None;
 }
 
 auto IndexBuffer::bind() const -> void
@@ -506,15 +506,15 @@ auto IndexBuffer::unbind() -> void
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
 }
 
-auto IndexBuffer::set_index_data_type(DataType type) -> void
+auto IndexBuffer::set_indexing_data_type(DataType type) -> void
 {
-    ZTH_ASSERT(is_an_index_data_type(type));
-    _index_data_type = type;
+    ZTH_ASSERT(is_an_indexing_data_type(type));
+    _indexing_data_type = type;
 }
 
-auto IndexBuffer::set_count(u32 count) -> void
+auto IndexBuffer::count() const -> u32
 {
-    _count = count;
+    return size_bytes() / static_cast<u32>(size_of_data_type(_indexing_data_type));
 }
 
 // --------------------------- InstanceBuffer ---------------------------

@@ -289,6 +289,11 @@ auto Renderer::submit(const Mesh& mesh, const glm::mat4& transform, const Materi
     submit(mesh.vertex_array(), transform, material);
 }
 
+auto Renderer::submit(const QuadMesh& mesh, const glm::mat4& transform, const Material& material) -> void
+{
+    submit(mesh.vertex_array(), transform, material);
+}
+
 auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
@@ -367,7 +372,7 @@ auto Renderer::draw_indexed(const gl::VertexArray& vertex_array, const Material&
     bind_material(material);
 
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
-                   gl::to_gl_enum(vertex_array.index_data_type()), nullptr);
+                   gl::to_gl_enum(vertex_array.indexing_data_type()), nullptr);
 
     renderer->_draw_calls_this_frame++;
 }
@@ -378,7 +383,8 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
     bind_material(material);
 
     glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
-                            gl::to_gl_enum(vertex_array.index_data_type()), nullptr, static_cast<GLsizei>(instances));
+                            gl::to_gl_enum(vertex_array.indexing_data_type()), nullptr,
+                            static_cast<GLsizei>(instances));
 
     renderer->_draw_calls_this_frame++;
 }

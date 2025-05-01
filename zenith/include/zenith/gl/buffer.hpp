@@ -236,6 +236,7 @@ public:
     [[nodiscard]] auto state() const { return _buffer.state(); }
     [[nodiscard]] auto layout() const -> auto& { return _layout; }
     [[nodiscard]] auto stride() const { return _layout.stride(); }
+    [[nodiscard]] auto count() const -> u32;
 
 private:
     Buffer _buffer;
@@ -302,9 +303,8 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
-    template<typename T> auto set_index_data_type() -> void;
-    auto set_index_data_type(DataType type) -> void;
-    auto set_count(u32 count) -> void;
+    template<typename T> auto set_indexing_data_type() -> void;
+    auto set_indexing_data_type(DataType type) -> void;
 
     [[nodiscard]] auto native_handle() const { return _buffer.native_handle(); }
     [[nodiscard]] auto size_bytes() const { return _buffer.size_bytes(); }
@@ -313,16 +313,15 @@ public:
     [[nodiscard]] auto is_dynamic() const { return _buffer.is_dynamic(); }
     [[nodiscard]] auto is_initialized() const { return _buffer.is_initialized(); }
     [[nodiscard]] auto state() const { return _buffer.state(); }
-    [[nodiscard]] auto index_data_type() const { return _index_data_type; }
-    [[nodiscard]] auto count() const { return _count; }
+    [[nodiscard]] auto indexing_data_type() const { return _indexing_data_type; }
+    [[nodiscard]] auto count() const -> u32;
 
     template<std::ranges::contiguous_range IndexData>
-    [[nodiscard]] constexpr static auto derive_index_data_type() -> DataType;
+    [[nodiscard]] constexpr static auto derive_indexing_data_type() -> DataType;
 
 private:
     Buffer _buffer;
-    DataType _index_data_type = DataType::None;
-    u32 _count = 0;
+    DataType _indexing_data_type = DataType::None;
 };
 
 // --------------------------- InstanceBuffer ---------------------------

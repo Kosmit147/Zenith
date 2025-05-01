@@ -10,7 +10,7 @@ namespace zth::meta {
 // clang-format off
 
 // Smallest unsigned integer that can represent values in range <0, N>.
-template<usize N> using MinimalUint = 
+template<usize N> using SmallestUint = 
     std::conditional_t<N <= std::numeric_limits<u8>::max(), u8,
     std::conditional_t<N <= std::numeric_limits<u16>::max(), u16,
     std::conditional_t<N <= std::numeric_limits<u32>::max(), u32,

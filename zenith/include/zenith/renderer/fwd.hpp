@@ -17,6 +17,7 @@ struct AmbientLight;
 struct Material;
 
 class Mesh;
+class QuadMesh;
 
 struct DrawCommand;
 struct RenderBatch;
