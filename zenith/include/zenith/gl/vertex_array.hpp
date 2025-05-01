@@ -21,8 +21,6 @@ struct VertexArrayLayout
 //
 // The instance buffer's layout starts at index one past the last index of the vertex buffer's layout.
 // rebind_layout() should be called after binding a vertex buffer or an instance buffer.
-//
-// If the count of vertices to draw is not set, the count() method returns the number of indices in the index buffer.
 class VertexArray
 {
 public:
@@ -35,12 +33,12 @@ public:
     explicit VertexArray();
 
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer);
-    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, u32 count);
+    explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, u32 count_limit);
 
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
                          const InstanceBuffer& instance_buffer);
     explicit VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
-                         const InstanceBuffer& instance_buffer, u32 count);
+                         const InstanceBuffer& instance_buffer, u32 count_limit);
 
     explicit VertexArray(VertexBuffer&&, IndexBuffer&&) = delete;
     explicit VertexArray(VertexBuffer&&, IndexBuffer&&, u32) = delete;
@@ -73,8 +71,8 @@ public:
     auto unbind_instance_buffer() -> void;
     auto unbind_all_buffers() -> void;
 
-    auto set_count(u32 count) -> void;
-    auto set_count(Nil) -> void;
+    auto set_count_limit(u32 limit) -> void;
+    auto set_count_limit(Nil) -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
     [[nodiscard]] auto count() const -> u32;
@@ -89,7 +87,7 @@ public:
 
 private:
     VertexArrayId _id = GL_NONE;
-    Optional<u32> _count = nil;
+    Optional<u32> _count_limit = nil;
 
     const VertexBuffer* _vertex_buffer = nullptr;
     const IndexBuffer* _index_buffer = nullptr;

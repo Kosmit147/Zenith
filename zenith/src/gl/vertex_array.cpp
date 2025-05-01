@@ -18,10 +18,10 @@ VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& i
     rebind_layout();
 }
 
-VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, u32 count)
+VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer, u32 count_limit)
     : VertexArray(vertex_buffer, index_buffer)
 {
-    _count = count;
+    _count_limit = count_limit;
 }
 
 VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
@@ -35,10 +35,10 @@ VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& i
 }
 
 VertexArray::VertexArray(const VertexBuffer& vertex_buffer, const IndexBuffer& index_buffer,
-                         const InstanceBuffer& instance_buffer, u32 count)
+                         const InstanceBuffer& instance_buffer, u32 count_limit)
     : VertexArray(vertex_buffer, index_buffer, instance_buffer)
 {
-    _count = count;
+    _count_limit = count_limit;
 }
 
 VertexArray::VertexArray(const VertexArray& other) : VertexArray()
@@ -53,7 +53,7 @@ VertexArray::VertexArray(const VertexArray& other) : VertexArray()
         bind_instance_buffer(*other._instance_buffer);
 
     rebind_layout();
-    _count = other._count;
+    _count_limit = other._count_limit;
 }
 
 auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
@@ -79,13 +79,13 @@ auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
         bind_instance_buffer(*other._instance_buffer);
 
     rebind_layout();
-    _count = other._count;
+    _count_limit = other._count_limit;
 
     return *this;
 }
 
 VertexArray::VertexArray(VertexArray&& other) noexcept
-    : _id(std::exchange(other._id, GL_NONE)), _count(std::exchange(other._count, nil)),
+    : _id(std::exchange(other._id, GL_NONE)), _count_limit(std::exchange(other._count_limit, nil)),
       _vertex_buffer(std::exchange(other._vertex_buffer, nullptr)),
       _index_buffer(std::exchange(other._index_buffer, nullptr)),
       _instance_buffer(std::exchange(other._instance_buffer, nullptr))
@@ -96,7 +96,7 @@ auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&
     destroy();
 
     _id = std::exchange(other._id, GL_NONE);
-    _count = std::exchange(other._count, nil);
+    _count_limit = std::exchange(other._count_limit, nil);
     _vertex_buffer = std::exchange(other._vertex_buffer, nullptr);
     _index_buffer = std::exchange(other._index_buffer, nullptr);
     _instance_buffer = std::exchange(other._instance_buffer, nullptr);
@@ -173,26 +173,23 @@ auto VertexArray::unbind_all_buffers() -> void
     unbind_instance_buffer();
 }
 
-auto VertexArray::set_count(u32 count) -> void
+auto VertexArray::set_count_limit(u32 limit) -> void
 {
-    _count = count;
+    _count_limit = limit;
 }
 
-auto VertexArray::set_count(Nil) -> void
+auto VertexArray::set_count_limit(Nil) -> void
 {
-    _count = nil;
+    _count_limit = nil;
 }
 
 auto VertexArray::count() const -> u32
 {
-    if (_count)
-    {
-        ZTH_ASSERT(_index_buffer && *_count <= _index_buffer->count());
-        return *_count;
-    }
-
     if (!_index_buffer)
         return 0;
+
+    if (_count_limit)
+        return std::min(*_count_limit, _index_buffer->count());
 
     return _index_buffer->count();
 }
