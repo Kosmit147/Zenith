@@ -48,7 +48,7 @@ struct DirectionalLightsSsboData
 {
     ZTH_SSBO_FIELD(GLuint, count = 0);
     ZTH_PAD(12);
-    // here goes a variable-length array of DirectionalLightData (aligned at 16 bytes)
+    // Here goes a variable-length array of DirectionalLightData (aligned at 16 bytes).
 };
 
 struct PointLightShaderData
@@ -62,7 +62,7 @@ struct PointLightsSsboData
 {
     ZTH_SSBO_FIELD(GLuint, count = 0);
     ZTH_PAD(12);
-    // here goes a variable-length array of PointLightData (aligned at 16 bytes)
+    // Here goes a variable-length array of PointLightData (aligned at 16 bytes).
 };
 
 struct SpotLightShaderData
@@ -79,7 +79,7 @@ struct SpotLightsSsboData
 {
     ZTH_SSBO_FIELD(GLuint, count = 0);
     ZTH_PAD(12);
-    // here goes a variable-length array of SpotLightData (aligned at 16 bytes)
+    // Here goes a variable-length array of SpotLightData (aligned at 16 bytes).
 };
 
 struct AmbientLightShaderData
@@ -91,7 +91,7 @@ struct AmbientLightsSsboData
 {
     ZTH_SSBO_FIELD(GLuint, count = 0);
     ZTH_PAD(12);
-    // here goes a variable-length array of AmbientLightData (aligned at 16 bytes)
+    // Here goes a variable-length array of AmbientLightData (aligned at 16 bytes).
 };
 
 struct MaterialUboData
@@ -101,10 +101,6 @@ struct MaterialUboData
     ZTH_UBO_FIELD(glm::vec3, diffuse);
     ZTH_UBO_FIELD(glm::vec3, specular);
     ZTH_UBO_FIELD(GLfloat, shininess);
-
-    ZTH_UBO_FIELD(GlslBool, has_diffuse_map = false);
-    ZTH_UBO_FIELD(GlslBool, has_specular_map = false);
-    ZTH_UBO_FIELD(GlslBool, has_emission_map = false);
 };
 
 } // namespace zth

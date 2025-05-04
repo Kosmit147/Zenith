@@ -458,12 +458,18 @@ auto Renderer::bind_material(const Material& material) -> void
 
     if (material.diffuse_map)
         material.diffuse_map->bind(diffuse_map_slot);
+    else
+        textures::white()->bind(diffuse_map_slot);
 
     if (material.specular_map)
         material.specular_map->bind(specular_map_slot);
+    else
+        textures::white()->bind(specular_map_slot);
 
     if (material.emission_map)
         material.emission_map->bind(emission_map_slot);
+    else
+        textures::black()->bind(emission_map_slot);
 }
 
 auto Renderer::upload_camera_data(glm::vec3 camera_position, const glm::mat4& view_projection) -> void
@@ -484,9 +490,6 @@ auto Renderer::upload_material_data(const Material& material) -> void
         .diffuse = material.diffuse,
         .specular = material.specular,
         .shininess = material.shininess,
-        .has_diffuse_map = material.diffuse_map != nullptr,
-        .has_specular_map = material.specular_map != nullptr,
-        .has_emission_map = material.emission_map != nullptr,
     };
 
     renderer->_material_ubo.buffer_data(material_ubo_data);
