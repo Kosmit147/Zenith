@@ -59,7 +59,7 @@ public:
     static auto add(AssetId id, A&& asset) -> Optional<Reference<const std::shared_ptr<A>>>;
 
     template<Asset A> [[nodiscard]] static auto get(AssetId id) -> Optional<std::shared_ptr<A>>;
-    template<Asset A> [[nodiscard]] static auto get_unchecked(AssetId id) -> std::shared_ptr<A>;
+    template<Asset A> [[nodiscard]] static auto get_unchecked(AssetId id) noexcept -> std::shared_ptr<A>;
 
     template<Asset A> static auto remove(AssetId id) -> bool;
 
