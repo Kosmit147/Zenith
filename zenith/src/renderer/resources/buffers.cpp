@@ -4,7 +4,6 @@
 #include "zenith/gl/buffer.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/managed.hpp"
-#include "zenith/util/meta.hpp"
 
 namespace zth::buffers {
 
