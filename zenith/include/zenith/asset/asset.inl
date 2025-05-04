@@ -2,7 +2,6 @@
 
 #include <utility>
 
-#include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 
 namespace zth {
@@ -96,13 +95,9 @@ template<Asset A> auto AssetManager::get(AssetId id) -> Optional<std::shared_ptr
     return nil;
 }
 
-template<Asset A> auto AssetManager::get_unchecked(AssetId id) -> std::shared_ptr<A>
+template<Asset A> auto AssetManager::get_unchecked(AssetId id) noexcept -> std::shared_ptr<A>
 {
-    auto kv = _storage<A>.find(id);
-    ZTH_ASSERT(kv != _storage<A>.end());
-    auto [_, ref] = *kv;
-    static_assert(std::is_reference_v<decltype(ref)>);
-    return ref;
+    return _storage<A>.at(id);
 }
 
 template<Asset A> auto AssetManager::remove(AssetId id) -> bool
