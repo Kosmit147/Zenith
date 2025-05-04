@@ -93,10 +93,6 @@ layout (std140, binding = ZTH_MATERIAL_UBO_BINDING_POINT) uniform MaterialUbo
     vec3 diffuse;
     vec3 specular;
     float shininess;
-
-    bool has_diffuse_map;
-    bool has_specular_map;
-    bool has_emission_map;
 } material;
 
 layout (binding = ZTH_DIFFUSE_MAP_SLOT) uniform sampler2D diffuse_map;
@@ -153,11 +149,7 @@ vec3 calc_light_specular(Light light, vec3 normal, vec3 view_direction)
 {
     vec3 reflection = reflect(light.direction, normal);
     vec3 specular_factor = light.properties.specular * pow(max(dot(reflection, -view_direction), 0.0), material.shininess);
-
-    if (material.has_specular_map)
-        specular_factor *= vec3(texture(specular_map, UV));
-
-    return specular_factor;
+    return specular_factor * vec3(texture(specular_map, UV));
 }
 
 vec3 calc_light(Light light, vec3 normal, vec3 view_direction)
@@ -229,9 +221,7 @@ vec3 calc_ambient_lights()
 void main()
 {
     vec4 object_color = vec4(material.albedo, 1.0);
-
-    if (material.has_diffuse_map)
-        object_color *= texture(diffuse_map, UV);
+	object_color *= texture(diffuse_map, UV);
 
     vec3 view_direction = normalize(Position - camera.position);
 
@@ -243,7 +233,5 @@ void main()
     light_strength += calc_ambient_lights();
 
     out_color = vec4(light_strength * object_color.rgb, object_color.a);
-
-    if (material.has_emission_map)
-        out_color += texture(emission_map, UV);
+	out_color += texture(emission_map, UV);
 }
