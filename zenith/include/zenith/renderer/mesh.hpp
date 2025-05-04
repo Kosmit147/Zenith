@@ -42,9 +42,9 @@ private:
 };
 
 // QuadMesh is a mesh made up of quads (sets of two triangles). There's no need to provide indices. The order of
-// vertices for a single quad should be clockwise starting from the top-left vertex. The number of vertices that gets
-// drawn is the number of vertices in the vertex buffer (its size divided by its stride). Every mesh's vertex array gets
-// implicitly bound to the renderer's instance buffer.
+// vertices for a single quad should be counter-clockwise starting from the top-left vertex. The number of vertices that
+// gets drawn is the number of vertices in the vertex buffer (its size divided by its stride). Every mesh's vertex array
+// gets implicitly bound to the renderer's instance buffer.
 class QuadMesh
 {
 public:
