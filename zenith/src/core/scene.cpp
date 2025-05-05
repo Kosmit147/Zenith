@@ -7,6 +7,21 @@
 
 namespace zth {
 
+Scene::Scene()
+{
+    _registry.add_on_attach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
+        EntityHandle entity{ entity_id, registry };
+        auto& script = entity.get<ScriptComponent>();
+        script.script().on_attach(entity);
+    }>();
+
+    _registry.add_on_detach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
+        EntityHandle entity{ entity_id, registry };
+        auto& script = entity.get<ScriptComponent>();
+        script.script().on_detach(entity);
+    }>();
+}
+
 auto Scene::start_frame() -> void
 {
     on_frame_start();

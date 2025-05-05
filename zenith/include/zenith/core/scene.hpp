@@ -15,7 +15,7 @@ namespace zth {
 class Scene
 {
 public:
-    explicit Scene() = default;
+    explicit Scene();
     ZTH_NO_COPY_NO_MOVE(Scene)
     virtual ~Scene() = default;
 

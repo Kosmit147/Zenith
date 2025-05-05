@@ -19,6 +19,12 @@ public:
     virtual auto on_event([[maybe_unused]] EntityHandle actor, [[maybe_unused]] const Event& event) -> void {}
     virtual auto on_fixed_update([[maybe_unused]] EntityHandle actor) -> void {}
     virtual auto on_update([[maybe_unused]] EntityHandle actor) -> void {}
+
+    friend class Scene; // Scene needs to be able to add on_attach and on_detach listeners.
+
+private:
+    virtual auto on_attach([[maybe_unused]] EntityHandle actor) -> void {}
+    virtual auto on_detach([[maybe_unused]] EntityHandle actor) -> void {}
 };
 
 } // namespace zth
