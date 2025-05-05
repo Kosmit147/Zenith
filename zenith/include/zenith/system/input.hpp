@@ -5,10 +5,10 @@
 #include <glm/vec2.hpp>
 
 #include <array>
-#include <unordered_map>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
+#include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/optional.hpp"
@@ -41,14 +41,14 @@ public:
 
 private:
     // @speed: These shouldn't be hash maps.
-    static std::unordered_map<Key, bool> _key_states;
-    static std::unordered_map<MouseButton, bool> _mouse_button_states;
+    static UnorderedMap<Key, bool> _key_states;
+    static UnorderedMap<MouseButton, bool> _mouse_button_states;
 
-    static inline glm::vec2 _mouse_pos = { 0.0f, 0.0f };
-    static inline glm::vec2 _mouse_pos_delta = { 0.0f, 0.0f };
-    static inline glm::vec2 _mouse_scroll_delta = { 0.0f, 0.0f };
+    static inline glm::vec2 _mouse_pos{ 0.0f, 0.0f };
+    static inline glm::vec2 _mouse_pos_delta{ 0.0f, 0.0f };
+    static inline glm::vec2 _mouse_scroll_delta{ 0.0f, 0.0f };
 
-    static inline glm::vec2 _prev_mouse_pos = { 0.0f, 0.0f };
+    static inline glm::vec2 _prev_mouse_pos{ 0.0f, 0.0f };
 };
 
 enum class Key : u16
