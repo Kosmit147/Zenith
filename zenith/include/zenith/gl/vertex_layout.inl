@@ -31,6 +31,8 @@ constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> 
 
 template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() -> VertexLayout
 {
+    // @refactor: Use in-built reflection once we're on C++26.
+
     constexpr auto dummy_vertex = VertexType{};
     constexpr auto arity = meta::struct_arity<VertexType>();
 
