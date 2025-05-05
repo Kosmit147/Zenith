@@ -7,8 +7,8 @@
 
 namespace zth {
 
-std::unordered_map<Key, bool> Input::_key_states;
-std::unordered_map<MouseButton, bool> Input::_mouse_button_states;
+UnorderedMap<Key, bool> Input::_key_states;
+UnorderedMap<MouseButton, bool> Input::_mouse_button_states;
 
 auto Input::init() -> Result<void, String>
 {

@@ -12,8 +12,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
-#include "zenith/stl/string_map.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
@@ -89,7 +89,7 @@ public:
 
 private:
     ProgramId _id = GL_NONE;
-    StringHashMap<UniformInfo> _uniform_map;
+    UnorderedMap<String, UniformInfo> _uniform_map;
 
 private:
     auto retrieve_unif_info() -> void;

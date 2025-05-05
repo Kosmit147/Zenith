@@ -1,13 +1,12 @@
 #pragma once
 
-#include <entt/container/dense_map.hpp>
-
 #include <memory>
 #include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
 #include "zenith/renderer/fwd.hpp"
+#include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
@@ -35,7 +34,7 @@ concept Asset = is_asset_v<T>;
 class AssetManager
 {
 public:
-    template<Asset A> using AssetStorage = entt::dense_map<AssetId, std::shared_ptr<A>>;
+    template<Asset A> using AssetStorage = DenseUnorderedMap<AssetId, std::shared_ptr<A>>;
 
     AssetManager() = delete;
 

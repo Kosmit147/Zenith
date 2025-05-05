@@ -17,7 +17,7 @@ constexpr auto include_str = "#include"_sv;
 
 } // namespace
 
-StringHashMap<String> ShaderPreprocessor::_sources;
+UnorderedMap<String, String> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> Result<void, String>
 {

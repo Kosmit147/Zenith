@@ -1,9 +1,9 @@
+#include <zenith/stl/hash.hpp>
 #include <zenith/stl/string.hpp>
-#include <zenith/stl/string_hash.hpp>
 
-TEST_CASE("StringHasher hashes strings transparently", "[StringHasher]")
+TEST_CASE("StringHash hashes strings transparently", "[Hash]")
 {
-    zth::StringHasher hasher;
+    zth::StringHash hasher;
 
     const auto str = "Hello World";
 
