@@ -24,7 +24,7 @@
 
 namespace zth::debug {
 
-constexpr auto default_ui_drag_speed = 0.01f;
+constexpr inline auto default_ui_drag_speed = 0.01f;
 
 auto drag_float(const char* label, float& value, float drag_speed = default_ui_drag_speed) -> bool;
 auto drag_float_2(const char* label, float values[2], float drag_speed = default_ui_drag_speed) -> bool;

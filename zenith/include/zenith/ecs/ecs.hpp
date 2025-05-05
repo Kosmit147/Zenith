@@ -73,7 +73,7 @@ template<typename... Components> using GetComponents = entt::get_t<Components...
 template<typename... Components> using ExcludeComponents = entt::exclude_t<Components...>;
 
 using EntityId = entt::entity;
-constexpr auto null_entity = entt::null;
+constexpr inline auto null_entity = entt::null;
 
 // A non-owning handle to an entity.
 class ConstEntityHandle

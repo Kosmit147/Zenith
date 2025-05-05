@@ -8,9 +8,9 @@
 
 namespace zth::meshes {
 
-constexpr usize cube_mesh_index = 0;
-constexpr usize pyramid_mesh_index = 1;
-constexpr usize sphere_mesh_index = 2;
+constexpr inline usize cube_mesh_index = 0;
+constexpr inline usize pyramid_mesh_index = 1;
+constexpr inline usize sphere_mesh_index = 2;
 
 using MeshesArray = std::array<std::shared_ptr<const Mesh>, sphere_mesh_index + 1>;
 

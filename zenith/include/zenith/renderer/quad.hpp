@@ -11,15 +11,15 @@
 
 namespace zth {
 
-constexpr usize vertices_per_triangle = 3;
-constexpr usize vertices_per_quad = 4;
+constexpr inline usize vertices_per_triangle = 3;
+constexpr inline usize vertices_per_quad = 4;
 
-constexpr usize triangles_per_quad = 2;
+constexpr inline usize triangles_per_quad = 2;
 
-constexpr usize indices_per_triangle = 3;
-constexpr usize indices_per_quad = triangles_per_quad * indices_per_triangle;
+constexpr inline usize indices_per_triangle = 3;
+constexpr inline usize indices_per_quad = triangles_per_quad * indices_per_triangle;
 
-constexpr std::array<usize, indices_per_quad> quad_indices = { 0, 1, 2, 0, 2, 3 };
+constexpr inline std::array<usize, indices_per_quad> quad_indices = { 0, 1, 2, 0, 2, 3 };
 
 [[nodiscard]] constexpr auto get_triangle_vertex_count_from_quad_vertex_count(usize vertex_count) -> usize
 {

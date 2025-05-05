@@ -7,7 +7,7 @@
 
 namespace zth::math {
 
-template<std::floating_point T> constexpr auto default_epsilon = std::numeric_limits<T>::epsilon();
+template<std::floating_point T> constexpr inline auto default_epsilon = std::numeric_limits<T>::epsilon();
 
 template<std::floating_point T> [[nodiscard]] auto equal(T a, T b, T epsilon = default_epsilon<T>) -> bool
 {
