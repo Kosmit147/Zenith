@@ -79,7 +79,9 @@ constexpr inline auto null_entity = entt::null;
 class ConstEntityHandle
 {
 public:
+    // clang-format off
     struct InvalidHandle {};
+    // clang-format on
     static constexpr InvalidHandle invalid;
 
 public:
@@ -140,11 +142,8 @@ class Registry
 {
 public:
     explicit Registry() = default;
-
-    ZTH_NO_COPY(Registry)
-    ZTH_DEFAULT_MOVE(Registry)
-
-    ~Registry() = default;
+    ZTH_NO_COPY_NO_MOVE(Registry) // Moving the registry would invalidate the references that listener adapters hold.
+    ~Registry();
 
     [[nodiscard]] auto valid(EntityId id) const -> bool;
 
@@ -168,6 +167,22 @@ public:
     template<typename Component>
     [[nodiscard]] auto get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> decltype(auto);
 
+    template<typename Component, auto Listener>
+        requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+    auto add_on_attach_listener() -> void;
+
+    template<typename Component, auto Listener>
+        requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+    auto remove_on_attach_listener() -> void;
+
+    template<typename Component, auto Listener>
+        requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+    auto add_on_detach_listener() -> void;
+
+    template<typename Component, auto Listener>
+        requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+    auto remove_on_detach_listener() -> void;
+
     auto destroy(EntityId id) -> bool;
     auto destroy(EntityHandle& entity) -> bool;
     auto destroy_unchecked(EntityId id) -> void;
@@ -190,6 +205,11 @@ public:
 
 private:
     entt::registry _registry;
+
+private:
+    template<auto Listener>
+        requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+    auto listener_adapter(entt::registry& registry, entt::entity entity) -> void;
 };
 
 } // namespace zth

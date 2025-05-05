@@ -82,6 +82,11 @@ auto EntityHandle::registry() const -> Optional<Reference<Registry>>
         return nil;
 }
 
+Registry::~Registry()
+{
+    _registry.clear();
+}
+
 auto Registry::valid(EntityId id) const -> bool
 {
     return _registry.valid(id);

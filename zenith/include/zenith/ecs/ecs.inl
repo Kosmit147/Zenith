@@ -126,6 +126,34 @@ auto Registry::get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> 
     return self._registry.template get_or_emplace<Component>(id, std::forward<decltype(args)>(args)...);
 }
 
+template<typename Component, auto Listener>
+    requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+auto Registry::add_on_attach_listener() -> void
+{
+    _registry.on_construct<Component>().template connect<&Registry::listener_adapter<Listener>>(*this);
+}
+
+template<typename Component, auto Listener>
+    requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+auto Registry::remove_on_attach_listener() -> void
+{
+    _registry.on_construct<Component>().template disconnect<&Registry::listener_adapter<Listener>>(*this);
+}
+
+template<typename Component, auto Listener>
+    requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+auto Registry::add_on_detach_listener() -> void
+{
+    _registry.on_destroy<Component>().template connect<&Registry::listener_adapter<Listener>>(*this);
+}
+
+template<typename Component, auto Listener>
+    requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+auto Registry::remove_on_detach_listener() -> void
+{
+    _registry.on_destroy<Component>().template disconnect<&Registry::listener_adapter<Listener>>(*this);
+}
+
 template<typename... Components, typename... Exclude>
 auto Registry::view(this auto&& self, ExcludeComponents<Exclude...> exclude) -> decltype(auto)
 {
@@ -143,6 +171,13 @@ auto Registry::group(this auto&& self, GetComponents<Get...> get, ExcludeCompone
 template<typename... Components> auto Registry::sort() -> void
 {
     _registry.sort<Components...>();
+}
+
+template<auto Listener>
+    requires(std::invocable<decltype(Listener), Registry&, EntityId>)
+auto Registry::listener_adapter([[maybe_unused]] entt::registry& registry, entt::entity entity) -> void
+{
+    Listener(*this, entity);
 }
 
 } // namespace zth
