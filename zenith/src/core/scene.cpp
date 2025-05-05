@@ -56,7 +56,7 @@ auto Scene::render() -> void
 
     if (camera_entity_id == null_entity)
     {
-        ZTH_INTERNAL_WARN("[Scene] No entity with a CameraComponent found.");
+        ZTH_INTERNAL_WARN("[Scene] No entity with a camera component found.");
         Renderer::clear();
         return;
     }
