@@ -71,6 +71,9 @@ private:
 template<typename T, memory::StatelessAllocator A> class UniquePtr<T[], A>
 {
 public:
+    static_assert(std::same_as<T, typename A::value_type>,
+                  "allocator's value type must be the same as unique pointer's value type");
+
     explicit UniquePtr() noexcept = default;
     UniquePtr(std::nullptr_t) noexcept;
 
