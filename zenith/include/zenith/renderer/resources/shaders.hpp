@@ -8,9 +8,9 @@
 
 namespace zth::shaders {
 
-constexpr usize fallback_shader_index = 0;
-constexpr usize flat_color_shader_index = 1;
-constexpr usize standard_shader_index = 2;
+constexpr inline usize fallback_shader_index = 0;
+constexpr inline usize flat_color_shader_index = 1;
+constexpr inline usize standard_shader_index = 2;
 
 using ShadersArray = std::array<std::shared_ptr<const gl::Shader>, standard_shader_index + 1>;
 

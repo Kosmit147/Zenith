@@ -10,20 +10,20 @@
 
 namespace zth::gl {
 
-template<typename T> constexpr VertexLayoutElement to_vertex_layout_elem; // Must be specialized.
+template<typename T> constexpr inline VertexLayoutElement to_vertex_layout_elem; // Must be specialized.
 
-template<> constexpr auto to_vertex_layout_elem<GLfloat> = VertexLayoutElement::Float;
-template<> constexpr auto to_vertex_layout_elem<const GLfloat> = VertexLayoutElement::Float;
-template<> constexpr auto to_vertex_layout_elem<glm::vec2> = VertexLayoutElement::Vec2;
-template<> constexpr auto to_vertex_layout_elem<const glm::vec2> = VertexLayoutElement::Vec2;
-template<> constexpr auto to_vertex_layout_elem<glm::vec3> = VertexLayoutElement::Vec3;
-template<> constexpr auto to_vertex_layout_elem<const glm::vec3> = VertexLayoutElement::Vec3;
-template<> constexpr auto to_vertex_layout_elem<glm::vec4> = VertexLayoutElement::Vec4;
-template<> constexpr auto to_vertex_layout_elem<const glm::vec4> = VertexLayoutElement::Vec4;
-template<> constexpr auto to_vertex_layout_elem<glm::mat3> = VertexLayoutElement::Mat3;
-template<> constexpr auto to_vertex_layout_elem<const glm::mat3> = VertexLayoutElement::Mat3;
-template<> constexpr auto to_vertex_layout_elem<glm::mat4> = VertexLayoutElement::Mat4;
-template<> constexpr auto to_vertex_layout_elem<const glm::mat4> = VertexLayoutElement::Mat4;
+template<> constexpr inline auto to_vertex_layout_elem<GLfloat> = VertexLayoutElement::Float;
+template<> constexpr inline auto to_vertex_layout_elem<const GLfloat> = VertexLayoutElement::Float;
+template<> constexpr inline auto to_vertex_layout_elem<glm::vec2> = VertexLayoutElement::Vec2;
+template<> constexpr inline auto to_vertex_layout_elem<const glm::vec2> = VertexLayoutElement::Vec2;
+template<> constexpr inline auto to_vertex_layout_elem<glm::vec3> = VertexLayoutElement::Vec3;
+template<> constexpr inline auto to_vertex_layout_elem<const glm::vec3> = VertexLayoutElement::Vec3;
+template<> constexpr inline auto to_vertex_layout_elem<glm::vec4> = VertexLayoutElement::Vec4;
+template<> constexpr inline auto to_vertex_layout_elem<const glm::vec4> = VertexLayoutElement::Vec4;
+template<> constexpr inline auto to_vertex_layout_elem<glm::mat3> = VertexLayoutElement::Mat3;
+template<> constexpr inline auto to_vertex_layout_elem<const glm::mat3> = VertexLayoutElement::Mat3;
+template<> constexpr inline auto to_vertex_layout_elem<glm::mat4> = VertexLayoutElement::Mat4;
+template<> constexpr inline auto to_vertex_layout_elem<const glm::mat4> = VertexLayoutElement::Mat4;
 
 constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> elements, u32 stride_bytes)
     : _elements(elements), _stride_bytes(stride_bytes)

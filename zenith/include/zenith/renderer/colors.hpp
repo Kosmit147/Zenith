@@ -4,14 +4,14 @@
 
 namespace zth::colors {
 
-constexpr auto black = glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
-constexpr auto white = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f };
-constexpr auto red = glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f };
-constexpr auto green = glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f };
-constexpr auto blue = glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f };
-constexpr auto yellow = glm::vec4{ 1.0f, 1.0f, 0.0f, 1.0f };
-constexpr auto magenta = glm::vec4{ 1.0f, 0.0f, 1.0f, 1.0f };
-constexpr auto cyan = glm::vec4{ 0.0f, 1.0f, 1.0f, 1.0f };
-constexpr auto transparent = glm::vec4{ 0.0f, 0.0f, 0.0f, 0.0f };
+constexpr inline glm::vec4 black{ 0.0f, 0.0f, 0.0f, 1.0f };
+constexpr inline glm::vec4 white{ 1.0f, 1.0f, 1.0f, 1.0f };
+constexpr inline glm::vec4 red{ 1.0f, 0.0f, 0.0f, 1.0f };
+constexpr inline glm::vec4 green{ 0.0f, 1.0f, 0.0f, 1.0f };
+constexpr inline glm::vec4 blue{ 0.0f, 0.0f, 1.0f, 1.0f };
+constexpr inline glm::vec4 yellow{ 1.0f, 1.0f, 0.0f, 1.0f };
+constexpr inline glm::vec4 magenta{ 1.0f, 0.0f, 1.0f, 1.0f };
+constexpr inline glm::vec4 cyan{ 0.0f, 1.0f, 1.0f, 1.0f };
+constexpr inline glm::vec4 transparent{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 } // namespace zth::colors

@@ -182,7 +182,7 @@ enum class MouseButton : u8
     Right = GLFW_MOUSE_BUTTON_RIGHT,
 };
 
-constexpr std::array key_enumerations = {
+constexpr inline std::array key_enumerations = {
     Key::Space,
     Key::Apostrophe,
     Key::Comma,
@@ -305,7 +305,7 @@ constexpr std::array key_enumerations = {
     Key::Menu,
 };
 
-constexpr std::array mouse_button_enumerations = {
+constexpr inline std::array mouse_button_enumerations = {
     MouseButton::Left,
     MouseButton::Middle,
     MouseButton::Right,

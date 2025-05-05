@@ -6,8 +6,9 @@
 
 namespace zth::memory {
 
-constexpr usize minimal_alignment = alignof(std::max_align_t);
-constexpr usize default_alignment = 16; // @speed: Maybe default alignment should be minimal_alignment instead of 16.
+constexpr inline usize minimal_alignment = alignof(std::max_align_t);
+// @speed: Maybe default alignment should be minimal_alignment instead of 16.
+constexpr inline usize default_alignment = 16;
 
 template<typename T> [[nodiscard]] auto is_aligned(T* ptr, usize alignment = alignof(T)) -> bool;
 

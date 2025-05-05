@@ -32,7 +32,7 @@ enum class ShaderType : u16
     Fragment = GL_FRAGMENT_SHADER,
 };
 
-constexpr std::array shader_type_enumerations = {
+constexpr inline std::array shader_type_enumerations = {
     ShaderType::Compute,        ShaderType::Vertex,   ShaderType::TessControl,
     ShaderType::TessEvaluation, ShaderType::Geometry, ShaderType::Fragment,
 };

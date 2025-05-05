@@ -6,9 +6,9 @@
 
 namespace zth::buffers {
 
-constexpr usize quads_index_buffer_quads =
+constexpr inline usize quads_index_buffer_quads =
     16384; // The biggest number of quads that still allows us to use unsigned short for indexing.
-constexpr usize quads_index_buffer_indices = quads_index_buffer_quads * indices_per_quad;
+constexpr inline usize quads_index_buffer_indices = quads_index_buffer_quads * indices_per_quad;
 
 auto create() -> void;
 auto destroy() -> void;

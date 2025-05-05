@@ -18,7 +18,7 @@ enum class LightType : u8
     Ambient,
 };
 
-constexpr std::array light_type_enumerations = {
+constexpr inline std::array light_type_enumerations = {
     LightType::Directional,
     LightType::Point,
     LightType::Spot,

@@ -25,16 +25,16 @@ enum class DataType : u16
     Double = GL_DOUBLE,
 };
 
-template<typename T> constexpr DataType to_data_type; // Must be specialized.
+template<typename T> constexpr inline DataType to_data_type; // Must be specialized.
 
-template<> constexpr auto to_data_type<GLubyte> = DataType::UnsignedByte;
-template<> constexpr auto to_data_type<GLbyte> = DataType::Byte;
-template<> constexpr auto to_data_type<GLushort> = DataType::UnsignedShort;
-template<> constexpr auto to_data_type<GLshort> = DataType::Short;
-template<> constexpr auto to_data_type<GLuint> = DataType::UnsignedInt;
-template<> constexpr auto to_data_type<GLint> = DataType::Int;
-template<> constexpr auto to_data_type<GLfloat> = DataType::Float;
-template<> constexpr auto to_data_type<GLdouble> = DataType::Double;
+template<> constexpr inline auto to_data_type<GLubyte> = DataType::UnsignedByte;
+template<> constexpr inline auto to_data_type<GLbyte> = DataType::Byte;
+template<> constexpr inline auto to_data_type<GLushort> = DataType::UnsignedShort;
+template<> constexpr inline auto to_data_type<GLshort> = DataType::Short;
+template<> constexpr inline auto to_data_type<GLuint> = DataType::UnsignedInt;
+template<> constexpr inline auto to_data_type<GLint> = DataType::Int;
+template<> constexpr inline auto to_data_type<GLfloat> = DataType::Float;
+template<> constexpr inline auto to_data_type<GLdouble> = DataType::Double;
 
 [[nodiscard]] constexpr auto to_gl_enum(DataType type) -> GLenum
 {
@@ -125,30 +125,30 @@ template<> constexpr auto to_data_type<GLdouble> = DataType::Double;
     return DataType::None;
 }
 
-template<typename T> constexpr usize std140_field_alignment = 16; // In the default case we assume T is a struct.
+template<typename T> constexpr inline usize std140_field_alignment = 16; // In the default case we assume T is a struct.
 
-template<> constexpr usize std140_field_alignment<GLushort> = 2;
-template<> constexpr usize std140_field_alignment<GLshort> = 2;
-template<> constexpr usize std140_field_alignment<GLuint> = 4;
-template<> constexpr usize std140_field_alignment<GLint> = 4;
-template<> constexpr usize std140_field_alignment<GLfloat> = 4;
-template<> constexpr usize std140_field_alignment<GLdouble> = 8;
-template<> constexpr usize std140_field_alignment<glm::vec2> = 8;
-template<> constexpr usize std140_field_alignment<glm::vec3> = 16;
-template<> constexpr usize std140_field_alignment<glm::vec4> = 16;
-template<> constexpr usize std140_field_alignment<glm::mat4> = 16;
+template<> constexpr inline usize std140_field_alignment<GLushort> = 2;
+template<> constexpr inline usize std140_field_alignment<GLshort> = 2;
+template<> constexpr inline usize std140_field_alignment<GLuint> = 4;
+template<> constexpr inline usize std140_field_alignment<GLint> = 4;
+template<> constexpr inline usize std140_field_alignment<GLfloat> = 4;
+template<> constexpr inline usize std140_field_alignment<GLdouble> = 8;
+template<> constexpr inline usize std140_field_alignment<glm::vec2> = 8;
+template<> constexpr inline usize std140_field_alignment<glm::vec3> = 16;
+template<> constexpr inline usize std140_field_alignment<glm::vec4> = 16;
+template<> constexpr inline usize std140_field_alignment<glm::mat4> = 16;
 
-template<typename T> constexpr usize std430_field_alignment = alignof(T);
+template<typename T> constexpr inline usize std430_field_alignment = alignof(T);
 
-template<> constexpr usize std430_field_alignment<GLushort> = 2;
-template<> constexpr usize std430_field_alignment<GLshort> = 2;
-template<> constexpr usize std430_field_alignment<GLuint> = 4;
-template<> constexpr usize std430_field_alignment<GLint> = 4;
-template<> constexpr usize std430_field_alignment<GLfloat> = 4;
-template<> constexpr usize std430_field_alignment<GLdouble> = 8;
-template<> constexpr usize std430_field_alignment<glm::vec2> = 8;
-template<> constexpr usize std430_field_alignment<glm::vec3> = 16;
-template<> constexpr usize std430_field_alignment<glm::vec4> = 16;
-template<> constexpr usize std430_field_alignment<glm::mat4> = 16;
+template<> constexpr inline usize std430_field_alignment<GLushort> = 2;
+template<> constexpr inline usize std430_field_alignment<GLshort> = 2;
+template<> constexpr inline usize std430_field_alignment<GLuint> = 4;
+template<> constexpr inline usize std430_field_alignment<GLint> = 4;
+template<> constexpr inline usize std430_field_alignment<GLfloat> = 4;
+template<> constexpr inline usize std430_field_alignment<GLdouble> = 8;
+template<> constexpr inline usize std430_field_alignment<glm::vec2> = 8;
+template<> constexpr inline usize std430_field_alignment<glm::vec3> = 16;
+template<> constexpr inline usize std430_field_alignment<glm::vec4> = 16;
+template<> constexpr inline usize std430_field_alignment<glm::mat4> = 16;
 
 } // namespace zth::gl
