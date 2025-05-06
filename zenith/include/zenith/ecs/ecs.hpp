@@ -167,6 +167,8 @@ public:
     template<typename Component>
     [[nodiscard]] auto get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> decltype(auto);
 
+    auto clear() -> void;
+
     template<typename Component, auto Listener>
         requires(std::invocable<decltype(Listener), Registry&, EntityId>)
     auto add_on_attach_listener() -> void;

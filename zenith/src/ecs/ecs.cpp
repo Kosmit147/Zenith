@@ -84,7 +84,7 @@ auto EntityHandle::registry() const -> Optional<Reference<Registry>>
 
 Registry::~Registry()
 {
-    _registry.clear();
+    clear();
 }
 
 auto Registry::valid(EntityId id) const -> bool
@@ -141,6 +141,11 @@ auto Registry::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHan
     }
 
     return entities;
+}
+
+auto Registry::clear() -> void
+{
+    _registry.clear();
 }
 
 auto Registry::destroy(EntityId id) -> bool
