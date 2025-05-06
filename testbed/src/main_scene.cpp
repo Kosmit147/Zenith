@@ -47,7 +47,7 @@ const auto point_light_3_light_component = zth::LightComponent{ zth::PointLight{
 
 } // namespace
 
-MainScene::MainScene()
+MainScene::MainScene() : Scene("Main Scene")
 {
     // --- Camera ---
 
