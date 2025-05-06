@@ -140,9 +140,7 @@ public:
 
     auto display() -> void;
 
-    template<typename T>
-    auto add_scene(StringView name)
-        requires(std::derived_from<T, Scene>);
+    template<std::derived_from<Scene> T> auto add_scene(StringView name);
 
     auto prev_scene() -> void;
     auto next_scene() -> void;
@@ -153,18 +151,16 @@ private:
     usize _scene_count = 0;
 
     Vector<String> _scene_names;
-    Vector<std::function<UniquePtr<Scene>()>> _scene_constructors;
+    Vector<std::function<UniquePtr<Scene>()>> _scene_factories;
 
 private:
     auto load_scene(usize idx) const -> void;
 };
 
-template<typename T>
-auto ScenePicker::add_scene(StringView name)
-    requires(std::derived_from<T, Scene>)
+template<std::derived_from<Scene> T> auto ScenePicker::add_scene(StringView name)
 {
     _scene_names.emplace_back(name);
-    _scene_constructors.emplace_back(make_unique<T>);
+    _scene_factories.emplace_back(make_unique<T>);
     _scene_count++;
 }
 

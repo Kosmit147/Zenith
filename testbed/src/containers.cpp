@@ -73,7 +73,7 @@ constexpr auto point_light_material_asset_id = "point_light_material"_hs;
 
 } // namespace
 
-Containers::Containers()
+Containers::Containers() : Scene("Containers")
 {
     // clang-format off
 

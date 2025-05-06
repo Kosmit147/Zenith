@@ -722,8 +722,7 @@ auto ScenePicker::next_scene() -> void
 
 auto ScenePicker::load_scene(usize idx) const -> void
 {
-    auto scene = _scene_constructors[idx]();
-    SceneManager::queue_scene(std::move(scene));
+    SceneManager::queue_scene(_scene_factories[idx]);
 }
 
 } // namespace zth::debug

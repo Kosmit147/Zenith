@@ -7,6 +7,7 @@ class Exception;
 class Random;
 
 class Scene;
+class PlaceholderScene;
 class SceneManager;
 
 } // namespace zth

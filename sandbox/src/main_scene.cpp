@@ -19,7 +19,8 @@ const auto camera_camera_component = zth::CameraComponent{
 } // namespace
 
 MainScene::MainScene()
-    : _cube_texture{ std::make_shared<zth::gl::Texture2D>(zth::gl::Texture2D::from_file_data(wall_texture)) },
+    : Scene("Main Scene"),
+      _cube_texture{ std::make_shared<zth::gl::Texture2D>(zth::gl::Texture2D::from_file_data(wall_texture)) },
       _cube_material{ std::make_shared<zth::Material>(zth::Material{ .diffuse_map = _cube_texture }) }
 {
     _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);

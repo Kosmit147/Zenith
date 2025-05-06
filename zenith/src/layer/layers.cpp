@@ -216,13 +216,10 @@ auto DebugLayer::on_event(const Event& event) -> void
 
 auto DebugLayer::on_update() -> void
 {
-    auto scene = SceneManager::scene();
-
     if (_debug_mode_on)
     {
-        if (scene)
-            _scene_hierarchy_panel.display(scene->get().registry());
-
+        auto& scene = SceneManager::scene();
+        _scene_hierarchy_panel.display(scene.registry());
         _debug_panel.display();
     }
 }

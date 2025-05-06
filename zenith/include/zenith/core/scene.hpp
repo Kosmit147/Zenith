@@ -1,5 +1,8 @@
 #pragma once
 
+#include <concepts>
+#include <functional>
+
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/memory/managed.hpp"
 #include "zenith/memory/temporary_storage.hpp"
@@ -7,7 +10,6 @@
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
-#include "zenith/util/reference.hpp"
 #include "zenith/util/result.hpp"
 
 namespace zth {
@@ -15,8 +17,11 @@ namespace zth {
 class Scene
 {
 public:
-    explicit Scene();
+    explicit Scene(const String& name);
+    explicit Scene(String&& name = "Unnamed Scene");
+
     ZTH_NO_COPY_NO_MOVE(Scene)
+
     virtual ~Scene() = default;
 
     auto start_frame() -> void;
@@ -31,14 +36,19 @@ public:
     [[nodiscard]] auto find_entity_by_tag(StringView tag) -> Optional<EntityHandle>;
     [[nodiscard]] auto find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle>;
 
+    [[nodiscard]] auto name() const -> auto& { return _name; }
     [[nodiscard]] auto registry(this auto&& self) -> auto& { return self._registry; }
 
     friend class SceneManager;
 
 private:
+    String _name;
     Registry _registry;
 
 private:
+    auto load() -> void;
+    auto unload() -> void;
+
     virtual auto on_load() -> void {}
     virtual auto on_frame_start() -> void {}
     virtual auto on_event([[maybe_unused]] const Event& event) -> void {}
@@ -48,6 +58,13 @@ private:
     virtual auto on_unload() -> void {}
 };
 
+class PlaceholderScene : public Scene
+{
+public:
+    explicit PlaceholderScene() : Scene("Placeholder Scene") {}
+};
+
+// SceneManager ensures that there is always a scene loaded.
 class SceneManager
 {
 public:
@@ -62,14 +79,20 @@ public:
     static auto on_render() -> void;
     static auto shut_down() -> void;
 
-    static auto queue_scene(UniquePtr<Scene>&& scene) -> void;
+    template<std::derived_from<Scene> T> static auto queue_scene() -> void;
+    static auto queue_scene(const std::function<UniquePtr<Scene>()>& factory) -> void;
+    static auto queue_scene(std::function<UniquePtr<Scene>()>&& factory) -> void;
 
-    [[nodiscard]] static auto scene() -> Optional<Reference<Scene>>;
-    [[nodiscard]] static auto scene_unchecked() -> Scene&;
+    [[nodiscard]] static auto scene() -> Scene&;
 
 private:
-    static inline UniquePtr<Scene> _scene = nullptr;
-    static inline UniquePtr<Scene> _queued_scene = nullptr;
+    static UniquePtr<Scene> _scene;
+    static std::function<UniquePtr<Scene>()> _queued_scene_factory;
 };
+
+template<std::derived_from<Scene> T> auto SceneManager::queue_scene() -> void
+{
+    _queued_scene_factory = make_unique<T>;
+}
 
 } // namespace zth

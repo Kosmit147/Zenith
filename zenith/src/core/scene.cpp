@@ -7,20 +7,11 @@
 
 namespace zth {
 
-Scene::Scene()
-{
-    _registry.add_on_attach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
-        EntityHandle entity{ entity_id, registry };
-        auto& script = entity.get<ScriptComponent>();
-        script.script().on_attach(entity);
-    }>();
+UniquePtr<Scene> SceneManager::_scene = nullptr;
+std::function<UniquePtr<Scene>()> SceneManager::_queued_scene_factory;
 
-    _registry.add_on_detach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
-        EntityHandle entity{ entity_id, registry };
-        auto& script = entity.get<ScriptComponent>();
-        script.script().on_detach(entity);
-    }>();
-}
+Scene::Scene(const String& name) : _name{ name } {}
+Scene::Scene(String&& name) : _name{ std::move(name) } {}
 
 auto Scene::start_frame() -> void
 {
@@ -132,69 +123,87 @@ auto Scene::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle
     return _registry.find_entities_by_tag(tag);
 }
 
+auto Scene::load() -> void
+{
+    ZTH_INTERNAL_TRACE("Loading scene \"{}\"...", _name);
+
+    _registry.add_on_attach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
+        EntityHandle entity{ entity_id, registry };
+        auto& script = entity.get<ScriptComponent>();
+        script.script().on_attach(entity);
+    }>();
+
+    _registry.add_on_detach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
+        EntityHandle entity{ entity_id, registry };
+        auto& script = entity.get<ScriptComponent>();
+        script.script().on_detach(entity);
+    }>();
+
+    on_load();
+
+    ZTH_INTERNAL_TRACE("Scene \"{}\" loaded.", _name);
+}
+
+auto Scene::unload() -> void
+{
+    ZTH_INTERNAL_TRACE("Unloading scene \"{}\"...", _name);
+
+    on_unload();
+    _registry.clear();
+
+    ZTH_INTERNAL_TRACE("Scene \"{}\" unloaded.", _name);
+}
+
 auto SceneManager::init() -> Result<void, String>
 {
+    ZTH_INTERNAL_TRACE("Initializing scene manager...");
+
+    _scene = make_unique<PlaceholderScene>();
+
     ZTH_INTERNAL_TRACE("Scene manager initialized.");
     return {};
 }
 
 auto SceneManager::start_frame() -> void
 {
-    if (_queued_scene)
+    if (_queued_scene_factory)
     {
-        if (_scene)
-            _scene->on_unload();
+        ZTH_INTERNAL_TRACE("[SceneManager] Changing scenes.");
 
-        _scene = std::move(_queued_scene);
-        _scene->on_load();
+        _scene->unload();
+        _scene.free();
+
+        _scene = _queued_scene_factory();
+        _scene->load();
+
+        _queued_scene_factory = {};
     }
-
-    if (!_scene)
-        return;
 
     _scene->start_frame();
 }
 
 auto SceneManager::dispatch_event(const Event& event) -> void
 {
-    if (!_scene)
-        return;
-
     _scene->dispatch_event(event);
 }
 
 auto SceneManager::fixed_update() -> void
 {
-    if (!_scene)
-        return;
-
     _scene->fixed_update();
 }
 
 auto SceneManager::update() -> void
 {
-    if (!_scene)
-    {
-        ZTH_INTERNAL_WARN("[Scene Manager] No scene loaded.");
-        return;
-    }
-
     _scene->update();
 }
 
 auto SceneManager::render() -> void
 {
-    if (!_scene)
-        return;
-
     _scene->render();
 }
 
 auto SceneManager::on_render() -> void
 {
-    if (!_scene)
-        return;
-
     _scene->on_render();
 }
 
@@ -202,30 +211,23 @@ auto SceneManager::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down scene manager...");
 
-    _queued_scene.free();
-
-    if (_scene)
-        _scene->on_unload();
-
+    _scene->unload();
     _scene.free();
 
     ZTH_INTERNAL_TRACE("Scene manager shut down.");
 }
 
-auto SceneManager::queue_scene(UniquePtr<Scene>&& scene) -> void
+auto SceneManager::queue_scene(const std::function<UniquePtr<Scene>()>& factory) -> void
 {
-    _queued_scene = std::move(scene);
+    _queued_scene_factory = factory;
 }
 
-auto SceneManager::scene() -> Optional<Reference<Scene>>
+auto SceneManager::queue_scene(std::function<UniquePtr<Scene>()>&& factory) -> void
 {
-    if (!_scene)
-        return nil;
-
-    return *_scene;
+    _queued_scene_factory = std::move(factory);
 }
 
-auto SceneManager::scene_unchecked() -> Scene&
+auto SceneManager::scene() -> Scene&
 {
     return *_scene;
 }
