@@ -58,6 +58,7 @@ if(ZTH_DEVELOPER)
     add_subdirectory("dependencies/Catch2")
 endif()
 
+add_subdirectory("dependencies/assimp")
 add_subdirectory("dependencies/embed")
 add_subdirectory("dependencies/entt")
 add_subdirectory("dependencies/glad")

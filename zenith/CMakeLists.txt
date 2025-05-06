@@ -86,6 +86,7 @@ target_compile_definitions(zenith_core PUBLIC ${ZTH_PUBLIC_DEFINITIONS})
 
 add_subdirectory("imgui")
 
+target_link_libraries(zenith_core PUBLIC assimp)
 target_link_libraries(zenith_core PUBLIC EnTT)
 target_link_libraries(zenith_core PUBLIC glad)
 target_link_libraries(zenith_core PUBLIC glfw)
