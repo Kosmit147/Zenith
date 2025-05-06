@@ -34,3 +34,7 @@
 	path = dependencies/entt
 	url = https://github.com/skypjack/entt.git
 	branch = master
+[submodule "dependencies/assimp"]
+	path = dependencies/assimp
+	url = https://github.com/assimp/assimp.git
+	branch = master
