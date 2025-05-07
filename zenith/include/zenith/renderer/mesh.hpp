@@ -6,7 +6,6 @@
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/util.hpp"
 #include "zenith/gl/vertex_array.hpp"
-#include "zenith/gl/vertex_layout.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
 
@@ -30,8 +29,7 @@ template<typename Vertex = StandardVertex, gl::IndexingType Index = u32> class I
 public:
     explicit IndexedMesh() = default;
 
-    explicit IndexedMesh(std::span<const Vertex> vertex_data, std::span<const Index> index_data,
-                         const gl::VertexLayout& vertex_layout = gl::VertexLayout::derive_from_vertex<Vertex>());
+    explicit IndexedMesh(std::span<const Vertex> vertex_data, std::span<const Index> index_data);
 
     IndexedMesh(const IndexedMesh& other);
     auto operator=(const IndexedMesh& other) -> IndexedMesh&;
@@ -71,8 +69,7 @@ template<typename Vertex = StandardVertex> class QuadMesh : public Mesh
 public:
     explicit QuadMesh() = default;
 
-    explicit QuadMesh(std::span<const Vertex> vertex_data,
-                      const gl::VertexLayout& vertex_layout = gl::VertexLayout::derive_from_vertex<Vertex>());
+    explicit QuadMesh(std::span<const Vertex> vertex_data);
 
     QuadMesh(const QuadMesh& other);
     auto operator=(const QuadMesh& other) -> QuadMesh&;
