@@ -177,7 +177,7 @@ template<auto Listener>
     requires(std::invocable<decltype(Listener), Registry&, EntityId>)
 auto Registry::listener_adapter([[maybe_unused]] entt::registry& registry, entt::entity entity) -> void
 {
-    Listener(*this, entity);
+    Listener(*this, static_cast<EntityId>(entity));
 }
 
 } // namespace zth

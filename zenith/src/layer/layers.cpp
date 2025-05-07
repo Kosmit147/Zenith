@@ -226,7 +226,7 @@ auto DebugLayer::on_update() -> void
 
 auto DebugLayer::on_attach() -> Result<void, String>
 {
-    ZTH_INTERNAL_TRACE("Initializing runtime layer...");
+    ZTH_INTERNAL_TRACE("Initializing debug layer...");
 
     auto result = ImGuiRenderer::init();
     if (!result)
@@ -235,7 +235,7 @@ auto DebugLayer::on_attach() -> Result<void, String>
 
     shut_down_imgui_renderer.dismiss();
 
-    ZTH_INTERNAL_TRACE("Runtime layer initialized...");
+    ZTH_INTERNAL_TRACE("Debug layer initialized...");
     return {};
 }
 

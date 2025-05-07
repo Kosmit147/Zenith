@@ -16,15 +16,15 @@ struct StringHash
     [[nodiscard]] auto operator()(const String& text) const -> std::size_t { return std::hash<String>{}(text); }
 };
 
+// clang-format off
+
 // Use std::hash by default.
-template<typename T> struct Hash : std::hash<T>
-{
-};
+template<typename T> struct Hash : std::hash<T> {};
 
 // String specialization to enable transparent lookup in unordered containers.
 // @todo: We should enable this specialization for all string types.
-template<> struct Hash<String> : StringHash
-{
-};
+template<> struct Hash<String> : StringHash {};
+
+// clang-format on
 
 } // namespace zth

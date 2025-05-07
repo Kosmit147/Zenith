@@ -189,7 +189,7 @@ auto ShaderPreprocessor::resolve_include_directive() -> Result<void, PreprocessS
 
     if (!source_name)
     {
-        constexpr auto message = "Invalid #include directive"_sv;
+        static constexpr auto message = "Invalid #include directive"_sv;
         return Error{ PreprocessShaderError{ .line_info = line_info(), .description = TemporaryString{ message } } };
     }
 

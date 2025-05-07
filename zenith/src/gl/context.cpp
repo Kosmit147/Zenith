@@ -85,7 +85,7 @@ auto Context::set_debug_context() -> void
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(debug_callback, nullptr);
 
-    constexpr std::array<GLuint, 1> disabled_messages_api_other = {
+    static constexpr std::array<GLuint, 1> disabled_messages_api_other = {
         131185, // Buffer detailed info from NVIDIA.
     };
 

@@ -46,7 +46,7 @@ public:
     // Generates a random floating-point number in range [0 rad; 6.28319 rad).
     template<std::floating_point T = float> [[nodiscard]] static auto angle() -> T
     {
-        constexpr auto full_angle = std::numbers::pi_v<T> * 2;
+        static constexpr auto full_angle = std::numbers::pi_v<T> * 2;
         return get_float<T>(0.0, full_angle);
     }
 
