@@ -428,15 +428,6 @@ auto edit_component(MeshComponent& mesh) -> void
     // @todo
 }
 
-auto edit_component(QuadMeshComponent& mesh) -> void
-{
-    (void)mesh;
-
-    ImGui::TextUnformatted("TODO!");
-
-    // @todo
-}
-
 auto edit_component(MaterialComponent& material) -> void
 {
     (void)material;
@@ -490,9 +481,6 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
     if (entity.any_of<MeshComponent>())
         display_component_for_entity_in_inspector<MeshComponent>(entity);
-
-    if (entity.any_of<QuadMeshComponent>())
-        display_component_for_entity_in_inspector<QuadMeshComponent>(entity);
 
     if (entity.any_of<MaterialComponent>())
         display_component_for_entity_in_inspector<MaterialComponent>(entity);

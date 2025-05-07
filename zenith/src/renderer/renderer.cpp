@@ -289,11 +289,6 @@ auto Renderer::submit(const Mesh& mesh, const glm::mat4& transform, const Materi
     submit(mesh.vertex_array(), transform, material);
 }
 
-auto Renderer::submit(const QuadMesh& mesh, const glm::mat4& transform, const Material& material) -> void
-{
-    submit(mesh.vertex_array(), transform, material);
-}
-
 auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material) -> void
 {
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);

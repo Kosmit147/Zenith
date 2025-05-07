@@ -165,6 +165,9 @@ private:
 
 // --------------------------- VertexBuffer ---------------------------
 
+template<typename T>
+concept VertexRange = std::ranges::contiguous_range<T>;
+
 class VertexBuffer
 {
 public:
@@ -175,8 +178,10 @@ public:
     [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, const VertexLayout& layout)
         -> VertexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
-                                                      const VertexLayout& layout) -> VertexBuffer;
+    template<VertexRange V>
+    [[nodiscard]] static auto create_static_with_data(V&& vertices,
+                                                      const VertexLayout& layout = derive_vertex_layout<V>())
+        -> VertexBuffer;
 
     [[nodiscard]] static auto create_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw)
         -> VertexBuffer;
@@ -187,9 +192,10 @@ public:
     [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                                       const VertexLayout& layout,
-                                                       BufferUsage usage = BufferUsage::dynamic_draw) -> VertexBuffer;
+    template<VertexRange V>
+    [[nodiscard]] static auto create_dynamic_with_data(V&& vertices, BufferUsage usage = BufferUsage::dynamic_draw,
+                                                       const VertexLayout& layout = derive_vertex_layout<V>())
+        -> VertexBuffer;
 
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(VertexBuffer)
 
@@ -199,7 +205,8 @@ public:
 
     auto init_static_with_data(std::span<const byte> data, const VertexLayout& layout) -> void;
 
-    auto init_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout) -> void;
+    template<VertexRange V>
+    auto init_static_with_data(V&& vertices, const VertexLayout& layout = derive_vertex_layout<V>()) -> void;
 
     auto init_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
@@ -209,11 +216,12 @@ public:
     auto init_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
-                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    template<VertexRange V>
+    auto init_dynamic_with_data(V&& vertices, BufferUsage usage = BufferUsage::dynamic_draw,
+                                const VertexLayout& layout = derive_vertex_layout<V>()) -> void;
 
     auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
+    auto buffer_data(VertexRange auto&& vertices, u32 offset = 0) -> u32;
 
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
     auto resize_to_at_least(u32 min_size_bytes) -> void { _buffer.resize_to_at_least(min_size_bytes); }
@@ -238,12 +246,17 @@ public:
     [[nodiscard]] auto stride() const { return _layout.stride(); }
     [[nodiscard]] auto count() const -> u32;
 
+    template<VertexRange V> [[nodiscard]] constexpr static auto derive_vertex_layout() -> VertexLayout;
+
 private:
     Buffer _buffer;
     VertexLayout _layout;
 };
 
 // --------------------------- IndexBuffer ---------------------------
+
+template<typename T>
+concept IndexRange = std::ranges::contiguous_range<T> && IndexingType<std::ranges::range_value_t<T>>;
 
 class IndexBuffer
 {
@@ -254,7 +267,9 @@ public:
 
     [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, DataType type) -> IndexBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data) -> IndexBuffer;
+    template<IndexRange I>
+    [[nodiscard]] static auto create_static_with_data(I&& indices, DataType type = derive_indexing_data_type<I>())
+        -> IndexBuffer;
 
     [[nodiscard]] static auto create_dynamic(DataType type, BufferUsage usage = BufferUsage::dynamic_draw)
         -> IndexBuffer;
@@ -265,8 +280,9 @@ public:
     [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, DataType type,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                                       BufferUsage usage = BufferUsage::dynamic_draw) -> IndexBuffer;
+    template<IndexRange I>
+    [[nodiscard]] static auto create_dynamic_with_data(I&& indices, BufferUsage usage = BufferUsage::dynamic_draw,
+                                                       DataType type = derive_indexing_data_type<I>()) -> IndexBuffer;
 
     ZTH_DEFAULT_COPY(IndexBuffer)
 
@@ -279,7 +295,8 @@ public:
 
     auto init_static_with_data(std::span<const byte> data, DataType type) -> void;
 
-    auto init_static_with_data(std::ranges::contiguous_range auto&& data) -> void;
+    template<IndexRange I>
+    auto init_static_with_data(I&& indices, DataType type = derive_indexing_data_type<I>()) -> void;
 
     auto init_dynamic(DataType type, BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
@@ -288,11 +305,12 @@ public:
     auto init_dynamic_with_data(std::span<const byte> data, DataType type,
                                 BufferUsage usage = BufferUsage::dynamic_draw) -> void;
 
-    auto init_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                BufferUsage usage = BufferUsage::dynamic_draw) -> void;
+    template<IndexRange I>
+    auto init_dynamic_with_data(I&& indices, BufferUsage usage = BufferUsage::dynamic_draw,
+                                DataType type = derive_indexing_data_type<I>()) -> void;
 
     auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
-    auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
+    auto buffer_data(IndexRange auto&& indices, u32 offset = 0) -> u32;
 
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
     auto resize_to_at_least(u32 min_size_bytes) -> void { _buffer.resize_to_at_least(min_size_bytes); }
@@ -303,7 +321,7 @@ public:
     auto bind() const -> void;
     static auto unbind() -> void;
 
-    template<typename T> auto set_indexing_data_type() -> void;
+    template<IndexingType T> auto set_indexing_data_type() -> void;
     auto set_indexing_data_type(DataType type) -> void;
 
     [[nodiscard]] auto native_handle() const { return _buffer.native_handle(); }
@@ -316,8 +334,7 @@ public:
     [[nodiscard]] auto indexing_data_type() const { return _indexing_data_type; }
     [[nodiscard]] auto count() const -> u32;
 
-    template<std::ranges::contiguous_range IndexData>
-    [[nodiscard]] constexpr static auto derive_indexing_data_type() -> DataType;
+    template<IndexRange I> [[nodiscard]] constexpr static auto derive_indexing_data_type() -> DataType;
 
 private:
     Buffer _buffer;
@@ -336,8 +353,9 @@ public:
     [[nodiscard]] static auto create_static_with_data(std::span<const byte> data, const VertexLayout& layout)
         -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_static_with_data(std::ranges::contiguous_range auto&& data,
-                                                      const VertexLayout& layout) -> InstanceBuffer;
+    template<VertexRange V>
+    [[nodiscard]] static auto create_static_with_data(V&& data, const VertexLayout& layout = derive_vertex_layout<V>())
+        -> InstanceBuffer;
 
     [[nodiscard]] static auto create_dynamic(const VertexLayout& layout, BufferUsage usage = BufferUsage::dynamic_draw)
         -> InstanceBuffer;
@@ -348,9 +366,10 @@ public:
     [[nodiscard]] static auto create_dynamic_with_data(std::span<const byte> data, const VertexLayout& layout,
                                                        BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
 
-    [[nodiscard]] static auto create_dynamic_with_data(std::ranges::contiguous_range auto&& data,
-                                                       const VertexLayout& layout,
-                                                       BufferUsage usage = BufferUsage::dynamic_draw) -> InstanceBuffer;
+    template<VertexRange V>
+    [[nodiscard]] static auto create_dynamic_with_data(V&& data, BufferUsage usage = BufferUsage::dynamic_draw,
+                                                       const VertexLayout& layout = derive_vertex_layout<V>())
+        -> InstanceBuffer;
 
     ZTH_DEFAULT_COPY_DEFAULT_MOVE(InstanceBuffer)
 

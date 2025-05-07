@@ -32,7 +32,6 @@ add_library(
 	"src/renderer/resources/textures.cpp"
 	"src/renderer/imgui_renderer.cpp"
 	"src/renderer/light.cpp"
-	"src/renderer/mesh.cpp"
 	"src/renderer/quad.cpp"
 	"src/renderer/renderer.cpp"
 	"src/renderer/shader_preprocessor.cpp"

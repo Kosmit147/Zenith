@@ -6,7 +6,6 @@ struct TagComponent;
 class TransformComponent;
 class ScriptComponent;
 struct MeshComponent;
-struct QuadMeshComponent;
 struct MaterialComponent;
 struct CameraComponent;
 class LightComponent;

@@ -79,7 +79,9 @@ struct AmbientLightRenderData
 class Renderer
 {
 private:
+    // clang-format off
     struct Passkey {}; // Allows constructing an instance of the Renderer through make_unique.
+    // clang-format on
 
 public:
     // @volatile: Keep in sync with constants declared in zth_defines.glsl.
@@ -134,8 +136,6 @@ public:
 
     // The submitted references must all be valid until the renderer finishes rendering the scene.
     static auto submit(const Mesh& mesh, const glm::mat4& transform, const Material& material) -> void;
-    // The submitted references must all be valid until the renderer finishes rendering the scene.
-    static auto submit(const QuadMesh& mesh, const glm::mat4& transform, const Material& material) -> void;
     // The submitted references must all be valid until the renderer finishes rendering the scene.
     static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
         -> void;
