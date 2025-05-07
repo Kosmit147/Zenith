@@ -9,6 +9,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+if(NOT DEFINED BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS OFF)
+endif()
+
 option(ZTH_DEVELOPER ${PROJECT_IS_TOP_LEVEL})
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -50,12 +54,21 @@ set(ZTH_DEBUG_LOGGING ${ZTH_DEBUG_LOGGING_DEFAULT} CACHE BOOL "Enable debug logg
 
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 
-if(MSVC)
-    set(ENTT_INCLUDE_NATVIS TRUE)
+# Have to overwrite Assimp's really silly defaults.
+if(NOT DEFINED ASSIMP_INSTALL)
+    set(ASSIMP_INSTALL OFF)
 endif()
 
-if(ZTH_DEVELOPER)
-    add_subdirectory("dependencies/Catch2")
+if(NOT DEFINED ASSIMP_BUILD_TESTS)
+    set(ASSIMP_BUILD_TESTS OFF)
+endif()
+
+if(NOT DEFINED ASSIMP_INJECT_DEBUG_POSTFIX)
+    set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)
+endif()
+
+if(MSVC)
+    set(ENTT_INCLUDE_NATVIS TRUE)
 endif()
 
 add_subdirectory("dependencies/assimp")
@@ -70,6 +83,7 @@ add_subdirectory("dependencies/stb_image")
 add_subdirectory("zenith")
 
 if(ZTH_DEVELOPER)
+    add_subdirectory("dependencies/Catch2")
     add_subdirectory("testbed")
     add_subdirectory("sandbox")
     add_subdirectory("unit_tester")
