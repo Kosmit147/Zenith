@@ -150,7 +150,7 @@ Texture2D::Texture2D(FromFileTag, const std::filesystem::path& path, const Textu
     if (!file_data)
     {
         // @robustness: .string() throws.
-        ZTH_INTERNAL_ERROR("[Texture] Failed to load texture from file {}.", path.string());
+        ZTH_INTERNAL_ERROR("[Texture] Failed to load texture from file \"{}\".", path.string());
         ZTH_DEBUG_BREAK;
         return;
     }
