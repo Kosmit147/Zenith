@@ -149,6 +149,7 @@ auto SceneManager::init() -> Result<void, String>
     ZTH_INTERNAL_TRACE("Initializing scene manager...");
 
     _scene = make_unique<PlaceholderScene>();
+    _scene->load();
 
     ZTH_INTERNAL_TRACE("Scene manager initialized.");
     return {};

@@ -33,8 +33,8 @@ template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() 
 {
     // @refactor: Use in-built reflection once we're on C++26.
 
-    constexpr auto dummy_vertex = VertexType{};
-    constexpr auto arity = meta::struct_arity<VertexType>();
+    static constexpr auto dummy_vertex = VertexType{};
+    static constexpr auto arity = meta::struct_arity<VertexType>();
 
     VertexLayout result;
     result.set_stride(sizeof(VertexType));

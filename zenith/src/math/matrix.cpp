@@ -76,7 +76,7 @@ auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3
 {
     // We can tolerate fairly big errors.
     // @speed: Test what epsilon value would be best.
-    constexpr auto epsilon = 1e-5f;
+    static constexpr auto epsilon = 1e-5f;
 
     if (has_uniform_scale(transform, epsilon))
         return glm::mat3{ transform };

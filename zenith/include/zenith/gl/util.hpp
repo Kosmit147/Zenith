@@ -65,11 +65,11 @@ template<> constexpr inline auto to_data_type<GLdouble> = DataType::Double;
     return GL_NONE;
 }
 
-template<typename T> constexpr inline bool indexing_data_type = false;
+template<typename T> constexpr inline auto indexing_data_type = false;
 template<> constexpr inline auto indexing_data_type<u8> = true;
 template<> constexpr inline auto indexing_data_type<u16> = true;
 template<> constexpr inline auto indexing_data_type<u32> = true;
-// OpenGL doesn't support 64-bit indices.
+template<> constexpr inline auto indexing_data_type<u64> = false; // OpenGL doesn't support 64-bit indices.
 
 template<typename T>
 concept IndexingType = indexing_data_type<T>;
