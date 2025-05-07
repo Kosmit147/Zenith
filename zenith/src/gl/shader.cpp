@@ -284,14 +284,17 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
     if (!vertex_source)
     {
-        ZTH_INTERNAL_ERROR("[Shader] Failed to load vertex shader source from file {}.", paths.vertex_path.string());
+        ZTH_INTERNAL_ERROR("[Shader] Failed to load vertex shader source from file \"{}\".",
+                           paths.vertex_path.string());
+        ZTH_DEBUG_BREAK;
         return nil;
     }
 
     if (!fragment_source)
     {
-        ZTH_INTERNAL_ERROR("[Shader] Failed to load fragment shader source from file {}.",
+        ZTH_INTERNAL_ERROR("[Shader] Failed to load fragment shader source from file \"{}\".",
                            paths.fragment_path.string());
+        ZTH_DEBUG_BREAK;
         return nil;
     }
 
@@ -312,7 +315,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!tess_control_source)
         {
-            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation control shader source from file {}.",
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation control shader source from file \"{}\".",
                                paths.tess_control_path->string());
             return nil;
         }
@@ -326,7 +329,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!tess_evaluation_source)
         {
-            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation evaluation shader source from file {}.",
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load tesselation evaluation shader source from file \"{}\".",
                                paths.tess_evaluation_path->string());
             return nil;
         }
@@ -340,7 +343,7 @@ auto Shader::create_program_from_files(const ShaderSourcePaths& paths) -> Option
 
         if (!geometry_source)
         {
-            ZTH_INTERNAL_ERROR("[Shader] Failed to load geometry shader source from file {}.",
+            ZTH_INTERNAL_ERROR("[Shader] Failed to load geometry shader source from file \"{}\".",
                                paths.geometry_path->string());
             return nil;
         }
