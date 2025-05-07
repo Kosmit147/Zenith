@@ -70,7 +70,7 @@ const std::array cube_vertices = {
         .local_position = { 0.5f, 0.5f, -0.5f }, .normal = { 0.0f, 1.0f, 0.0f }, .tex_coords = { 1.0f, 1.0f } },
 };
 
-const std::array<GLushort, 36> cube_indices = {
+const std::array<u8, 36> cube_indices = {
     // Front wall.
     0,
     1,
@@ -176,7 +176,7 @@ const std::array pyramid_vertices = {
         .local_position = { -0.5f, -0.5f, 0.5f }, .normal = { 0.0f, -1.0f, 0.0f }, .tex_coords = { 0.0f, 1.0f } },
 };
 
-const std::array<GLushort, 18> pyramid_indices = {
+const std::array<u8, 18> pyramid_indices = {
     // Front wall.
     0, 1, 2,
 
@@ -1879,7 +1879,7 @@ const std::array sphere_vertices = {
                     .tex_coords = { 1.000000f, 1.000000f } },
 };
 
-const std::array<GLushort, 3072> sphere_indices = {
+const std::array<u16, 3072> sphere_indices = {
     1,   33,  0,   34,  33,  1,   2,   34,  1,   35,  34,  2,   3,   35,  2,   36,  35,  3,   4,   36,  3,   37,  36,
     4,   5,   37,  4,   38,  37,  5,   6,   38,  5,   39,  38,  6,   7,   39,  6,   40,  39,  7,   8,   40,  7,   41,
     40,  8,   9,   41,  8,   42,  41,  9,   10,  42,  9,   43,  42,  10,  11,  43,  10,  44,  43,  11,  12,  44,  11,
@@ -2032,10 +2032,11 @@ auto load() -> void
     }
 #endif
 
-    meshes_array[cube_mesh_index] = std::make_shared<Mesh>(cube_vertices, StandardVertex::layout, cube_indices);
+    meshes_array[cube_mesh_index] = std::make_shared<IndexedMesh<StandardVertex, u8>>(cube_vertices, cube_indices);
     meshes_array[pyramid_mesh_index] =
-        std::make_shared<Mesh>(pyramid_vertices, StandardVertex::layout, pyramid_indices);
-    meshes_array[sphere_mesh_index] = std::make_shared<Mesh>(sphere_vertices, StandardVertex::layout, sphere_indices);
+        std::make_shared<IndexedMesh<StandardVertex, u8>>(pyramid_vertices, pyramid_indices);
+    meshes_array[sphere_mesh_index] =
+        std::make_shared<IndexedMesh<StandardVertex, u16>>(sphere_vertices, sphere_indices);
 
 #if defined(ZTH_ASSERTIONS)
     for (auto& mesh : meshes_array)

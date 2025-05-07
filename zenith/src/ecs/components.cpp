@@ -253,13 +253,6 @@ auto ScriptComponent::display_label() -> const char*
     return "Script";
 }
 
-// --------------------------- QuadMeshComponent ---------------------------
-
-auto QuadMeshComponent::display_label() -> const char*
-{
-    return "Quad Mesh";
-}
-
 // --------------------------- MeshComponent ---------------------------
 
 auto MeshComponent::display_label() -> const char*

@@ -81,7 +81,6 @@ auto edit_component(TransformComponent& transform) -> void;
 auto edit_component(CameraComponent& camera) -> void;
 auto edit_component(LightComponent& light) -> void;
 auto edit_component(MeshComponent& mesh) -> void;
-auto edit_component(QuadMeshComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
 auto edit_component(ScriptComponent& script) -> void;
 

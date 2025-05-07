@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <concepts>
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
@@ -38,11 +37,9 @@ constexpr inline std::array<usize, indices_per_quad> quad_indices = { 0, 1, 2, 0
     return quad_count * vertices_per_quad - 1;
 }
 
-template<std::unsigned_integral IndexingDataType>
+template<gl::IndexingType IndexingDataType>
 [[nodiscard]] auto generate_indices_for_quads(usize quad_count) -> TemporaryVector<IndexingDataType>
 {
-    static_assert(gl::is_an_indexing_data_type(gl::to_data_type<IndexingDataType>), "not a valid indexing data type");
-
     TemporaryVector<IndexingDataType> result;
     result.reserve(quad_count * indices_per_quad);
 

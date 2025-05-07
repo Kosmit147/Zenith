@@ -119,15 +119,6 @@ private:
     UniquePtr<Script> _script; // script cannot be null.
 };
 
-// --------------------------- QuadMeshComponent ---------------------------
-
-struct QuadMeshComponent
-{
-    std::shared_ptr<const QuadMesh> mesh; // mesh cannot be null.
-
-    [[nodiscard]] static auto display_label() -> const char*;
-};
-
 // --------------------------- MeshComponent ---------------------------
 
 struct MeshComponent
@@ -208,6 +199,10 @@ private:
 
 // --------------------------- DeletionMarkerComponent ---------------------------
 
+// clang-format off
+
 struct DeletionMarkerComponent {};
+
+// clang-format on
 
 } // namespace zth

@@ -69,100 +69,104 @@ auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) 
 
 // --------------------------- VertexBuffer ---------------------------
 
-auto VertexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout)
-    -> VertexBuffer
+template<VertexRange V>
+auto VertexBuffer::create_static_with_data(V&& vertices, const VertexLayout& layout) -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_static_with_data(data, layout);
+    buffer.init_static_with_data(vertices, layout);
     return buffer;
 }
 
-auto VertexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
-                                            BufferUsage usage) -> VertexBuffer
+template<VertexRange V>
+auto VertexBuffer::create_dynamic_with_data(V&& vertices, BufferUsage usage, const VertexLayout& layout) -> VertexBuffer
 {
     VertexBuffer buffer;
-    buffer.init_dynamic_with_data(data, layout, usage);
+    buffer.init_dynamic_with_data(vertices, usage, layout);
     return buffer;
 }
 
-auto VertexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout) -> void
+template<VertexRange V> auto VertexBuffer::init_static_with_data(V&& vertices, const VertexLayout& layout) -> void
 {
-    _buffer.init_static_with_data(data);
+    _buffer.init_static_with_data(vertices);
     _layout = layout;
 }
 
-auto VertexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
-                                          BufferUsage usage) -> void
+template<VertexRange V>
+auto VertexBuffer::init_dynamic_with_data(V&& vertices, BufferUsage usage, const VertexLayout& layout) -> void
 {
-    _buffer.init_dynamic_with_data(data, usage);
+    _buffer.init_dynamic_with_data(vertices, usage);
     _layout = layout;
 }
 
-auto VertexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
+auto VertexBuffer::buffer_data(VertexRange auto&& vertices, u32 offset) -> u32
 {
-    return _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(vertices, offset);
+}
+
+template<VertexRange V> constexpr auto VertexBuffer::derive_vertex_layout() -> VertexLayout
+{
+    return VertexLayout::derive_from_vertex<std::ranges::range_value_t<V>>();
 }
 
 // --------------------------- IndexBuffer ---------------------------
 
-auto IndexBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data) -> IndexBuffer
+template<IndexRange I> auto IndexBuffer::create_static_with_data(I&& indices, DataType type) -> IndexBuffer
 {
     IndexBuffer buffer;
-    buffer.init_static_with_data(data);
+    buffer.init_static_with_data(indices, type);
     return buffer;
 }
 
-auto IndexBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> IndexBuffer
+template<IndexRange I>
+auto IndexBuffer::create_dynamic_with_data(I&& indices, BufferUsage usage, DataType type) -> IndexBuffer
 {
     IndexBuffer buffer;
-    buffer.init_dynamic_with_data(data, usage);
+    buffer.init_dynamic_with_data(indices, usage, type);
     return buffer;
 }
 
-auto IndexBuffer::init_static_with_data(std::ranges::contiguous_range auto&& data) -> void
+template<IndexRange I> auto IndexBuffer::init_static_with_data(I&& indices, DataType type) -> void
 {
-    _buffer.init_static_with_data(data);
-    set_indexing_data_type(derive_indexing_data_type<decltype(data)>());
+    _buffer.init_static_with_data(indices);
+    set_indexing_data_type(type);
 }
 
-auto IndexBuffer::init_dynamic_with_data(std::ranges::contiguous_range auto&& data, BufferUsage usage) -> void
+template<IndexRange I> auto IndexBuffer::init_dynamic_with_data(I&& indices, BufferUsage usage, DataType type) -> void
 {
-    _buffer.init_dynamic_with_data(data, usage);
-    set_indexing_data_type(derive_indexing_data_type<decltype(data)>());
+    _buffer.init_dynamic_with_data(indices, usage);
+    set_indexing_data_type(type);
 }
 
-auto IndexBuffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) -> u32
+auto IndexBuffer::buffer_data(IndexRange auto&& indices, u32 offset) -> u32
 {
-    return _buffer.buffer_data(data, offset);
+    return _buffer.buffer_data(indices, offset);
 }
 
-template<typename T> auto IndexBuffer::set_indexing_data_type() -> void
+template<IndexingType T> auto IndexBuffer::set_indexing_data_type() -> void
 {
     set_indexing_data_type(to_data_type<T>);
 }
 
-template<std::ranges::contiguous_range IndexData> constexpr auto IndexBuffer::derive_indexing_data_type() -> DataType
+template<IndexRange I> constexpr auto IndexBuffer::derive_indexing_data_type() -> DataType
 {
-    constexpr auto data_type = to_data_type<std::ranges::range_value_t<IndexData>>;
-    static_assert(is_an_indexing_data_type(data_type), "data type must be ubyte, ushort or uint");
-    return data_type;
+    return to_data_type<std::ranges::range_value_t<I>>;
 }
 
 // --------------------------- InstanceBuffer ---------------------------
 
-auto InstanceBuffer::create_static_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout)
-    -> InstanceBuffer
+template<VertexRange V>
+auto InstanceBuffer::create_static_with_data(V&& data, const VertexLayout& layout) -> InstanceBuffer
 {
     InstanceBuffer buffer;
     buffer.init_static_with_data(data, layout);
     return buffer;
 }
 
-auto InstanceBuffer::create_dynamic_with_data(std::ranges::contiguous_range auto&& data, const VertexLayout& layout,
-                                              BufferUsage usage) -> InstanceBuffer
+template<VertexRange V>
+auto InstanceBuffer::create_dynamic_with_data(V&& data, BufferUsage usage, const VertexLayout& layout) -> InstanceBuffer
 {
     InstanceBuffer buffer;
-    buffer.init_dynamic_with_data(data, layout, usage);
+    buffer.init_dynamic_with_data(data, usage, layout);
     return buffer;
 }
 
