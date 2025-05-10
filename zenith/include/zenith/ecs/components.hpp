@@ -4,13 +4,21 @@
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <memory>
 
+#include "zenith/core/typedefs.hpp"
+#include "zenith/gl/fwd.hpp"
+#include "zenith/math/geometry.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/memory/managed.hpp"
+#include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
+#include "zenith/renderer/resources/materials.hpp"
+#include "zenith/renderer/resources/meshes.hpp"
+#include "zenith/renderer/resources/textures.hpp"
 #include "zenith/script/script.hpp"
 #include "zenith/stl/string.hpp"
 
@@ -119,11 +127,22 @@ private:
     UniquePtr<Script> _script; // script cannot be null.
 };
 
+// --------------------------- Sprite2DComponent ---------------------------
+
+struct Sprite2DComponent
+{
+    std::shared_ptr<const gl::Texture2D> texture = textures::white(); // texture cannot be null.
+    Rect<u32> rect;
+    glm::vec4 color = colors::white;
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
 // --------------------------- MeshComponent ---------------------------
 
 struct MeshComponent
 {
-    std::shared_ptr<const Mesh> mesh; // mesh cannot be null.
+    std::shared_ptr<const Mesh> mesh = meshes::cube(); // mesh cannot be null.
 
     [[nodiscard]] static auto display_label() -> const char*;
 };
@@ -132,7 +151,7 @@ struct MeshComponent
 
 struct MaterialComponent
 {
-    std::shared_ptr<const Material> material; // material cannot be null.
+    std::shared_ptr<const Material> material = materials::plain(); // material cannot be null.
 
     [[nodiscard]] static auto display_label() -> const char*;
 };

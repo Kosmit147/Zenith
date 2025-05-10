@@ -127,10 +127,18 @@ public:
     // Returns the number of bytes written.
     auto buffer_data(std::ranges::contiguous_range auto&& data, u32 offset = 0) -> u32;
 
+    // Returns the number of bytes written.
+    auto append_data(std::span<const byte> data) -> u32;
+    // Returns the number of bytes written.
+    auto append_data(auto&& data) -> u32;
+    // Returns the number of bytes written.
+    auto append_data(std::ranges::contiguous_range auto&& data) -> u32;
+
     auto resize(u32 size_bytes) -> void;
     auto resize_to_at_least(u32 min_size_bytes) -> void;
     auto reserve(u32 min_size_bytes) -> void;
     auto shrink_to_fit() -> void;
+    auto clear() noexcept -> void;
     auto free() noexcept -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
@@ -223,10 +231,14 @@ public:
     auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(VertexRange auto&& vertices, u32 offset = 0) -> u32;
 
+    auto append_data(std::span<const byte> data) -> u32;
+    auto append_data(VertexRange auto&& vertices) -> u32;
+
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
     auto resize_to_at_least(u32 min_size_bytes) -> void { _buffer.resize_to_at_least(min_size_bytes); }
     auto reserve(u32 min_size_bytes) -> void { _buffer.reserve(min_size_bytes); }
     auto shrink_to_fit() -> void { _buffer.shrink_to_fit(); }
+    auto clear() -> void { _buffer.clear(); }
     auto free() noexcept -> void;
 
     auto bind() const -> void;
@@ -312,10 +324,14 @@ public:
     auto buffer_data(std::span<const byte> data, u32 offset = 0) -> u32;
     auto buffer_data(IndexRange auto&& indices, u32 offset = 0) -> u32;
 
+    auto append_data(std::span<const byte> data) -> u32;
+    auto append_data(IndexRange auto&& indices) -> u32;
+
     auto resize(u32 size_bytes) -> void { _buffer.resize(size_bytes); }
     auto resize_to_at_least(u32 min_size_bytes) -> void { _buffer.resize_to_at_least(min_size_bytes); }
     auto reserve(u32 min_size_bytes) -> void { _buffer.reserve(min_size_bytes); }
     auto shrink_to_fit() -> void { _buffer.shrink_to_fit(); }
+    auto clear() -> void { _buffer.clear(); }
     auto free() noexcept -> void;
 
     auto bind() const -> void;

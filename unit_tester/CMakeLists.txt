@@ -6,6 +6,7 @@ include(Catch)
 
 add_executable(
 	unit_tester
+	"src/core/cast.cpp"
 	"src/memory/managed.cpp"
 	"src/memory/memory.cpp"
 	"src/renderer/shader_preprocessor.cpp"
@@ -14,6 +15,7 @@ add_executable(
 	"src/stl/vector.cpp"
 	"src/util/defer.cpp"
 	"src/util/meta.cpp"
+	"src/util/number.cpp"
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*GNU.*")

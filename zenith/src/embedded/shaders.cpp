@@ -12,5 +12,7 @@ const StringView flat_color_vert = b::embed<"src/shaders/zth_flat_color.vert">()
 const StringView flat_color_frag = b::embed<"src/shaders/zth_flat_color.frag">().str();
 const StringView standard_vert = b::embed<"src/shaders/zth_standard.vert">().str();
 const StringView standard_frag = b::embed<"src/shaders/zth_standard.frag">().str();
+const StringView texture_2d_vert = b::embed<"src/shaders/zth_texture_2d.vert">().str();
+const StringView texture_2d_frag = b::embed<"src/shaders/zth_texture_2d.frag">().str();
 
 } // namespace zth::embedded::shaders

@@ -2,11 +2,13 @@
 
 #include "containers.hpp"
 #include "main_scene.hpp"
+#include "sprites.hpp"
 
 auto MainLayer::on_attach() -> zth::Result<void, zth::String>
 {
     _scene_picker.add_scene<MainScene>("Main Scene");
     _scene_picker.add_scene<Containers>("Containers");
+    _scene_picker.add_scene<Sprites>("Sprites");
     return {};
 }
 

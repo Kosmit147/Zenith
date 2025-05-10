@@ -3,6 +3,7 @@
 #include <glm/mat3x3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "zenith/gl/vertex_layout.hpp"
 
@@ -32,5 +33,16 @@ struct StandardVertex
 };
 
 inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::derive_from_vertex<StandardVertex>();
+
+struct Vertex2D
+{
+    glm::vec2 local_position;
+    glm::vec2 tex_coords;
+    glm::vec4 color;
+
+    static const gl::VertexLayout layout;
+};
+
+inline const gl::VertexLayout Vertex2D::layout = gl::VertexLayout::derive_from_vertex<Vertex2D>();
 
 } // namespace zth

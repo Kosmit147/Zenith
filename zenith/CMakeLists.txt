@@ -53,6 +53,8 @@ b_embed(zenith_core "src/shaders/zth_flat_color.vert")
 b_embed(zenith_core "src/shaders/zth_flat_color.frag")
 b_embed(zenith_core "src/shaders/zth_standard.vert")
 b_embed(zenith_core "src/shaders/zth_standard.frag")
+b_embed(zenith_core "src/shaders/zth_texture_2d.vert")
+b_embed(zenith_core "src/shaders/zth_texture_2d.frag")
 
 target_include_directories(zenith_core PUBLIC "include")
 target_compile_features(zenith_core PRIVATE cxx_std_23)

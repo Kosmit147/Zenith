@@ -3,6 +3,7 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/renderer/coordinate_space.hpp"
 #include "zenith/renderer/renderer.hpp"
 
 namespace zth {
@@ -70,6 +71,8 @@ auto Scene::render() -> void
     const auto& [camera, camera_transform] =
         _registry.get<const CameraComponent, const TransformComponent>(camera_entity_id);
 
+    Renderer::clear();
+
     Renderer::begin_scene(camera, camera_transform);
 
     auto lights = _registry.view<const LightComponent>();
@@ -91,6 +94,19 @@ auto Scene::render() -> void
     }
 
     Renderer::end_scene();
+
+    Renderer2D::begin_scene();
+
+    auto sprites = _registry.group<const Sprite2DComponent>();
+
+    for (auto&& [_, sprite] : sprites.each())
+    {
+        ZTH_ASSERT(sprite.texture != nullptr);
+        Renderer2D::submit(rect_in_pixel_coordinates_to_rect_in_ndc(sprite.rect, Renderer2D::viewport()),
+                           *sprite.texture, sprite.color);
+    }
+
+    Renderer2D::end_scene();
 }
 
 auto Scene::create_entity(const String& tag) -> EntityHandle

@@ -3,6 +3,7 @@
 #include "renderer/fwd.hpp"
 
 #include "renderer/colors.hpp"
+#include "renderer/coordinate_space.hpp"
 #include "renderer/imgui_renderer.hpp"
 #include "renderer/light.hpp"
 #include "renderer/material.hpp"

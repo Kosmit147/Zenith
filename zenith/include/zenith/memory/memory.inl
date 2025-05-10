@@ -1,14 +1,14 @@
 #pragma once
 
 #include "zenith/core/assert.hpp"
-#include "zenith/math/number.hpp"
+#include "zenith/util/number.hpp"
 
 namespace zth::memory {
 
 // @refactor: Use std::is_sufficiently_aligned once we're on C++26.
 template<typename T> auto is_aligned(T* ptr, usize alignment) -> bool
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
     auto mask = alignment - 1;
     return !(address & mask);
@@ -16,7 +16,7 @@ template<typename T> auto is_aligned(T* ptr, usize alignment) -> bool
 
 template<typename T> auto aligned(T* ptr, usize alignment) -> T*
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
     address += (alignment - 1);
     return aligned_down(reinterpret_cast<T*>(address), alignment);
@@ -24,7 +24,7 @@ template<typename T> auto aligned(T* ptr, usize alignment) -> T*
 
 template<typename T> auto aligned_down(T* ptr, usize alignment) -> T*
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
     auto mask = alignment - 1;
     return reinterpret_cast<T*>(address & ~mask);
@@ -32,7 +32,7 @@ template<typename T> auto aligned_down(T* ptr, usize alignment) -> T*
 
 template<typename T> auto align(T*& ptr, usize alignment) -> usize
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
     auto mask = alignment - 1;
     auto offset = address & mask;
@@ -46,7 +46,7 @@ template<typename T> auto align(T*& ptr, usize alignment) -> usize
 
 template<typename T> auto align_down(T*& ptr, usize alignment) -> usize
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
     auto address = reinterpret_cast<uptr_t>(ptr);
     auto mask = alignment - 1;
     auto offset = address & mask;

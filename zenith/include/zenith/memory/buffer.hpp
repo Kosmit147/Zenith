@@ -11,6 +11,7 @@
 #include "zenith/memory/memory.hpp"
 #include "zenith/stl/range.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/number.hpp"
 
 namespace zth::memory {
 
@@ -21,6 +22,8 @@ template<usize Size, usize Alignment = minimal_alignment>
 class alignas(Alignment) StaticBuffer : public ContiguousRangeInterface
 {
 public:
+    static_assert(is_power_of_2(Alignment));
+
     using UnderlyingStorage = std::array<byte, Size>;
 
     using value_type = byte;

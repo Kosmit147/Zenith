@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/vec2.hpp>
+
 #include <array>
 
 #include "zenith/core/typedefs.hpp"
@@ -10,6 +12,11 @@
 
 namespace zth {
 
+constexpr inline usize top_left_idx = 0;
+constexpr inline usize bottom_left_idx = 1;
+constexpr inline usize bottom_right_idx = 2;
+constexpr inline usize top_right_idx = 3;
+
 constexpr inline usize vertices_per_triangle = 3;
 constexpr inline usize vertices_per_quad = 4;
 
@@ -18,7 +25,14 @@ constexpr inline usize triangles_per_quad = 2;
 constexpr inline usize indices_per_triangle = 3;
 constexpr inline usize indices_per_quad = triangles_per_quad * indices_per_triangle;
 
+template<typename Vertex> using Quad = std::array<Vertex, vertices_per_quad>;
 constexpr inline std::array<usize, indices_per_quad> quad_indices = { 0, 1, 2, 0, 2, 3 };
+constexpr inline std::array quad_texture_coordinates = {
+    glm::vec2{ 0.0f, 1.0f },
+    glm::vec2{ 0.0f, 0.0f },
+    glm::vec2{ 1.0f, 0.0f },
+    glm::vec2{ 1.0f, 1.0f },
+};
 
 [[nodiscard]] constexpr auto get_triangle_vertex_count_from_quad_vertex_count(usize vertex_count) -> usize
 {
