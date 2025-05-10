@@ -1,7 +1,5 @@
 #include "main_scene.hpp"
 
-#include "zenith/script/camera_controller.hpp"
-
 namespace {
 
 const auto camera_transform_component =

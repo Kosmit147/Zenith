@@ -7,6 +7,7 @@ add_executable(
 	"src/embedded.cpp"
 	"src/main_layer.cpp"
 	"src/main_scene.cpp"
+	"src/sprites.cpp"
 	"src/testbed.cpp"
 )
 

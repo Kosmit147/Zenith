@@ -116,8 +116,8 @@ public:
 
     ~Texture2D();
 
-    auto bind(u32 slot = 0) const -> void;
-    static auto unbind(u32 slot = 0) -> void;
+    auto bind(u32 slot) const -> void;
+    static auto unbind(u32 slot) -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }
 

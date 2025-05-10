@@ -14,5 +14,7 @@ extern const StringView flat_color_vert;
 extern const StringView flat_color_frag;
 extern const StringView standard_vert;
 extern const StringView standard_frag;
+extern const StringView texture_2d_vert;
+extern const StringView texture_2d_frag;
 
 } // namespace zth::embedded::shaders

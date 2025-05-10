@@ -67,6 +67,16 @@ auto Buffer::buffer_data(std::ranges::contiguous_range auto&& data, u32 offset) 
     return buffer_data(make_dynamic_span(std::as_bytes(std::span{ data })), offset);
 }
 
+auto Buffer::append_data(auto&& data) -> u32
+{
+    return append_data(std::as_bytes(std::span{ std::addressof(data), 1 }));
+}
+
+auto Buffer::append_data(std::ranges::contiguous_range auto&& data) -> u32
+{
+    return append_data(make_dynamic_span(std::as_bytes(std::span{ data })));
+}
+
 // --------------------------- VertexBuffer ---------------------------
 
 template<VertexRange V>
@@ -101,6 +111,11 @@ auto VertexBuffer::init_dynamic_with_data(V&& vertices, BufferUsage usage, const
 auto VertexBuffer::buffer_data(VertexRange auto&& vertices, u32 offset) -> u32
 {
     return _buffer.buffer_data(vertices, offset);
+}
+
+auto VertexBuffer::append_data(VertexRange auto&& vertices) -> u32
+{
+    return _buffer.append_data(vertices);
 }
 
 template<VertexRange V> constexpr auto VertexBuffer::derive_vertex_layout() -> VertexLayout
@@ -140,6 +155,11 @@ template<IndexRange I> auto IndexBuffer::init_dynamic_with_data(I&& indices, Buf
 auto IndexBuffer::buffer_data(IndexRange auto&& indices, u32 offset) -> u32
 {
     return _buffer.buffer_data(indices, offset);
+}
+
+auto IndexBuffer::append_data(IndexRange auto&& indices) -> u32
+{
+    return _buffer.append_data(indices);
 }
 
 template<IndexingType T> auto IndexBuffer::set_indexing_data_type() -> void

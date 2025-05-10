@@ -2,7 +2,7 @@
 
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
-#include "zenith/math/number.hpp"
+#include "zenith/util/number.hpp"
 
 namespace zth {
 
@@ -46,7 +46,7 @@ auto TemporaryStorage::reset_with_new_capacity(usize new_capacity) -> void
 
 auto TemporaryStorage::allocate(usize size_bytes, usize alignment) -> void*
 {
-    ZTH_ASSERT(math::is_power_of_2(alignment));
+    ZTH_ASSERT(is_power_of_2(alignment));
 
     if (size_bytes == 0) [[unlikely]]
         return nullptr;

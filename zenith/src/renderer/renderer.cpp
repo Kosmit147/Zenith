@@ -8,25 +8,26 @@
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
 #include "zenith/gl/util.hpp"
-#include "zenith/gl/vertex_array.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/math/matrix.hpp"
 #include "zenith/memory/managed.hpp"
-#include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/mesh.hpp"
-#include "zenith/renderer/resources/buffers.hpp"
+#include "zenith/renderer/quad.hpp"
 #include "zenith/renderer/resources/materials.hpp"
 #include "zenith/renderer/resources/meshes.hpp"
 #include "zenith/renderer/resources/shaders.hpp"
 #include "zenith/renderer/resources/textures.hpp"
 #include "zenith/system/event.hpp"
+#include "zenith/system/window.hpp"
+#include "zenith/util/macros.hpp"
 
 namespace zth {
 
 namespace {
 
 UniquePtr<Renderer> renderer;
+UniquePtr<Renderer2D> renderer_2d;
 
 } // namespace
 
@@ -294,6 +295,11 @@ auto Renderer::submit(const gl::VertexArray& vertex_array, const glm::mat4& tran
     renderer->_draw_commands.emplace_back(&vertex_array, &material, &transform);
 }
 
+auto Renderer::viewport() -> glm::uvec2
+{
+    return Window::size();
+}
+
 auto Renderer::current_camera_position() -> glm::vec3
 {
     return renderer->_current_camera_position;
@@ -351,8 +357,6 @@ auto Renderer::instance_buffer() -> const gl::InstanceBuffer&
 
 auto Renderer::render() -> void
 {
-    clear();
-
     upload_camera_data(renderer->_current_camera_position, renderer->_current_camera_view_projection);
     upload_light_data();
     batch_draw_commands();
@@ -394,26 +398,28 @@ auto Renderer::batch_draw_commands() -> void
 
     std::ranges::sort(draw_commands);
 
+    // @todo: Get rid of the temporary transforms vector.
     // @cleanup: This shouldn't be static.
     static Vector<const glm::mat4*> transforms;
     transforms.clear();
 
     for (usize i = 0; i < draw_commands.size(); i++)
     {
-        const auto* current_vertex_array = draw_commands[i].vertex_array;
-        const auto* current_material = draw_commands[i].material;
-        transforms.push_back(draw_commands[i].transform);
+        // This is the draw command that we'll be comparing with the next draw commands in order to determine whether we
+        // can batch them together.
+        const auto& base_draw_command = draw_commands[i];
+        transforms.push_back(base_draw_command.transform);
 
-        while (i + 1 < draw_commands.size() && draw_commands[i + 1].material == current_material
-               && draw_commands[i + 1].vertex_array == current_vertex_array)
+        // Go through all the commands which can be rendered in the same batch.
+        while (i + 1 < draw_commands.size() && base_draw_command == draw_commands[i + 1])
         {
             transforms.push_back(draw_commands[i + 1].transform);
             i++;
         }
 
         RenderBatch batch = {
-            .vertex_array = current_vertex_array,
-            .material = current_material,
+            .vertex_array = base_draw_command.vertex_array,
+            .material = base_draw_command.material,
             .transforms = {},
         };
 
@@ -612,12 +618,237 @@ auto Renderer::upload_ambient_lights_data() -> void
 auto Renderer::reset_renderer_state() -> void
 {
     renderer->_draw_commands.clear();
-    renderer->_batches.clear(); // Should clear the batches before the next frame because they use temporary storage.
+    renderer->_batches.clear();
 
     renderer->_directional_lights.clear();
     renderer->_point_lights.clear();
     renderer->_spot_lights.clear();
     renderer->_ambient_lights.clear();
+}
+
+auto DrawRectCommand::operator==(const DrawRectCommand& other) const -> bool
+{
+    // Ignore vertices and color.
+    return texture == other.texture;
+}
+
+auto DrawRectCommand::operator<(const DrawRectCommand& other) const -> bool
+{
+    return texture < other.texture;
+}
+
+auto DrawRectCommand::operator>(const DrawRectCommand& other) const -> bool
+{
+    return texture > other.texture;
+}
+
+auto DrawRectCommand::operator<=(const DrawRectCommand& other) const -> bool
+{
+    return *this < other || *this == other;
+}
+
+auto DrawRectCommand::operator>=(const DrawRectCommand& other) const -> bool
+{
+    return *this > other || *this == other;
+}
+
+Renderer2D::Renderer2D(Passkey) : Renderer2D() {}
+
+auto Renderer2D::init() -> Result<void, String>
+{
+    ZTH_INTERNAL_TRACE("Initializing 2D renderer...");
+    renderer_2d = make_unique<Renderer2D>(Passkey{});
+    ZTH_INTERNAL_TRACE("2D renderer initialized.");
+    return {};
+}
+
+auto Renderer2D::start_frame() -> void
+{
+    renderer_2d->_draw_calls_last_frame = renderer_2d->_draw_calls_this_frame;
+    renderer_2d->_draw_calls_this_frame = 0;
+}
+
+auto Renderer2D::shut_down() -> void
+{
+    ZTH_INTERNAL_TRACE("Shutting down 2D renderer...");
+    renderer_2d.free();
+    ZTH_INTERNAL_TRACE("2D renderer shut down.");
+}
+
+auto Renderer2D::begin_scene() -> void
+{
+    renderer_2d->_depth_test_was_enabled = Renderer::depth_test_enabled();
+    Renderer::set_depth_test_enabled(false);
+}
+
+auto Renderer2D::end_scene() -> void
+{
+    render();
+    reset_renderer_state();
+    Renderer::set_depth_test_enabled(renderer_2d->_depth_test_was_enabled);
+}
+
+auto Renderer2D::submit(Rect<> rect, glm::vec4 color) -> void
+{
+    renderer_2d->_draw_rect_commands.emplace_back(rect, nullptr, color);
+}
+
+auto Renderer2D::submit(Rect<> rect, const gl::Texture2D& texture, glm::vec4 color) -> void
+{
+    renderer_2d->_draw_rect_commands.emplace_back(rect, &texture, color);
+}
+
+auto Renderer2D::viewport() -> glm::uvec2
+{
+    return Renderer::viewport();
+}
+
+auto Renderer2D::draw_calls_last_frame() -> u32
+{
+    return renderer_2d->_draw_calls_last_frame;
+}
+
+auto Renderer2D::render() -> void
+{
+    shaders::texture_2d()->bind();
+
+    batch_draw_rect_commands();
+
+    for (const auto& batch : renderer_2d->_rect_batches)
+        render_batch(batch);
+}
+
+auto Renderer2D::draw_indexed(const gl::VertexArray& vertex_array) -> void
+{
+    vertex_array.bind();
+
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
+                   gl::to_gl_enum(vertex_array.indexing_data_type()), nullptr);
+
+    renderer_2d->_draw_calls_this_frame++;
+}
+
+auto Renderer2D::draw_instanced(const gl::VertexArray& vertex_array, u32 instances) -> void
+{
+    vertex_array.bind();
+
+    glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(vertex_array.count()),
+                            gl::to_gl_enum(vertex_array.indexing_data_type()), nullptr,
+                            static_cast<GLsizei>(instances));
+
+    renderer_2d->_draw_calls_this_frame++;
+}
+
+auto Renderer2D::batch_draw_rect_commands() -> void
+{
+    // @speed: We should look into how we could batch draw commands more efficiently.
+
+    auto& draw_commands = renderer_2d->_draw_rect_commands;
+    auto& batches = renderer_2d->_rect_batches;
+
+    std::ranges::sort(draw_commands);
+
+    // @todo: Get rid of the temporary rects and colors vectors.
+    // @cleanup: This shouldn't be static.
+    static Vector<Rect<>> rects;
+    static Vector<glm::vec4> colors;
+    rects.clear();
+    colors.clear();
+
+    for (usize i = 0; i < draw_commands.size(); i++)
+    {
+        // This is the draw command that we'll be comparing with the next draw commands in order to determine whether we
+        // can batch them together.
+        const auto& base_draw_command = draw_commands[i];
+        rects.push_back(base_draw_command.rect);
+        colors.push_back(base_draw_command.color);
+
+        // Go through all the commands which can be rendered in the same batch.
+        while (i + 1 < draw_commands.size() && base_draw_command == draw_commands[i + 1])
+        {
+            rects.push_back(draw_commands[i + 1].rect);
+            colors.push_back(draw_commands[i + 1].color);
+            i++;
+        }
+
+        RectRenderBatch batch = {
+            .texture = base_draw_command.texture,
+            .rects = {},
+            .colors = {},
+        };
+
+        // @speed: We could probably do something better here than copying all of this data.
+        std::ranges::move(rects, std::back_inserter(batch.rects));
+        std::ranges::move(colors, std::back_inserter(batch.colors));
+        batches.push_back(std::move(batch));
+        rects.clear();
+        colors.clear();
+    }
+}
+
+auto Renderer2D::render_batch(const RectRenderBatch& batch) -> void
+{
+    ZTH_ASSERT(batch.rects.size() == batch.colors.size());
+
+    renderer_2d->_vertex_buffer.clear();
+    const auto rect_count = batch.rects.size();
+
+    // @todo: We should handle the case when the number of quads to draw is higher than the number of quads supported by
+    // quads index buffer.
+
+#if defined(ZTH_ASSERTIONS)
+    if (rect_count > buffers::quads_index_buffer_quads)
+        ZTH_DEBUG_BREAK;
+#endif
+
+    for (usize i = 0; i < rect_count; i++)
+    {
+        const auto& current_rect = batch.rects[i];
+        const auto& current_color = batch.colors[i];
+
+        // @speed: Maybe it would be faster to collect the data first and then send it all at once instead of buffering
+        // it bit by bit.
+
+        Quad<Vertex2D> quad = {
+            Vertex2D{
+                .local_position = current_rect.top_left(),
+                .tex_coords = quad_texture_coordinates[top_left_idx],
+                .color = current_color,
+            },
+            Vertex2D{
+                .local_position = current_rect.bottom_left(),
+                .tex_coords = quad_texture_coordinates[bottom_left_idx],
+                .color = current_color,
+            },
+            Vertex2D{
+                .local_position = current_rect.bottom_right(),
+                .tex_coords = quad_texture_coordinates[bottom_right_idx],
+                .color = current_color,
+            },
+            Vertex2D{
+                .local_position = current_rect.top_right(),
+                .tex_coords = quad_texture_coordinates[top_right_idx],
+                .color = current_color,
+            },
+        };
+
+        renderer_2d->_vertex_buffer.append_data(quad);
+    }
+
+    if (batch.texture)
+        batch.texture->bind(texture_2d_slot);
+    else
+        textures::white()->bind(texture_2d_slot);
+
+    renderer_2d->_vertex_array.set_count_limit(
+        static_cast<u32>(get_triangle_vertex_count_from_quad_vertex_count(rect_count * vertices_per_quad)));
+    draw_indexed(renderer_2d->_vertex_array);
+}
+
+auto Renderer2D::reset_renderer_state() -> void
+{
+    renderer_2d->_draw_rect_commands.clear();
+    renderer_2d->_rect_batches.clear();
 }
 
 } // namespace zth

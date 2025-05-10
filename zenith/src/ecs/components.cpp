@@ -253,6 +253,13 @@ auto ScriptComponent::display_label() -> const char*
     return "Script";
 }
 
+// --------------------------- Sprite2DComponent ---------------------------
+
+auto Sprite2DComponent::display_label() -> const char*
+{
+    return "Sprite 2D";
+}
+
 // --------------------------- MeshComponent ---------------------------
 
 auto MeshComponent::display_label() -> const char*

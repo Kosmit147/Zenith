@@ -2,6 +2,7 @@
 
 #include <glm/fwd.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -9,9 +10,13 @@
 #include "zenith/ecs/fwd.hpp"
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/fwd.hpp"
+#include "zenith/gl/vertex_array.hpp"
+#include "zenith/math/geometry.hpp"
 #include "zenith/memory/temporary_storage.hpp"
+#include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
+#include "zenith/renderer/resources/buffers.hpp"
 #include "zenith/renderer/shader_data.hpp"
 #include "zenith/renderer/vertex.hpp"
 #include "zenith/stl/string.hpp"
@@ -140,6 +145,8 @@ public:
     static auto submit(const gl::VertexArray& vertex_array, const glm::mat4& transform, const Material& material)
         -> void;
 
+    [[nodiscard]] static auto viewport() -> glm::uvec2;
+
     [[nodiscard]] static auto current_camera_position() -> glm::vec3;
     [[nodiscard]] static auto current_camera_view() -> const glm::mat4&;
     [[nodiscard]] static auto current_camera_projection() -> const glm::mat4&;
@@ -223,8 +230,86 @@ private:
     static auto upload_spot_lights_data() -> void;
     static auto upload_ambient_lights_data() -> void;
 
-    // reset_renderer_state should be called after rendering was finished and before the next frame starts since we need
-    // to clean up objects which use temporary storage.
+    static auto reset_renderer_state() -> void;
+};
+
+struct DrawRectCommand
+{
+    Rect<> rect;
+    const gl::Texture2D* texture;
+    glm::vec4 color;
+
+    // Comparison operators are used to sort draw commands into batches.
+    [[nodiscard]] auto operator==(const DrawRectCommand& other) const -> bool;
+    [[nodiscard]] auto operator<(const DrawRectCommand& other) const -> bool;
+    [[nodiscard]] auto operator>(const DrawRectCommand& other) const -> bool;
+    [[nodiscard]] auto operator<=(const DrawRectCommand& other) const -> bool;
+    [[nodiscard]] auto operator>=(const DrawRectCommand& other) const -> bool;
+};
+
+struct RectRenderBatch
+{
+    const gl::Texture2D* texture = nullptr;
+    TemporaryVector<Rect<>> rects;
+    TemporaryVector<glm::vec4> colors;
+};
+
+class Renderer2D
+{
+private:
+    // clang-format off
+    struct Passkey {}; // Allows constructing an instance of Renderer2D through make_unique.
+    // clang-format on
+
+public:
+    // @volatile: Keep in sync with constants declared in zth_defines.glsl.
+
+    static constexpr u32 texture_2d_slot = 0;
+
+public:
+    explicit Renderer2D(Passkey);
+
+    [[nodiscard]] static auto init() -> Result<void, String>;
+    static auto start_frame() -> void;
+    static auto shut_down() -> void;
+
+    static auto begin_scene() -> void;
+    static auto end_scene() -> void;
+
+    // The submitted references must all be valid until the renderer finishes rendering the scene.
+    static auto submit(Rect<> rect, glm::vec4 color = colors::white) -> void;
+    // The submitted references must all be valid until the renderer finishes rendering the scene.
+    static auto submit(Rect<> rect, const gl::Texture2D& texture, glm::vec4 color = colors::white) -> void;
+
+    [[nodiscard]] static auto viewport() -> glm::uvec2;
+
+    [[nodiscard]] static auto draw_calls_last_frame() -> u32;
+
+private:
+    explicit Renderer2D() = default;
+
+    gl::VertexBuffer _vertex_buffer = gl::VertexBuffer::create_dynamic(Vertex2D::layout);
+    gl::VertexArray _vertex_array{ _vertex_buffer, buffers::quads_index_buffer(), 0 };
+
+    Vector<DrawRectCommand> _draw_rect_commands;
+    Vector<RectRenderBatch> _rect_batches;
+
+    u32 _draw_calls_this_frame = 0;
+    u32 _draw_calls_last_frame = 0;
+
+    // We need to disable the depth test when we start a 2D scene, but we should restore its value to whatever it was
+    // before.
+    bool _depth_test_was_enabled = Renderer::depth_test_enabled();
+
+private:
+    static auto render() -> void;
+
+    static auto draw_indexed(const gl::VertexArray& vertex_array) -> void;
+    static auto draw_instanced(const gl::VertexArray& vertex_array, u32 instances) -> void;
+
+    static auto batch_draw_rect_commands() -> void;
+    static auto render_batch(const RectRenderBatch& batch) -> void;
+
     static auto reset_renderer_state() -> void;
 };
 

@@ -37,6 +37,10 @@ auto load() -> void
         std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::standard_vert,
                                                         .fragment_source = embedded::shaders::standard_frag });
 
+    shaders_array[texture_2d_shader_index] =
+        std::make_shared<gl::Shader>(gl::ShaderSources{ .vertex_source = embedded::shaders::texture_2d_vert,
+                                                        .fragment_source = embedded::shaders::texture_2d_frag });
+
 #if defined(ZTH_ASSERTIONS)
     for (auto& shader : shaders_array)
     {
@@ -76,5 +80,6 @@ auto all() -> const ShadersArray&
 ZTH_SHADER_GETTER(fallback);
 ZTH_SHADER_GETTER(flat_color);
 ZTH_SHADER_GETTER(standard);
+ZTH_SHADER_GETTER(texture_2d);
 
 } // namespace zth::shaders

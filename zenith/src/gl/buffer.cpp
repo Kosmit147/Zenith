@@ -164,6 +164,11 @@ auto Buffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
     return 0;
 }
 
+auto Buffer::append_data(std::span<const byte> data) -> u32
+{
+    return buffer_data(data, _size_bytes);
+}
+
 auto Buffer::resize(u32 size_bytes) -> void
 {
     ZTH_ASSERT(_state == BufferState::InitializedDynamic);
@@ -191,6 +196,12 @@ auto Buffer::shrink_to_fit() -> void
         return;
 
     reallocate_exactly(_size_bytes);
+}
+
+auto Buffer::clear() noexcept -> void
+{
+    ZTH_ASSERT(_state == BufferState::InitializedDynamic);
+    resize(0);
 }
 
 auto Buffer::free() noexcept -> void
@@ -376,6 +387,11 @@ auto VertexBuffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
     return _buffer.buffer_data(data, offset);
 }
 
+auto VertexBuffer::append_data(std::span<const byte> data) -> u32
+{
+    return _buffer.append_data(data);
+}
+
 auto VertexBuffer::free() noexcept -> void
 {
     _buffer.free();
@@ -488,6 +504,11 @@ auto IndexBuffer::init_dynamic_with_data(std::span<const byte> data, DataType ty
 auto IndexBuffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
 {
     return _buffer.buffer_data(data, offset);
+}
+
+auto IndexBuffer::append_data(std::span<const byte> data) -> u32
+{
+    return _buffer.append_data(data);
 }
 
 auto IndexBuffer::free() noexcept -> void

@@ -106,7 +106,8 @@ auto SystemLayer::on_detach() -> void
 // 2. ShaderPreprocessor
 // 3. AssetManager
 // 4. Renderer
-// 5. SceneManager
+// 5. Renderer2D
+// 6. SceneManager
 
 auto RuntimeLayer::render() -> void
 {
@@ -116,6 +117,7 @@ auto RuntimeLayer::render() -> void
 auto RuntimeLayer::on_frame_start() -> void
 {
     Renderer::start_frame();
+    Renderer2D::start_frame();
     SceneManager::start_frame();
 }
 
@@ -166,6 +168,11 @@ auto RuntimeLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_renderer{ [] { Renderer::shut_down(); } };
 
+    result = Renderer2D::init();
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_renderer_2d{ [] { Renderer2D::shut_down(); } };
+
     result = SceneManager::init();
     if (!result)
         return Error{ result.error() };
@@ -175,6 +182,7 @@ auto RuntimeLayer::on_attach() -> Result<void, String>
     shut_down_shader_preprocessor.dismiss();
     shut_down_asset_manager.dismiss();
     shut_down_renderer.dismiss();
+    shut_down_renderer_2d.dismiss();
     shut_down_scene_manager.dismiss();
 
     ZTH_INTERNAL_TRACE("Runtime layer initialized...");
@@ -187,6 +195,7 @@ auto RuntimeLayer::on_detach() -> void
 
     // Shut down order should be the reverse of initialization order.
     SceneManager::shut_down();
+    Renderer2D::shut_down();
     Renderer::shut_down();
     AssetManager::shut_down();
     ShaderPreprocessor::shut_down();
