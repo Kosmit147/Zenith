@@ -2,7 +2,7 @@
 
 #include "zth_defines.glsl"
 
-layout (location = 0) in vec3 in_local_position;
+layout (location = 0) in vec3 in_position;
 
 layout (location = 3) in vec3 in_transform_col_0;
 layout (location = 4) in vec3 in_transform_col_1;
@@ -25,5 +25,5 @@ void main()
         vec4(in_transform_col_3, 1.0)
     );
 
-    gl_Position = camera.view_projection * transform * vec4(in_local_position, 1.0);
+    gl_Position = camera.view_projection * transform * vec4(in_position, 1.0);
 }

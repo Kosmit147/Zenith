@@ -1,4 +1,4 @@
-#include "zenith/renderer/quad.hpp"
+#include "zenith/renderer/primitives.hpp"
 
 #include "zenith/core/assert.hpp"
 

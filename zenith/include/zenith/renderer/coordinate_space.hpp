@@ -39,12 +39,12 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] constexpr auto rect_bounds_in_pixel_coordinates_to_rect_bounds_in_ndc(const Rect<T>& rect,
-                                                                                    glm::uvec2 space) -> Rect<>
+[[nodiscard]] constexpr auto bounded_rect_in_pixel_coordinates_to_bounded_rect_in_ndc(const BoundedRect<T>& rect,
+                                                                                      glm::uvec2 space) -> BoundedRect<>
 {
-    return RectBounds{
-        .top_left = pixel_coordinate_to_ndc(rect.top_left(), space),
-        .bottom_right = pixel_coordinate_to_ndc(rect.bottom_right(), space),
+    return BoundedRect{
+        .top_left = pixel_coordinate_to_ndc(rect.top_left, space),
+        .bottom_right = pixel_coordinate_to_ndc(rect.bottom_right, space),
     };
 }
 

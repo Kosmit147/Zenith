@@ -2,7 +2,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/fwd.hpp"
-#include "zenith/renderer/quad.hpp"
+#include "zenith/renderer/primitives.hpp"
 
 namespace zth::buffers {
 

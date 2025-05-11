@@ -23,16 +23,21 @@ template<typename T /* = float */> struct Rect
         return { top_left(), bottom_left(), bottom_right(), top_right() };
     }
 
-    [[nodiscard]] constexpr operator RectBounds<T>() const;
+    [[nodiscard]] constexpr operator BoundedRect<T>() const;
 };
 
-template<typename T /* = float */> struct RectBounds
+template<typename T /* = float */> struct BoundedRect
 {
     glm::vec<2, T> top_left;
     glm::vec<2, T> bottom_right;
 
     [[nodiscard]] constexpr auto bottom_left() const { return glm::vec<2, T>{ top_left.x, bottom_right.y }; }
     [[nodiscard]] constexpr auto top_right() const { return glm::vec<2, T>{ bottom_right.x, top_left.y }; }
+
+    [[nodiscard]] constexpr auto size() const
+    {
+        return glm::vec<2, T>{ bottom_right.x - top_left.x, top_left.y - bottom_right.y };
+    }
 
     [[nodiscard]] constexpr auto vertices() const -> std::array<glm::vec<2, T>, 4>
     {
@@ -42,18 +47,17 @@ template<typename T /* = float */> struct RectBounds
     [[nodiscard]] constexpr operator Rect<T>() const;
 };
 
-template<typename T> [[nodiscard]] constexpr Rect<T>::operator RectBounds<T>() const
+template<typename T> [[nodiscard]] constexpr Rect<T>::operator BoundedRect<T>() const
 {
-    return RectBounds{
+    return BoundedRect{
         .top_left = top_left(),
         .bottom_right = bottom_right(),
     };
 }
 
-template<typename T> [[nodiscard]] constexpr RectBounds<T>::operator Rect<T>() const
+template<typename T> [[nodiscard]] constexpr BoundedRect<T>::operator Rect<T>() const
 {
-    return Rect{ .position = top_left,
-                 .size = glm::vec<2, T>{ bottom_right.x - top_left.x, top_left.y - bottom_right.y } };
+    return Rect{ .position = top_left, .size = size() };
 }
 
 } // namespace zth

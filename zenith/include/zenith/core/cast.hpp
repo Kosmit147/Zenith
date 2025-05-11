@@ -57,7 +57,7 @@ template<std::unsigned_integral IntoUnsigned, std::unsigned_integral FromUnsigne
 
     if constexpr (sizeof(IntoUnsigned) < sizeof(FromUnsigned))
     {
-        if (n > static_cast<FromUnsigned>(limits::max()) || n < static_cast<FromUnsigned>(limits::min()))
+        if (n > static_cast<FromUnsigned>(limits::max()))
             return false;
     }
 
@@ -120,8 +120,6 @@ template<std::unsigned_integral IntoUnsigned, std::unsigned_integral FromUnsigne
     {
         if (n > static_cast<FromUnsigned>(limits::max()))
             return limits::max();
-        else if (n < static_cast<FromUnsigned>(limits::min()))
-            return limits::min();
     }
 
     return static_cast<IntoUnsigned>(n);

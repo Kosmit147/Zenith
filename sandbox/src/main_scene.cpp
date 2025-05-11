@@ -27,7 +27,7 @@ MainScene::MainScene()
     _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
     _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<zth::scripts::FlyCamera>());
 
-    _cube.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+    _cube.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::cube());
     _cube.emplace_or_replace<zth::MaterialComponent>(_cube_material);
 
     _light.emplace_or_replace<zth::TransformComponent>(glm::vec3{ 0.0f },

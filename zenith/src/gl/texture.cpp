@@ -5,8 +5,8 @@
 #include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/buffer.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/system/file.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth::gl {

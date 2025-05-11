@@ -13,7 +13,7 @@
 #include "zenith/memory/managed.hpp"
 #include "zenith/renderer/material.hpp"
 #include "zenith/renderer/mesh.hpp"
-#include "zenith/renderer/quad.hpp"
+#include "zenith/renderer/primitives.hpp"
 #include "zenith/renderer/resources/materials.hpp"
 #include "zenith/renderer/resources/meshes.hpp"
 #include "zenith/renderer/resources/shaders.hpp"
@@ -688,12 +688,12 @@ auto Renderer2D::end_scene() -> void
     Renderer::set_depth_test_enabled(renderer_2d->_depth_test_was_enabled);
 }
 
-auto Renderer2D::submit(Rect<> rect, glm::vec4 color) -> void
+auto Renderer2D::submit(BoundedRect<> rect, glm::vec4 color) -> void
 {
     renderer_2d->_draw_rect_commands.emplace_back(rect, nullptr, color);
 }
 
-auto Renderer2D::submit(Rect<> rect, const gl::Texture2D& texture, glm::vec4 color) -> void
+auto Renderer2D::submit(BoundedRect<> rect, const gl::Texture2D& texture, glm::vec4 color) -> void
 {
     renderer_2d->_draw_rect_commands.emplace_back(rect, &texture, color);
 }
@@ -750,7 +750,7 @@ auto Renderer2D::batch_draw_rect_commands() -> void
 
     // @todo: Get rid of the temporary rects and colors vectors.
     // @cleanup: This shouldn't be static.
-    static Vector<Rect<>> rects;
+    static Vector<BoundedRect<>> rects;
     static Vector<glm::vec4> colors;
     rects.clear();
     colors.clear();
@@ -791,17 +791,17 @@ auto Renderer2D::render_batch(const RectRenderBatch& batch) -> void
     ZTH_ASSERT(batch.rects.size() == batch.colors.size());
 
     renderer_2d->_vertex_buffer.clear();
-    const auto rect_count = batch.rects.size();
+    const auto quad_count = batch.rects.size();
 
     // @todo: We should handle the case when the number of quads to draw is higher than the number of quads supported by
     // quads index buffer.
 
 #if defined(ZTH_ASSERTIONS)
-    if (rect_count > buffers::quads_index_buffer_quads)
+    if (quad_count > buffers::quads_index_buffer_quads)
         ZTH_DEBUG_BREAK;
 #endif
 
-    for (usize i = 0; i < rect_count; i++)
+    for (usize i = 0; i < quad_count; i++)
     {
         const auto& current_rect = batch.rects[i];
         const auto& current_color = batch.colors[i];
@@ -811,23 +811,23 @@ auto Renderer2D::render_batch(const RectRenderBatch& batch) -> void
 
         Quad<Vertex2D> quad = {
             Vertex2D{
-                .local_position = current_rect.top_left(),
-                .tex_coords = quad_texture_coordinates[top_left_idx],
+                .position = current_rect.top_left,
+                .uv = quad_texture_coordinates[top_left_idx],
                 .color = current_color,
             },
             Vertex2D{
-                .local_position = current_rect.bottom_left(),
-                .tex_coords = quad_texture_coordinates[bottom_left_idx],
+                .position = current_rect.bottom_left(),
+                .uv = quad_texture_coordinates[bottom_left_idx],
                 .color = current_color,
             },
             Vertex2D{
-                .local_position = current_rect.bottom_right(),
-                .tex_coords = quad_texture_coordinates[bottom_right_idx],
+                .position = current_rect.bottom_right,
+                .uv = quad_texture_coordinates[bottom_right_idx],
                 .color = current_color,
             },
             Vertex2D{
-                .local_position = current_rect.top_right(),
-                .tex_coords = quad_texture_coordinates[top_right_idx],
+                .position = current_rect.top_right(),
+                .uv = quad_texture_coordinates[top_right_idx],
                 .color = current_color,
             },
         };
@@ -841,7 +841,7 @@ auto Renderer2D::render_batch(const RectRenderBatch& batch) -> void
         textures::white()->bind(texture_2d_slot);
 
     renderer_2d->_vertex_array.set_count_limit(
-        static_cast<u32>(get_triangle_vertex_count_from_quad_vertex_count(rect_count * vertices_per_quad)));
+        static_cast<u32>(get_triangle_vertex_count_from_quad_vertex_count(quad_count * vertices_per_quad)));
     draw_indexed(renderer_2d->_vertex_array);
 }
 

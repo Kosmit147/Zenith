@@ -3,6 +3,7 @@
 #include "zenith/core/exception.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/layer/layers.hpp"
+#include "zenith/renderer/renderer.hpp"
 #include "zenith/system/event_queue.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/defer.hpp"
@@ -127,6 +128,8 @@ auto Application::update() -> void
 
 auto Application::render() -> void
 {
+    Renderer::clear();
+
     _layers.render();
     _overlays.render();
 }

@@ -7,8 +7,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/gl/buffer.hpp"
 #include "zenith/gl/util.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/vector.hpp"
+#include "zenith/system/temporary_storage.hpp"
 
 namespace zth {
 

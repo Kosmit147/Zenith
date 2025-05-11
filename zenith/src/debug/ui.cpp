@@ -11,11 +11,11 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
 #include "zenith/system/input.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/system/window.hpp"
 
 namespace zth::debug {
@@ -101,11 +101,6 @@ auto text(const char* txt) -> void
 auto text(StringView txt) -> void
 {
     ImGui::TextUnformatted(txt.data(), txt.data() + txt.size());
-}
-
-auto text(const String& txt) -> void
-{
-    text(StringView{ txt });
 }
 
 auto drag_int(const char* label, i32& value, float drag_speed) -> bool
@@ -415,12 +410,12 @@ auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed) -> bool
     return value_changed;
 }
 
-auto drag_rect_bounds(const char* label, RectBounds<u32>& bounds, float drag_speed) -> bool
+auto drag_rect_bounds(const char* label, BoundedRect<u32>& rect, float drag_speed) -> bool
 {
     text(label);
     auto value_changed = false;
-    value_changed |= drag_vec("Top-left", bounds.top_left, drag_speed);
-    value_changed |= drag_vec("Bottom-right", bounds.bottom_right, drag_speed);
+    value_changed |= drag_vec("Top-left", rect.top_left, drag_speed);
+    value_changed |= drag_vec("Bottom-right", rect.bottom_right, drag_speed);
     return value_changed;
 }
 
@@ -435,14 +430,14 @@ auto slide_rect(const char* label, Rect<u32>& rect, Rect<u32> min, Rect<u32> max
     return value_changed;
 }
 
-auto slide_rect_bounds(const char* label, RectBounds<u32>& bounds, RectBounds<u32> min, RectBounds<u32> max) -> bool
+auto slide_rect_bounds(const char* label, BoundedRect<u32>& rect, BoundedRect<u32> min, BoundedRect<u32> max) -> bool
 {
     text(label);
     auto value_changed = false;
-    value_changed |= slide_uint("Top-left (X):", bounds.top_left.x, min.top_left.x, max.top_left.x);
-    value_changed |= slide_uint("Top-left (Y):", bounds.top_left.y, min.top_left.y, max.top_left.y);
-    value_changed |= slide_uint("Bottom-right (X):", bounds.bottom_right.x, min.bottom_right.x, max.bottom_right.x);
-    value_changed |= slide_uint("Bottom-right (Y):", bounds.bottom_right.y, min.bottom_right.y, max.bottom_right.y);
+    value_changed |= slide_uint("Top-left (X):", rect.top_left.x, min.top_left.x, max.top_left.x);
+    value_changed |= slide_uint("Top-left (Y):", rect.top_left.y, min.top_left.y, max.top_left.y);
+    value_changed |= slide_uint("Bottom-right (X):", rect.bottom_right.x, min.bottom_right.x, max.bottom_right.x);
+    value_changed |= slide_uint("Bottom-right (Y):", rect.bottom_right.y, min.bottom_right.y, max.bottom_right.y);
     return value_changed;
 }
 
@@ -601,13 +596,13 @@ auto edit_component(LightComponent& light) -> void
     }
 }
 
-auto edit_component(Sprite2DComponent& sprite) -> void
+auto edit_component(SpriteRenderer2DComponent& sprite) -> void
 {
     drag_rect("Rect", sprite.rect);
     edit_color("Color", sprite.color);
 }
 
-auto edit_component(MeshComponent& mesh) -> void
+auto edit_component(MeshRendererComponent& mesh) -> void
 {
     (void)mesh;
 
@@ -667,11 +662,11 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     if (entity.any_of<LightComponent>())
         display_component_for_entity_in_inspector<LightComponent>(entity);
 
-    if (entity.any_of<Sprite2DComponent>())
-        display_component_for_entity_in_inspector<Sprite2DComponent>(entity);
+    if (entity.any_of<SpriteRenderer2DComponent>())
+        display_component_for_entity_in_inspector<SpriteRenderer2DComponent>(entity);
 
-    if (entity.any_of<MeshComponent>())
-        display_component_for_entity_in_inspector<MeshComponent>(entity);
+    if (entity.any_of<MeshRendererComponent>())
+        display_component_for_entity_in_inspector<MeshRendererComponent>(entity);
 
     if (entity.any_of<MaterialComponent>())
         display_component_for_entity_in_inspector<MaterialComponent>(entity);
@@ -699,8 +694,8 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
         add_component_menu_item(std::type_identity<CameraComponent>{});
         add_component_menu_item(std::type_identity<LightComponent>{});
-        add_component_menu_item(std::type_identity<Sprite2DComponent>{});
-        add_component_menu_item(std::type_identity<MeshComponent>{});
+        add_component_menu_item(std::type_identity<SpriteRenderer2DComponent>{});
+        add_component_menu_item(std::type_identity<MeshRendererComponent>{});
         add_component_menu_item(std::type_identity<MaterialComponent>{});
 
         ImGui::EndPopup();

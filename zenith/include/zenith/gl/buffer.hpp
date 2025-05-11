@@ -138,7 +138,7 @@ public:
     auto resize_to_at_least(u32 min_size_bytes) -> void;
     auto reserve(u32 min_size_bytes) -> void;
     auto shrink_to_fit() -> void;
-    auto clear() noexcept -> void;
+    auto clear() -> void;
     auto free() noexcept -> void;
 
     [[nodiscard]] auto native_handle() const { return _id; }

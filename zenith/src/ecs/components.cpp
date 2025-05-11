@@ -253,18 +253,18 @@ auto ScriptComponent::display_label() -> const char*
     return "Script";
 }
 
-// --------------------------- Sprite2DComponent ---------------------------
+// --------------------------- SpriteRenderer2DComponent ---------------------------
 
-auto Sprite2DComponent::display_label() -> const char*
+auto SpriteRenderer2DComponent::display_label() -> const char*
 {
-    return "Sprite 2D";
+    return "Sprite Renderer 2D";
 }
 
-// --------------------------- MeshComponent ---------------------------
+// --------------------------- MeshRendererComponent ---------------------------
 
-auto MeshComponent::display_label() -> const char*
+auto MeshRendererComponent::display_label() -> const char*
 {
-    return "Mesh";
+    return "Mesh Renderer";
 }
 
 // --------------------------- MaterialComponent ---------------------------

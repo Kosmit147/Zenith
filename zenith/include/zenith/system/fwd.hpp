@@ -24,6 +24,8 @@ class Input;
 enum class Key : u16;
 enum class MouseButton : u8;
 
+class TemporaryStorage;
+
 class Time;
 
 class Timer;
