@@ -2,7 +2,7 @@
 
 #include "zth_defines.glsl"
 
-layout (location = 0) in vec3 in_local_position;
+layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
 layout (location = 2) in vec2 in_uv;
 
@@ -33,7 +33,7 @@ void main()
         vec4(in_transform_col_3, 1.0)
     );
 
-    vec4 world_position = transform * vec4(in_local_position, 1.0);
+    vec4 world_position = transform * vec4(in_position, 1.0);
 
     Position = world_position.xyz;
     Normal = normalize(in_normal_mat * in_normal);

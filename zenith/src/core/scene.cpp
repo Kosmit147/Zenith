@@ -64,14 +64,11 @@ auto Scene::render() -> void
     if (camera_entity_id == null_entity)
     {
         ZTH_INTERNAL_WARN("[Scene] No entity with a camera component found.");
-        Renderer::clear();
         return;
     }
 
     const auto& [camera, camera_transform] =
         _registry.get<const CameraComponent, const TransformComponent>(camera_entity_id);
-
-    Renderer::clear();
 
     Renderer::begin_scene(camera, camera_transform);
 
@@ -83,8 +80,8 @@ auto Scene::render() -> void
         Renderer::submit_light(light, transform);
     }
 
-    auto meshes =
-        _registry.group<const MeshComponent>(GetComponents<const TransformComponent, const MaterialComponent>{});
+    auto meshes = _registry.group<const MeshRendererComponent>(
+        GetComponents<const TransformComponent, const MaterialComponent>{});
 
     for (auto&& [_, mesh, transform, material] : meshes.each())
     {
@@ -97,7 +94,7 @@ auto Scene::render() -> void
 
     Renderer2D::begin_scene();
 
-    auto sprites = _registry.group<const Sprite2DComponent>();
+    auto sprites = _registry.group<const SpriteRenderer2DComponent>();
 
     for (auto&& [_, sprite] : sprites.each())
     {

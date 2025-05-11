@@ -5,9 +5,9 @@
 
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/memory/managed.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/result.hpp"

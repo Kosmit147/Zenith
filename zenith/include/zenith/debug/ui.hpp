@@ -19,11 +19,11 @@
 #include "zenith/math/geometry.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/memory/managed.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
 
 namespace zth::debug {
@@ -33,7 +33,6 @@ constexpr inline auto default_int_drag_speed = 1.0f;
 
 auto text(const char* txt) -> void;
 auto text(StringView txt) -> void;
-auto text(const String& txt) -> void;
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void;
 
 auto drag_int(const char* label, i32& value, float drag_speed = default_int_drag_speed) -> bool;
@@ -102,10 +101,10 @@ auto input_uint(const char* label, u32& value) -> bool;
 auto input_text(const char* label, String& value) -> bool;
 
 auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
-auto drag_rect_bounds(const char* label, RectBounds<u32>& bounds, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_rect(const char* label, BoundedRect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
 
 auto slide_rect(const char* label, Rect<u32>& rect, Rect<u32> min, Rect<u32> max) -> bool;
-auto slide_rect_bounds(const char* label, RectBounds<u32>& bounds, RectBounds<u32> min, RectBounds<u32> max) -> bool;
+auto slide_rect(const char* label, BoundedRect<u32>& rect, BoundedRect<u32> min, BoundedRect<u32> max) -> bool;
 
 auto slide_angle(const char* label, float& angle_radians, float degrees_min = 0.0f, float degrees_max = 360.0f) -> bool;
 auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_speed = default_float_drag_speed)
@@ -129,8 +128,8 @@ auto edit_component(TagComponent& tag) -> void;
 auto edit_component(TransformComponent& transform) -> void;
 auto edit_component(CameraComponent& camera) -> void;
 auto edit_component(LightComponent& light) -> void;
-auto edit_component(Sprite2DComponent& sprite) -> void;
-auto edit_component(MeshComponent& mesh) -> void;
+auto edit_component(SpriteRenderer2DComponent& sprite) -> void;
+auto edit_component(MeshRendererComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
 auto edit_component(ScriptComponent& script) -> void;
 

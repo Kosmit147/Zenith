@@ -166,6 +166,7 @@ auto Buffer::buffer_data(std::span<const byte> data, u32 offset) -> u32
 
 auto Buffer::append_data(std::span<const byte> data) -> u32
 {
+    ZTH_ASSERT(_state == BufferState::InitializedDynamic);
     return buffer_data(data, _size_bytes);
 }
 
@@ -178,6 +179,7 @@ auto Buffer::resize(u32 size_bytes) -> void
 
 auto Buffer::resize_to_at_least(u32 min_size_bytes) -> void
 {
+    ZTH_ASSERT(_state == BufferState::InitializedDynamic);
     resize(std::max(_size_bytes, min_size_bytes));
 }
 
@@ -198,7 +200,7 @@ auto Buffer::shrink_to_fit() -> void
     reallocate_exactly(_size_bytes);
 }
 
-auto Buffer::clear() noexcept -> void
+auto Buffer::clear() -> void
 {
     ZTH_ASSERT(_state == BufferState::InitializedDynamic);
     resize(0);

@@ -127,9 +127,9 @@ private:
     UniquePtr<Script> _script; // script cannot be null.
 };
 
-// --------------------------- Sprite2DComponent ---------------------------
+// --------------------------- SpriteRenderer2DComponent ---------------------------
 
-struct Sprite2DComponent
+struct SpriteRenderer2DComponent
 {
     std::shared_ptr<const gl::Texture2D> texture = textures::white(); // texture cannot be null.
     Rect<u32> rect;
@@ -138,9 +138,9 @@ struct Sprite2DComponent
     [[nodiscard]] static auto display_label() -> const char*;
 };
 
-// --------------------------- MeshComponent ---------------------------
+// --------------------------- MeshRendererComponent ---------------------------
 
-struct MeshComponent
+struct MeshRendererComponent
 {
     std::shared_ptr<const Mesh> mesh = meshes::cube(); // mesh cannot be null.
 

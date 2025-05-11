@@ -55,7 +55,7 @@ MainScene::MainScene() : Scene("Main Scene")
 
     // --- Cube ---
 
-    _cube.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+    _cube.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::cube());
     _cube.emplace_or_replace<zth::MaterialComponent>(_cube_material);
 
     // --- Lights ---
@@ -65,17 +65,17 @@ MainScene::MainScene() : Scene("Main Scene")
 
     _point_light_1.emplace_or_replace<zth::TransformComponent>(point_light_1_transform_component);
     _point_light_1.emplace_or_replace<zth::LightComponent>(point_light_1_light_component);
-    _point_light_1.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_1.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::sphere());
     _point_light_1.emplace_or_replace<zth::MaterialComponent>(_point_light_1_material);
 
     _point_light_2.emplace_or_replace<zth::TransformComponent>(point_light_2_transform_component);
     _point_light_2.emplace_or_replace<zth::LightComponent>(point_light_2_light_component);
-    _point_light_2.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_2.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::sphere());
     _point_light_2.emplace_or_replace<zth::MaterialComponent>(_point_light_2_material);
 
     _point_light_3.emplace_or_replace<zth::TransformComponent>(point_light_3_transform_component);
     _point_light_3.emplace_or_replace<zth::LightComponent>(point_light_3_light_component);
-    _point_light_3.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light_3.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::sphere());
     _point_light_3.emplace_or_replace<zth::MaterialComponent>(_point_light_3_material);
 }
 

@@ -12,7 +12,6 @@
 #include "zenith/gl/fwd.hpp"
 #include "zenith/gl/vertex_array.hpp"
 #include "zenith/math/geometry.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
@@ -22,6 +21,7 @@
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/result.hpp"
 
 namespace zth {
@@ -235,7 +235,7 @@ private:
 
 struct DrawRectCommand
 {
-    Rect<> rect;
+    BoundedRect<> rect;
     const gl::Texture2D* texture;
     glm::vec4 color;
 
@@ -250,7 +250,7 @@ struct DrawRectCommand
 struct RectRenderBatch
 {
     const gl::Texture2D* texture = nullptr;
-    TemporaryVector<Rect<>> rects;
+    TemporaryVector<BoundedRect<>> rects;
     TemporaryVector<glm::vec4> colors;
 };
 
@@ -277,9 +277,9 @@ public:
     static auto end_scene() -> void;
 
     // The submitted references must all be valid until the renderer finishes rendering the scene.
-    static auto submit(Rect<> rect, glm::vec4 color = colors::white) -> void;
+    static auto submit(BoundedRect<> rect, glm::vec4 color = colors::white) -> void;
     // The submitted references must all be valid until the renderer finishes rendering the scene.
-    static auto submit(Rect<> rect, const gl::Texture2D& texture, glm::vec4 color = colors::white) -> void;
+    static auto submit(BoundedRect<> rect, const gl::Texture2D& texture, glm::vec4 color = colors::white) -> void;
 
     [[nodiscard]] static auto viewport() -> glm::uvec2;
 

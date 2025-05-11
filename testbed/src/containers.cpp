@@ -109,7 +109,7 @@ Containers::Containers() : Scene("Containers")
     // --- Point Light ---
     _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
     _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
-    _point_light.emplace_or_replace<zth::MeshComponent>(zth::meshes::sphere());
+    _point_light.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::sphere());
     _point_light.emplace_or_replace<zth::MaterialComponent>(point_light_material);
 
     // --- Ambient Light ---
@@ -121,7 +121,7 @@ Containers::Containers() : Scene("Containers")
     {
         auto container = create_entity(zth::format("Container {}", i));
 
-        container.emplace_or_replace<zth::MeshComponent>(zth::meshes::cube());
+        container.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::cube());
         container.emplace_or_replace<zth::MaterialComponent>(container_material);
 
         const auto rotation_axis = glm::normalize(glm::vec3{ 1.0f, 0.3f, 0.5f });

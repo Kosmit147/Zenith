@@ -25,9 +25,9 @@ inline const gl::VertexLayout InstanceVertex::layout = gl::VertexLayout::derive_
 
 struct StandardVertex
 {
-    glm::vec3 local_position;
+    glm::vec3 position;
     glm::vec3 normal;
-    glm::vec2 tex_coords;
+    glm::vec2 uv;
 
     static const gl::VertexLayout layout;
 };
@@ -36,8 +36,8 @@ inline const gl::VertexLayout StandardVertex::layout = gl::VertexLayout::derive_
 
 struct Vertex2D
 {
-    glm::vec2 local_position;
-    glm::vec2 tex_coords;
+    glm::vec2 position;
+    glm::vec2 uv;
     glm::vec4 color;
 
     static const gl::VertexLayout layout;

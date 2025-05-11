@@ -48,7 +48,7 @@ Sprites::Sprites() : Scene("Sprites")
     for (std::size_t i = 0; i < 3; i++)
     {
         auto cobble = create_entity(zth::format("Cobble {}", i));
-        cobble.emplace_or_replace<zth::Sprite2DComponent>(zth::Sprite2DComponent{
+        cobble.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
             .texture = cobble_texture,
             .rect = {
                 .position = glm::uvec2{ 600 + i * 200, 600 },
@@ -59,7 +59,7 @@ Sprites::Sprites() : Scene("Sprites")
     }
 
     auto container = create_entity("Container");
-    container.emplace_or_replace<zth::Sprite2DComponent>(zth::Sprite2DComponent{
+    container.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
         .texture = container_texture,
         .rect = {
             .position = glm::uvec2{ 400, 400 },
@@ -69,7 +69,7 @@ Sprites::Sprites() : Scene("Sprites")
     });
 
     auto emoji = create_entity("Emoji");
-    emoji.emplace_or_replace<zth::Sprite2DComponent>(zth::Sprite2DComponent{
+    emoji.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
         .texture = emoji_texture,
         .rect = {
             .position = glm::uvec2{ 600, 400 },

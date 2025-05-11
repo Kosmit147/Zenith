@@ -5,9 +5,9 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
-#include "zenith/memory/temporary_storage.hpp"
 #include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
+#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
 #include "zenith/util/result.hpp"

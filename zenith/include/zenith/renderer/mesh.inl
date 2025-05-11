@@ -3,7 +3,7 @@
 #include <ranges>
 #include <utility>
 
-#include "zenith/renderer/quad.hpp"
+#include "zenith/renderer/primitives.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/renderer/resources/buffers.hpp"
 
