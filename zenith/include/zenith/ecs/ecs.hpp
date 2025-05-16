@@ -85,6 +85,7 @@ public:
     static constexpr InvalidHandle invalid;
 
 public:
+    ConstEntityHandle() = default;
     ConstEntityHandle(InvalidHandle) {}
     ConstEntityHandle(EntityId id, Registry& registry);
 
