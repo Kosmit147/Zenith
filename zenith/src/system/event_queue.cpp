@@ -3,7 +3,7 @@
 namespace zth {
 
 // @speed: Could allocate events using temporary storage or some kind of ring buffer.
-std::queue<Event> EventQueue::_event_queue;
+Queue<Event> EventQueue::_event_queue;
 
 auto EventQueue::push(const Event& event) -> void
 {

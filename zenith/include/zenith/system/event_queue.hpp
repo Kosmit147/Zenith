@@ -1,7 +1,6 @@
 #pragma once
 
-#include <queue>
-
+#include "zenith/stl/queue.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/util/optional.hpp"
 
@@ -14,7 +13,7 @@ public:
     [[nodiscard]] static auto pop() -> Optional<Event>;
 
 private:
-    static std::queue<Event> _event_queue;
+    static Queue<Event> _event_queue;
 };
 
 } // namespace zth
