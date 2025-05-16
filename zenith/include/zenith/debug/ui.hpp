@@ -35,24 +35,63 @@ auto text(const char* txt) -> void;
 auto text(StringView txt) -> void;
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void;
 
+auto drag_int(const char* label, u8& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, u8 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, u8 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, u8 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_int(const char* label, i8& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, i8 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, i8 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, i8 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_int(const char* label, u16& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, u16 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, u16 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, u16 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_int(const char* label, i16& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, i16 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, i16 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, i16 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_int(const char* label, u32& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, u32 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, u32 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, u32 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
 auto drag_int(const char* label, i32& value, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_2(const char* label, i32 values[2], float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_3(const char* label, i32 values[3], float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_4(const char* label, i32 values[4], float drag_speed = default_int_drag_speed) -> bool;
 
-auto drag_uint(const char* label, u32& value, float drag_speed = default_int_drag_speed) -> bool;
-auto drag_uint_2(const char* label, u32 values[2], float drag_speed = default_int_drag_speed) -> bool;
-auto drag_uint_3(const char* label, u32 values[3], float drag_speed = default_int_drag_speed) -> bool;
-auto drag_uint_4(const char* label, u32 values[4], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int(const char* label, u64& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, u64 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, u64 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, u64 values[4], float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_int(const char* label, i64& value, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_2(const char* label, i64 values[2], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_3(const char* label, i64 values[3], float drag_speed = default_int_drag_speed) -> bool;
+auto drag_int_4(const char* label, i64 values[4], float drag_speed = default_int_drag_speed) -> bool;
 
 auto drag_float(const char* label, float& value, float drag_speed = default_float_drag_speed) -> bool;
 auto drag_float_2(const char* label, float values[2], float drag_speed = default_float_drag_speed) -> bool;
 auto drag_float_3(const char* label, float values[3], float drag_speed = default_float_drag_speed) -> bool;
 auto drag_float_4(const char* label, float values[4], float drag_speed = default_float_drag_speed) -> bool;
 
+auto drag_float(const char* label, double& value, float drag_speed = default_float_drag_speed) -> bool;
+auto drag_float_2(const char* label, double values[2], float drag_speed = default_float_drag_speed) -> bool;
+auto drag_float_3(const char* label, double values[3], float drag_speed = default_float_drag_speed) -> bool;
+auto drag_float_4(const char* label, double values[4], float drag_speed = default_float_drag_speed) -> bool;
+
 auto drag_vec(const char* label, glm::uvec2& vec, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_vec(const char* label, glm::uvec3& vec, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_vec(const char* label, glm::uvec4& vec, float drag_speed = default_int_drag_speed) -> bool;
+
+auto drag_vec(const char* label, glm::ivec2& vec, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_vec(const char* label, glm::ivec3& vec, float drag_speed = default_int_drag_speed) -> bool;
+auto drag_vec(const char* label, glm::ivec4& vec, float drag_speed = default_int_drag_speed) -> bool;
 
 auto drag_vec(const char* label, glm::vec2& vec, float drag_speed = default_float_drag_speed) -> bool;
 auto drag_vec(const char* label, glm::vec3& vec, float drag_speed = default_float_drag_speed) -> bool;
@@ -62,20 +101,55 @@ auto drag_angles(const char* label, glm::vec2& angles, float drag_speed = defaul
 auto drag_angles(const char* label, glm::vec3& angles, float drag_speed = default_float_drag_speed) -> bool;
 auto drag_angles(const char* label, glm::vec4& angles, float drag_speed = default_float_drag_speed) -> bool;
 
+auto slide_int(const char* label, u8& value, u8 min, u8 max) -> bool;
+auto slide_int_2(const char* label, u8 values[2], u8 min, u8 max) -> bool;
+auto slide_int_3(const char* label, u8 values[3], u8 min, u8 max) -> bool;
+auto slide_int_4(const char* label, u8 values[4], u8 min, u8 max) -> bool;
+
+auto slide_int(const char* label, i8& value, i8 min, i8 max) -> bool;
+auto slide_int_2(const char* label, i8 values[2], i8 min, i8 max) -> bool;
+auto slide_int_3(const char* label, i8 values[3], i8 min, i8 max) -> bool;
+auto slide_int_4(const char* label, i8 values[4], i8 min, i8 max) -> bool;
+
+auto slide_int(const char* label, u16& value, u16 min, u16 max) -> bool;
+auto slide_int_2(const char* label, u16 values[2], u16 min, u16 max) -> bool;
+auto slide_int_3(const char* label, u16 values[3], u16 min, u16 max) -> bool;
+auto slide_int_4(const char* label, u16 values[4], u16 min, u16 max) -> bool;
+
+auto slide_int(const char* label, i16& value, i16 min, i16 max) -> bool;
+auto slide_int_2(const char* label, i16 values[2], i16 min, i16 max) -> bool;
+auto slide_int_3(const char* label, i16 values[3], i16 min, i16 max) -> bool;
+auto slide_int_4(const char* label, i16 values[4], i16 min, i16 max) -> bool;
+
+auto slide_int(const char* label, u32& value, u32 min, u32 max) -> bool;
+auto slide_int_2(const char* label, u32 values[2], u32 min, u32 max) -> bool;
+auto slide_int_3(const char* label, u32 values[3], u32 min, u32 max) -> bool;
+auto slide_int_4(const char* label, u32 values[4], u32 min, u32 max) -> bool;
+
 auto slide_int(const char* label, i32& value, i32 min, i32 max) -> bool;
 auto slide_int_2(const char* label, i32 values[2], i32 min, i32 max) -> bool;
 auto slide_int_3(const char* label, i32 values[3], i32 min, i32 max) -> bool;
 auto slide_int_4(const char* label, i32 values[4], i32 min, i32 max) -> bool;
 
-auto slide_uint(const char* label, u32& value, u32 min, u32 max) -> bool;
-auto slide_uint_2(const char* label, u32 values[2], u32 min, u32 max) -> bool;
-auto slide_uint_3(const char* label, u32 values[3], u32 min, u32 max) -> bool;
-auto slide_uint_4(const char* label, u32 values[4], u32 min, u32 max) -> bool;
+auto slide_int(const char* label, u64& value, u64 min, u64 max) -> bool;
+auto slide_int_2(const char* label, u64 values[2], u64 min, u64 max) -> bool;
+auto slide_int_3(const char* label, u64 values[3], u64 min, u64 max) -> bool;
+auto slide_int_4(const char* label, u64 values[4], u64 min, u64 max) -> bool;
+
+auto slide_int(const char* label, i64& value, i64 min, i64 max) -> bool;
+auto slide_int_2(const char* label, i64 values[2], i64 min, i64 max) -> bool;
+auto slide_int_3(const char* label, i64 values[3], i64 min, i64 max) -> bool;
+auto slide_int_4(const char* label, i64 values[4], i64 min, i64 max) -> bool;
 
 auto slide_float(const char* label, float& value, float min = 0.0f, float max = 1.0f) -> bool;
 auto slide_float_2(const char* label, float values[2], float min = 0.0f, float max = 1.0f) -> bool;
 auto slide_float_3(const char* label, float values[3], float min = 0.0f, float max = 1.0f) -> bool;
 auto slide_float_4(const char* label, float values[4], float min = 0.0f, float max = 1.0f) -> bool;
+
+auto slide_float(const char* label, double& value, double min = 0.0, double max = 1.0) -> bool;
+auto slide_float_2(const char* label, double values[2], double min = 0.0, double max = 1.0) -> bool;
+auto slide_float_3(const char* label, double values[3], double min = 0.0, double max = 1.0) -> bool;
+auto slide_float_4(const char* label, double values[4], double min = 0.0, double max = 1.0) -> bool;
 
 auto slide_vec(const char* label, glm::uvec2& vec, u32 min, u32 max) -> bool;
 auto slide_vec(const char* label, glm::uvec3& vec, u32 min, u32 max) -> bool;
@@ -96,8 +170,11 @@ auto edit_color(const char* label, glm::vec4& color) -> bool;
 auto pick_color(const char* label, glm::vec3& color) -> bool;
 auto pick_color(const char* label, glm::vec4& color) -> bool;
 
+auto input_int(const char* label, u32& value) -> bool;
 auto input_int(const char* label, i32& value) -> bool;
-auto input_uint(const char* label, u32& value) -> bool;
+auto input_int(const char* label, u64& value) -> bool;
+auto input_int(const char* label, i64& value) -> bool;
+
 auto input_text(const char* label, String& value) -> bool;
 
 auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
