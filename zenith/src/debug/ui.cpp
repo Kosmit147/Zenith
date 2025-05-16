@@ -4,10 +4,7 @@
 #include <glm/trigonometric.hpp>
 #include <imgui_stdlib.h>
 
-#include <limits>
-
 #include "zenith/core/assert.hpp"
-#include "zenith/core/cast.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
@@ -103,79 +100,234 @@ auto text(StringView txt) -> void
     ImGui::TextUnformatted(txt.data(), txt.data() + txt.size());
 }
 
+auto drag_int(const char* label, u8& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_U8, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, u8 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U8, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, u8 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U8, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, u8 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U8, values, 4, drag_speed);
+}
+
+auto drag_int(const char* label, i8& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_S8, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, i8 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S8, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, i8 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S8, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, i8 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S8, values, 4, drag_speed);
+}
+
+auto drag_int(const char* label, u16& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_U16, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, u16 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U16, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, u16 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U16, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, u16 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U16, values, 4, drag_speed);
+}
+
+auto drag_int(const char* label, i16& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_S16, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, i16 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S16, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, i16 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S16, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, i16 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S16, values, 4, drag_speed);
+}
+
+auto drag_int(const char* label, u32& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_U32, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, u32 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U32, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, u32 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U32, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, u32 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_U32, values, 4, drag_speed);
+}
+
 auto drag_int(const char* label, i32& value, float drag_speed) -> bool
 {
-    return ImGui::DragInt(label, &value, drag_speed);
+    return ImGui::DragScalar(label, ImGuiDataType_S32, &value, drag_speed);
 }
 
 auto drag_int_2(const char* label, i32 values[2], float drag_speed) -> bool
 {
-    return ImGui::DragInt2(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_S32, values, 2, drag_speed);
 }
 
 auto drag_int_3(const char* label, i32 values[3], float drag_speed) -> bool
 {
-    return ImGui::DragInt3(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_S32, values, 3, drag_speed);
 }
 
 auto drag_int_4(const char* label, i32 values[4], float drag_speed) -> bool
 {
-    return ImGui::DragInt4(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_S32, values, 4, drag_speed);
 }
 
-auto drag_uint(const char* label, u32& value, float drag_speed) -> bool
+auto drag_int(const char* label, u64& value, float drag_speed) -> bool
 {
-    return ImGui::DragInt(label, reinterpret_cast<i32*>(&value), drag_speed, 0, std::numeric_limits<i32>::max());
+    return ImGui::DragScalar(label, ImGuiDataType_U64, &value, drag_speed);
 }
 
-auto drag_uint_2(const char* label, u32 values[2], float drag_speed) -> bool
+auto drag_int_2(const char* label, u64 values[2], float drag_speed) -> bool
 {
-    return ImGui::DragInt2(label, reinterpret_cast<i32*>(values), drag_speed, 0, std::numeric_limits<i32>::max());
+    return ImGui::DragScalarN(label, ImGuiDataType_U64, values, 2, drag_speed);
 }
 
-auto drag_uint_3(const char* label, u32 values[3], float drag_speed) -> bool
+auto drag_int_3(const char* label, u64 values[3], float drag_speed) -> bool
 {
-    return ImGui::DragInt3(label, reinterpret_cast<i32*>(values), drag_speed, 0, std::numeric_limits<i32>::max());
+    return ImGui::DragScalarN(label, ImGuiDataType_U64, values, 3, drag_speed);
 }
 
-auto drag_uint_4(const char* label, u32 values[4], float drag_speed) -> bool
+auto drag_int_4(const char* label, u64 values[4], float drag_speed) -> bool
 {
-    return ImGui::DragInt4(label, reinterpret_cast<i32*>(values), drag_speed, 0, std::numeric_limits<i32>::max());
+    return ImGui::DragScalarN(label, ImGuiDataType_U64, values, 4, drag_speed);
+}
+
+auto drag_int(const char* label, i64& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_S64, &value, drag_speed);
+}
+
+auto drag_int_2(const char* label, i64 values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S64, values, 2, drag_speed);
+}
+
+auto drag_int_3(const char* label, i64 values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S64, values, 3, drag_speed);
+}
+
+auto drag_int_4(const char* label, i64 values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_S64, values, 4, drag_speed);
 }
 
 auto drag_float(const char* label, float& value, float drag_speed) -> bool
 {
-    return ImGui::DragFloat(label, &value, drag_speed);
+    return ImGui::DragScalar(label, ImGuiDataType_Float, &value, drag_speed);
 }
 
 auto drag_float_2(const char* label, float values[2], float drag_speed) -> bool
 {
-    return ImGui::DragFloat2(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_Float, values, 2, drag_speed);
 }
 
 auto drag_float_3(const char* label, float values[3], float drag_speed) -> bool
 {
-    return ImGui::DragFloat3(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_Float, values, 3, drag_speed);
 }
 
 auto drag_float_4(const char* label, float values[4], float drag_speed) -> bool
 {
-    return ImGui::DragFloat4(label, values, drag_speed);
+    return ImGui::DragScalarN(label, ImGuiDataType_Float, values, 4, drag_speed);
+}
+
+auto drag_float(const char* label, double& value, float drag_speed) -> bool
+{
+    return ImGui::DragScalar(label, ImGuiDataType_Double, &value, drag_speed);
+}
+
+auto drag_float_2(const char* label, double values[2], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_Double, values, 2, drag_speed);
+}
+
+auto drag_float_3(const char* label, double values[3], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_Double, values, 3, drag_speed);
+}
+
+auto drag_float_4(const char* label, double values[4], float drag_speed) -> bool
+{
+    return ImGui::DragScalarN(label, ImGuiDataType_Double, values, 4, drag_speed);
 }
 
 auto drag_vec(const char* label, glm::uvec2& vec, float drag_speed) -> bool
 {
-    return drag_uint_2(label, glm::value_ptr(vec), drag_speed);
+    return drag_int_2(label, glm::value_ptr(vec), drag_speed);
 }
 
 auto drag_vec(const char* label, glm::uvec3& vec, float drag_speed) -> bool
 {
-    return drag_uint_3(label, glm::value_ptr(vec), drag_speed);
+    return drag_int_3(label, glm::value_ptr(vec), drag_speed);
 }
 
 auto drag_vec(const char* label, glm::uvec4& vec, float drag_speed) -> bool
 {
-    return drag_uint_4(label, glm::value_ptr(vec), drag_speed);
+    return drag_int_4(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_vec(const char* label, glm::ivec2& vec, float drag_speed) -> bool
+{
+    return drag_int_2(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_vec(const char* label, glm::ivec3& vec, float drag_speed) -> bool
+{
+    return drag_int_3(label, glm::value_ptr(vec), drag_speed);
+}
+
+auto drag_vec(const char* label, glm::ivec4& vec, float drag_speed) -> bool
+{
+    return drag_int_4(label, glm::value_ptr(vec), drag_speed);
 }
 
 auto drag_vec(const char* label, glm::vec2& vec, float drag_speed) -> bool
@@ -232,79 +384,219 @@ auto drag_angles(const char* label, glm::vec4& angles, float drag_speed) -> bool
     return false;
 }
 
+auto slide_int(const char* label, u8& value, u8 min, u8 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_U8, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, u8 values[2], u8 min, u8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U8, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, u8 values[3], u8 min, u8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U8, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, u8 values[4], u8 min, u8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U8, values, 4, &min, &max);
+}
+
+auto slide_int(const char* label, i8& value, i8 min, i8 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_S8, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, i8 values[2], i8 min, i8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S8, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, i8 values[3], i8 min, i8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S8, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, i8 values[4], i8 min, i8 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S8, values, 4, &min, &max);
+}
+
+auto slide_int(const char* label, u16& value, u16 min, u16 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_U16, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, u16 values[2], u16 min, u16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U16, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, u16 values[3], u16 min, u16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U16, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, u16 values[4], u16 min, u16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U16, values, 4, &min, &max);
+}
+
+auto slide_int(const char* label, i16& value, i16 min, i16 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_S16, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, i16 values[2], i16 min, i16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S16, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, i16 values[3], i16 min, i16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S16, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, i16 values[4], i16 min, i16 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S16, values, 4, &min, &max);
+}
+
+auto slide_int(const char* label, u32& value, u32 min, u32 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_U32, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, u32 values[2], u32 min, u32 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U32, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, u32 values[3], u32 min, u32 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U32, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, u32 values[4], u32 min, u32 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_U32, values, 4, &min, &max);
+}
+
 auto slide_int(const char* label, i32& value, i32 min, i32 max) -> bool
 {
-    return ImGui::SliderInt(label, &value, min, max);
+    return ImGui::SliderScalar(label, ImGuiDataType_S32, &value, &min, &max);
 }
 
 auto slide_int_2(const char* label, i32 values[2], i32 min, i32 max) -> bool
 {
-    return ImGui::SliderInt2(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_S32, values, 2, &min, &max);
 }
 
 auto slide_int_3(const char* label, i32 values[3], i32 min, i32 max) -> bool
 {
-    return ImGui::SliderInt3(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_S32, values, 3, &min, &max);
 }
 
 auto slide_int_4(const char* label, i32 values[4], i32 min, i32 max) -> bool
 {
-    return ImGui::SliderInt4(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_S32, values, 4, &min, &max);
 }
 
-auto slide_uint(const char* label, u32& value, u32 min, u32 max) -> bool
+auto slide_int(const char* label, u64& value, u64 min, u64 max) -> bool
 {
-    return ImGui::SliderInt(label, reinterpret_cast<i32*>(&value), clamping_cast<i32>(min), clamping_cast<i32>(max));
+    return ImGui::SliderScalar(label, ImGuiDataType_U64, &value, &min, &max);
 }
 
-auto slide_uint_2(const char* label, u32 values[2], u32 min, u32 max) -> bool
+auto slide_int_2(const char* label, u64 values[2], u64 min, u64 max) -> bool
 {
-    return ImGui::SliderInt2(label, reinterpret_cast<i32*>(values), clamping_cast<i32>(min), clamping_cast<i32>(max));
+    return ImGui::SliderScalarN(label, ImGuiDataType_U64, values, 2, &min, &max);
 }
 
-auto slide_uint_3(const char* label, u32 values[3], u32 min, u32 max) -> bool
+auto slide_int_3(const char* label, u64 values[3], u64 min, u64 max) -> bool
 {
-    return ImGui::SliderInt3(label, reinterpret_cast<i32*>(values), clamping_cast<i32>(min), clamping_cast<i32>(max));
+    return ImGui::SliderScalarN(label, ImGuiDataType_U64, values, 3, &min, &max);
 }
 
-auto slide_uint_4(const char* label, u32 values[4], u32 min, u32 max) -> bool
+auto slide_int_4(const char* label, u64 values[4], u64 min, u64 max) -> bool
 {
-    return ImGui::SliderInt4(label, reinterpret_cast<i32*>(values), clamping_cast<i32>(min), clamping_cast<i32>(max));
+    return ImGui::SliderScalarN(label, ImGuiDataType_U64, values, 4, &min, &max);
+}
+
+auto slide_int(const char* label, i64& value, i64 min, i64 max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_S64, &value, &min, &max);
+}
+
+auto slide_int_2(const char* label, i64 values[2], i64 min, i64 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S64, values, 2, &min, &max);
+}
+
+auto slide_int_3(const char* label, i64 values[3], i64 min, i64 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S64, values, 3, &min, &max);
+}
+
+auto slide_int_4(const char* label, i64 values[4], i64 min, i64 max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_S64, values, 4, &min, &max);
 }
 
 auto slide_float(const char* label, float& value, float min, float max) -> bool
 {
-    return ImGui::SliderFloat(label, &value, min, max);
+    return ImGui::SliderScalar(label, ImGuiDataType_Float, &value, &min, &max);
 }
 
 auto slide_float_2(const char* label, float values[2], float min, float max) -> bool
 {
-    return ImGui::SliderFloat2(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_Float, values, 2, &min, &max);
 }
 
 auto slide_float_3(const char* label, float values[3], float min, float max) -> bool
 {
-    return ImGui::SliderFloat3(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_Float, values, 3, &min, &max);
 }
 
 auto slide_float_4(const char* label, float values[4], float min, float max) -> bool
 {
-    return ImGui::SliderFloat4(label, values, min, max);
+    return ImGui::SliderScalarN(label, ImGuiDataType_Float, values, 4, &min, &max);
+}
+
+auto slide_float(const char* label, double& value, double min, double max) -> bool
+{
+    return ImGui::SliderScalar(label, ImGuiDataType_Double, &value, &min, &max);
+}
+
+auto slide_float_2(const char* label, double values[2], double min, double max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_Double, values, 2, &min, &max);
+}
+
+auto slide_float_3(const char* label, double values[3], double min, double max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_Double, values, 3, &min, &max);
+}
+
+auto slide_float_4(const char* label, double values[4], double min, double max) -> bool
+{
+    return ImGui::SliderScalarN(label, ImGuiDataType_Double, values, 4, &min, &max);
 }
 
 auto slide_vec(const char* label, glm::uvec2& vec, u32 min, u32 max) -> bool
 {
-    return slide_uint_2(label, glm::value_ptr(vec), min, max);
+    return slide_int_2(label, glm::value_ptr(vec), min, max);
 }
 
 auto slide_vec(const char* label, glm::uvec3& vec, u32 min, u32 max) -> bool
 {
-    return slide_uint_3(label, glm::value_ptr(vec), min, max);
+    return slide_int_3(label, glm::value_ptr(vec), min, max);
 }
 
 auto slide_vec(const char* label, glm::uvec4& vec, u32 min, u32 max) -> bool
 {
-    return slide_uint_4(label, glm::value_ptr(vec), min, max);
+    return slide_int_4(label, glm::value_ptr(vec), min, max);
 }
 
 auto slide_vec(const char* label, glm::vec2& vec, float min, float max) -> bool
@@ -386,14 +678,24 @@ auto pick_color(const char* label, glm::vec4& color) -> bool
     return ImGui::ColorPicker4(label, glm::value_ptr(color));
 }
 
-auto input_int(const char* label, i32& value) -> bool
+auto input_int(const char* label, u32& value) -> bool
 {
-    return ImGui::InputInt(label, &value);
+    return ImGui::InputScalar(label, ImGuiDataType_U32, &value);
 }
 
-auto input_uint(const char* label, u32& value) -> bool
+auto input_int(const char* label, i32& value) -> bool
 {
-    return ImGui::InputInt(label, reinterpret_cast<i32*>(&value));
+    return ImGui::InputScalar(label, ImGuiDataType_S32, &value);
+}
+
+auto input_int(const char* label, u64& value) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_U64, &value);
+}
+
+auto input_int(const char* label, i64& value) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_S64, &value);
 }
 
 auto input_text(const char* label, String& value) -> bool
@@ -410,7 +712,7 @@ auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed) -> bool
     return value_changed;
 }
 
-auto drag_rect_bounds(const char* label, BoundedRect<u32>& rect, float drag_speed) -> bool
+auto drag_rect(const char* label, BoundedRect<u32>& rect, float drag_speed) -> bool
 {
     text(label);
     auto value_changed = false;
@@ -423,21 +725,21 @@ auto slide_rect(const char* label, Rect<u32>& rect, Rect<u32> min, Rect<u32> max
 {
     text(label);
     auto value_changed = false;
-    value_changed |= slide_uint("Position (X):", rect.position.x, min.position.x, max.position.x);
-    value_changed |= slide_uint("Position (Y):", rect.position.y, min.position.y, max.position.y);
-    value_changed |= slide_uint("Size (X):", rect.size.x, min.size.x, max.size.x);
-    value_changed |= slide_uint("Size (Y):", rect.size.y, min.size.y, max.size.y);
+    value_changed |= slide_int("Position (X):", rect.position.x, min.position.x, max.position.x);
+    value_changed |= slide_int("Position (Y):", rect.position.y, min.position.y, max.position.y);
+    value_changed |= slide_int("Size (X):", rect.size.x, min.size.x, max.size.x);
+    value_changed |= slide_int("Size (Y):", rect.size.y, min.size.y, max.size.y);
     return value_changed;
 }
 
-auto slide_rect_bounds(const char* label, BoundedRect<u32>& rect, BoundedRect<u32> min, BoundedRect<u32> max) -> bool
+auto slide_rect(const char* label, BoundedRect<u32>& rect, BoundedRect<u32> min, BoundedRect<u32> max) -> bool
 {
     text(label);
     auto value_changed = false;
-    value_changed |= slide_uint("Top-left (X):", rect.top_left.x, min.top_left.x, max.top_left.x);
-    value_changed |= slide_uint("Top-left (Y):", rect.top_left.y, min.top_left.y, max.top_left.y);
-    value_changed |= slide_uint("Bottom-right (X):", rect.bottom_right.x, min.bottom_right.x, max.bottom_right.x);
-    value_changed |= slide_uint("Bottom-right (Y):", rect.bottom_right.y, min.bottom_right.y, max.bottom_right.y);
+    value_changed |= slide_int("Top-left (X):", rect.top_left.x, min.top_left.x, max.top_left.x);
+    value_changed |= slide_int("Top-left (Y):", rect.top_left.y, min.top_left.y, max.top_left.y);
+    value_changed |= slide_int("Bottom-right (X):", rect.bottom_right.x, min.bottom_right.x, max.bottom_right.x);
+    value_changed |= slide_int("Bottom-right (Y):", rect.bottom_right.y, min.bottom_right.y, max.bottom_right.y);
     return value_changed;
 }
 
@@ -779,7 +1081,7 @@ auto DebugPanel::display() -> void
 
     if (frame_rate_limit_enabled)
     {
-        if (input_uint("##", _frame_rate_limit))
+        if (input_int("##", _frame_rate_limit))
             Window::set_frame_rate_limit(_frame_rate_limit);
     }
 

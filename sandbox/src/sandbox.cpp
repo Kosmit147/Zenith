@@ -32,6 +32,6 @@ const zth::ApplicationSpec app_spec = {
 
 Sandbox::Sandbox() : Application(app_spec)
 {
-    push_layer(zth::make_unique<MainLayer>());
+    (void)push_layer(zth::make_unique<MainLayer>());
     zth::SceneManager::queue_scene<MainScene>();
 }
