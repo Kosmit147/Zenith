@@ -4,6 +4,8 @@
 #include <optional>
 #include <utility>
 
+#include "zenith/util/reference.hpp"
+
 namespace zth {
 
 template<typename T> using Optional = std::optional<T>;
@@ -24,6 +26,11 @@ template<typename T, typename Elem>
 [[nodiscard]] constexpr auto make_optional(std::initializer_list<Elem> values, auto&&... args) -> decltype(auto)
 {
     return std::make_optional<T>(values, std::forward<decltype(args)>(args)...);
+}
+
+template<typename T> [[nodiscard]] auto make_optional_reference_from_pointer(T* pointer) -> Optional<Reference<T>>
+{
+    return pointer ? zth::make_optional(make_reference(*pointer)) : nil;
 }
 
 } // namespace zth

@@ -43,11 +43,12 @@ auto FlyCamera::debug_edit() -> void
 
 void FlyCamera::on_event(EntityHandle actor, const Event& event)
 {
-    if (event.type() == EventType::WindowResized && actor.any_of<CameraComponent>())
+    if (event.type() == EventType::WindowResized)
     {
         auto [new_size] = event.window_resized_event();
-        auto& camera = actor.get<CameraComponent>();
-        camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
+
+        if (auto camera = actor.try_get<CameraComponent>())
+            camera->get().aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
     }
 }
 

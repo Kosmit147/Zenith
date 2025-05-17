@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 namespace zth {
 
 template<typename... Components> auto ConstEntityHandle::all_of() const -> bool
@@ -15,6 +17,11 @@ template<typename... Components> auto ConstEntityHandle::any_of() const -> bool
 template<typename... Components> auto ConstEntityHandle::get() const -> decltype(auto)
 {
     return static_cast<const Registry*>(_registry)->get<Components...>(*this);
+}
+
+template<typename... Components> auto ConstEntityHandle::try_get() const -> decltype(auto)
+{
+    return static_cast<const Registry*>(_registry)->try_get<Components...>(*this);
 }
 
 template<typename Component> auto ConstEntityHandle::get_or_emplace(auto&&... args) const -> decltype(auto)
@@ -64,6 +71,11 @@ template<typename... Components> auto EntityHandle::erase() const -> void
 template<typename... Components> auto EntityHandle::get() const -> decltype(auto)
 {
     return _registry->get<Components...>(*this);
+}
+
+template<typename... Components> auto EntityHandle::try_get() const -> decltype(auto)
+{
+    return _registry->try_get<Components...>(*this);
 }
 
 template<typename Component> auto EntityHandle::get_or_emplace(auto&&... args) const -> decltype(auto)
@@ -131,6 +143,20 @@ template<typename... Components> auto Registry::any_of(EntityId id) const -> boo
 template<typename... Components> auto Registry::get(this auto&& self, EntityId id) -> decltype(auto)
 {
     return self._registry.template get<Components...>(id);
+}
+
+template<typename... Components> auto Registry::try_get(this auto&& self, EntityId id) -> auto
+{
+    if constexpr (sizeof...(Components) == 1)
+    {
+        return make_optional_reference_from_pointer(self._registry.template try_get<Components...>(id));
+    }
+    else
+    {
+        return std::apply(
+            [](auto&&... pointers) { return std::make_tuple(make_optional_reference_from_pointer(pointers)...); },
+            self._registry.template try_get<Components...>(id));
+    }
 }
 
 template<typename Component>
