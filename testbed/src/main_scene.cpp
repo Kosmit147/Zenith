@@ -11,7 +11,9 @@ const auto directional_light_light_component = zth::LightComponent{ zth::Directi
 
 } // namespace
 
-MainScene::MainScene() : Scene("Main Scene")
+MainScene::MainScene() : Scene("Main Scene") {}
+
+auto MainScene::on_load() -> void
 {
     // --- Camera ---
     _camera.transform().translate(glm::vec3{ 0.0f, 0.0f, 5.0f });

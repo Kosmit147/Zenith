@@ -47,7 +47,9 @@ constexpr auto point_light_material_asset_id = "point_light_material"_hs;
 
 } // namespace
 
-Containers::Containers() : Scene("Containers")
+Containers::Containers() : Scene("Containers") {}
+
+auto Containers::on_load() -> void
 {
     // clang-format off
 
