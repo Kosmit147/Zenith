@@ -164,6 +164,7 @@ auto slide_angles(const char* label, glm::vec3& angles, float min_degrees = 0.0f
 auto slide_angles(const char* label, glm::vec4& angles, float min_degrees = 0.0f, float max_degrees = 360.0f) -> bool;
 
 auto checkbox(const char* label, bool& value) -> bool;
+auto button(const char* label) -> bool;
 
 auto edit_color(const char* label, glm::vec3& color) -> bool;
 auto edit_color(const char* label, glm::vec4& color) -> bool;

@@ -658,6 +658,11 @@ auto checkbox(const char* label, bool& value) -> bool
     return ImGui::Checkbox(label, &value);
 }
 
+auto button(const char* label) -> bool
+{
+    return ImGui::Button(label);
+}
+
 auto edit_color(const char* label, glm::vec3& color) -> bool
 {
     return ImGui::ColorEdit3(label, glm::value_ptr(color));
@@ -978,7 +983,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
     ImGui::SeparatorText("##");
 
-    if (ImGui::Button("Add Component"))
+    if (button("Add Component"))
         ImGui::OpenPopup("AddComponentPopup");
 
     if (ImGui::BeginPopup("AddComponentPopup"))
