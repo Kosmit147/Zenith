@@ -48,7 +48,7 @@ auto Sprites::on_load() -> void
                 .position = glm::uvec2{ 600 + i * 200, 600 },
                 .size = glm::uvec2{ 200, 200 },
             },
-            .color = zth::colors::red,
+            .color = zth::Random::rgba_color(),
         });
     }
 
@@ -59,7 +59,7 @@ auto Sprites::on_load() -> void
             .position = glm::uvec2{ 400, 400 },
             .size = glm::uvec2{ 200, 200 },
         },
-        .color = zth::colors::green,
+        .color = zth::Random::rgba_color(),
     });
 
     auto emoji = create_entity("Emoji");
@@ -69,7 +69,7 @@ auto Sprites::on_load() -> void
             .position = glm::uvec2{ 600, 400 },
             .size = glm::uvec2{ 200, 200 },
         },
-        .color = zth::colors::blue,
+        .color = zth::Random::rgba_color(),
     });
 }
 

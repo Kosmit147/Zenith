@@ -31,43 +31,52 @@ public:
     template<std::integral T = int> [[nodiscard]] static auto get_int(T min, T max) -> T
     {
         ZTH_ASSERT(min <= max);
-        std::uniform_int_distribution dist(min, max);
+        std::uniform_int_distribution dist{ min, max };
         return dist(_generator);
     }
 
     // Generates a random floating-point number in range [min; max).
-    template<std::floating_point T = float> [[nodiscard]] static auto get_float(T min = 0.0, T max = 1.0) -> T
+    template<std::floating_point T = float>
+    [[nodiscard]] static auto get_float(T min = static_cast<T>(0.0), T max = static_cast<T>(1.0)) -> T
     {
         ZTH_ASSERT(min <= max);
-        std::uniform_real_distribution dist(min, max);
+        std::uniform_real_distribution dist{ min, max };
         return dist(_generator);
     }
 
     // Generates a random floating-point number in range [0 rad; 6.28319 rad).
     template<std::floating_point T = float> [[nodiscard]] static auto angle() -> T
     {
-        static constexpr auto full_angle = std::numbers::pi_v<T> * 2;
-        return get_float<T>(0.0, full_angle);
+        static constexpr auto full_angle = std::numbers::pi_v<T> * static_cast<T>(2);
+        return get_float<T>(static_cast<T>(0), full_angle);
     }
 
-    template<std::floating_point T = float> [[nodiscard]] static auto point_on_sphere(T radius = 1.0) -> glm::vec<3, T>
+    static auto rgb_color() -> glm::vec3;
+    static auto rgba_color() -> glm::vec4;
+
+    static auto rgb8_color() -> glm::vec<3, u8>;
+    static auto rgba8_color() -> glm::vec<4, u8>;
+
+    template<std::floating_point T = float>
+    [[nodiscard]] static auto point_on_sphere(T radius = static_cast<T>(1.0)) -> glm::vec<3, T>
     {
         return glm::sphericalRand(radius);
     }
 
     template<std::floating_point T = float>
-    [[nodiscard]] static auto point_inside_sphere(T radius = 1.0) -> glm::vec<3, T>
+    [[nodiscard]] static auto point_inside_sphere(T radius = static_cast<T>(1.0)) -> glm::vec<3, T>
     {
         return glm::ballRand(radius);
     }
 
-    template<std::floating_point T = float> [[nodiscard]] static auto point_on_circle(T radius = 1.0) -> glm::vec<2, T>
+    template<std::floating_point T = float>
+    [[nodiscard]] static auto point_on_circle(T radius = static_cast<T>(1.0)) -> glm::vec<2, T>
     {
         return glm::circularRand(radius);
     }
 
     template<std::floating_point T = float>
-    [[nodiscard]] static auto point_inside_circle(T radius = 1.0) -> glm::vec<2, T>
+    [[nodiscard]] static auto point_inside_circle(T radius = static_cast<T>(1.0)) -> glm::vec<2, T>
     {
         return glm::diskRand(radius);
     }
@@ -87,12 +96,14 @@ public:
         return glm::perlin(position);
     }
 
-    template<std::floating_point T = float> [[nodiscard]] static auto normal(T mean = 0.0, T deviation = 1.0) -> T
+    template<std::floating_point T = float>
+    [[nodiscard]] static auto normal(T mean = static_cast<T>(0.0), T deviation = static_cast<T>(1.0)) -> T
     {
         return glm::gaussRand(mean, deviation);
     }
 
-    template<std::floating_point T = float> [[nodiscard]] static auto linear(T min = 0.0, T max = 1.0) -> T
+    template<std::floating_point T = float>
+    [[nodiscard]] static auto linear(T min = static_cast<T>(0.0), T max = static_cast<T>(1.0)) -> T
     {
         ZTH_ASSERT(min <= max);
         return glm::linearRand(min, max);
