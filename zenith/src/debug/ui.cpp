@@ -1060,13 +1060,22 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
     ImGui::End();
 }
 
-DebugPanel::DebugPanel(StringView label) : _label(label) {}
+DebugPanel::DebugPanel(StringView label) : _label{ label } {}
 
 auto DebugPanel::display() -> void
 {
     ImGui::Begin(_label.c_str());
 
     text("FPS: {:.2f}", ImGui::GetIO().Framerate);
+
+    auto last_frame_time = Window::last_frame_time();
+    auto target_frame_time = Window::target_frame_time();
+
+    if (target_frame_time != 0.0)
+        text("Frame time: {:.5f}ms ({:.2f}%)", last_frame_time * 1000.0, last_frame_time / target_frame_time * 100.0);
+    else
+        text("Frame time: {:.5f}ms", last_frame_time * 1000.0);
+
     text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
     text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
 
@@ -1135,7 +1144,7 @@ auto DebugPanel::display() -> void
     ImGui::End();
 }
 
-ScenePicker::ScenePicker(StringView label) : _label(label) {}
+ScenePicker::ScenePicker(StringView label) : _label{ label } {}
 
 auto ScenePicker::display() -> void
 {

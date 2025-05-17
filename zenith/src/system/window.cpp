@@ -148,13 +148,14 @@ auto Window::swap_buffers() -> void
 {
     glfwSwapBuffers(_window);
 
-    auto frame_time = time() - _last_frame_time;
+    auto frame_time = time() - _last_swap_buffers_time_point;
+    _last_frame_time = frame_time;
 
     // @todo: Sleep instead if spinning.
     while (frame_time < _target_frame_time)
-        frame_time = time() - _last_frame_time;
+        frame_time = time() - _last_swap_buffers_time_point;
 
-    _last_frame_time = time();
+    _last_swap_buffers_time_point = time();
 }
 
 auto Window::poll_events() -> void
@@ -239,6 +240,16 @@ auto Window::cursor_enabled() -> bool
 
     ZTH_ASSERT(false);
     return false;
+}
+
+auto Window::target_frame_time() -> double
+{
+    return _target_frame_time;
+}
+
+auto Window::last_frame_time() -> double
+{
+    return _last_frame_time;
 }
 
 auto Window::create_glfw_window(glm::uvec2 size, const char* title, bool fullscreen) -> GLFWwindow*
