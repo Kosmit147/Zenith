@@ -1,6 +1,7 @@
 #include "zenith/core/random.hpp"
 
 #include "zenith/log/logger.hpp"
+#include "zenith/util/color.hpp"
 
 namespace zth {
 
@@ -18,6 +19,26 @@ auto Random::init() -> Result<void, String>
 auto Random::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Random number generator shut down.");
+}
+
+auto Random::rgb_color() -> glm::vec3
+{
+    return saturate_color(glm::vec3{ get_float(), get_float(), get_float() });
+}
+
+auto Random::rgba_color() -> glm::vec4
+{
+    return { rgb_color(), 1.0f };
+}
+
+auto Random::rgb8_color() -> glm::vec<3, u8>
+{
+    return saturate_color(glm::vec<3, u8>{ get_int<u16>(0, 255), get_int<u16>(0, 255), get_int<u16>(0, 255) });
+}
+
+auto Random::rgba8_color() -> glm::vec<4, u8>
+{
+    return { rgb8_color(), 255 };
 }
 
 template auto Random::get_int<u16>(u16, u16) -> u16;
