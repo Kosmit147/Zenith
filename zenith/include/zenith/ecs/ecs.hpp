@@ -95,6 +95,7 @@ public:
     template<typename... Components> [[nodiscard]] auto all_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto any_of() const -> bool;
     template<typename... Components> [[nodiscard]] auto get() const -> decltype(auto);
+    template<typename... Components> [[nodiscard]] auto try_get() const -> decltype(auto);
     template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> decltype(auto);
 
     [[nodiscard]] auto id() const { return _id; }
@@ -127,6 +128,7 @@ public:
     template<typename... Components> auto remove() const -> usize;
     template<typename... Components> auto erase() const -> void;
     template<typename... Components> [[nodiscard]] auto get() const -> decltype(auto);
+    template<typename... Components> [[nodiscard]] auto try_get() const -> decltype(auto);
     template<typename Component> [[nodiscard]] auto get_or_emplace(auto&&... args) const -> decltype(auto);
 
     auto destroy() -> bool;
@@ -167,6 +169,7 @@ public:
     template<typename... Components> [[nodiscard]] auto all_of(EntityId id) const -> bool;
     template<typename... Components> [[nodiscard]] auto any_of(EntityId id) const -> bool;
     template<typename... Components> [[nodiscard]] auto get(this auto&& self, EntityId id) -> decltype(auto);
+    template<typename... Components> [[nodiscard]] auto try_get(this auto&& self, EntityId id) -> auto;
     template<typename Component>
     [[nodiscard]] auto get_or_emplace(this auto&& self, EntityId id, auto&&... args) -> decltype(auto);
 

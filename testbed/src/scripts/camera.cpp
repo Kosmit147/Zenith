@@ -1,5 +1,7 @@
 #include "camera.hpp"
 
+#include <glm/gtx/structured_bindings.hpp>
+
 namespace scripts {
 
 auto Camera::display_label() const -> const char*
@@ -115,27 +117,23 @@ auto Camera::on_attach(zth::EntityHandle actor) -> void
 
 auto Camera::on_window_resized_event(zth::EntityHandle actor, const zth::WindowResizedEvent& event) -> void
 {
-    if (!actor.any_of<zth::CameraComponent>())
-        return;
+    auto [x, y] = event.new_size;
 
-    auto [new_size] = event;
-    auto& camera = actor.get<zth::CameraComponent>();
-    camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
+    if (auto camera = actor.try_get<zth::CameraComponent>())
+        camera->get().aspect_ratio = static_cast<float>(x) / static_cast<float>(y);
 }
 
 auto Camera::on_key_pressed_event(zth::EntityHandle actor, const zth::KeyPressedEvent& event) -> void
 {
-    if (!actor.any_of<zth::LightComponent>())
-        return;
-
     if (event.key == toggle_flashlight_key)
     {
         _flashlight_on = !_flashlight_on;
 
-        auto& light = actor.get<zth::LightComponent>();
-
-        if (light.type() == zth::LightType::Spot)
-            light.spot_light().properties.color = _flashlight_on ? zth::colors::white : zth::colors::black;
+        if (auto light = actor.try_get<zth::LightComponent>())
+        {
+            if (light->get().type() == zth::LightType::Spot)
+                light->get().spot_light().properties.color = _flashlight_on ? zth::colors::white : zth::colors::black;
+        }
     }
 }
 
