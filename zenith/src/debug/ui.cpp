@@ -100,6 +100,11 @@ auto text(StringView txt) -> void
     ImGui::TextUnformatted(txt.data(), txt.data() + txt.size());
 }
 
+auto separator_text(const char* txt) -> void
+{
+    ImGui::SeparatorText(txt);
+}
+
 auto drag_int(const char* label, u8& value, float drag_speed) -> bool
 {
     return ImGui::DragScalar(label, ImGuiDataType_U8, &value, drag_speed);
@@ -981,7 +986,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     if (entity.any_of<ScriptComponent>())
         display_component_for_entity_in_inspector<ScriptComponent>(entity);
 
-    ImGui::SeparatorText("##");
+    separator_text("##");
 
     if (button("Add Component"))
         ImGui::OpenPopup("AddComponentPopup");

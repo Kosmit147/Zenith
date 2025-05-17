@@ -35,6 +35,8 @@ auto text(const char* txt) -> void;
 auto text(StringView txt) -> void;
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void;
 
+auto separator_text(const char* txt) -> void;
+
 auto drag_int(const char* label, u8& value, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_2(const char* label, u8 values[2], float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_3(const char* label, u8 values[3], float drag_speed = default_int_drag_speed) -> bool;
