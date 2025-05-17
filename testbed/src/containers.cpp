@@ -1,30 +1,10 @@
 #include "containers.hpp"
 
 #include "embedded.hpp"
+#include "scripts/camera.hpp"
+#include "scripts/light.hpp"
 
 namespace {
-
-const auto camera_transform_component =
-    zth::TransformComponent{ glm::vec3{ 0.0f, 0.0f, 5.0f }, zth::math::world_forward };
-
-const auto camera_camera_component = zth::CameraComponent{
-    .aspect_ratio = 16.0f / 9.0f,
-    .fov = glm::radians(45.0f),
-};
-
-const auto camera_light_component = zth::LightComponent{
-    zth::SpotLight {
-        .attenuation = {
-            .linear = 0.09f,
-            .quadratic = 0.032f,
-        },
-    },
-};
-
-const auto directional_light_transform_component = zth::TransformComponent{
-    glm::vec3{ 0.0f },
-    glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }),
-};
 
 const auto directional_light_light_component = zth::LightComponent{
     zth::DirectionalLight{
@@ -34,12 +14,6 @@ const auto directional_light_light_component = zth::LightComponent{
             .specular = glm::vec3{ 0.5f },
         },
     },
-};
-
-const auto point_light_transform_component = zth::TransformComponent{
-    glm::vec3{ -0.7f, 1.3f, 1.7f },
-    glm::identity<glm::quat>(),
-    0.1f,
 };
 
 const auto point_light_light_component = zth::LightComponent {
@@ -97,26 +71,24 @@ Containers::Containers() : Scene("Containers")
     // clang-format on
 
     // --- Camera ---
-    _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
-    _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
-    _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<zth::scripts::FlyCamera>());
-    _camera.emplace_or_replace<zth::LightComponent>(camera_light_component);
+    _camera.transform().translate(glm::vec3{ 0.0f, 0.0f, 5.0f });
+    _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<scripts::Camera>());
 
     // --- Directional Light ---
-    _directional_light.emplace_or_replace<zth::TransformComponent>(directional_light_transform_component);
+    _directional_light.transform().set_direction(glm::normalize(glm::vec3{ 0.0f, -1.0f, -1.0f }));
     _directional_light.emplace_or_replace<zth::LightComponent>(directional_light_light_component);
 
     // --- Point Light ---
-    _point_light.emplace_or_replace<zth::TransformComponent>(point_light_transform_component);
+    _point_light.transform().translate(glm::vec3{ -0.7f, 1.3f, 1.7f }).scale(0.1f);
     _point_light.emplace_or_replace<zth::LightComponent>(point_light_light_component);
     _point_light.emplace_or_replace<zth::MeshRendererComponent>(zth::meshes::sphere());
     _point_light.emplace_or_replace<zth::MaterialComponent>(point_light_material);
+    _point_light.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<scripts::Light>(point_light_material));
 
     // --- Ambient Light ---
     _ambient_light.emplace_or_replace<zth::LightComponent>(ambient_light_light_component);
 
     // --- Containers ---
-
     for (const auto [i, position] : container_positions | std::views::enumerate)
     {
         auto container = create_entity(zth::format("Container {}", i));
@@ -133,29 +105,6 @@ Containers::Containers() : Scene("Containers")
     }
 }
 
-auto Containers::on_event(const zth::Event& event) -> void
-{
-    switch (event.type())
-    {
-        using enum zth::EventType;
-    case KeyPressed:
-    {
-        auto key_pressed_event = event.key_pressed_event();
-        on_key_pressed_event(key_pressed_event);
-    }
-    break;
-    default:
-        break;
-    }
-}
-
-auto Containers::on_update() -> void
-{
-    auto& light = _point_light.get<const zth::LightComponent>();
-    auto point_light_material = zth::AssetManager::get_unchecked<zth::Material>(point_light_material_asset_id);
-    point_light_material->albedo = light.point_light().properties.color;
-}
-
 auto Containers::on_unload() -> void
 {
     auto success = zth::AssetManager::remove<zth::gl::Texture2D>(container_diffuse_map_asset_id);
@@ -166,19 +115,4 @@ auto Containers::on_unload() -> void
     ZTH_ASSERT(success);
     success = zth::AssetManager::remove<zth::Material>(point_light_material_asset_id);
     ZTH_ASSERT(success);
-}
-
-auto Containers::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
-{
-    if (event.key == toggle_spotlight_key)
-    {
-        _spot_light_on = !_spot_light_on;
-
-        auto& light = _camera.get<zth::LightComponent>();
-
-        if (_spot_light_on)
-            light.spot_light().properties.color = zth::colors::white;
-        else
-            light.spot_light().properties.color = zth::colors::black;
-    }
 }

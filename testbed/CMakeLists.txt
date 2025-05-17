@@ -3,6 +3,8 @@ project(testbed LANGUAGES CXX)
 
 add_executable(
 	testbed
+	"src/scripts/camera.cpp"
+	"src/scripts/light.cpp"
 	"src/containers.cpp"
 	"src/embedded.cpp"
 	"src/main_layer.cpp"

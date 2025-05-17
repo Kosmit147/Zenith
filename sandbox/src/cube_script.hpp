@@ -1,11 +1,10 @@
 #pragma once
 
-class CubeScript : public zth::Script
+class Cube : public zth::Script
 {
 public:
-    CubeScript() = default;
-    ~CubeScript() override = default;
+    Cube() = default;
+    ~Cube() override = default;
 
-private:
     auto on_update(zth::EntityHandle actor) -> void override;
 };

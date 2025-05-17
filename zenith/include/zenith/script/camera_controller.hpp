@@ -36,9 +36,11 @@ public:
     [[nodiscard]] auto display_label() const -> const char* override;
     auto debug_edit() -> void override;
 
-private:
     auto on_event(EntityHandle actor, const Event& event) -> void override;
     auto on_update(EntityHandle actor) -> void override;
+
+private:
+    auto on_attach(EntityHandle actor) -> void override;
 };
 
 } // namespace zth::scripts

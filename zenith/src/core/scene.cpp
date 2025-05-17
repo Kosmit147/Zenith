@@ -11,8 +11,15 @@ namespace zth {
 UniquePtr<Scene> SceneManager::_scene = nullptr;
 std::function<UniquePtr<Scene>()> SceneManager::_queued_scene_factory;
 
-Scene::Scene(const String& name) : _name{ name } {}
-Scene::Scene(String&& name) : _name{ std::move(name) } {}
+Scene::Scene(const String& name) : _name{ name }
+{
+    set_up_registry_listeners();
+}
+
+Scene::Scene(String&& name) : _name{ std::move(name) }
+{
+    set_up_registry_listeners();
+}
 
 auto Scene::start_frame() -> void
 {
@@ -129,7 +136,20 @@ auto Scene::find_entities_by_tag(StringView tag) -> TemporaryVector<EntityHandle
 auto Scene::load() -> void
 {
     ZTH_INTERNAL_TRACE("Loading scene \"{}\"...", _name);
+    on_load();
+    ZTH_INTERNAL_TRACE("Scene \"{}\" loaded.", _name);
+}
 
+auto Scene::unload() -> void
+{
+    ZTH_INTERNAL_TRACE("Unloading scene \"{}\"...", _name);
+    on_unload();
+    _registry.clear();
+    ZTH_INTERNAL_TRACE("Scene \"{}\" unloaded.", _name);
+}
+
+auto Scene::set_up_registry_listeners() -> void
+{
     _registry.add_on_attach_listener<ScriptComponent, [](Registry& registry, EntityId entity_id) {
         EntityHandle entity{ entity_id, registry };
         auto& script = entity.get<ScriptComponent>();
@@ -141,20 +161,6 @@ auto Scene::load() -> void
         auto& script = entity.get<ScriptComponent>();
         script.script().on_detach(entity);
     }>();
-
-    on_load();
-
-    ZTH_INTERNAL_TRACE("Scene \"{}\" loaded.", _name);
-}
-
-auto Scene::unload() -> void
-{
-    ZTH_INTERNAL_TRACE("Unloading scene \"{}\"...", _name);
-
-    on_unload();
-    _registry.clear();
-
-    ZTH_INTERNAL_TRACE("Scene \"{}\" unloaded.", _name);
 }
 
 auto SceneManager::init() -> Result<void, String>

@@ -1,6 +1,6 @@
 #include "cube_script.hpp"
 
-auto CubeScript::on_update(zth::EntityHandle actor) -> void
+auto Cube::on_update(zth::EntityHandle actor) -> void
 {
     const auto time = zth::Time::time<float>();
 

@@ -21,6 +21,7 @@
 #include "zenith/renderer/resources/textures.hpp"
 #include "zenith/script/script.hpp"
 #include "zenith/stl/string.hpp"
+#include "zenith/system/window.hpp"
 
 namespace zth {
 
@@ -162,7 +163,7 @@ struct MaterialComponent
 
 struct CameraComponent
 {
-    float aspect_ratio = 1.0f;
+    float aspect_ratio = Window::aspect_ratio();
     float fov = glm::radians(45.0f);
     float near = 0.1f;
     float far = 100.0f;
@@ -180,6 +181,7 @@ class LightComponent
 {
 public:
     LightComponent();
+    LightComponent(LightType type);
     LightComponent(const DirectionalLight& light);
     LightComponent(const PointLight& light);
     LightComponent(const SpotLight& light);

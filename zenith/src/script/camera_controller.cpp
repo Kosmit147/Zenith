@@ -43,13 +43,9 @@ auto FlyCamera::debug_edit() -> void
 
 void FlyCamera::on_event(EntityHandle actor, const Event& event)
 {
-    if (event.type() == EventType::WindowResized)
+    if (event.type() == EventType::WindowResized && actor.any_of<CameraComponent>())
     {
         auto [new_size] = event.window_resized_event();
-
-        if (!actor.any_of<CameraComponent>())
-            return;
-
         auto& camera = actor.get<CameraComponent>();
         camera.aspect_ratio = static_cast<float>(new_size.x) / static_cast<float>(new_size.y);
     }
@@ -64,11 +60,8 @@ auto FlyCamera::on_update(EntityHandle actor) -> void
 
         auto speed = movement_speed * Time::delta_time<float>();
 
-        if (sprinting_enabled)
-        {
-            if (Input::is_key_pressed(sprint_key))
-                speed *= sprinting_speed_multiplier;
-        }
+        if (sprinting_enabled && Input::is_key_pressed(sprint_key))
+            speed *= sprinting_speed_multiplier;
 
         auto forward = transform.forward() * speed;
         auto backward = -forward;
@@ -104,6 +97,12 @@ auto FlyCamera::on_update(EntityHandle actor) -> void
 
         transform.set_rotation(angles);
     }
+}
+
+auto FlyCamera::on_attach(EntityHandle actor) -> void
+{
+    if (!actor.any_of<CameraComponent>())
+        actor.emplace<CameraComponent>();
 }
 
 } // namespace zth::scripts
