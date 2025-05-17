@@ -8,11 +8,9 @@
 
 #include <source_location>
 
-#include <exception>
 #include <functional>
 #include <memory>
 #include <new>
-#include <stdexcept>
 #include <utility>
 
 #include <expected>
