@@ -15,5 +15,6 @@ private:
     zth::EntityHandle _ambient_light = create_entity("Ambient Light");
 
 private:
+    auto on_load() -> void override;
     auto on_unload() -> void override;
 };

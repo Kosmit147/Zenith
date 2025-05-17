@@ -11,5 +11,6 @@ private:
     zth::EntityHandle _camera = create_entity("Camera");
 
 private:
+    auto on_load() -> void override;
     auto on_unload() -> void override;
 };

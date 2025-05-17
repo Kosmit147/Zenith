@@ -4,14 +4,6 @@
 
 namespace {
 
-const auto camera_transform_component =
-    zth::TransformComponent{ glm::vec3{ 0.0f, 0.0f, 5.0f }, zth::math::world_forward };
-
-const auto camera_camera_component = zth::CameraComponent{
-    .aspect_ratio = 16.0f / 9.0f,
-    .fov = glm::radians(45.0f),
-};
-
 using namespace zth::hashed_string_literals;
 
 constexpr auto container_texture_asset_id = "container_texture"_hs;
@@ -20,7 +12,9 @@ constexpr auto emoji_texture_asset_id = "emoji_texture"_hs;
 
 } // namespace
 
-Sprites::Sprites() : Scene("Sprites")
+Sprites::Sprites() : Scene("Sprites") {}
+
+auto Sprites::on_load() -> void
 {
     // clang-format off
 
@@ -41,8 +35,8 @@ Sprites::Sprites() : Scene("Sprites")
     // clang-format on
 
     // --- Camera ---
-    _camera.emplace_or_replace<zth::TransformComponent>(camera_transform_component);
-    _camera.emplace_or_replace<zth::CameraComponent>(camera_camera_component);
+    _camera.transform().translate(glm::vec3{ 0.0f, 0.0f, 5.0f });
+    _camera.emplace_or_replace<zth::CameraComponent>();
     _camera.emplace_or_replace<zth::ScriptComponent>(zth::make_unique<zth::scripts::FlyCamera>());
 
     for (std::size_t i = 0; i < 3; i++)
