@@ -1,5 +1,7 @@
 #pragma once
 
+namespace scripts {
+
 class Cube : public zth::Script
 {
 public:
@@ -8,3 +10,5 @@ public:
 
     auto on_update(zth::EntityHandle actor) -> void override;
 };
+
+} // namespace scripts
