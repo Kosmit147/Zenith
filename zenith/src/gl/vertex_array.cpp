@@ -197,7 +197,7 @@ auto VertexArray::count() const -> u32
 auto VertexArray::indexing_data_type() const -> DataType
 {
     if (!_index_buffer)
-        return DataType::None;
+        return DataType::UnsignedByte;
 
     return _index_buffer->indexing_data_type();
 }
