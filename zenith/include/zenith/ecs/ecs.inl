@@ -33,6 +33,11 @@ template<typename Component> auto EntityHandle::emplace_or_replace(auto&&... arg
     return _registry->emplace_or_replace<Component>(*this, std::forward<decltype(args)>(args)...);
 }
 
+template<typename Component> auto EntityHandle::try_emplace(auto&&... args) const -> decltype(auto)
+{
+    return _registry->try_emplace<Component>(*this, std::forward<decltype(args)>(args)...);
+}
+
 template<typename Component, std::invocable<Component&>... F>
 auto EntityHandle::patch(F&&... funcs) const -> decltype(auto)
 {
@@ -74,6 +79,14 @@ template<typename Component> auto Registry::emplace(EntityId id, auto&&... args)
 template<typename Component> auto Registry::emplace_or_replace(EntityId id, auto&&... args) -> decltype(auto)
 {
     return _registry.emplace_or_replace<Component>(id, std::forward<decltype(args)>(args)...);
+}
+
+template<typename Component> auto Registry::try_emplace(EntityId id, auto&&... args) -> decltype(auto)
+{
+    if (any_of<Component>(id))
+        return get<Component>(id);
+
+    return emplace<Component>(id, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Components> auto Registry::clear() -> void

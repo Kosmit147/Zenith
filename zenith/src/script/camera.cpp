@@ -101,8 +101,7 @@ auto FlyCamera::on_update(EntityHandle actor) -> void
 
 auto FlyCamera::on_attach(EntityHandle actor) -> void
 {
-    if (!actor.any_of<CameraComponent>())
-        actor.emplace<CameraComponent>();
+    actor.try_emplace<CameraComponent>();
 }
 
 } // namespace zth::scripts

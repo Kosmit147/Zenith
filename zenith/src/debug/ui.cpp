@@ -989,12 +989,9 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     if (ImGui::BeginPopup("AddComponentPopup"))
     {
         auto add_component_menu_item = [&]<typename Component>(std::type_identity<Component>) {
-            if (entity.any_of<Component>())
-                return;
-
             if (ImGui::MenuItem(Component::display_label()))
             {
-                entity.emplace_or_replace<Component>();
+                entity.try_emplace<Component>();
                 ImGui::CloseCurrentPopup();
             }
         };

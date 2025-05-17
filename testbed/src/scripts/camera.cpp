@@ -101,19 +101,16 @@ auto Camera::on_update(zth::EntityHandle actor) -> void
 
 auto Camera::on_attach(zth::EntityHandle actor) -> void
 {
-    if (!actor.any_of<zth::CameraComponent>())
-        actor.emplace<zth::CameraComponent>();
-
-    if (!actor.any_of<zth::LightComponent>())
-        actor.emplace<zth::LightComponent>(zth::SpotLight{
-            .properties = {
-                .color = zth::colors::black,
-            },
-            .attenuation = {
-                .linear = 0.09f,
-                .quadratic = 0.032f,
-            },
-        });
+    actor.try_emplace<zth::CameraComponent>();
+    actor.try_emplace<zth::LightComponent>(zth::SpotLight{
+        .properties = {
+            .color = zth::colors::black,
+        },
+        .attenuation = {
+            .linear = 0.09f,
+            .quadratic = 0.032f,
+        },
+    });
 }
 
 auto Camera::on_window_resized_event(zth::EntityHandle actor, const zth::WindowResizedEvent& event) -> void

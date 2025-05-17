@@ -121,6 +121,7 @@ public:
 
     template<typename Component> auto emplace(auto&&... args) const -> decltype(auto);
     template<typename Component> auto emplace_or_replace(auto&&... args) const -> decltype(auto);
+    template<typename Component> auto try_emplace(auto&&... args) const -> decltype(auto);
     template<typename Component, std::invocable<Component&>... F> auto patch(F&&... funcs) const -> decltype(auto);
     template<typename Component> auto replace(auto&&... args) const -> decltype(auto);
     template<typename... Components> auto remove() const -> usize;
@@ -156,6 +157,7 @@ public:
 
     template<typename Component> auto emplace(EntityId id, auto&&... args) -> decltype(auto);
     template<typename Component> auto emplace_or_replace(EntityId id, auto&&... args) -> decltype(auto);
+    template<typename Component> auto try_emplace(EntityId id, auto&&... args) -> decltype(auto);
     template<typename... Components> auto clear() -> void;
     template<typename Component, std::invocable<Component&>... F>
     auto patch(EntityId id, F&&... funcs) -> decltype(auto);
