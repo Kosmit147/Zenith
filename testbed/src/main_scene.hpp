@@ -24,7 +24,4 @@ private:
     zth::EntityHandle _point_light_1 = create_entity("Point Light 1");
     zth::EntityHandle _point_light_2 = create_entity("Point Light 2");
     zth::EntityHandle _point_light_3 = create_entity("Point Light 3");
-
-private:
-    auto on_update() -> void override;
 };

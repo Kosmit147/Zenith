@@ -56,6 +56,8 @@ private:
     virtual auto on_update() -> void {}
     virtual auto on_render() -> void {}
     virtual auto on_unload() -> void {}
+
+    auto set_up_registry_listeners() -> void;
 };
 
 class PlaceholderScene : public Scene

@@ -301,6 +301,11 @@ auto CameraComponent::display_label() -> const char*
 
 LightComponent::LightComponent() : _type{ LightType::Point }, _point_light{ PointLight{} } {}
 
+LightComponent::LightComponent(LightType type)
+{
+    set_light(type);
+}
+
 LightComponent::LightComponent(const DirectionalLight& light)
     : _type{ LightType::Directional }, _directional_light{ light }
 {}
