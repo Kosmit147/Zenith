@@ -93,12 +93,12 @@ template<typename Component> auto Registry::emplace_or_replace(EntityId id, auto
     return _registry.emplace_or_replace<Component>(id, std::forward<decltype(args)>(args)...);
 }
 
-template<typename Component> auto Registry::try_emplace(EntityId id, auto&&... args) -> decltype(auto)
+template<typename Component> auto Registry::try_emplace(EntityId id, auto&&... args) -> auto
 {
     if (any_of<Component>(id))
-        return get<Component>(id);
+        return Optional<Reference<Component>>{ nil };
 
-    return emplace<Component>(id, std::forward<decltype(args)>(args)...);
+    return zth::make_optional(make_reference(emplace<Component>(id, std::forward<decltype(args)>(args)...)));
 }
 
 template<typename... Components> auto Registry::clear() -> void
