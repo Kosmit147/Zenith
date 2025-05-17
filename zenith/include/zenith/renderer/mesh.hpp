@@ -28,7 +28,6 @@ template<typename Vertex = StandardVertex, gl::IndexingType Index = u32> class I
 {
 public:
     explicit IndexedMesh() = default;
-
     explicit IndexedMesh(std::span<const Vertex> vertex_data, std::span<const Index> index_data);
 
     IndexedMesh(const IndexedMesh& other);
@@ -68,7 +67,6 @@ template<typename Vertex = StandardVertex> class QuadMesh : public Mesh
 {
 public:
     explicit QuadMesh() = default;
-
     explicit QuadMesh(std::span<const Vertex> vertex_data);
 
     QuadMesh(const QuadMesh& other);

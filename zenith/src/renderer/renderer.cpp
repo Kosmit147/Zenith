@@ -394,8 +394,6 @@ auto Renderer::batch_draw_commands() -> void
     // optimal to copy the transforms rather than storing pointers to them for better cache efficiency.
 
     auto& draw_commands = renderer->_draw_commands;
-    auto& batches = renderer->_batches;
-
     std::ranges::sort(draw_commands);
 
     // @todo: Get rid of the temporary transforms vector.
@@ -425,7 +423,7 @@ auto Renderer::batch_draw_commands() -> void
 
         // @speed: We could probably do something better here than copying all the pointers.
         std::ranges::move(transforms, std::back_inserter(batch.transforms));
-        batches.push_back(std::move(batch));
+        renderer->_batches.push_back(std::move(batch));
         transforms.clear();
     }
 }
@@ -433,11 +431,6 @@ auto Renderer::batch_draw_commands() -> void
 auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
     auto& instance_data = renderer->_temporary_instance_data;
-    auto& instance_buffer = renderer->_instance_buffer;
-
-    ZTH_ASSERT(batch.vertex_array->vertex_buffer() != nullptr);
-    ZTH_ASSERT(batch.vertex_array->index_buffer() != nullptr);
-
     instance_data.clear();
 
     for (auto& transform_ptr : batch.transforms)
@@ -447,7 +440,7 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
         instance_data.emplace_back(transform[0], transform[1], transform[2], transform[3], normal_matrix);
     }
 
-    instance_buffer.buffer_data(instance_data);
+    renderer->_instance_buffer.buffer_data(instance_data);
     draw_instanced(*batch.vertex_array, *batch.material, static_cast<u32>(instance_data.size()));
 }
 
@@ -744,8 +737,6 @@ auto Renderer2D::batch_draw_rect_commands() -> void
     // @speed: We should look into how we could batch draw commands more efficiently.
 
     auto& draw_commands = renderer_2d->_draw_rect_commands;
-    auto& batches = renderer_2d->_rect_batches;
-
     std::ranges::sort(draw_commands);
 
     // @todo: Get rid of the temporary rects and colors vectors.
@@ -780,7 +771,7 @@ auto Renderer2D::batch_draw_rect_commands() -> void
         // @speed: We could probably do something better here than copying all of this data.
         std::ranges::move(rects, std::back_inserter(batch.rects));
         std::ranges::move(colors, std::back_inserter(batch.colors));
-        batches.push_back(std::move(batch));
+        renderer_2d->_rect_batches.push_back(std::move(batch));
         rects.clear();
         colors.clear();
     }
