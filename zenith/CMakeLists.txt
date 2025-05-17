@@ -34,7 +34,7 @@ add_library(
 	"src/renderer/primitives.cpp"
 	"src/renderer/renderer.cpp"
 	"src/renderer/shader_preprocessor.cpp"
-	"src/script/camera_controller.cpp"
+	"src/script/camera.cpp"
 	"src/stl/string_algorithm.cpp"
 	"src/system/application.cpp"
 	"src/system/event.cpp"
