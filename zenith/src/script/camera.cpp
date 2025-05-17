@@ -1,4 +1,4 @@
-#include "zenith/script/camera_controller.hpp"
+#include "zenith/script/camera.hpp"
 
 #include "zenith/debug/ui.hpp"
 #include "zenith/ecs/components.hpp"
