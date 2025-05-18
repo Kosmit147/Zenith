@@ -165,7 +165,7 @@ auto Shader::create_shaders_from_sources(const ShaderSources& sources) -> Option
     InPlaceVector<ShaderId, 5> shaders;
     Defer shaders_cleanup{ [&] { delete_shaders(shaders); } };
 
-    auto add_shader = [&] [[nodiscard]] (StringView source, ShaderType type) {
+    auto add_shader = [&](StringView source, ShaderType type) {
         auto shader = create_shader(source, type);
 
         if (!shader)

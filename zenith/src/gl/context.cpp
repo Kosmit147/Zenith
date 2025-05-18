@@ -16,7 +16,7 @@ auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]
                     [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
     -> void
 {
-    auto type_str = [=] [[nodiscard]] {
+    auto type_str = [=] {
         switch (type)
         {
         case GL_DEBUG_TYPE_ERROR:
