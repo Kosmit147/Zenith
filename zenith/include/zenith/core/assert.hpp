@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <source_location>
+#include <type_traits>
 
 #include "zenith/util/macros.hpp"
 
@@ -43,9 +44,10 @@
 
 // ZTH_CONSTEVAL_OR_REGULAR_ASSERT
 
+// @refactor: Use if consteval once it's supported.
 #define ZTH_CONSTEVAL_OR_REGULAR_ASSERT(...)                                                                           \
     {                                                                                                                  \
-        if consteval                                                                                                   \
+        if (std::is_constant_evaluated())                                                                              \
         {                                                                                                              \
             if ((__VA_ARGS__))                                                                                         \
             {}                                                                                                         \
