@@ -2,7 +2,6 @@
 
 #include <array>
 #include <concepts>
-#include <memory>
 #include <ranges>
 #include <span>
 
@@ -70,7 +69,7 @@ public:
 };
 
 // Assumes that the specified allocator doesn't fail.
-template<StatelessAllocator A = std::allocator<byte>> class Buffer : public ContiguousRangeInterface
+template<StatelessAllocator A = DefaultAllocator<byte>> class Buffer : public ContiguousRangeInterface
 {
 public:
     static_assert(std::same_as<byte, typename A::value_type>, "allocator's value type must be byte");
@@ -136,7 +135,7 @@ private:
 };
 
 // Assumes that the specified allocator doesn't fail.
-template<StatelessAllocator A = std::allocator<byte>> class DynamicBuffer : public ContiguousRangeInterface
+template<StatelessAllocator A = DefaultAllocator<byte>> class DynamicBuffer : public ContiguousRangeInterface
 {
 public:
     static_assert(std::same_as<byte, typename A::value_type>, "allocator's value type must be byte");
@@ -210,10 +209,11 @@ private:
 };
 
 // @todo: Implement SmallBuffer.
-template<usize StackCapacity, StatelessAllocator A = std::allocator<byte>> using SmallBuffer = Buffer<A>;
+template<usize StackCapacity, StatelessAllocator A = DefaultAllocator<byte>> using SmallBuffer = Buffer<A>;
 
 // @todo: Implement SmallDynamicBuffer.
-template<usize StackCapacity, StatelessAllocator A = std::allocator<byte>> using SmallDynamicBuffer = DynamicBuffer<A>;
+template<usize StackCapacity, StatelessAllocator A = DefaultAllocator<byte>>
+using SmallDynamicBuffer = DynamicBuffer<A>;
 
 } // namespace zth::memory
 
