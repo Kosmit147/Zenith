@@ -4,7 +4,6 @@
 #include <compare>
 #include <concepts>
 #include <cstddef>
-#include <memory>
 #include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
@@ -16,7 +15,7 @@ namespace zth {
 // An allocator-aware unique pointer. This unique pointer is implemented differently to the standard library's one as it
 // doesn't just manage the object, it handles allocation and deallocation as well using the specified allocator. Assumes
 // that the specified allocator doesn't fail.
-template<typename T, memory::StatelessAllocator A = std::allocator<std::remove_extent_t<T>>> class UniquePtr
+template<typename T, memory::StatelessAllocator A = memory::DefaultAllocator<std::remove_extent_t<T>>> class UniquePtr
 {
 public:
     static_assert(std::same_as<T, typename A::value_type>,
@@ -133,19 +132,19 @@ private:
     explicit UniquePtr(T* ptr, usize count) noexcept;
 };
 
-template<typename T, memory::StatelessAllocator A = std::allocator<T>>
+template<typename T, memory::StatelessAllocator A = memory::DefaultAllocator<T>>
     requires(!std::is_unbounded_array_v<T>)
 [[nodiscard]] auto make_unique(auto&&... args) -> UniquePtr<T, A>;
 
-template<typename T, memory::StatelessAllocator A = std::allocator<std::remove_extent_t<T>>>
+template<typename T, memory::StatelessAllocator A = memory::DefaultAllocator<std::remove_extent_t<T>>>
     requires(std::is_unbounded_array_v<T>)
 [[nodiscard]] auto make_unique(usize count) -> UniquePtr<T, A>;
 
-template<typename T, memory::StatelessAllocator A = std::allocator<T>>
+template<typename T, memory::StatelessAllocator A = memory::DefaultAllocator<T>>
     requires(!std::is_unbounded_array_v<T>)
 [[nodiscard]] auto make_unique_for_overwrite() -> UniquePtr<T, A>;
 
-template<typename T, memory::StatelessAllocator A = std::allocator<std::remove_extent_t<T>>>
+template<typename T, memory::StatelessAllocator A = memory::DefaultAllocator<std::remove_extent_t<T>>>
     requires(std::is_unbounded_array_v<T>)
 [[nodiscard]] auto make_unique_for_overwrite(usize count) -> UniquePtr<T, A>;
 

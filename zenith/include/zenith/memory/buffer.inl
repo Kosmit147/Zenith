@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+#include <memory>
 #include <utility>
 
 #include "zenith/core/assert.hpp"

@@ -13,6 +13,8 @@
 
 namespace zth::memory {
 
+template<typename T> using DefaultAllocator = std::allocator<T>;
+
 template<typename A>
 concept Allocator = requires(A allocator, usize n) {
     { *allocator.allocate(n) } -> std::same_as<typename std::remove_cvref_t<A>::value_type&>;

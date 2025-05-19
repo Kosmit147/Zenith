@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include <string_view>
 
@@ -9,11 +8,12 @@
 
 namespace zth {
 
-template<typename Char = char, typename CharTraits = std::char_traits<Char>, memory::Allocator A = std::allocator<Char>>
+template<typename Char = char, typename CharTraits = std::char_traits<Char>,
+         memory::Allocator A = memory::DefaultAllocator<Char>>
 using GenericString = std::basic_string<Char, CharTraits, A>;
 template<typename Char = char> using GenericStringView = std::basic_string_view<Char>;
 
-using String = GenericString<char, std::char_traits<char>, std::allocator<char>>;
+using String = GenericString<char, std::char_traits<char>, memory::DefaultAllocator<char>>;
 using StringView = GenericStringView<char>;
 
 namespace string_view_literals {
