@@ -93,6 +93,7 @@ target_link_libraries(zenith_core PUBLIC glad)
 target_link_libraries(zenith_core PUBLIC glfw)
 target_link_libraries(zenith_core PUBLIC glm)
 target_link_libraries(zenith_core PUBLIC imgui)
+target_link_libraries(zenith_core PUBLIC Jolt)
 target_link_libraries(zenith_core PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(zenith_core PUBLIC stb_image)
 

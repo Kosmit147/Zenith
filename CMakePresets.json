@@ -32,7 +32,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "ON",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_JOLT_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -45,7 +46,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "ON",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_JOLT_BUILD_TYPE": "Release"
       }
     },
     {
@@ -58,7 +60,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_JOLT_BUILD_TYPE": "Release"
       }
     },
     {
@@ -71,7 +74,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "OFF",
-        "ZTH_DEBUG_LOGGING": "OFF"
+        "ZTH_DEBUG_LOGGING": "OFF",
+        "ZTH_JOLT_BUILD_TYPE": "Distribution"
       }
     },
     {
@@ -84,7 +88,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "OFF",
-        "ZTH_DEBUG_LOGGING": "OFF"
+        "ZTH_DEBUG_LOGGING": "OFF",
+        "ZTH_JOLT_BUILD_TYPE": "Distribution"
       }
     }
   ]
