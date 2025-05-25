@@ -3,12 +3,15 @@ project(testbed LANGUAGES CXX)
 
 add_executable(
 	testbed
+	"src/scripts/ball_spawner.cpp"
 	"src/scripts/camera.cpp"
 	"src/scripts/light.cpp"
+	"src/character.cpp"
 	"src/containers.cpp"
 	"src/embedded.cpp"
 	"src/main_layer.cpp"
 	"src/main_scene.cpp"
+	"src/physics.cpp"
 	"src/sprites.cpp"
 	"src/testbed.cpp"
 )

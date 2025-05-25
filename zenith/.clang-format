@@ -3,19 +3,22 @@ PointerAlignment: Left
 SortIncludes: true
 
 IncludeCategories:
-  - Regex:           'glad.h'
+  - Regex:           'glad.h' # glad.h needs to be included before glfw3.h
     Priority:        1
     CaseSensitive:   true
-  - Regex:           'imgui.h'
+  - Regex:           'imgui.h' # imgui.h and imgui_impl*.h need to be included before ImGuizmo.h
     Priority:        1
     CaseSensitive:   true
   - Regex:           'imgui_impl'
     Priority:        1
     CaseSensitive:   true
+  - Regex:           'Jolt.h' # Jolt.h needs to be included before all other Jolt headers
+    Priority:        1
+    CaseSensitive:   true
   - Regex:           'glfw3.h'
     Priority:        2
     CaseSensitive:   true
-  - Regex:           'ImGuizmo'
+  - Regex:           'ImGuizmo.h'
     Priority:        2
     CaseSensitive:   true
 

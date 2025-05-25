@@ -1,5 +1,6 @@
 #include "zenith/debug/ui.hpp"
 
+#include <Jolt/ConfigurationString.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
 #include <imgui_stdlib.h>
@@ -8,6 +9,7 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
+#include "zenith/physics/physics.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
@@ -52,7 +54,7 @@ auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_
     return value_changed;
 }
 
-template<typename Component> auto display_component_for_entity_in_inspector(EntityHandle entity) -> void
+template<typename Component> auto edit_component_for_entity_in_inspector(EntityHandle entity) -> void
 {
     ZTH_ASSERT(entity.any_of<Component>());
 
@@ -103,6 +105,20 @@ auto text(StringView txt) -> void
 auto separator_text(const char* txt) -> void
 {
     ImGui::SeparatorText(txt);
+}
+
+auto text_wrapped(const char* txt) -> void
+{
+    ImGui::PushTextWrapPos(0.0f);
+    text(txt);
+    ImGui::PopTextWrapPos();
+}
+
+auto text_wrapped(StringView txt) -> void
+{
+    ImGui::PushTextWrapPos(0.0f);
+    text(txt);
+    ImGui::PopTextWrapPos();
 }
 
 auto drag_int(const char* label, u8& value, float drag_speed) -> bool
@@ -908,6 +924,60 @@ auto edit_component(LightComponent& light) -> void
     }
 }
 
+auto edit_component(BoxColliderComponent& box_collider) -> void
+{
+    (void)box_collider;
+
+    text("TODO!");
+
+    // @todo
+}
+
+auto edit_component(SphereColliderComponent& sphere_collider) -> void
+{
+    (void)sphere_collider;
+
+    text("TODO!");
+
+    // @todo
+}
+
+auto edit_component(CapsuleColliderComponent& capsule_collider) -> void
+{
+    (void)capsule_collider;
+
+    text("TODO!");
+
+    // @todo
+}
+
+auto edit_component(MeshColliderComponent& mesh_collider) -> void
+{
+    (void)mesh_collider;
+
+    text("TODO!");
+
+    // @todo
+}
+
+auto edit_component(CharacterControllerComponent& character_controller) -> void
+{
+    (void)character_controller;
+
+    text("TODO!");
+
+    // @todo
+}
+
+auto edit_component(RigidBodyComponent& rigid_body) -> void
+{
+    (void)rigid_body;
+
+    text("TODO!");
+
+    // @todo
+}
+
 auto edit_component(SpriteRenderer2DComponent& sprite) -> void
 {
     drag_rect("Rect", sprite.rect);
@@ -938,7 +1008,7 @@ auto edit_component(ScriptComponent& script) -> void
     script.script().debug_edit();
 }
 
-auto TransformGizmo::display(TransformComponent& transform) const -> void
+auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
 {
     ImGuizmo::Enable(true);
     auto transform_matrix = transform.transform();
@@ -950,7 +1020,10 @@ auto TransformGizmo::display(TransformComponent& transform) const -> void
                              glm::value_ptr(transform_matrix), nullptr, nullptr))
     {
         transform.set_transform(transform_matrix);
+        return true;
     }
+
+    return false;
 }
 
 auto EntityInspectorPanel::display(EntityHandle entity) const -> void
@@ -962,29 +1035,91 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
     {
         edit_component(entity.tag());
-        display_component_for_entity_in_inspector<TransformComponent>(entity);
+        edit_component_for_entity_in_inspector<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
-            gizmo.display(entity.transform());
+        {
+            if (gizmo.manipulate(entity.transform()))
+            {
+                // @todo: We're also going to have to update the shape of the body.
+
+                auto& transform = entity.transform();
+
+                physics::BodyTransform body_transform{
+                    .position = transform.translation(),
+                    .rotation = transform.rotation(),
+                };
+
+                glm::vec3 body_velocity{ 0.0f };
+
+                if (auto box_collider = entity.try_get<BoxColliderComponent>())
+                {
+                    auto id = box_collider->get().body_id;
+                    Physics::update_body_transform(id, body_transform);
+                    Physics::update_body_velocity(id, body_velocity);
+                }
+
+                if (auto sphere_collider = entity.try_get<SphereColliderComponent>())
+                {
+                    auto id = sphere_collider->get().body_id;
+                    Physics::update_body_transform(id, body_transform);
+                    Physics::update_body_velocity(id, body_velocity);
+                }
+
+                if (auto capsule_collider = entity.try_get<CapsuleColliderComponent>())
+                {
+                    auto id = capsule_collider->get().body_id;
+                    Physics::update_body_transform(id, body_transform);
+                    Physics::update_body_velocity(id, body_velocity);
+                }
+
+                if (auto mesh_collider = entity.try_get<MeshColliderComponent>())
+                {
+                    auto id = mesh_collider->get().body_id;
+                    Physics::update_body_transform(id, body_transform);
+                    Physics::update_body_velocity(id, body_velocity);
+                }
+
+                // @todo: Do we need to update CharacterControllerComponent here?
+            }
+        }
     }
 
     if (entity.any_of<CameraComponent>())
-        display_component_for_entity_in_inspector<CameraComponent>(entity);
+        edit_component_for_entity_in_inspector<CameraComponent>(entity);
 
     if (entity.any_of<LightComponent>())
-        display_component_for_entity_in_inspector<LightComponent>(entity);
+        edit_component_for_entity_in_inspector<LightComponent>(entity);
+
+    if (entity.any_of<BoxColliderComponent>())
+        edit_component_for_entity_in_inspector<BoxColliderComponent>(entity);
+
+    if (entity.any_of<SphereColliderComponent>())
+        edit_component_for_entity_in_inspector<SphereColliderComponent>(entity);
+
+    if (entity.any_of<CapsuleColliderComponent>())
+        edit_component_for_entity_in_inspector<CapsuleColliderComponent>(entity);
+
+    if (entity.any_of<MeshColliderComponent>())
+        edit_component_for_entity_in_inspector<MeshColliderComponent>(entity);
+
+    if (entity.any_of<CharacterControllerComponent>())
+        edit_component_for_entity_in_inspector<CharacterControllerComponent>(entity);
+
+    if (entity.any_of<RigidBodyComponent>())
+        edit_component_for_entity_in_inspector<RigidBodyComponent>(entity);
 
     if (entity.any_of<SpriteRenderer2DComponent>())
-        display_component_for_entity_in_inspector<SpriteRenderer2DComponent>(entity);
+        edit_component_for_entity_in_inspector<SpriteRenderer2DComponent>(entity);
 
     if (entity.any_of<MeshRendererComponent>())
-        display_component_for_entity_in_inspector<MeshRendererComponent>(entity);
+        edit_component_for_entity_in_inspector<MeshRendererComponent>(entity);
 
     if (entity.any_of<MaterialComponent>())
-        display_component_for_entity_in_inspector<MaterialComponent>(entity);
+        edit_component_for_entity_in_inspector<MaterialComponent>(entity);
 
     if (entity.any_of<ScriptComponent>())
-        display_component_for_entity_in_inspector<ScriptComponent>(entity);
+        edit_component_for_entity_in_inspector<ScriptComponent>(entity);
 
     separator_text("##");
 
@@ -1003,9 +1138,17 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
         add_component_menu_item(std::type_identity<CameraComponent>{});
         add_component_menu_item(std::type_identity<LightComponent>{});
+        add_component_menu_item(std::type_identity<BoxColliderComponent>{});
+        add_component_menu_item(std::type_identity<SphereColliderComponent>{});
+        add_component_menu_item(std::type_identity<CapsuleColliderComponent>{});
+        add_component_menu_item(std::type_identity<MeshColliderComponent>{});
+        add_component_menu_item(std::type_identity<CharacterControllerComponent>{});
+        add_component_menu_item(std::type_identity<RigidBodyComponent>{});
         add_component_menu_item(std::type_identity<SpriteRenderer2DComponent>{});
         add_component_menu_item(std::type_identity<MeshRendererComponent>{});
         add_component_menu_item(std::type_identity<MaterialComponent>{});
+
+        // @todo: Add other components to this menu.
 
         ImGui::EndPopup();
     }
@@ -1066,6 +1209,7 @@ auto DebugPanel::display() -> void
 {
     ImGui::Begin(_label.c_str());
 
+    text_wrapped("Jolt Config: {}", JPH::GetConfigurationString());
     text("FPS: {:.2f}", ImGui::GetIO().Framerate);
 
     auto last_frame_time = Window::last_frame_time();

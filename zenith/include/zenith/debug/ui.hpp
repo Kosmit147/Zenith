@@ -37,6 +37,10 @@ template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... 
 
 auto separator_text(const char* txt) -> void;
 
+auto text_wrapped(const char* txt) -> void;
+auto text_wrapped(StringView txt) -> void;
+template<typename... Args> auto text_wrapped(fmt::format_string<Args...> fmt, Args&&... args) -> void;
+
 auto drag_int(const char* label, u8& value, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_2(const char* label, u8 values[2], float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_3(const char* label, u8 values[3], float drag_speed = default_int_drag_speed) -> bool;
@@ -208,6 +212,12 @@ auto edit_component(TagComponent& tag) -> void;
 auto edit_component(TransformComponent& transform) -> void;
 auto edit_component(CameraComponent& camera) -> void;
 auto edit_component(LightComponent& light) -> void;
+auto edit_component(BoxColliderComponent& box_collider) -> void;
+auto edit_component(SphereColliderComponent& sphere_collider) -> void;
+auto edit_component(CapsuleColliderComponent& capsule_collider) -> void;
+auto edit_component(MeshColliderComponent& mesh_collider) -> void;
+auto edit_component(CharacterControllerComponent& character_controller) -> void;
+auto edit_component(RigidBodyComponent& rigid_body) -> void;
 auto edit_component(SpriteRenderer2DComponent& sprite) -> void;
 auto edit_component(MeshRendererComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
@@ -218,7 +228,7 @@ struct TransformGizmo
     ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
     ImGuizmo::MODE mode = ImGuizmo::WORLD;
 
-    auto display(TransformComponent& transform) const -> void;
+    auto manipulate(TransformComponent& transform) const -> bool;
 };
 
 struct EntityInspectorPanel
@@ -288,6 +298,11 @@ private:
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void
 {
     text(format_to_temporary(fmt, std::forward<decltype(args)>(args)...));
+}
+
+template<typename... Args> auto text_wrapped(fmt::format_string<Args...> fmt, Args&&... args) -> void
+{
+    text_wrapped(format_to_temporary(fmt, std::forward<decltype(args)>(args)...));
 }
 
 template<std::derived_from<Scene> T> auto ScenePicker::add_scene(StringView name)

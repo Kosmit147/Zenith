@@ -7,17 +7,17 @@
 #include "zenith/system/file.hpp"
 #include "zenith/util/defer.hpp"
 
-using namespace zth::string_view_literals;
-
 namespace zth {
+
+using namespace string_view_literals;
+
+UnorderedMap<String, String> ShaderPreprocessor::_sources;
 
 namespace {
 
 constexpr auto include_str = "#include"_sv;
 
 } // namespace
-
-UnorderedMap<String, String> ShaderPreprocessor::_sources;
 
 auto ShaderPreprocessor::init() -> Result<void, String>
 {

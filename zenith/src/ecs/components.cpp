@@ -234,6 +234,48 @@ auto TransformComponent::update_transform() -> void
     _transform = math::compose_transform(_scale, _rotation, _translation);
 }
 
+// --------------------------- BoxColliderComponent ---------------------------
+
+auto BoxColliderComponent::display_label() -> const char*
+{
+    return "Box Collider";
+}
+
+// --------------------------- SphereColliderComponent ---------------------------
+
+auto SphereColliderComponent::display_label() -> const char*
+{
+    return "Sphere Collider";
+}
+
+// --------------------------- CapsuleColliderComponent ---------------------------
+
+auto CapsuleColliderComponent::display_label() -> const char*
+{
+    return "Capsule Collider";
+}
+
+// --------------------------- MeshColliderComponent ---------------------------
+
+auto MeshColliderComponent::display_label() -> const char*
+{
+    return "Mesh Collider";
+}
+
+// --------------------------- CharacterControllerComponent ---------------------------
+
+auto CharacterControllerComponent::display_label() -> const char*
+{
+    return "Character Controller";
+}
+
+// --------------------------- RigidBodyComponent ---------------------------
+
+auto RigidBodyComponent::display_label() -> const char*
+{
+    return "Rigid Body";
+}
+
 // --------------------------- ScriptComponent ---------------------------
 
 ScriptComponent::ScriptComponent(UniquePtr<Script>&& script) : _script{ std::move(script) } {}

@@ -70,6 +70,10 @@ auto destroy_and_deallocate_objects_using_allocator(A&& allocator, T* location, 
 
 [[nodiscard]] auto allocate(usize size_bytes) noexcept -> void*;
 [[nodiscard]] auto allocate_zeroed(usize size_bytes) noexcept -> void*;
+
+// @todo: These reallocate functions shouldn't take in references to the pointer, that's an unintuitive interface.
+// @todo: Implement allocate_aligned and deallocate_aligned.
+
 // Modifies ptr to point to the new location.
 auto reallocate(auto*& ptr, usize new_size_bytes) noexcept -> void;
 // Modifies ptr to point to the new location. buffer_size_bytes determines how many bytes will be copied to the new

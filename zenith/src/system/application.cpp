@@ -10,18 +10,18 @@
 
 namespace zth {
 
-Application::Application(const ApplicationSpec& spec) : fixed_update_time(spec.fixed_update_time)
+Application::Application(const ApplicationSpec& spec)
 {
     Defer cleanup{ [&] {
         pop_all_overlays();
         pop_all_layers();
     } };
 
-    auto result = push_layer(make_unique<SystemLayer>(spec.logger_spec, spec.window_spec));
+    auto result = push_layer(make_unique<SystemLayer>(spec.logger_spec, spec.window_spec, spec.time_spec));
     if (!result)
         throw Exception{ result.error() };
 
-    result = push_layer(make_unique<RuntimeLayer>());
+    result = push_layer(make_unique<RuntimeLayer>(spec.physics_spec));
     if (!result)
         throw Exception{ result.error() };
 
@@ -108,8 +108,9 @@ auto Application::dispatch_event(const Event& event) -> void
 auto Application::fixed_update() -> void
 {
     auto time = Window::time();
-    auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_update_time;
-    auto fixed_updates_to_perform = static_cast<usize>((time - accumulated_fixed_update_time) / fixed_update_time);
+    auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * Time::fixed_time_step();
+    auto fixed_updates_to_perform =
+        static_cast<usize>((time - accumulated_fixed_update_time) / Time::fixed_time_step());
 
     for (usize i = 0; i < fixed_updates_to_perform; i++)
     {

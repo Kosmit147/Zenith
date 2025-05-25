@@ -3,9 +3,11 @@
 #include "zenith/debug/ui.hpp"
 #include "zenith/layer/layer.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/physics/physics.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/input.hpp"
+#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/result.hpp"
@@ -15,7 +17,7 @@ namespace zth {
 class SystemLayer : public Layer
 {
 public:
-    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec);
+    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, const TimeSpec& time_spec);
     ZTH_NO_COPY_NO_MOVE(SystemLayer)
     ~SystemLayer() override = default;
 
@@ -25,6 +27,7 @@ public:
 private:
     LoggerSpec _logger_spec;
     WindowSpec _window_spec;
+    TimeSpec _time_spec;
 
 private:
     [[nodiscard]] auto on_attach() -> Result<void, String> override;
@@ -34,7 +37,7 @@ private:
 class RuntimeLayer : public Layer
 {
 public:
-    explicit RuntimeLayer() = default;
+    explicit RuntimeLayer(const PhysicsSpec& physics_spec);
     ZTH_NO_COPY_NO_MOVE(RuntimeLayer)
     ~RuntimeLayer() override = default;
 
@@ -45,6 +48,9 @@ public:
     auto on_fixed_update() -> void override;
     auto on_update() -> void override;
     auto on_render() -> void override;
+
+private:
+    PhysicsSpec _physics_spec;
 
 private:
     [[nodiscard]] auto on_attach() -> Result<void, String> override;

@@ -99,6 +99,22 @@ auto Camera::on_update(zth::EntityHandle actor) -> void
 
         transform.set_rotation(angles);
     }
+
+    // @todo: Remove this ray cast test code.
+
+    ImGui::Begin("Ray Cast");
+
+    if (auto hit = zth::Physics::ray_cast(transform.translation(), transform.direction() * 1000.0f))
+    {
+        auto [body_id, hit_point] = *hit;
+        auto hit_entity_id = zth::Physics::get_entity(body_id);
+        auto& registry = actor.registry_unchecked();
+        zth::EntityHandle hit_entity{ hit_entity_id, registry };
+        zth::debug::text("Hit entity: {}", hit_entity.tag().tag);
+        zth::debug::text("Hit point: {}", hit_point);
+    }
+
+    ImGui::End();
 }
 
 auto Camera::on_attach(zth::EntityHandle actor) -> void

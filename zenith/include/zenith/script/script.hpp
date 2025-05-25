@@ -4,6 +4,8 @@
 #include "zenith/system/fwd.hpp"
 #include "zenith/util/macros.hpp"
 
+// @todo: These script.* files probably shouldn't be in this folder among all the example scripts.
+
 namespace zth {
 
 class Script

@@ -25,6 +25,11 @@ auto ConstEntityHandle::registry() const -> Optional<Reference<const Registry>>
         return nil;
 }
 
+auto ConstEntityHandle::registry_unchecked() const -> const Registry&
+{
+    return *_registry;
+}
+
 auto ConstEntityHandle::valid() const -> bool
 {
     return _registry && _registry->valid(_id);
@@ -80,6 +85,11 @@ auto EntityHandle::registry() const -> Optional<Reference<Registry>>
         return *_registry;
     else
         return nil;
+}
+
+auto EntityHandle::registry_unchecked() const -> Registry&
+{
+    return *_registry;
 }
 
 Registry::~Registry()

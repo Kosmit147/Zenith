@@ -8,6 +8,7 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/gl/context.hpp"
 #include "zenith/log/logger.hpp"
+#include "zenith/physics/physics.hpp"
 #include "zenith/renderer/imgui_renderer.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/renderer/shader_preprocessor.hpp"
@@ -20,20 +21,20 @@ namespace zth {
 
 // --- System Layer
 // 1. Logger
-// 2. TemporaryStorage
-// 3. Window
-// 4. gl::Context
-// 5. Time
+// 2. Time
+// 3. TemporaryStorage
+// 4. Window
+// 5. gl::Context
 // 6. Input
 
-SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
-    : _logger_spec(logger_spec), _window_spec(window_spec)
+SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, const TimeSpec& time_spec)
+    : _logger_spec{ logger_spec }, _window_spec{ window_spec }, _time_spec{ time_spec }
 {}
 
 auto SystemLayer::on_frame_start() -> void
 {
-    TemporaryStorage::start_frame();
     Time::start_frame();
+    TemporaryStorage::start_frame();
     Input::start_frame();
 }
 
@@ -52,6 +53,11 @@ auto SystemLayer::on_attach() -> Result<void, String>
 
     ZTH_INTERNAL_TRACE("Initializing system layer...");
 
+    result = Time::init(_time_spec);
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_time{ [] { Time::shut_down(); } };
+
     result = TemporaryStorage::init();
     if (!result)
         return Error{ result.error() };
@@ -67,21 +73,16 @@ auto SystemLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_gl_context{ [] { gl::Context::shut_down(); } };
 
-    result = Time::init();
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_time{ [] { Time::shut_down(); } };
-
     result = Input::init();
     if (!result)
         return Error{ result.error() };
     Defer shut_down_input{ [] { Input::shut_down(); } };
 
     shut_down_logger.dismiss();
+    shut_down_time.dismiss();
     shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
     shut_down_gl_context.dismiss();
-    shut_down_time.dismiss();
     shut_down_input.dismiss();
 
     ZTH_INTERNAL_TRACE("System layer initialized...");
@@ -94,10 +95,10 @@ auto SystemLayer::on_detach() -> void
 
     // Shut down order should be the reverse of initialization order.
     Input::shut_down();
-    Time::shut_down();
     gl::Context::shut_down();
     Window::shut_down();
     TemporaryStorage::shut_down();
+    Time::shut_down();
     Logger::shut_down();
 }
 
@@ -107,7 +108,10 @@ auto SystemLayer::on_detach() -> void
 // 3. AssetManager
 // 4. Renderer
 // 5. Renderer2D
-// 6. SceneManager
+// 6. Physics
+// 7. SceneManager
+
+RuntimeLayer::RuntimeLayer(const PhysicsSpec& physics_spec) : _physics_spec{ physics_spec } {}
 
 auto RuntimeLayer::render() -> void
 {
@@ -131,6 +135,7 @@ auto RuntimeLayer::on_event(const Event& event) -> void
 
 void RuntimeLayer::on_fixed_update()
 {
+    Physics::fixed_update();
     SceneManager::fixed_update();
 }
 
@@ -173,6 +178,11 @@ auto RuntimeLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_renderer_2d{ [] { Renderer2D::shut_down(); } };
 
+    result = Physics::init(_physics_spec);
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_physics{ [] { Physics::shut_down(); } };
+
     result = SceneManager::init();
     if (!result)
         return Error{ result.error() };
@@ -183,6 +193,7 @@ auto RuntimeLayer::on_attach() -> Result<void, String>
     shut_down_asset_manager.dismiss();
     shut_down_renderer.dismiss();
     shut_down_renderer_2d.dismiss();
+    shut_down_physics.dismiss();
     shut_down_scene_manager.dismiss();
 
     ZTH_INTERNAL_TRACE("Runtime layer initialized...");
@@ -195,6 +206,7 @@ auto RuntimeLayer::on_detach() -> void
 
     // Shut down order should be the reverse of initialization order.
     SceneManager::shut_down();
+    Physics::shut_down();
     Renderer2D::shut_down();
     Renderer::shut_down();
     AssetManager::shut_down();

@@ -5,8 +5,11 @@
 
 namespace zth {
 
-auto Time::init() -> Result<void, String>
+auto Time::init(const TimeSpec& spec) -> Result<void, String>
 {
+    ZTH_INTERNAL_TRACE("Initializing time system...");
+    _delta_time_limit = spec.delta_time_limit;
+    _fixed_time_step = spec.fixed_time_step;
     ZTH_INTERNAL_TRACE("Time system initialized.");
     return {};
 }
@@ -14,7 +17,7 @@ auto Time::init() -> Result<void, String>
 auto Time::start_frame() -> void
 {
     auto new_time = Window::time();
-    _delta_time = std::min(new_time - _time, delta_time_limit);
+    _delta_time = std::min(new_time - _time, _delta_time_limit);
     _time = new_time;
 }
 

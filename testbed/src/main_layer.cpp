@@ -1,7 +1,9 @@
 #include "main_layer.hpp"
 
+#include "character.hpp"
 #include "containers.hpp"
 #include "main_scene.hpp"
+#include "physics.hpp"
 #include "sprites.hpp"
 
 auto MainLayer::on_attach() -> zth::Result<void, zth::String>
@@ -9,6 +11,8 @@ auto MainLayer::on_attach() -> zth::Result<void, zth::String>
     _scene_picker.add_scene<MainScene>("Main Scene");
     _scene_picker.add_scene<Containers>("Containers");
     _scene_picker.add_scene<Sprites>("Sprites");
+    _scene_picker.add_scene<Physics>("Physics");
+    _scene_picker.add_scene<Character>("Character");
     return {};
 }
 

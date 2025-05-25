@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Jolt/Jolt.h>
+#include <Jolt/Core/Reference.h>
+#include <Jolt/Physics/Character/CharacterVirtual.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
@@ -13,6 +16,7 @@
 #include "zenith/math/geometry.hpp"
 #include "zenith/math/quaternion.hpp"
 #include "zenith/memory/managed.hpp"
+#include "zenith/physics/body.hpp"
 #include "zenith/renderer/colors.hpp"
 #include "zenith/renderer/fwd.hpp"
 #include "zenith/renderer/light.hpp"
@@ -110,6 +114,71 @@ private:
 
 private:
     auto update_transform() -> void;
+};
+
+// --------------------------- BoxColliderComponent ---------------------------
+
+// BoxColliderComponent adds a static body to the scene. To make the body dynamic, add a RigidBodyComponent.
+struct BoxColliderComponent
+{
+    // @todo: Maybe we should have a separate PhysicsComponent which would store the body id instead of having it here.
+    physics::BodyId body_id;
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
+// --------------------------- SphereColliderComponent ---------------------------
+
+// SphereColliderComponent adds a static body to the scene. To make the body dynamic, add a RigidBodyComponent.
+struct SphereColliderComponent
+{
+    // @todo: Maybe we should have a separate PhysicsComponent which would store the body id instead of having it here.
+    physics::BodyId body_id;
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
+// --------------------------- CapsuleColliderComponent ---------------------------
+
+// CapsuleColliderComponent adds a static body to the scene. To make the body dynamic, add a RigidBodyComponent.
+struct CapsuleColliderComponent
+{
+    // @todo: Maybe we should have a separate PhysicsComponent which would store the body id instead of having it here.
+    physics::BodyId body_id;
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
+// --------------------------- MeshColliderComponent ---------------------------
+
+// MeshColliderComponent adds a static body to the scene. To make the body dynamic, add a RigidBodyComponent.
+struct MeshColliderComponent
+{
+    // @todo: Maybe we should have a separate PhysicsComponent which would store the body id instead of having it here.
+    physics::BodyId body_id;
+    std::shared_ptr<const Mesh> mesh = nullptr; // mesh cannot be null.
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
+// --------------------------- CharacterControllerComponent ---------------------------
+
+// CharacterControllerComponent adds a dynamic body to the scene.
+struct CharacterControllerComponent
+{
+    JPH::Ref<JPH::CharacterVirtual> character;
+
+    [[nodiscard]] static auto display_label() -> const char*;
+};
+
+// --------------------------- RigidBodyComponent ---------------------------
+
+// RigidBodyComponent makes a body dynamic. Requires a collider component.
+struct RigidBodyComponent
+{
+    bool dummy; // @todo: Remove.
+
+    [[nodiscard]] static auto display_label() -> const char*;
 };
 
 // --------------------------- ScriptComponent ---------------------------

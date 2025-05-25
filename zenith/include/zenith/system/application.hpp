@@ -4,8 +4,10 @@
 #include "zenith/layer/layer.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/managed.hpp"
+#include "zenith/physics/physics.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/reference.hpp"
@@ -27,14 +29,12 @@ struct ApplicationSpec
 {
     WindowSpec window_spec{};
     LoggerSpec logger_spec{};
-    double fixed_update_time = 1 / 60.0; // In seconds.
+    PhysicsSpec physics_spec{};
+    TimeSpec time_spec{};
 };
 
 class Application
 {
-public:
-    double fixed_update_time;
-
 public:
     explicit Application(const ApplicationSpec& spec = {});
     ZTH_NO_COPY_NO_MOVE(Application)

@@ -6,6 +6,7 @@
 #include "gl/fwd.hpp"
 #include "layer/fwd.hpp"
 #include "math/fwd.hpp"
+#include "physics/fwd.hpp"
 #include "renderer/fwd.hpp"
 #include "script/fwd.hpp"
 #include "stl/fwd.hpp"
