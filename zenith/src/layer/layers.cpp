@@ -17,20 +17,20 @@ namespace zth {
 
 // --- System Layer
 // 1. Logger
-// 2. TemporaryStorage
-// 3. Window
-// 4. gl::Context
-// 5. Time
+// 2. Time
+// 3. TemporaryStorage
+// 4. Window
+// 5. gl::Context
 // 6. Input
 
 SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
-    : _logger_spec(logger_spec), _window_spec(window_spec)
+    : _logger_spec{ logger_spec }, _window_spec{ window_spec }
 {}
 
 auto SystemLayer::on_frame_start() -> void
 {
-    TemporaryStorage::start_frame();
     Time::start_frame();
+    TemporaryStorage::start_frame();
     Input::start_frame();
 }
 
@@ -49,6 +49,11 @@ auto SystemLayer::on_attach() -> Result<void, String>
 
     ZTH_INTERNAL_TRACE("Initializing system layer...");
 
+    result = Time::init();
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_time{ [] { Time::shut_down(); } };
+
     result = TemporaryStorage::init();
     if (!result)
         return Error{ result.error() };
@@ -64,21 +69,16 @@ auto SystemLayer::on_attach() -> Result<void, String>
         return Error{ result.error() };
     Defer shut_down_gl_context{ [] { gl::Context::shut_down(); } };
 
-    result = Time::init();
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_time{ [] { Time::shut_down(); } };
-
     result = Input::init();
     if (!result)
         return Error{ result.error() };
     Defer shut_down_input{ [] { Input::shut_down(); } };
 
     shut_down_logger.dismiss();
+    shut_down_time.dismiss();
     shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
     shut_down_gl_context.dismiss();
-    shut_down_time.dismiss();
     shut_down_input.dismiss();
 
     ZTH_INTERNAL_TRACE("System layer initialized...");
@@ -91,10 +91,10 @@ auto SystemLayer::on_detach() -> void
 
     // Shut down order should be the reverse of initialization order.
     Input::shut_down();
-    Time::shut_down();
     gl::Context::shut_down();
     Window::shut_down();
     TemporaryStorage::shut_down();
+    Time::shut_down();
     Logger::shut_down();
 }
 

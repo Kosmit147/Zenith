@@ -5,6 +5,7 @@
 #include "zenith/log/logger.hpp"
 #include "zenith/renderer/coordinate_space.hpp"
 #include "zenith/renderer/renderer.hpp"
+#include "zenith/system/time.hpp"
 
 namespace zth {
 
@@ -212,7 +213,9 @@ auto SceneManager::update() -> void
 
 auto SceneManager::render() -> void
 {
+    auto time = Time::time();
     _scene->render();
+    _last_render_time = Time::time() - time;
 }
 
 auto SceneManager::on_render() -> void
