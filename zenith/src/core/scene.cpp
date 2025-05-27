@@ -285,7 +285,7 @@ auto Scene::set_up_registry_listeners() -> void
         auto translation = transform.translation();
         auto rotation = transform.rotation();
 
-        auto& [id, mesh] = entity.get<const MeshColliderComponent>();
+        auto& [_, mesh] = entity.get<const MeshColliderComponent>();
 
         auto motion_type = entity.any_of<RigidBodyComponent>() ? JPH::EMotionType::Dynamic : JPH::EMotionType::Static;
         JPH::RVec3 shape_position{ translation.x, translation.y, translation.z };

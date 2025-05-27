@@ -219,10 +219,10 @@ auto Physics::add_mesh(EntityId entity_id, JPH::EMotionType motion_type, const s
         ZTH_ASSERT(false);
     }
 
-    JPH::MeshShapeSettings mesh_shape_settings{ triangles };
-    mesh_shape_settings.SetEmbedded();
+    JPH::Ref<JPH::MeshShapeSettings> mesh_shape_settings = new JPH::MeshShapeSettings(triangles);
+    // mesh_shape_settings.SetEmbedded();
 
-    JPH::ShapeSettings::ShapeResult mesh_shape_result = mesh_shape_settings.Create();
+    JPH::ShapeSettings::ShapeResult mesh_shape_result = mesh_shape_settings->Create();
     ZTH_ASSERT(mesh_shape_result.IsValid());
     JPH::Ref<JPH::Shape> shape_ref = mesh_shape_result.Get();
 
@@ -273,6 +273,11 @@ auto Physics::update_character(const JPH::Ref<JPH::CharacterVirtual>& character)
     character->Update(Time::fixed_time_step<float>(), -character->GetUp() * physics_system.GetGravity(),
                       physics_system.GetDefaultBroadPhaseLayerFilter(physics::dynamic_objects_layer),
                       physics_system.GetDefaultLayerFilter(physics::dynamic_objects_layer), {}, {}, temp_allocator);
+}
+
+auto Physics::update_character_position(const JPH::Ref<JPH::CharacterVirtual>& character, glm::vec3 position) -> void
+{
+    character->SetPosition(JPH::RVec3{ position.x, position.y, position.z });
 }
 
 auto Physics::update_body_velocity(physics::BodyId body_id, glm::vec3 velocity) -> void

@@ -89,6 +89,7 @@ public:
     static auto make_body_dynamic(physics::BodyId body_id) -> void;
 
     static auto update_character(const JPH::Ref<JPH::CharacterVirtual>& character) -> void;
+    static auto update_character_position(const JPH::Ref<JPH::CharacterVirtual>& character, glm::vec3 position) -> void;
     static auto update_body_velocity(physics::BodyId body_id, glm::vec3 velocity) -> void;
     static auto update_body_transform(physics::BodyId body_id, const physics::BodyTransform& transform) -> void;
 
