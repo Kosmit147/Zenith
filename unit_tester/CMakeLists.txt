@@ -7,6 +7,7 @@ include(Catch)
 add_executable(
 	unit_tester
 	"src/core/cast.cpp"
+	"src/math/vector.cpp"
 	"src/memory/managed.cpp"
 	"src/memory/memory.cpp"
 	"src/renderer/shader_preprocessor.cpp"
