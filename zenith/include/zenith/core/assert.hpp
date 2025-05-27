@@ -24,7 +24,7 @@
             ZTH_DEBUG_BREAK;                                                                                           \
             std::abort();                                                                                              \
         }                                                                                                              \
-    } while (0)
+    } while (false)
 
 // ZTH_RUNTIME_ASSERT
 
@@ -61,4 +61,4 @@
         {                                                                                                              \
             ZTH_ASSERT(__VA_ARGS__);                                                                                   \
         }                                                                                                              \
-    } while (0)
+    } while (false)
