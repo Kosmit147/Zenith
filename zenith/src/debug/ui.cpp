@@ -1,5 +1,7 @@
 #include "zenith/debug/ui.hpp"
 
+#include <imgui.h>
+#include <ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
 #include <imgui_stdlib.h>
@@ -970,7 +972,37 @@ auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
     auto& view = Renderer::current_camera_view();
     auto& projection = Renderer::current_camera_projection();
 
-    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), operation, mode,
+    auto gizmo_operation = [this] {
+        switch (operation)
+        {
+            using enum GizmoOperation;
+        case Translate:
+            return ImGuizmo::TRANSLATE;
+        case Rotate:
+            return ImGuizmo::ROTATE;
+        case Scale:
+            return ImGuizmo::SCALE;
+        }
+
+        ZTH_ASSERT(false);
+        return ImGuizmo::TRANSLATE;
+    }();
+
+    auto gizmo_mode = [this] {
+        switch (mode)
+        {
+            using enum GizmoMode;
+        case Local:
+            return ImGuizmo::LOCAL;
+        case World:
+            return ImGuizmo::WORLD;
+        }
+
+        ZTH_ASSERT(false);
+        return ImGuizmo::LOCAL;
+    }();
+
+    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), gizmo_operation, gizmo_mode,
                              glm::value_ptr(transform_matrix), nullptr, nullptr))
     {
         transform.set_transform(transform_matrix);

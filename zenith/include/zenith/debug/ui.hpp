@@ -1,7 +1,5 @@
 #pragma once
 
-#include <imgui.h>
-#include <ImGuizmo.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -220,10 +218,23 @@ auto edit_component(MeshRendererComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
 auto edit_component(ScriptComponent& script) -> void;
 
+enum class GizmoOperation : u8
+{
+    Translate,
+    Rotate,
+    Scale,
+};
+
+enum class GizmoMode : u8
+{
+    Local,
+    World,
+};
+
 struct TransformGizmo
 {
-    ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
-    ImGuizmo::MODE mode = ImGuizmo::WORLD;
+    GizmoOperation operation = GizmoOperation::Translate;
+    GizmoMode mode = GizmoMode::World;
 
     auto manipulate(TransformComponent& transform) const -> bool;
 };
