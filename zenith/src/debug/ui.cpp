@@ -938,7 +938,7 @@ auto edit_component(ScriptComponent& script) -> void
     script.script().debug_edit();
 }
 
-auto TransformGizmo::display(TransformComponent& transform) const -> void
+auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
 {
     ImGuizmo::Enable(true);
     auto transform_matrix = transform.transform();
@@ -950,7 +950,10 @@ auto TransformGizmo::display(TransformComponent& transform) const -> void
                              glm::value_ptr(transform_matrix), nullptr, nullptr))
     {
         transform.set_transform(transform_matrix);
+        return true;
     }
+
+    return false;
 }
 
 auto EntityInspectorPanel::display(EntityHandle entity) const -> void
@@ -965,7 +968,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
         display_component_for_entity_in_inspector<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
-            gizmo.display(entity.transform());
+            gizmo.manipulate(entity.transform());
     }
 
     if (entity.any_of<CameraComponent>())

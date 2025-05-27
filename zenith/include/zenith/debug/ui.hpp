@@ -218,7 +218,7 @@ struct TransformGizmo
     ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
     ImGuizmo::MODE mode = ImGuizmo::WORLD;
 
-    auto display(TransformComponent& transform) const -> void;
+    auto manipulate(TransformComponent& transform) const -> bool;
 };
 
 struct EntityInspectorPanel
