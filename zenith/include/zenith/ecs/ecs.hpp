@@ -100,6 +100,7 @@ public:
 
     [[nodiscard]] auto id() const { return _id; }
     [[nodiscard]] auto registry() const -> Optional<Reference<const Registry>>;
+    [[nodiscard]] auto registry_unchecked() const -> const Registry&;
 
     [[nodiscard]] operator EntityId() const { return _id; }
 
@@ -138,6 +139,7 @@ public:
     auto destroy_now_unchecked() -> void;
 
     [[nodiscard]] auto registry() const -> Optional<Reference<Registry>>;
+    [[nodiscard]] auto registry_unchecked() const -> Registry&;
 };
 
 // The Registry stores all the entities and their components and provides methods to create and remove entities, modify
