@@ -119,7 +119,7 @@ private:
 class ScriptComponent
 {
 public:
-    explicit ScriptComponent(UniquePtr<Script>&& script);
+    explicit ScriptComponent(UniquePtr<Script>&& script = make_unique<Script>());
 
     [[nodiscard]] auto script() -> Script&;
     [[nodiscard]] auto script() const -> const Script&;
@@ -127,7 +127,7 @@ public:
     [[nodiscard]] static auto display_label() -> const char*;
 
 private:
-    UniquePtr<Script> _script; // script cannot be null.
+    UniquePtr<Script> _script = make_unique<Script>(); // script cannot be null.
 };
 
 // --------------------------- SpriteRenderer2DComponent ---------------------------
