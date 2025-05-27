@@ -936,6 +936,8 @@ auto edit_component(LightComponent& light) -> void
 
 auto edit_component(SpriteRenderer2DComponent& sprite) -> void
 {
+    // @todo: Edit texture.
+
     drag_rect("Rect", sprite.rect);
     edit_color("Color", sprite.color);
 }

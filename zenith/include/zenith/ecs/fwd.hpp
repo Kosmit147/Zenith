@@ -5,9 +5,9 @@ namespace zth {
 struct TagComponent;
 class TransformComponent;
 class ScriptComponent;
-struct SpriteRenderer2DComponent;
-struct MeshRendererComponent;
-struct MaterialComponent;
+class SpriteRenderer2DComponent;
+class MeshRendererComponent;
+class MaterialComponent;
 struct CameraComponent;
 class LightComponent;
 struct DeletionMarkerComponent;

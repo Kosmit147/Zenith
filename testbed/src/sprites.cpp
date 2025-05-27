@@ -42,35 +42,29 @@ auto Sprites::on_load() -> void
     for (std::size_t i = 0; i < 3; i++)
     {
         auto cobble = create_entity(zth::format("Cobble {}", i));
-        cobble.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
-            .texture = cobble_texture,
-            .rect = {
-                .position = glm::uvec2{ 600 + i * 200, 600 },
-                .size = glm::uvec2{ 200, 200 },
-            },
-            .color = zth::Random::rgba_color(),
-        });
+        cobble.emplace_or_replace<zth::SpriteRenderer2DComponent>(cobble_texture,
+                                                                  zth::Rect{
+                                                                      .position = glm::uvec2{ 600 + i * 200, 600 },
+                                                                      .size = glm::uvec2{ 200, 200 },
+                                                                  },
+                                                                  zth::Random::rgba_color());
     }
 
     auto container = create_entity("Container");
-    container.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
-        .texture = container_texture,
-        .rect = {
-            .position = glm::uvec2{ 400, 400 },
-            .size = glm::uvec2{ 200, 200 },
-        },
-        .color = zth::Random::rgba_color(),
-    });
+    container.emplace_or_replace<zth::SpriteRenderer2DComponent>(container_texture,
+                                                                 zth::Rect{
+                                                                     .position = glm::uvec2{ 400, 400 },
+                                                                     .size = glm::uvec2{ 200, 200 },
+                                                                 },
+                                                                 zth::Random::rgba_color());
 
     auto emoji = create_entity("Emoji");
-    emoji.emplace_or_replace<zth::SpriteRenderer2DComponent>(zth::SpriteRenderer2DComponent{
-        .texture = emoji_texture,
-        .rect = {
-            .position = glm::uvec2{ 600, 400 },
-            .size = glm::uvec2{ 200, 200 },
-        },
-        .color = zth::Random::rgba_color(),
-    });
+    emoji.emplace_or_replace<zth::SpriteRenderer2DComponent>(emoji_texture,
+                                                             zth::Rect{
+                                                                 .position = glm::uvec2{ 600, 400 },
+                                                                 .size = glm::uvec2{ 200, 200 },
+                                                             },
+                                                             zth::Random::rgba_color());
 }
 
 auto Sprites::on_unload() -> void
