@@ -31,6 +31,9 @@ namespace zth::debug {
 constexpr inline auto default_float_drag_speed = 0.01f;
 constexpr inline auto default_int_drag_speed = 1.0f;
 
+auto begin_window(const char* label) -> void;
+auto end_window() -> void;
+
 auto text(const char* txt) -> void;
 auto text(StringView txt) -> void;
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void;

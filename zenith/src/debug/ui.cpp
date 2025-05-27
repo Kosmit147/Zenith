@@ -90,6 +90,16 @@ template<typename Component> auto display_component_for_entity_in_inspector(Enti
 
 } // namespace
 
+auto begin_window(const char* label) -> void
+{
+    ImGui::Begin(label);
+}
+
+auto end_window() -> void
+{
+    ImGui::End();
+}
+
 auto text(const char* txt) -> void
 {
     ImGui::TextUnformatted(txt);
@@ -974,7 +984,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 {
     ZTH_ASSERT(entity.valid());
 
-    ImGui::Begin("Entity Inspector");
+    begin_window("Entity Inspector");
     ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
     {
@@ -1028,12 +1038,12 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     }
 
     ImGui::PopItemWidth();
-    ImGui::End();
+    end_window();
 }
 
 auto SceneHierarchyPanel::display(Registry& registry) -> void
 {
-    ImGui::Begin("Scene Hierarchy");
+    begin_window("Scene Hierarchy");
 
     input_text("Search", _search);
 
@@ -1074,14 +1084,14 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
         ImGui::EndPopup();
     }
 
-    ImGui::End();
+    end_window();
 }
 
 DebugPanel::DebugPanel(StringView label) : _label{ label } {}
 
 auto DebugPanel::display() -> void
 {
-    ImGui::Begin(_label.c_str());
+    begin_window(_label.c_str());
 
     text("FPS: {:.2f}", ImGui::GetIO().Framerate);
 
@@ -1158,14 +1168,14 @@ auto DebugPanel::display() -> void
     text("Version: {}", gl::Context::version_string());
     text("GLSL Version: {}", gl::Context::glsl_version_string());
 
-    ImGui::End();
+    end_window();
 }
 
 ScenePicker::ScenePicker(StringView label) : _label{ label } {}
 
 auto ScenePicker::display() -> void
 {
-    ImGui::Begin(_label.c_str());
+    begin_window(_label.c_str());
 
     text("{}", _scene_names[_selected_scene_idx]);
     text("Prev");
@@ -1184,7 +1194,7 @@ auto ScenePicker::display() -> void
 
     text("Next");
 
-    ImGui::End();
+    end_window();
 }
 
 auto ScenePicker::prev_scene() -> void
