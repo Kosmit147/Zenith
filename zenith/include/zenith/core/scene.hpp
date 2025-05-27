@@ -86,10 +86,13 @@ public:
     static auto queue_scene(std::function<UniquePtr<Scene>()>&& factory) -> void;
 
     [[nodiscard]] static auto scene() -> Scene&;
+    [[nodiscard]] static auto last_render_time() { return _last_render_time; }
 
 private:
     static UniquePtr<Scene> _scene;
     static std::function<UniquePtr<Scene>()> _queued_scene_factory;
+
+    static inline double _last_render_time = 0.0;
 };
 
 template<std::derived_from<Scene> T> auto SceneManager::queue_scene() -> void

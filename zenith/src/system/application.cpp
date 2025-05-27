@@ -5,6 +5,7 @@
 #include "zenith/layer/layers.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/system/event_queue.hpp"
+#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/defer.hpp"
 
@@ -107,7 +108,7 @@ auto Application::dispatch_event(const Event& event) -> void
 
 auto Application::fixed_update() -> void
 {
-    auto time = Window::time();
+    auto time = Time::time();
     auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_update_time;
     auto fixed_updates_to_perform = static_cast<usize>((time - accumulated_fixed_update_time) / fixed_update_time);
 

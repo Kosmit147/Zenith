@@ -13,14 +13,19 @@ auto Time::init() -> Result<void, String>
 
 auto Time::start_frame() -> void
 {
-    auto new_time = Window::time();
-    _delta_time = std::min(new_time - _time, delta_time_limit);
-    _time = new_time;
+    auto time = get_time();
+    _delta_time = std::min(time - _prev_time, delta_time_limit);
+    _prev_time = time;
 }
 
 auto Time::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Time system shut down.");
+}
+
+auto Time::get_time() -> double
+{
+    return Window::time();
 }
 
 } // namespace zth
