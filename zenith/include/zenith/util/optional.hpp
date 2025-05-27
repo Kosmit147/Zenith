@@ -28,7 +28,8 @@ template<typename T, typename Elem>
     return std::make_optional<T>(values, std::forward<decltype(args)>(args)...);
 }
 
-template<typename T> [[nodiscard]] auto make_optional_reference_from_pointer(T* pointer) -> Optional<Reference<T>>
+template<typename T>
+[[nodiscard]] constexpr auto make_optional_reference_from_pointer(T* pointer) -> Optional<Reference<T>>
 {
     return pointer ? zth::make_optional(make_reference(*pointer)) : nil;
 }
