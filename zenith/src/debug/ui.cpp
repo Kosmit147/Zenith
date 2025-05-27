@@ -1067,6 +1067,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
         add_component_menu_item(std::type_identity<SpriteRenderer2DComponent>{});
         add_component_menu_item(std::type_identity<MeshRendererComponent>{});
         add_component_menu_item(std::type_identity<MaterialComponent>{});
+        add_component_menu_item(std::type_identity<ScriptComponent>{});
 
         ImGui::EndPopup();
     }
