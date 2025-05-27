@@ -1023,6 +1023,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 
     {
         edit_component(entity.tag());
+        text("ID: {}", entity.id());
         display_component_for_entity_in_inspector<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
@@ -1092,7 +1093,7 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
                 continue;
         }
 
-        auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity_id));
+        auto label = format_to_temporary("{}##{}", tag.tag, entity_id);
 
         if (ImGui::Selectable(label.c_str(), _selected_entity_id == entity_id))
             _selected_entity_id = entity_id;

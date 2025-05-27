@@ -227,3 +227,11 @@ auto Registry::destroy_now_unchecked(EntityHandle& entity) -> void
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::EntityId, id)
+{
+    if (id == zth::null_entity)
+        return ZTH_FORMAT_OUT("Null");
+    else
+        return ZTH_FORMAT_OUT("{}", std::to_underlying(id));
+}
