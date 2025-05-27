@@ -105,6 +105,20 @@ auto separator_text(const char* txt) -> void
     ImGui::SeparatorText(txt);
 }
 
+auto text_wrapped(const char* txt) -> void
+{
+    ImGui::PushTextWrapPos(0.0f);
+    text(txt);
+    ImGui::PopTextWrapPos();
+}
+
+auto text_wrapped(StringView txt) -> void
+{
+    ImGui::PushTextWrapPos(0.0f);
+    text(txt);
+    ImGui::PopTextWrapPos();
+}
+
 auto drag_int(const char* label, u8& value, float drag_speed) -> bool
 {
     return ImGui::DragScalar(label, ImGuiDataType_U8, &value, drag_speed);
@@ -1075,9 +1089,9 @@ auto DebugPanel::display() -> void
     auto target_frame_time = Window::target_frame_time();
 
     if (target_frame_time != 0.0)
-        text("Frame time: {:.5f}ms ({:.2f}%)", last_frame_time * 1000.0, last_frame_time / target_frame_time * 100.0);
+        text("Frame time: {:.4f}ms ({:.2f}%)", last_frame_time * 1000.0, last_frame_time / target_frame_time * 100.0);
     else
-        text("Frame time: {:.5f}ms", last_frame_time * 1000.0);
+        text("Frame time: {:.4f}ms", last_frame_time * 1000.0);
 
     text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
     text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
