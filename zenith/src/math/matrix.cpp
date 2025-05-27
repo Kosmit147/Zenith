@@ -69,7 +69,7 @@ auto extract_scale(const glm::mat4& transform) -> glm::vec3
 auto has_uniform_scale(const glm::mat4& transform, float epsilon) -> bool
 {
     auto scale = extract_scale(transform);
-    return has_relatively_equal_components(scale, epsilon);
+    return has_relatively_equal_float_components(scale, epsilon);
 }
 
 auto get_normal_matrix(const glm::mat4& transform) -> glm::mat3

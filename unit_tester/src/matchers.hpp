@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "zenith/log/format.hpp"
+#include <zenith/log/format.hpp>
 
 template<typename T> struct EqualsMatcher : Catch::Matchers::MatcherGenericBase
 {

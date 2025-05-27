@@ -2,44 +2,87 @@
 
 namespace zth::math {
 
+template<glm::length_t Size, typename T>
+    requires(Size > 0)
+auto max_component(const glm::vec<Size, T>& vec) -> T
+{
+    auto max = vec[0];
+
+    for (glm::length_t i = 1; i < Size; i++)
+        if (vec[i] > max)
+            max = vec[i];
+
+    return max;
+}
+
+template<glm::length_t Size, typename T>
+    requires(Size > 0)
+auto min_component(const glm::vec<Size, T>& vec) -> T
+{
+    auto min = vec[0];
+
+    for (glm::length_t i = 1; i < Size; i++)
+        if (vec[i] < min)
+            min = vec[i];
+
+    return min;
+}
+
+template<glm::length_t Size, typename T>
+    requires(Size > 0)
+auto min_max_component(const glm::vec<Size, T>& vec) -> std::pair<T, T>
+{
+    auto min = vec[0];
+    auto max = vec[0];
+
+    for (glm::length_t i = 1; i < Size; i++)
+    {
+        if (vec[i] < min)
+            min = vec[i];
+        else if (vec[i] > max)
+            max = vec[i];
+    }
+
+    return { min, max };
+}
+
 template<glm::length_t Size, std::floating_point T>
-auto equal(glm::vec<Size, T> a, glm::vec<Size, T> b, T epsilon) -> bool
+auto float_equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b, T epsilon) -> bool
 {
     for (glm::length_t i = 0; i < Size; i++)
-        if (!equal(a[i], b[i], epsilon))
+        if (!float_equal(a[i], b[i], epsilon))
             return false;
 
     return true;
 }
 
 template<glm::length_t Size, std::floating_point T>
-auto relative_equal(glm::vec<Size, T> a, glm::vec<Size, T> b, T epsilon) -> bool
+auto relative_float_equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b, T epsilon) -> bool
 {
     for (glm::length_t i = 0; i < Size; i++)
-        if (!relative_equal(a[i], b[i], epsilon))
-            return false;
-
-    return true;
-}
-
-template<glm::length_t Size, std::floating_point T> auto has_equal_components(glm::vec<Size, T> vec, T epsilon) -> bool
-{
-    static_assert(Size > 0);
-
-    for (glm::length_t i = 0; i < Size - 1; i++)
-        if (!equal(vec[i], vec[i + 1], epsilon))
+        if (!relative_float_equal(a[i], b[i], epsilon))
             return false;
 
     return true;
 }
 
 template<glm::length_t Size, std::floating_point T>
-auto has_relatively_equal_components(glm::vec<Size, T> vec, T epsilon) -> bool
+    requires(Size > 0)
+auto has_equal_float_components(const glm::vec<Size, T>& vec, T epsilon) -> bool
 {
-    static_assert(Size > 0);
-
     for (glm::length_t i = 0; i < Size - 1; i++)
-        if (!relative_equal(vec[i], vec[i + 1], epsilon))
+        if (!float_equal(vec[i], vec[i + 1], epsilon))
+            return false;
+
+    return true;
+}
+
+template<glm::length_t Size, std::floating_point T>
+    requires(Size > 0)
+auto has_relatively_equal_float_components(const glm::vec<Size, T>& vec, T epsilon) -> bool
+{
+    for (glm::length_t i = 0; i < Size - 1; i++)
+        if (!relative_float_equal(vec[i], vec[i + 1], epsilon))
             return false;
 
     return true;
