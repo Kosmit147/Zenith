@@ -37,6 +37,10 @@ template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... 
 
 auto separator_text(const char* txt) -> void;
 
+auto text_wrapped(const char* txt) -> void;
+auto text_wrapped(StringView txt) -> void;
+template<typename... Args> auto text_wrapped(fmt::format_string<Args...> fmt, Args&&... args) -> void;
+
 auto drag_int(const char* label, u8& value, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_2(const char* label, u8 values[2], float drag_speed = default_int_drag_speed) -> bool;
 auto drag_int_3(const char* label, u8 values[3], float drag_speed = default_int_drag_speed) -> bool;
@@ -288,6 +292,11 @@ private:
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void
 {
     text(format_to_temporary(fmt, std::forward<decltype(args)>(args)...));
+}
+
+template<typename... Args> auto text_wrapped(fmt::format_string<Args...> fmt, Args&&... args) -> void
+{
+    text_wrapped(format_to_temporary(fmt, std::forward<decltype(args)>(args)...));
 }
 
 template<std::derived_from<Scene> T> auto ScenePicker::add_scene(StringView name)
