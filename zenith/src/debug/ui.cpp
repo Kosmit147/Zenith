@@ -14,6 +14,7 @@
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
+#include "zenith/system/application.hpp"
 #include "zenith/system/input.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/system/window.hpp"
@@ -1143,14 +1144,6 @@ auto DebugPanel::display() -> void
     {
         text("FPS: {:.2f}", ImGui::GetIO().Framerate);
 
-        auto temporary_storage_capacity = TemporaryStorage::capacity();
-        auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
-
-        // @todo: We should choose the unit to use here dynamically instead of always using MB.
-        text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
-        text("Temporary storage usage: {:.0f}%",
-             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
-
         auto last_frame_time = Window::last_frame_time();
         auto target_frame_time = Window::target_frame_time();
 
@@ -1166,10 +1159,18 @@ auto DebugPanel::display() -> void
 
         auto last_render_time = SceneManager::last_render_time();
         text("Render time: {:.4f}ms ({:.2f}%)", last_render_time * 1000.0, last_render_time / last_frame_time * 100.0);
-    }
 
-    text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
-    text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
+        text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
+        text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
+
+        auto temporary_storage_capacity = TemporaryStorage::capacity();
+        auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
+
+        // @todo: We should choose the unit to use here dynamically instead of always using MB.
+        text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
+        text("Temporary storage usage: {:.0f}%",
+             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
+    }
 
     bool frame_rate_limit_enabled;
 
@@ -1227,6 +1228,9 @@ auto DebugPanel::display() -> void
         if (checkbox("Wireframe", wireframe_mode_enabled))
             Renderer::set_wireframe_mode_enabled(wireframe_mode_enabled);
     }
+
+    input_float("Delta time limit", Application::delta_time_limit);
+    input_float("Fixed time step", Application::fixed_time_step);
 
     text("Vendor: {}", gl::Context::vendor_string());
     text("Renderer: {}", gl::Context::renderer_string());
