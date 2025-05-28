@@ -107,7 +107,7 @@ auto ShaderPreprocessor::remove_source(StringView name) -> bool
 }
 
 ShaderPreprocessor::ShaderPreprocessor(StringView source, u16 recursion_depth)
-    : _rest(source), _current_recursion_depth(recursion_depth)
+    : _rest{ source }, _current_recursion_depth{ recursion_depth }
 {
     update_rest_in_line();
 }

@@ -86,7 +86,7 @@ public:
     static auto queue_scene(std::function<UniquePtr<Scene>()>&& factory) -> void;
 
     [[nodiscard]] static auto scene() -> Scene&;
-    [[nodiscard]] static auto last_render_time() { return _last_render_time; }
+    [[nodiscard]] static auto last_render_time() -> double;
 
 private:
     static UniquePtr<Scene> _scene;

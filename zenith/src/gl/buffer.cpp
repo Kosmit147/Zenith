@@ -75,9 +75,9 @@ auto Buffer::operator=(const Buffer& other) -> Buffer&
 }
 
 Buffer::Buffer(Buffer&& other) noexcept
-    : _id(std::exchange(other._id, GL_NONE)), _size_bytes(std::exchange(other._size_bytes, 0)),
-      _capacity_bytes(std::exchange(other._capacity_bytes, 0)),
-      _state(std::exchange(other._state, BufferState::Uninitialized)), _usage(std::exchange(other._usage, nil))
+    : _id{ std::exchange(other._id, GL_NONE) }, _size_bytes{ std::exchange(other._size_bytes, 0) },
+      _capacity_bytes{ std::exchange(other._capacity_bytes, 0) },
+      _state{ std::exchange(other._state, BufferState::Uninitialized) }, _usage{ std::exchange(other._usage, nil) }
 {}
 
 auto Buffer::operator=(Buffer&& other) noexcept -> Buffer&
@@ -463,7 +463,8 @@ auto IndexBuffer::create_dynamic_with_data(std::span<const byte> data, DataType 
 }
 
 IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
-    : _buffer(std::move(other._buffer)), _indexing_data_type(std::exchange(other._indexing_data_type, DataType::None))
+    : _buffer{ std::move(other._buffer) },
+      _indexing_data_type{ std::exchange(other._indexing_data_type, DataType::None) }
 {}
 
 auto IndexBuffer::operator=(IndexBuffer&& other) noexcept -> IndexBuffer&

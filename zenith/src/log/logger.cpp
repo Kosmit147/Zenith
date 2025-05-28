@@ -3,6 +3,7 @@
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 #include "zenith/core/assert.hpp"
 #include "zenith/log/format.hpp"
@@ -48,6 +49,8 @@ auto Logger::shut_down() -> void
 
     _client_logger.reset();
     _core_logger.reset();
+
+    spdlog::drop_all();
 }
 
 auto Logger::core_logger() -> spdlog::logger&

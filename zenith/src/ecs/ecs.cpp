@@ -5,7 +5,7 @@
 
 namespace zth {
 
-ConstEntityHandle::ConstEntityHandle(EntityId id, Registry& registry) : _id(id), _registry(&registry) {}
+ConstEntityHandle::ConstEntityHandle(EntityId id, Registry& registry) : _id{ id }, _registry{ &registry } {}
 
 auto ConstEntityHandle::tag() const -> const TagComponent&
 {

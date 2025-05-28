@@ -78,7 +78,7 @@ auto Texture2D::from_file_data(std::span<const byte> file_data, const TexturePar
     return Texture2D{ FromFileDataTag{}, file_data, params };
 }
 
-Texture2D::Texture2D(Texture2D&& other) noexcept : _id(std::exchange(other._id, GL_NONE)) {}
+Texture2D::Texture2D(Texture2D&& other) noexcept : _id{ std::exchange(other._id, GL_NONE) } {}
 
 auto Texture2D::operator=(Texture2D&& other) noexcept -> Texture2D&
 {

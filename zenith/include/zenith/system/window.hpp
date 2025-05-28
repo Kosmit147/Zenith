@@ -27,7 +27,7 @@ struct WindowSpec
     bool vsync = true;
     Optional<u32> frame_rate_limit = nil;
     bool resizable = true;
-    bool maximized = false;
+    bool maximized = true;
     bool cursor_enabled = false;
     u32 samples = 4;
     bool transparent_framebuffer = false;
