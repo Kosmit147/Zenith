@@ -60,12 +60,6 @@ private:
     auto set_up_registry_listeners() -> void;
 };
 
-class PlaceholderScene : public Scene
-{
-public:
-    explicit PlaceholderScene() : Scene("Placeholder Scene") {}
-};
-
 // SceneManager ensures that there is always a scene loaded.
 class SceneManager
 {

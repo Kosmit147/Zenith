@@ -170,10 +170,8 @@ auto Scene::set_up_registry_listeners() -> void
 auto SceneManager::init() -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing scene manager...");
-
-    _scene = make_unique<PlaceholderScene>();
+    _scene = make_unique<Scene>();
     _scene->load();
-
     ZTH_INTERNAL_TRACE("Scene manager initialized.");
     return {};
 }
