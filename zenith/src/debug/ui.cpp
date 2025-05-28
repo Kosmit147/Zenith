@@ -717,22 +717,32 @@ auto pick_color(const char* label, glm::vec4& color) -> bool
 
 auto input_int(const char* label, u32& value, u32 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_U32, &value, step > 0 ? &step : nullptr);
+    return ImGui::InputScalar(label, ImGuiDataType_U32, &value, step != 0 ? &step : nullptr);
 }
 
 auto input_int(const char* label, i32& value, i32 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_S32, &value, step > 0 ? &step : nullptr);
+    return ImGui::InputScalar(label, ImGuiDataType_S32, &value, step != 0 ? &step : nullptr);
 }
 
 auto input_int(const char* label, u64& value, u64 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_U64, &value, step > 0 ? &step : nullptr);
+    return ImGui::InputScalar(label, ImGuiDataType_U64, &value, step != 0 ? &step : nullptr);
 }
 
 auto input_int(const char* label, i64& value, i64 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_S64, &value, step > 0 ? &step : nullptr);
+    return ImGui::InputScalar(label, ImGuiDataType_S64, &value, step != 0 ? &step : nullptr);
+}
+
+auto input_float(const char* label, float& value, float step) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_Float, &value, step != 0.0f ? &step : nullptr);
+}
+
+auto input_float(const char* label, double& value, double step) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_Double, &value, step != 0.0 ? &step : nullptr);
 }
 
 auto input_text(const char* label, String& value) -> bool
