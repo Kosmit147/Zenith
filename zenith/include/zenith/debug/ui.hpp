@@ -183,6 +183,9 @@ auto input_int(const char* label, i32& value, i32 step = 0) -> bool;
 auto input_int(const char* label, u64& value, u64 step = 0) -> bool;
 auto input_int(const char* label, i64& value, i64 step = 0) -> bool;
 
+auto input_float(const char* label, float& value, float step = 0.0f) -> bool;
+auto input_float(const char* label, double& value, double step = 0.0) -> bool;
+
 auto input_text(const char* label, String& value) -> bool;
 
 auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
