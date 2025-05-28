@@ -69,6 +69,21 @@ constexpr auto gigabytes(usize n) -> usize
     return megabytes(n) * 1024u;
 }
 
+constexpr auto to_kilobytes(usize bytes) -> double
+{
+    return static_cast<double>(bytes) / 1024.0;
+}
+
+constexpr auto to_megabytes(usize bytes) -> double
+{
+    return to_kilobytes(bytes) / 1024.0;
+}
+
+constexpr auto to_gigabytes(usize bytes) -> double
+{
+    return to_megabytes(bytes) / 1024.0;
+}
+
 namespace size_literals {
 
 constexpr auto operator""_kb(usize n) -> usize

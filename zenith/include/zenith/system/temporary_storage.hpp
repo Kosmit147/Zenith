@@ -17,8 +17,8 @@
 
 namespace zth {
 
-// A linear memory allocator which gets reset every frame. If we exceed the capacity, we resort to a regular allocation
-// using new. The preferred way of interacting with TemporaryStorage is via the make_temporary function.
+// A linear memory allocator which gets reset at the start of every frame. If we exceed the capacity, we resort to a
+// regular allocation. The preferred way of interacting with temporary storage is via make_temporary().
 class TemporaryStorage
 {
 public:
@@ -37,9 +37,10 @@ public:
     [[nodiscard]] static auto allocate(usize size_bytes, usize alignment = memory::default_alignment) -> void*;
     [[nodiscard]] static auto allocate_unaligned(usize size_bytes) -> void*;
 
-    [[nodiscard]] static auto capacity() -> usize { return _buffer.size(); }
-    [[nodiscard]] static auto memory_left() -> usize;
-    [[nodiscard]] static auto memory_used() -> usize;
+    [[nodiscard]] static auto capacity() -> usize;
+    [[nodiscard]] static auto left() -> usize;
+    [[nodiscard]] static auto used() -> usize;
+    [[nodiscard]] static auto usage_last_frame() -> usize;
 
     [[nodiscard]] static auto begin() -> decltype(auto) { return _buffer.begin(); }
     [[nodiscard]] static auto end() -> decltype(auto) { return _buffer.end(); }
@@ -48,6 +49,8 @@ private:
     static memory::Buffer<> _buffer;
     static inline byte* _buffer_ptr = nullptr;
     static Vector<UniquePtr<byte[]>> _overflow_allocations;
+
+    static inline usize _usage_last_frame = 0;
 
 private:
     [[nodiscard]] static auto allocate_if_overflowed(usize size_bytes) -> void*;
