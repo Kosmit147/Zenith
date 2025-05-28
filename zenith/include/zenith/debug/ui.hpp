@@ -178,10 +178,10 @@ auto edit_color(const char* label, glm::vec4& color) -> bool;
 auto pick_color(const char* label, glm::vec3& color) -> bool;
 auto pick_color(const char* label, glm::vec4& color) -> bool;
 
-auto input_int(const char* label, u32& value) -> bool;
-auto input_int(const char* label, i32& value) -> bool;
-auto input_int(const char* label, u64& value) -> bool;
-auto input_int(const char* label, i64& value) -> bool;
+auto input_int(const char* label, u32& value, u32 step = 0) -> bool;
+auto input_int(const char* label, i32& value, i32 step = 0) -> bool;
+auto input_int(const char* label, u64& value, u64 step = 0) -> bool;
+auto input_int(const char* label, i64& value, i64 step = 0) -> bool;
 
 auto input_text(const char* label, String& value) -> bool;
 
