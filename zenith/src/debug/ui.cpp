@@ -10,6 +10,7 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
+#include "zenith/memory/memory.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
@@ -1131,6 +1132,14 @@ auto DebugPanel::display() -> void
 
     {
         text("FPS: {:.2f}", ImGui::GetIO().Framerate);
+
+        auto temporary_storage_capacity = TemporaryStorage::capacity();
+        auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
+
+        // @todo: We should choose the unit to use here dynamically instead of always using MB.
+        text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
+        text("Temporary storage usage: {:.0f}%",
+             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
 
         auto last_frame_time = Window::last_frame_time();
         auto target_frame_time = Window::target_frame_time();

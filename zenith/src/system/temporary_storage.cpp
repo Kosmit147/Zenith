@@ -19,6 +19,7 @@ auto TemporaryStorage::init() -> Result<void, String>
 
 auto TemporaryStorage::start_frame() -> void
 {
+    _usage_last_frame = used();
     reset();
 }
 
@@ -77,14 +78,24 @@ auto TemporaryStorage::allocate_unaligned(usize size_bytes) -> void*
     return result;
 }
 
-auto TemporaryStorage::memory_left() -> usize
+auto TemporaryStorage::capacity() -> usize
+{
+    return _buffer.size();
+}
+
+auto TemporaryStorage::left() -> usize
 {
     return std::distance(_buffer_ptr, end());
 }
 
-auto TemporaryStorage::memory_used() -> usize
+auto TemporaryStorage::used() -> usize
 {
     return std::distance(begin(), _buffer_ptr);
+}
+
+auto TemporaryStorage::usage_last_frame() -> usize
+{
+    return _usage_last_frame;
 }
 
 auto TemporaryStorage::allocate_if_overflowed(usize size_bytes) -> void*

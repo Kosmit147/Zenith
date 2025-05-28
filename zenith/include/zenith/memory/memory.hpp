@@ -24,6 +24,10 @@ template<typename T> auto align_down(T*& ptr, usize alignment = alignof(T)) -> u
 [[nodiscard]] constexpr auto megabytes(usize n) -> usize;
 [[nodiscard]] constexpr auto gigabytes(usize n) -> usize;
 
+[[nodiscard]] constexpr auto to_kilobytes(usize bytes) -> double;
+[[nodiscard]] constexpr auto to_megabytes(usize bytes) -> double;
+[[nodiscard]] constexpr auto to_gigabytes(usize bytes) -> double;
+
 namespace size_literals {
 
 [[nodiscard]] constexpr auto operator""_kb(usize n) -> usize;
