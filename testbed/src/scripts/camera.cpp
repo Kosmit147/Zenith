@@ -102,7 +102,7 @@ auto Camera::on_update(zth::EntityHandle actor) -> void
 
     // @todo: Remove this ray cast test code.
 
-    ImGui::Begin("Ray Cast");
+    zth::debug::begin_window("Ray Cast");
 
     if (auto hit = zth::Physics::ray_cast(transform.translation(), transform.direction() * 1000.0f))
     {
@@ -114,7 +114,7 @@ auto Camera::on_update(zth::EntityHandle actor) -> void
         zth::debug::text("Hit point: {}", hit_point);
     }
 
-    ImGui::End();
+    zth::debug::end_window();
 }
 
 auto Camera::on_attach(zth::EntityHandle actor) -> void

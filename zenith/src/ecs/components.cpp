@@ -278,7 +278,10 @@ auto RigidBodyComponent::display_label() -> const char*
 
 // --------------------------- ScriptComponent ---------------------------
 
-ScriptComponent::ScriptComponent(UniquePtr<Script>&& script) : _script{ std::move(script) } {}
+ScriptComponent::ScriptComponent(UniquePtr<Script>&& script) : _script{ std::move(script) }
+{
+    ZTH_ASSERT(_script != nullptr);
+}
 
 auto ScriptComponent::script() -> Script&
 {
@@ -297,12 +300,64 @@ auto ScriptComponent::display_label() -> const char*
 
 // --------------------------- SpriteRenderer2DComponent ---------------------------
 
+SpriteRenderer2DComponent::SpriteRenderer2DComponent(std::shared_ptr<const gl::Texture2D> texture, Rect<u32> rect,
+                                                     glm::vec4 color)
+    : rect{ rect }, color{ color }, _texture{ std::move(texture) }
+{
+    ZTH_ASSERT(_texture != nullptr);
+}
+
+SpriteRenderer2DComponent::SpriteRenderer2DComponent(Rect<u32> rect, glm::vec4 color) : rect{ rect }, color{ color }
+{
+    ZTH_ASSERT(_texture != nullptr);
+}
+
+auto SpriteRenderer2DComponent::set_texture(std::shared_ptr<const gl::Texture2D> texture) -> void
+{
+    ZTH_ASSERT(texture != nullptr);
+    _texture = std::move(texture);
+}
+
+auto SpriteRenderer2DComponent::texture() const -> const std::shared_ptr<const gl::Texture2D>&
+{
+    return _texture;
+}
+
 auto SpriteRenderer2DComponent::display_label() -> const char*
 {
     return "Sprite Renderer 2D";
 }
 
+auto SpriteRenderer2DComponent::get_default_rect() -> Rect<u32>
+{
+    auto window_size = Window::size();
+
+    auto sprite_size = window_size / 8u;
+    auto sprite_position = window_size / 2u;
+
+    sprite_position.x -= sprite_size.x / 2u;
+    sprite_position.y += sprite_size.y / 2u;
+
+    return Rect{ .position = sprite_position, .size = sprite_size };
+}
+
 // --------------------------- MeshRendererComponent ---------------------------
+
+MeshRendererComponent::MeshRendererComponent(std::shared_ptr<const Mesh> mesh) : _mesh{ std::move(mesh) }
+{
+    ZTH_ASSERT(_mesh != nullptr);
+}
+
+auto MeshRendererComponent::set_mesh(std::shared_ptr<const Mesh> mesh) -> void
+{
+    ZTH_ASSERT(mesh != nullptr);
+    _mesh = std::move(mesh);
+}
+
+auto MeshRendererComponent::mesh() const -> const std::shared_ptr<const Mesh>&
+{
+    return _mesh;
+}
 
 auto MeshRendererComponent::display_label() -> const char*
 {
@@ -310,6 +365,22 @@ auto MeshRendererComponent::display_label() -> const char*
 }
 
 // --------------------------- MaterialComponent ---------------------------
+
+MaterialComponent::MaterialComponent(std::shared_ptr<const Material> material) : _material{ std::move(material) }
+{
+    ZTH_ASSERT(_material != nullptr);
+}
+
+auto MaterialComponent::set_material(std::shared_ptr<const Material> material) -> void
+{
+    ZTH_ASSERT(material != nullptr);
+    _material = std::move(material);
+}
+
+auto MaterialComponent::material() const -> const std::shared_ptr<const Material>&
+{
+    return _material;
+}
 
 auto MaterialComponent::display_label() -> const char*
 {

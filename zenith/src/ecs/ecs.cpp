@@ -27,6 +27,7 @@ auto ConstEntityHandle::registry() const -> Optional<Reference<const Registry>>
 
 auto ConstEntityHandle::registry_unchecked() const -> const Registry&
 {
+    ZTH_ASSERT(_registry != nullptr);
     return *_registry;
 }
 
@@ -89,6 +90,7 @@ auto EntityHandle::registry() const -> Optional<Reference<Registry>>
 
 auto EntityHandle::registry_unchecked() const -> Registry&
 {
+    ZTH_ASSERT(_registry != nullptr);
     return *_registry;
 }
 
@@ -225,3 +227,11 @@ auto Registry::destroy_now_unchecked(EntityHandle& entity) -> void
 }
 
 } // namespace zth
+
+ZTH_DEFINE_FORMATTER(zth::EntityId, id)
+{
+    if (id == zth::null_entity)
+        return ZTH_FORMAT_OUT("Null");
+    else
+        return ZTH_FORMAT_OUT("{}", std::to_underlying(id));
+}

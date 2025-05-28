@@ -9,6 +9,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/ecs/fwd.hpp"
+#include "zenith/log/format.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
@@ -223,5 +224,7 @@ private:
 };
 
 } // namespace zth
+
+ZTH_DECLARE_FORMATTER(zth::EntityId);
 
 #include "ecs.inl"

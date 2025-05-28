@@ -1,7 +1,5 @@
 #pragma once
 
-#include <imgui.h>
-#include <ImGuizmo.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -30,6 +28,9 @@ namespace zth::debug {
 
 constexpr inline auto default_float_drag_speed = 0.01f;
 constexpr inline auto default_int_drag_speed = 1.0f;
+
+auto begin_window(const char* label) -> void;
+auto end_window() -> void;
 
 auto text(const char* txt) -> void;
 auto text(StringView txt) -> void;
@@ -177,10 +178,13 @@ auto edit_color(const char* label, glm::vec4& color) -> bool;
 auto pick_color(const char* label, glm::vec3& color) -> bool;
 auto pick_color(const char* label, glm::vec4& color) -> bool;
 
-auto input_int(const char* label, u32& value) -> bool;
-auto input_int(const char* label, i32& value) -> bool;
-auto input_int(const char* label, u64& value) -> bool;
-auto input_int(const char* label, i64& value) -> bool;
+auto input_int(const char* label, u32& value, u32 step = 0) -> bool;
+auto input_int(const char* label, i32& value, i32 step = 0) -> bool;
+auto input_int(const char* label, u64& value, u64 step = 0) -> bool;
+auto input_int(const char* label, i64& value, i64 step = 0) -> bool;
+
+auto input_float(const char* label, float& value, float step = 0.0f) -> bool;
+auto input_float(const char* label, double& value, double step = 0.0) -> bool;
 
 auto input_text(const char* label, String& value) -> bool;
 
@@ -223,10 +227,23 @@ auto edit_component(MeshRendererComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
 auto edit_component(ScriptComponent& script) -> void;
 
+enum class GizmoOperation : u8
+{
+    Translate,
+    Rotate,
+    Scale,
+};
+
+enum class GizmoMode : u8
+{
+    Local,
+    World,
+};
+
 struct TransformGizmo
 {
-    ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
-    ImGuizmo::MODE mode = ImGuizmo::WORLD;
+    GizmoOperation operation = GizmoOperation::Translate;
+    GizmoMode mode = GizmoMode::World;
 
     auto manipulate(TransformComponent& transform) const -> bool;
 };

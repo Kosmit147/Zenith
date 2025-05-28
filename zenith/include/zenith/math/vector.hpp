@@ -5,6 +5,7 @@
 #include <glm/vec4.hpp>
 
 #include <concepts>
+#include <utility>
 
 #include "zenith/math/float.hpp"
 
@@ -17,28 +18,33 @@ constexpr inline glm::vec3 world_right{ 1.0f, 0.0f, 0.0f };
 constexpr inline glm::vec3 world_down{ 0.0f, -1.0f, 0.0f };
 constexpr inline glm::vec3 world_up{ 0.0f, 1.0f, 0.0f };
 
-template<glm::length_t Size, std::floating_point T>
+template<glm::length_t Size, typename T>
     requires(Size > 0)
 [[nodiscard]] auto max_component(const glm::vec<Size, T>& vec) -> T;
-template<glm::length_t Size, std::floating_point T>
+
+template<glm::length_t Size, typename T>
     requires(Size > 0)
 [[nodiscard]] auto min_component(const glm::vec<Size, T>& vec) -> T;
 
+template<glm::length_t Size, typename T>
+    requires(Size > 0)
+[[nodiscard]] auto min_max_component(const glm::vec<Size, T>& vec) -> std::pair<T, T>;
+
 template<glm::length_t Size, std::floating_point T>
-[[nodiscard]] auto equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b, T epsilon = default_epsilon<T>)
+[[nodiscard]] auto float_equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b, T epsilon = default_epsilon<T>)
     -> bool;
 
 template<glm::length_t Size, std::floating_point T>
-[[nodiscard]] auto relative_equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b,
-                                  T epsilon = default_epsilon<T>) -> bool;
+[[nodiscard]] auto relative_float_equal(const glm::vec<Size, T>& a, const glm::vec<Size, T>& b,
+                                        T epsilon = default_epsilon<T>) -> bool;
 
 template<glm::length_t Size, std::floating_point T>
     requires(Size > 0)
-[[nodiscard]] auto has_equal_components(const glm::vec<Size, T>& vec, T epsilon = default_epsilon<T>) -> bool;
+[[nodiscard]] auto has_equal_float_components(const glm::vec<Size, T>& vec, T epsilon = default_epsilon<T>) -> bool;
 
 template<glm::length_t Size, std::floating_point T>
     requires(Size > 0)
-[[nodiscard]] auto has_relatively_equal_components(const glm::vec<Size, T>& vec, T epsilon = default_epsilon<T>)
+[[nodiscard]] auto has_relatively_equal_float_components(const glm::vec<Size, T>& vec, T epsilon = default_epsilon<T>)
     -> bool;
 
 } // namespace zth::math

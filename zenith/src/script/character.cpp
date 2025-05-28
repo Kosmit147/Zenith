@@ -58,7 +58,7 @@ void CharacterController::on_event(EntityHandle actor, const Event& event)
 
 auto CharacterController::on_fixed_update(EntityHandle actor) -> void
 {
-    ImGui::Begin("Character Controller");
+    debug::begin_window("Character Controller");
 
     auto& transform = actor.transform();
 
@@ -166,7 +166,7 @@ auto CharacterController::on_fixed_update(EntityHandle actor) -> void
     // Update character velocity
     character->SetLinearVelocity(new_velocity);
 
-    ImGui::End();
+    debug::end_window();
 }
 
 auto CharacterController::on_update(EntityHandle actor) -> void
@@ -175,7 +175,7 @@ auto CharacterController::on_update(EntityHandle actor) -> void
 
     auto& transform = actor.transform();
 
-    ImGui::Begin("Ray Cast");
+    debug::begin_window("Ray Cast");
 
     if (auto hit = Physics::ray_cast(transform.translation(), transform.direction() * 1000.0f))
     {
@@ -187,7 +187,7 @@ auto CharacterController::on_update(EntityHandle actor) -> void
         debug::text("Hit point: {}", hit_point);
     }
 
-    ImGui::End();
+    debug::end_window();
 }
 
 auto CharacterController::on_attach(EntityHandle actor) -> void

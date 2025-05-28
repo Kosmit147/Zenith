@@ -27,6 +27,8 @@
 #include "zenith/stl/string.hpp"
 #include "zenith/system/window.hpp"
 
+// All the components should have default constructors which construct properly initialized and usable components.
+
 namespace zth {
 
 // --------------------------- TagComponent ---------------------------
@@ -186,7 +188,7 @@ struct RigidBodyComponent
 class ScriptComponent
 {
 public:
-    explicit ScriptComponent(UniquePtr<Script>&& script);
+    explicit ScriptComponent(UniquePtr<Script>&& script = make_unique<Script>());
 
     [[nodiscard]] auto script() -> Script&;
     [[nodiscard]] auto script() const -> const Script&;
@@ -194,36 +196,64 @@ public:
     [[nodiscard]] static auto display_label() -> const char*;
 
 private:
-    UniquePtr<Script> _script; // script cannot be null.
+    UniquePtr<Script> _script = make_unique<Script>(); // script cannot be null.
 };
 
 // --------------------------- SpriteRenderer2DComponent ---------------------------
 
-struct SpriteRenderer2DComponent
+class SpriteRenderer2DComponent
 {
-    std::shared_ptr<const gl::Texture2D> texture = textures::white(); // texture cannot be null.
-    Rect<u32> rect;
+public:
+    Rect<u32> rect = get_default_rect();
     glm::vec4 color = colors::white;
 
+public:
+    explicit SpriteRenderer2DComponent(std::shared_ptr<const gl::Texture2D> texture = textures::white(),
+                                       Rect<u32> rect = get_default_rect(), glm::vec4 color = colors::white);
+    explicit SpriteRenderer2DComponent(Rect<u32> rect, glm::vec4 color = colors::white);
+
+    auto set_texture(std::shared_ptr<const gl::Texture2D> texture) -> void;
+    [[nodiscard]] auto texture() const -> const std::shared_ptr<const gl::Texture2D>&;
+
     [[nodiscard]] static auto display_label() -> const char*;
+
+private:
+    std::shared_ptr<const gl::Texture2D> _texture = textures::white(); // texture cannot be null.
+
+private:
+    [[nodiscard]] static auto get_default_rect() -> Rect<u32>;
 };
 
 // --------------------------- MeshRendererComponent ---------------------------
 
-struct MeshRendererComponent
+class MeshRendererComponent
 {
-    std::shared_ptr<const Mesh> mesh = meshes::cube(); // mesh cannot be null.
+public:
+    explicit MeshRendererComponent(std::shared_ptr<const Mesh> mesh = meshes::cube());
+
+    auto set_mesh(std::shared_ptr<const Mesh> mesh) -> void;
+    [[nodiscard]] auto mesh() const -> const std::shared_ptr<const Mesh>&;
 
     [[nodiscard]] static auto display_label() -> const char*;
+
+private:
+    std::shared_ptr<const Mesh> _mesh = meshes::cube(); // mesh cannot be null.
 };
 
 // --------------------------- MaterialComponent ---------------------------
 
-struct MaterialComponent
+class MaterialComponent
 {
-    std::shared_ptr<const Material> material = materials::plain(); // material cannot be null.
+public:
+    explicit MaterialComponent(std::shared_ptr<const Material> material = materials::plain());
+
+    auto set_material(std::shared_ptr<const Material> material) -> void;
+    [[nodiscard]] auto material() const -> const std::shared_ptr<const Material>&;
 
     [[nodiscard]] static auto display_label() -> const char*;
+
+private:
+    std::shared_ptr<const Material> _material = materials::plain(); // material cannot be null.
 };
 
 // --------------------------- CameraComponent ---------------------------

@@ -58,11 +58,9 @@ auto ImGuiRenderer::render() -> void
 auto ImGuiRenderer::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down ImGui renderer...");
-
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
     ZTH_INTERNAL_TRACE("ImGui renderer shut down.");
 }
 

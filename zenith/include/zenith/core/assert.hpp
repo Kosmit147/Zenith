@@ -11,6 +11,7 @@
 // code.
 
 #define ZTH_INTERNAL_ASSERT_IMPL(...)                                                                                  \
+    do                                                                                                                 \
     {                                                                                                                  \
         if ((__VA_ARGS__)) [[likely]]                                                                                  \
         {}                                                                                                             \
@@ -23,8 +24,7 @@
             ZTH_DEBUG_BREAK;                                                                                           \
             std::abort();                                                                                              \
         }                                                                                                              \
-    }                                                                                                                  \
-    ZTH_NOP
+    } while (false)
 
 // ZTH_RUNTIME_ASSERT
 
@@ -46,6 +46,7 @@
 
 // @refactor: Use if consteval once it's supported.
 #define ZTH_CONSTEVAL_OR_REGULAR_ASSERT(...)                                                                           \
+    do                                                                                                                 \
     {                                                                                                                  \
         if (std::is_constant_evaluated())                                                                              \
         {                                                                                                              \
@@ -60,5 +61,4 @@
         {                                                                                                              \
             ZTH_ASSERT(__VA_ARGS__);                                                                                   \
         }                                                                                                              \
-    }                                                                                                                  \
-    ZTH_NOP
+    } while (false)

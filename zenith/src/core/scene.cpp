@@ -6,6 +6,7 @@
 #include "zenith/physics/physics.hpp"
 #include "zenith/renderer/coordinate_space.hpp"
 #include "zenith/renderer/renderer.hpp"
+#include "zenith/system/time.hpp"
 
 namespace zth {
 
@@ -136,9 +137,11 @@ auto Scene::render() -> void
 
     for (auto&& [_, mesh, transform, material] : meshes.each())
     {
-        ZTH_ASSERT(mesh.mesh != nullptr);
-        ZTH_ASSERT(material.material != nullptr);
-        Renderer::submit(*mesh.mesh, transform.transform(), *material.material);
+        auto& mesh_ptr = mesh.mesh();
+        auto& material_ptr = material.material();
+        ZTH_ASSERT(mesh_ptr != nullptr);
+        ZTH_ASSERT(material_ptr != nullptr);
+        Renderer::submit(*mesh_ptr, transform.transform(), *material_ptr);
     }
 
     Renderer::end_scene();
@@ -149,9 +152,10 @@ auto Scene::render() -> void
 
     for (auto&& [_, sprite] : sprites.each())
     {
-        ZTH_ASSERT(sprite.texture != nullptr);
-        Renderer2D::submit(rect_in_pixel_coordinates_to_rect_in_ndc(sprite.rect, Renderer2D::viewport()),
-                           *sprite.texture, sprite.color);
+        auto& texture = sprite.texture();
+        ZTH_ASSERT(texture != nullptr);
+        Renderer2D::submit(rect_in_pixel_coordinates_to_rect_in_ndc(sprite.rect, Renderer2D::viewport()), *texture,
+                           sprite.color);
     }
 
     Renderer2D::end_scene();
@@ -407,7 +411,9 @@ auto SceneManager::update() -> void
 
 auto SceneManager::render() -> void
 {
+    auto time = Time::time();
     _scene->render();
+    _last_render_time = Time::time() - time;
 }
 
 auto SceneManager::on_render() -> void

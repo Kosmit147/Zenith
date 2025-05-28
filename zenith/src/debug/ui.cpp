@@ -1,5 +1,7 @@
 #include "zenith/debug/ui.hpp"
 
+#include <imgui.h>
+#include <ImGuizmo.h>
 #include <Jolt/ConfigurationString.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
@@ -9,6 +11,7 @@
 #include "zenith/core/scene.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/context.hpp"
+#include "zenith/memory/memory.hpp"
 #include "zenith/physics/physics.hpp"
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
@@ -91,6 +94,16 @@ template<typename Component> auto edit_component_for_entity_in_inspector(EntityH
 }
 
 } // namespace
+
+auto begin_window(const char* label) -> void
+{
+    ImGui::Begin(label);
+}
+
+auto end_window() -> void
+{
+    ImGui::End();
+}
 
 auto text(const char* txt) -> void
 {
@@ -704,24 +717,34 @@ auto pick_color(const char* label, glm::vec4& color) -> bool
     return ImGui::ColorPicker4(label, glm::value_ptr(color));
 }
 
-auto input_int(const char* label, u32& value) -> bool
+auto input_int(const char* label, u32& value, u32 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_U32, &value);
+    return ImGui::InputScalar(label, ImGuiDataType_U32, &value, step != 0 ? &step : nullptr);
 }
 
-auto input_int(const char* label, i32& value) -> bool
+auto input_int(const char* label, i32& value, i32 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_S32, &value);
+    return ImGui::InputScalar(label, ImGuiDataType_S32, &value, step != 0 ? &step : nullptr);
 }
 
-auto input_int(const char* label, u64& value) -> bool
+auto input_int(const char* label, u64& value, u64 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_U64, &value);
+    return ImGui::InputScalar(label, ImGuiDataType_U64, &value, step != 0 ? &step : nullptr);
 }
 
-auto input_int(const char* label, i64& value) -> bool
+auto input_int(const char* label, i64& value, i64 step) -> bool
 {
-    return ImGui::InputScalar(label, ImGuiDataType_S64, &value);
+    return ImGui::InputScalar(label, ImGuiDataType_S64, &value, step != 0 ? &step : nullptr);
+}
+
+auto input_float(const char* label, float& value, float step) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_Float, &value, step != 0.0f ? &step : nullptr);
+}
+
+auto input_float(const char* label, double& value, double step) -> bool
+{
+    return ImGui::InputScalar(label, ImGuiDataType_Double, &value, step != 0.0 ? &step : nullptr);
 }
 
 auto input_text(const char* label, String& value) -> bool
@@ -980,6 +1003,8 @@ auto edit_component(RigidBodyComponent& rigid_body) -> void
 
 auto edit_component(SpriteRenderer2DComponent& sprite) -> void
 {
+    // @todo: Edit texture.
+
     drag_rect("Rect", sprite.rect);
     edit_color("Color", sprite.color);
 }
@@ -1016,7 +1041,37 @@ auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
     auto& view = Renderer::current_camera_view();
     auto& projection = Renderer::current_camera_projection();
 
-    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), operation, mode,
+    auto gizmo_operation = [this] {
+        switch (operation)
+        {
+            using enum GizmoOperation;
+        case Translate:
+            return ImGuizmo::TRANSLATE;
+        case Rotate:
+            return ImGuizmo::ROTATE;
+        case Scale:
+            return ImGuizmo::SCALE;
+        }
+
+        ZTH_ASSERT(false);
+        return ImGuizmo::TRANSLATE;
+    }();
+
+    auto gizmo_mode = [this] {
+        switch (mode)
+        {
+            using enum GizmoMode;
+        case Local:
+            return ImGuizmo::LOCAL;
+        case World:
+            return ImGuizmo::WORLD;
+        }
+
+        ZTH_ASSERT(false);
+        return ImGuizmo::LOCAL;
+    }();
+
+    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), gizmo_operation, gizmo_mode,
                              glm::value_ptr(transform_matrix), nullptr, nullptr))
     {
         transform.set_transform(transform_matrix);
@@ -1030,11 +1085,12 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
 {
     ZTH_ASSERT(entity.valid());
 
-    ImGui::Begin("Entity Inspector");
+    begin_window("Entity Inspector");
     ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
     {
         edit_component(entity.tag());
+        text("ID: {}", entity.id());
         edit_component_for_entity_in_inspector<TransformComponent>(entity);
 
         if (Window::cursor_enabled())
@@ -1147,6 +1203,7 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
         add_component_menu_item(std::type_identity<SpriteRenderer2DComponent>{});
         add_component_menu_item(std::type_identity<MeshRendererComponent>{});
         add_component_menu_item(std::type_identity<MaterialComponent>{});
+        add_component_menu_item(std::type_identity<ScriptComponent>{});
 
         // @todo: Add other components to this menu.
 
@@ -1154,12 +1211,12 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     }
 
     ImGui::PopItemWidth();
-    ImGui::End();
+    end_window();
 }
 
 auto SceneHierarchyPanel::display(Registry& registry) -> void
 {
-    ImGui::Begin("Scene Hierarchy");
+    begin_window("Scene Hierarchy");
 
     input_text("Search", _search);
 
@@ -1173,7 +1230,7 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
                 continue;
         }
 
-        auto label = format_to_temporary("{}##{}", tag.tag, std::to_underlying(entity_id));
+        auto label = format_to_temporary("{}##{}", tag.tag, entity_id);
 
         if (ImGui::Selectable(label.c_str(), _selected_entity_id == entity_id))
             _selected_entity_id = entity_id;
@@ -1200,25 +1257,43 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
         ImGui::EndPopup();
     }
 
-    ImGui::End();
+    end_window();
 }
 
 DebugPanel::DebugPanel(StringView label) : _label{ label } {}
 
 auto DebugPanel::display() -> void
 {
-    ImGui::Begin(_label.c_str());
+    begin_window(_label.c_str());
 
     text_wrapped("Jolt Config: {}", JPH::GetConfigurationString());
     text("FPS: {:.2f}", ImGui::GetIO().Framerate);
 
-    auto last_frame_time = Window::last_frame_time();
-    auto target_frame_time = Window::target_frame_time();
+    {
+        auto temporary_storage_capacity = TemporaryStorage::capacity();
+        auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
 
-    if (target_frame_time != 0.0)
-        text("Frame time: {:.5f}ms ({:.2f}%)", last_frame_time * 1000.0, last_frame_time / target_frame_time * 100.0);
-    else
-        text("Frame time: {:.5f}ms", last_frame_time * 1000.0);
+        // @todo: We should choose the unit to use here dynamically instead of always using MB.
+        text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
+        text("Temporary storage usage: {:.0f}%",
+             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
+
+        auto last_frame_time = Window::last_frame_time();
+        auto target_frame_time = Window::target_frame_time();
+
+        if (target_frame_time != 0.0)
+        {
+            text("Frame time: {:.4f}ms ({:.2f}%)", last_frame_time * 1000.0,
+                 last_frame_time / target_frame_time * 100.0);
+        }
+        else
+        {
+            text("Frame time: {:.4f}ms", last_frame_time * 1000.0);
+        }
+
+        auto last_render_time = SceneManager::last_render_time();
+        text("Render time: {:.4f}ms ({:.2f}%)", last_render_time * 1000.0, last_render_time / last_frame_time * 100.0);
+    }
 
     text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
     text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
@@ -1285,14 +1360,14 @@ auto DebugPanel::display() -> void
     text("Version: {}", gl::Context::version_string());
     text("GLSL Version: {}", gl::Context::glsl_version_string());
 
-    ImGui::End();
+    end_window();
 }
 
 ScenePicker::ScenePicker(StringView label) : _label{ label } {}
 
 auto ScenePicker::display() -> void
 {
-    ImGui::Begin(_label.c_str());
+    begin_window(_label.c_str());
 
     text("{}", _scene_names[_selected_scene_idx]);
     text("Prev");
@@ -1311,7 +1386,7 @@ auto ScenePicker::display() -> void
 
     text("Next");
 
-    ImGui::End();
+    end_window();
 }
 
 auto ScenePicker::prev_scene() -> void

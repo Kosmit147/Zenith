@@ -1,8 +1,5 @@
 #include "zenith/layer/layers.hpp"
 
-#include <imgui.h>
-#include <ImGuizmo.h>
-
 #include "zenith/asset/asset.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene.hpp"
@@ -295,24 +292,27 @@ auto DebugLayer::on_key_pressed_event(const KeyPressedEvent& event) -> void
 
     if (_debug_mode_on)
     {
+        using Operation = debug::GizmoOperation;
+        using Mode = debug::GizmoMode;
+
         auto& inspector = _scene_hierarchy_panel.inspector;
 
         if (key == switch_to_gizmo_translate_mode_key)
         {
-            inspector.gizmo.operation = ImGuizmo::TRANSLATE;
-            inspector.gizmo.mode = ImGuizmo::WORLD;
+            inspector.gizmo.operation = Operation::Translate;
+            inspector.gizmo.mode = Mode::World;
         }
 
         if (key == switch_to_gizmo_rotate_mode_key)
         {
-            inspector.gizmo.operation = ImGuizmo::ROTATE;
-            inspector.gizmo.mode = ImGuizmo::LOCAL;
+            inspector.gizmo.operation = Operation::Rotate;
+            inspector.gizmo.mode = Mode::Local;
         }
 
         if (key == switch_to_gizmo_scale_mode_key)
         {
-            inspector.gizmo.operation = ImGuizmo::SCALE;
-            inspector.gizmo.mode = ImGuizmo::LOCAL;
+            inspector.gizmo.operation = Operation::Scale;
+            inspector.gizmo.mode = Mode::Local;
         }
     }
 }

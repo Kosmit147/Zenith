@@ -10,8 +10,8 @@ namespace zth {
 
 template<typename T /* = float */> struct Rect
 {
-    glm::vec<2, T> position;
-    glm::vec<2, T> size;
+    glm::vec<2, T> position{ 0, 0 };
+    glm::vec<2, T> size{ 0, 0 };
 
     [[nodiscard]] constexpr auto top_left() const { return position; }
     [[nodiscard]] constexpr auto bottom_left() const { return position + glm::vec<2, T>{ static_cast<T>(0), -size.y }; }
@@ -28,8 +28,8 @@ template<typename T /* = float */> struct Rect
 
 template<typename T /* = float */> struct BoundedRect
 {
-    glm::vec<2, T> top_left;
-    glm::vec<2, T> bottom_right;
+    glm::vec<2, T> top_left{ 0, 0 };
+    glm::vec<2, T> bottom_right{ 0, 0 };
 
     [[nodiscard]] constexpr auto bottom_left() const { return glm::vec<2, T>{ top_left.x, bottom_right.y }; }
     [[nodiscard]] constexpr auto top_right() const { return glm::vec<2, T>{ bottom_right.x, top_left.y }; }
