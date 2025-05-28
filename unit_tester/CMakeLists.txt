@@ -30,6 +30,6 @@ target_precompile_headers(unit_tester PRIVATE "src/pch.hpp")
 set_property(TARGET unit_tester PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 target_link_libraries(unit_tester PRIVATE Catch2WithMain)
-target_link_libraries(unit_tester PRIVATE zenith_core)
+target_link_libraries(unit_tester PRIVATE zenith)
 
 catch_discover_tests(unit_tester)

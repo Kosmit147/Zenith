@@ -10,18 +10,16 @@
 #include "zenith/renderer/shader_preprocessor.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/temporary_storage.hpp"
-#include "zenith/system/time.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth {
 
 // --- System Layer
 // 1. Logger
-// 2. Time
-// 3. TemporaryStorage
-// 4. Window
-// 5. gl::Context
-// 6. Input
+// 2. TemporaryStorage
+// 3. Window
+// 4. gl::Context
+// 5. Input
 
 SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
     : _logger_spec{ logger_spec }, _window_spec{ window_spec }
@@ -29,7 +27,6 @@ SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window
 
 auto SystemLayer::on_frame_start() -> void
 {
-    Time::start_frame();
     TemporaryStorage::start_frame();
     Input::start_frame();
 }
@@ -48,11 +45,6 @@ auto SystemLayer::on_attach() -> Result<void, String>
     Defer shut_down_logger{ [] { Logger::shut_down(); } };
 
     ZTH_INTERNAL_TRACE("Initializing system layer...");
-
-    result = Time::init();
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_time{ [] { Time::shut_down(); } };
 
     result = TemporaryStorage::init();
     if (!result)
@@ -75,7 +67,6 @@ auto SystemLayer::on_attach() -> Result<void, String>
     Defer shut_down_input{ [] { Input::shut_down(); } };
 
     shut_down_logger.dismiss();
-    shut_down_time.dismiss();
     shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
     shut_down_gl_context.dismiss();
@@ -94,7 +85,6 @@ auto SystemLayer::on_detach() -> void
     gl::Context::shut_down();
     Window::shut_down();
     TemporaryStorage::shut_down();
-    Time::shut_down();
     Logger::shut_down();
 }
 

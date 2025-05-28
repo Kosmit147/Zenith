@@ -1,9 +1,5 @@
-#include "testbed.hpp"
-
 #include "main_layer.hpp"
 #include "main_scene.hpp"
-
-ZTH_IMPLEMENT_APP(Testbed)
 
 namespace {
 
@@ -25,8 +21,24 @@ const zth::ApplicationSpec app_spec = {
 
 } // namespace
 
-Testbed::Testbed() : Application(app_spec)
+auto main() -> int
 {
-    (void)push_layer(zth::make_unique<MainLayer>());
+    auto init_application_result = zth::Application::init(app_spec);
+
+    if (!init_application_result)
+    {
+        std::println(std::cerr, "CRITICAL ERROR: {}", init_application_result.error());
+        return -1;
+    }
+
+    auto push_layer_result = zth::Application::push_layer(zth::make_unique<MainLayer>());
+
+    if (!push_layer_result)
+    {
+        std::println(std::cerr, "CRITICAL ERROR: {}", push_layer_result.error());
+        return -1;
+    }
+
     zth::SceneManager::queue_scene<MainScene>();
+    zth::Application::run();
 }

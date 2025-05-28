@@ -7,19 +7,8 @@
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/window.hpp"
-#include "zenith/util/macros.hpp"
 #include "zenith/util/reference.hpp"
 #include "zenith/util/result.hpp"
-
-// This macro must be used in a single .cpp file (create_application() must be defined only once).
-// user_application is the class derived from zth::Application defined by the user.
-#define ZTH_IMPLEMENT_APP(user_application)                                                                            \
-    namespace zth {                                                                                                    \
-    [[nodiscard]] auto create_application() -> ::zth::UniquePtr<::zth::Application>                                    \
-    {                                                                                                                  \
-        return ::zth::make_unique<::user_application>();                                                               \
-    }                                                                                                                  \
-    }
 
 namespace zth {
 
@@ -27,44 +16,54 @@ struct ApplicationSpec
 {
     WindowSpec window_spec{};
     LoggerSpec logger_spec{};
-    double fixed_update_time = 1 / 60.0; // In seconds.
+    double delta_time_limit = 1 / 30.0; // In seconds.
+    double fixed_time_step = 1 / 60.0;  // In seconds.
 };
 
 class Application
 {
 public:
-    double fixed_update_time;
+    static inline double delta_time_limit = 1 / 30.0;
+    static inline double fixed_time_step = 1 / 60.0;
 
 public:
-    explicit Application(const ApplicationSpec& spec = {});
-    ZTH_NO_COPY_NO_MOVE(Application)
-    virtual ~Application();
+    Application() = delete;
 
-    auto push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
+    [[nodiscard]] static auto init(const ApplicationSpec& spec = {}) -> Result<void, String>;
+
+    static auto push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
     // Returns false if layer stack is empty and there are no layers left to remove.
-    auto pop_layer() -> bool;
+    static auto pop_layer() -> bool;
 
-    auto push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
+    static auto push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
     // Returns false if overlay stack is empty and there are no overlays left to remove.
-    auto pop_overlay() -> bool;
+    static auto pop_overlay() -> bool;
 
-    auto pop_all_layers() -> void;
-    auto pop_all_overlays() -> void;
+    static auto run() -> void;
 
-    auto run() -> void;
-
-private:
-    LayerStack _layers;
-    LayerStack _overlays;
-
-    usize _fixed_updates_performed = 0;
+    [[nodiscard]] static auto time() -> double;
+    [[nodiscard]] static auto delta_time() -> double;
 
 private:
-    auto start_frame() -> void;
-    auto dispatch_event(const Event& event) -> void;
-    auto fixed_update() -> void;
-    auto update() -> void;
-    auto render() -> void;
+    static LayerStack _layers;
+    static LayerStack _overlays;
+
+    static inline usize _fixed_updates_performed = 0;
+
+    static inline double _prev_frame_time = 0.0;
+    static inline double _delta_time = 0.0;
+
+private:
+    static auto shut_down() -> void;
+
+    static auto pop_all_layers() -> void;
+    static auto pop_all_overlays() -> void;
+
+    static auto start_frame() -> void;
+    static auto dispatch_event(const Event& event) -> void;
+    static auto fixed_update() -> void;
+    static auto update() -> void;
+    static auto render() -> void;
 };
 
 } // namespace zth

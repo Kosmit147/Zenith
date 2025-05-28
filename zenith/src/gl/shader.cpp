@@ -63,7 +63,7 @@ auto Shader::from_files(const ShaderSourcePaths& paths) -> Shader
 }
 
 Shader::Shader(Shader&& other) noexcept
-    : _id(std::exchange(other._id, GL_NONE)), _uniform_map(std::move(other._uniform_map))
+    : _id{ std::exchange(other._id, GL_NONE) }, _uniform_map{ std::move(other._uniform_map) }
 {}
 
 auto Shader::operator=(Shader&& other) noexcept -> Shader&

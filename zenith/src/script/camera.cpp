@@ -3,8 +3,8 @@
 #include "zenith/debug/ui.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/ecs/ecs.hpp"
+#include "zenith/system/application.hpp"
 #include "zenith/system/event.hpp"
-#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 
 namespace zth::scripts {
@@ -59,7 +59,7 @@ auto FlyCamera::on_update(EntityHandle actor) -> void
     {
         // Move around.
 
-        auto speed = movement_speed * Time::delta_time<float>();
+        auto speed = movement_speed * static_cast<float>(Application::delta_time());
 
         if (sprinting_enabled && Input::is_key_pressed(sprint_key))
             speed *= sprinting_speed_multiplier;

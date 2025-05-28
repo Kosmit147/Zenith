@@ -59,7 +59,7 @@ auto Camera::on_update(zth::EntityHandle actor) -> void
     {
         // Move around.
 
-        auto speed = movement_speed * zth::Time::delta_time<float>();
+        auto speed = movement_speed * static_cast<float>(zth::Application::delta_time());
 
         if (sprinting_enabled && zth::Input::is_key_pressed(sprint_key))
             speed *= sprinting_speed_multiplier;
