@@ -70,12 +70,10 @@ public:
     [[nodiscard]] static auto frame_rate_limit() -> Optional<u32>;
     [[nodiscard]] static auto cursor_enabled() -> bool;
     [[nodiscard]] static auto target_frame_time() -> double;
-    [[nodiscard]] static auto last_frame_time() -> double;
 
 private:
     static inline GLFWwindow* _window = nullptr;
     static inline double _target_frame_time = 0.0;
-    static inline double _last_frame_time = 0.0;
     static inline double _last_swap_buffers_time_point = 0.0;
     static inline Optional<u32> _frame_rate_limit = nil;
 

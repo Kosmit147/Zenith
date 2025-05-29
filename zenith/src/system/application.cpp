@@ -92,6 +92,16 @@ auto Application::delta_time() -> double
     return _delta_time;
 }
 
+auto Application::frame_time() -> double
+{
+    return _frame_time;
+}
+
+auto Application::render_time() -> double
+{
+    return _render_time;
+}
+
 auto Application::shut_down() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down application...");
@@ -114,8 +124,9 @@ auto Application::pop_all_overlays() -> void
 auto Application::start_frame() -> void
 {
     auto current_time = time();
-    _delta_time = std::min(current_time - _prev_frame_time, delta_time_limit);
-    _prev_frame_time = current_time;
+    _frame_time = current_time - _prev_start_frame_time_point;
+    _delta_time = std::min(_frame_time, delta_time_limit);
+    _prev_start_frame_time_point = current_time;
 
     _layers.start_frame();
     _overlays.start_frame();
@@ -149,10 +160,14 @@ auto Application::update() -> void
 
 auto Application::render() -> void
 {
+    auto start_render_time_point = time();
+
     Renderer::clear();
 
     _layers.render();
     _overlays.render();
+
+    _render_time = time() - start_render_time_point;
 }
 
 } // namespace zth

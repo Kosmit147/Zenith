@@ -31,11 +31,11 @@ public:
 
     [[nodiscard]] static auto init(const ApplicationSpec& spec = {}) -> Result<void, String>;
 
-    static auto push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
+    [[nodiscard]] static auto push_layer(UniquePtr<Layer>&& layer) -> Result<Reference<Layer>, String>;
     // Returns false if layer stack is empty and there are no layers left to remove.
     static auto pop_layer() -> bool;
 
-    static auto push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
+    [[nodiscard]] static auto push_overlay(UniquePtr<Layer>&& overlay) -> Result<Reference<Layer>, String>;
     // Returns false if overlay stack is empty and there are no overlays left to remove.
     static auto pop_overlay() -> bool;
 
@@ -43,6 +43,8 @@ public:
 
     [[nodiscard]] static auto time() -> double;
     [[nodiscard]] static auto delta_time() -> double;
+    [[nodiscard]] static auto frame_time() -> double;
+    [[nodiscard]] static auto render_time() -> double;
 
 private:
     static LayerStack _layers;
@@ -50,8 +52,10 @@ private:
 
     static inline usize _fixed_updates_performed = 0;
 
-    static inline double _prev_frame_time = 0.0;
+    static inline double _prev_start_frame_time_point = 0.0;
     static inline double _delta_time = 0.0;
+    static inline double _frame_time = 0.0;
+    static inline double _render_time = 0.0;
 
 private:
     static auto shut_down() -> void;
