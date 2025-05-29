@@ -1145,10 +1145,15 @@ auto DebugPanel::display() -> void
         text("FPS: {:.2f}", ImGui::GetIO().Framerate);
 
         auto frame_time = Application::frame_time();
+        auto fixed_update_time = Application::fixed_update_time();
+        auto update_time = Application::update_time();
         auto render_time = Application::render_time();
 
         text("Frame time: {:.4f}ms", frame_time * 1000.0);
-        text("Scene render time: {:.4f}ms ({:.2f}%)", render_time * 1000.0, render_time / frame_time * 100.0);
+        text("Fixed update time: {:.4f}ms ({:.2f}%)", fixed_update_time * 1000.0,
+             fixed_update_time / frame_time * 100.0);
+        text("Update time: {:.4f}ms ({:.2f}%)", update_time * 1000.0, update_time / frame_time * 100.0);
+        text("Render time: {:.4f}ms ({:.2f}%)", render_time * 1000.0, render_time / frame_time * 100.0);
 
         text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
         text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());

@@ -44,6 +44,8 @@ public:
     [[nodiscard]] static auto time() -> double;
     [[nodiscard]] static auto delta_time() -> double;
     [[nodiscard]] static auto frame_time() -> double;
+    [[nodiscard]] static auto fixed_update_time() -> double;
+    [[nodiscard]] static auto update_time() -> double;
     [[nodiscard]] static auto render_time() -> double;
 
 private:
@@ -55,6 +57,8 @@ private:
     static inline double _prev_start_frame_time_point = 0.0;
     static inline double _delta_time = 0.0;
     static inline double _frame_time = 0.0;
+    static inline double _fixed_update_time = 0.0;
+    static inline double _update_time = 0.0;
     static inline double _render_time = 0.0;
 
 private:
