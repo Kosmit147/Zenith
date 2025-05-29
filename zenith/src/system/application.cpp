@@ -97,6 +97,16 @@ auto Application::frame_time() -> double
     return _frame_time;
 }
 
+auto Application::fixed_update_time() -> double
+{
+    return _fixed_update_time;
+}
+
+auto Application::update_time() -> double
+{
+    return _update_time;
+}
+
 auto Application::render_time() -> double
 {
     return _render_time;
@@ -140,6 +150,8 @@ auto Application::dispatch_event(const Event& event) -> void
 
 auto Application::fixed_update() -> void
 {
+    auto start_fixed_update_time_point = time();
+
     auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_time_step;
     auto fixed_updates_to_perform = static_cast<usize>((time() - accumulated_fixed_update_time) / fixed_time_step);
 
@@ -150,12 +162,18 @@ auto Application::fixed_update() -> void
     }
 
     _fixed_updates_performed += fixed_updates_to_perform;
+
+    _fixed_update_time = time() - start_fixed_update_time_point;
 }
 
 auto Application::update() -> void
 {
+    auto start_update_time_point = time();
+
     _layers.update();
     _overlays.update();
+
+    _update_time = time() - start_update_time_point;
 }
 
 auto Application::render() -> void
