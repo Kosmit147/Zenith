@@ -1,10 +1,5 @@
 #include "main_layer.hpp"
 
-auto MainLayer::on_attach() -> zth::Result<void, zth::String>
-{
-    return {};
-}
-
 auto MainLayer::on_event(const zth::Event& event) -> void
 {
     if (event.type() == zth::EventType::KeyPressed)

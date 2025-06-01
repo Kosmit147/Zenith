@@ -255,6 +255,7 @@ template<StatelessAllocator A> auto Buffer<A>::reallocate(size_type size_bytes) 
     std::memcpy(new_data, _data, std::min(_size_bytes, size_bytes));
     destroy_and_deallocate_objects_using_allocator(A{}, _data, _size_bytes);
     _size_bytes = size_bytes;
+    _data = new_data;
 }
 
 template<StatelessAllocator A> DynamicBuffer<A>::DynamicBuffer(size_type size_bytes) noexcept
@@ -451,6 +452,7 @@ template<StatelessAllocator A> auto DynamicBuffer<A>::reallocate_exactly(size_ty
     std::memcpy(new_data, _data, std::min(_size_bytes, capacity_bytes));
     destroy_and_deallocate_objects_using_allocator(A{}, _data, _capacity_bytes);
     _capacity_bytes = capacity_bytes;
+    _data = new_data;
 }
 
 template<StatelessAllocator A> auto DynamicBuffer<A>::reallocate_at_least(size_type min_capacity_bytes) noexcept -> void

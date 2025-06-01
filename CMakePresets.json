@@ -32,7 +32,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "ON",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_PROFILER": "ON"
         // "ZTH_JOLT_BUILD_TYPE": "Debug"
       }
     },
@@ -46,7 +47,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "ON",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_PROFILER": "ON"
         // "ZTH_JOLT_BUILD_TYPE": "Release"
       }
     },
@@ -60,7 +62,23 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "ON",
-        "ZTH_DEBUG_LOGGING": "ON"
+        "ZTH_DEBUG_LOGGING": "ON",
+        "ZTH_PROFILER": "ON"
+        // "ZTH_JOLT_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "x64-profile",
+      "displayName": "x64-profile",
+      "description": "Release build with debug information and profiler enabled.",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "ZTH_DEVELOPER": "ON",
+        "ZTH_ASSERTIONS": "OFF",
+        "ZTH_GL_DEBUG": "OFF",
+        "ZTH_DEBUG_LOGGING": "OFF",
+        "ZTH_PROFILER": "ON"
         // "ZTH_JOLT_BUILD_TYPE": "Release"
       }
     },
@@ -74,7 +92,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "OFF",
-        "ZTH_DEBUG_LOGGING": "OFF"
+        "ZTH_DEBUG_LOGGING": "OFF",
+        "ZTH_PROFILER": "OFF"
         // "ZTH_JOLT_BUILD_TYPE": "Distribution"
       }
     },
@@ -88,7 +107,8 @@
         "ZTH_DEVELOPER": "ON",
         "ZTH_ASSERTIONS": "OFF",
         "ZTH_GL_DEBUG": "OFF",
-        "ZTH_DEBUG_LOGGING": "OFF"
+        "ZTH_DEBUG_LOGGING": "OFF",
+        "ZTH_PROFILER": "OFF"
         // "ZTH_JOLT_BUILD_TYPE": "Distribution"
       }
     }

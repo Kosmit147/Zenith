@@ -25,7 +25,7 @@
 #include "zenith/memory/managed.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/renderer/mesh.hpp"
-#include "zenith/system/time.hpp"
+#include "zenith/system/application.hpp"
 
 // @todo: Do we need this?
 JPH_SUPPRESS_WARNINGS
@@ -91,8 +91,8 @@ auto Physics::init(const PhysicsSpec& spec) -> Result<void, String>
 
 auto Physics::fixed_update() -> void
 {
-    physics_instance->_physics_system.Update(Time::fixed_time_step<float>(), 1, &physics_instance->_temp_allocator,
-                                             &physics_instance->_job_system);
+    physics_instance->_physics_system.Update(static_cast<float>(Application::fixed_time_step), 1,
+                                             &physics_instance->_temp_allocator, &physics_instance->_job_system);
 }
 
 auto Physics::shut_down() -> void
@@ -270,7 +270,8 @@ auto Physics::update_character(const JPH::Ref<JPH::CharacterVirtual>& character)
     auto& physics_system = physics_instance->_physics_system;
     auto& temp_allocator = physics_instance->_temp_allocator;
 
-    character->Update(Time::fixed_time_step<float>(), -character->GetUp() * physics_system.GetGravity(),
+    character->Update(static_cast<float>(Application::fixed_time_step),
+                      -character->GetUp() * physics_system.GetGravity(),
                       physics_system.GetDefaultBroadPhaseLayerFilter(physics::dynamic_objects_layer),
                       physics_system.GetDefaultLayerFilter(physics::dynamic_objects_layer), {}, {}, temp_allocator);
 }

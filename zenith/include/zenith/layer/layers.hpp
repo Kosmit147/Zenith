@@ -7,7 +7,6 @@
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/input.hpp"
-#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/macros.hpp"
 #include "zenith/util/result.hpp"
@@ -17,7 +16,8 @@ namespace zth {
 class SystemLayer : public Layer
 {
 public:
-    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, const TimeSpec& time_spec);
+    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec,
+                         usize temporary_storage_capacity);
     ZTH_NO_COPY_NO_MOVE(SystemLayer)
     ~SystemLayer() override = default;
 
@@ -27,7 +27,7 @@ public:
 private:
     LoggerSpec _logger_spec;
     WindowSpec _window_spec;
-    TimeSpec _time_spec;
+    usize _temporary_storage_capacity;
 
 private:
     [[nodiscard]] auto on_attach() -> Result<void, String> override;
@@ -61,9 +61,12 @@ class DebugLayer : public Layer
 {
 public:
     Key toggle_debug_mode_key = Key::F1;
+
     Key switch_to_gizmo_translate_mode_key = Key::Q;
     Key switch_to_gizmo_rotate_mode_key = Key::E;
     Key switch_to_gizmo_scale_mode_key = Key::R;
+
+    Key toggle_profiler_key = Key::F10;
 
 public:
     explicit DebugLayer() = default;
@@ -81,6 +84,10 @@ private:
     debug::DebugPanel _debug_panel;
 
     bool _debug_mode_on = false;
+
+#if defined(ZTH_PROFILER)
+    bool _profiler_on = false;
+#endif
 
     // This gets set if we enter debug mode and the cursor is not enabled. In that case we need to enable the cursor and
     // revert the change when we leave debug mode.

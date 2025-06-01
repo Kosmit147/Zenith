@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace zth::math {
 
 template<glm::length_t Size, typename T>
@@ -9,8 +11,7 @@ auto max_component(const glm::vec<Size, T>& vec) -> T
     auto max = vec[0];
 
     for (glm::length_t i = 1; i < Size; i++)
-        if (vec[i] > max)
-            max = vec[i];
+        max = std::max(max, vec[i]);
 
     return max;
 }
@@ -22,8 +23,7 @@ auto min_component(const glm::vec<Size, T>& vec) -> T
     auto min = vec[0];
 
     for (glm::length_t i = 1; i < Size; i++)
-        if (vec[i] < min)
-            min = vec[i];
+        min = std::min(min, vec[i]);
 
     return min;
 }
@@ -37,10 +37,8 @@ auto min_max_component(const glm::vec<Size, T>& vec) -> std::pair<T, T>
 
     for (glm::length_t i = 1; i < Size; i++)
     {
-        if (vec[i] < min)
-            min = vec[i];
-        else if (vec[i] > max)
-            max = vec[i];
+        max = std::max(max, vec[i]);
+        min = std::min(min, vec[i]);
     }
 
     return { min, max };

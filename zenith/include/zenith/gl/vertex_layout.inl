@@ -26,7 +26,7 @@ template<> constexpr inline auto to_vertex_layout_elem<glm::mat4> = VertexLayout
 template<> constexpr inline auto to_vertex_layout_elem<const glm::mat4> = VertexLayoutElement::Mat4;
 
 constexpr VertexLayout::VertexLayout(std::initializer_list<VertexLayoutElement> elements, u32 stride_bytes)
-    : _elements(elements), _stride_bytes(stride_bytes)
+    : _elements{ elements }, _stride_bytes{ stride_bytes }
 {}
 
 template<typename VertexType> constexpr auto VertexLayout::derive_from_vertex() -> VertexLayout

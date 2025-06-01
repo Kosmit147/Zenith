@@ -1,6 +1,7 @@
 #include "zenith/layer/layers.hpp"
 
 #include "zenith/asset/asset.hpp"
+#include "zenith/core/profiler.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/gl/context.hpp"
@@ -11,26 +12,26 @@
 #include "zenith/renderer/shader_preprocessor.hpp"
 #include "zenith/system/event.hpp"
 #include "zenith/system/temporary_storage.hpp"
-#include "zenith/system/time.hpp"
 #include "zenith/util/defer.hpp"
 
 namespace zth {
 
 // --- System Layer
 // 1. Logger
-// 2. Time
-// 3. TemporaryStorage
-// 4. Window
-// 5. gl::Context
-// 6. Input
+// 2. TemporaryStorage
+// 3. Window
+// 4. gl::Context
+// 5. Input
 
-SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, const TimeSpec& time_spec)
-    : _logger_spec{ logger_spec }, _window_spec{ window_spec }, _time_spec{ time_spec }
+SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, usize temporary_storage_capacity)
+    : _logger_spec{ logger_spec }, _window_spec{ window_spec },
+      _temporary_storage_capacity{ temporary_storage_capacity }
 {}
 
 auto SystemLayer::on_frame_start() -> void
 {
-    Time::start_frame();
+    ZTH_PROFILE_FUNCTION();
+
     TemporaryStorage::start_frame();
     Input::start_frame();
 }
@@ -50,12 +51,7 @@ auto SystemLayer::on_attach() -> Result<void, String>
 
     ZTH_INTERNAL_TRACE("Initializing system layer...");
 
-    result = Time::init(_time_spec);
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_time{ [] { Time::shut_down(); } };
-
-    result = TemporaryStorage::init();
+    result = TemporaryStorage::init(_temporary_storage_capacity);
     if (!result)
         return Error{ result.error() };
     Defer shut_down_temporary_storage{ [] { TemporaryStorage::shut_down(); } };
@@ -76,7 +72,6 @@ auto SystemLayer::on_attach() -> Result<void, String>
     Defer shut_down_input{ [] { Input::shut_down(); } };
 
     shut_down_logger.dismiss();
-    shut_down_time.dismiss();
     shut_down_temporary_storage.dismiss();
     shut_down_window.dismiss();
     shut_down_gl_context.dismiss();
@@ -95,7 +90,6 @@ auto SystemLayer::on_detach() -> void
     gl::Context::shut_down();
     Window::shut_down();
     TemporaryStorage::shut_down();
-    Time::shut_down();
     Logger::shut_down();
 }
 
@@ -112,11 +106,15 @@ RuntimeLayer::RuntimeLayer(const PhysicsSpec& physics_spec) : _physics_spec{ phy
 
 auto RuntimeLayer::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::render();
 }
 
 auto RuntimeLayer::on_frame_start() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     Renderer::start_frame();
     Renderer2D::start_frame();
     SceneManager::start_frame();
@@ -130,19 +128,25 @@ auto RuntimeLayer::on_event(const Event& event) -> void
     SceneManager::dispatch_event(event);
 }
 
-void RuntimeLayer::on_fixed_update()
+auto RuntimeLayer::on_fixed_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     Physics::fixed_update();
     SceneManager::fixed_update();
 }
 
 auto RuntimeLayer::on_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::update();
 }
 
 auto RuntimeLayer::on_render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::on_render();
 }
 
@@ -218,11 +222,15 @@ auto RuntimeLayer::on_detach() -> void
 
 auto DebugLayer::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ImGuiRenderer::render();
 }
 
 auto DebugLayer::on_frame_start() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ImGuiRenderer::start_frame();
 }
 
@@ -234,12 +242,19 @@ auto DebugLayer::on_event(const Event& event) -> void
 
 auto DebugLayer::on_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     if (_debug_mode_on)
     {
         auto& scene = SceneManager::scene();
         _scene_hierarchy_panel.display(scene.registry());
         _debug_panel.display();
     }
+
+#if defined(ZTH_PROFILER)
+    if (_profiler_on)
+        Profiler::display();
+#endif
 }
 
 auto DebugLayer::on_attach() -> Result<void, String>
@@ -315,6 +330,11 @@ auto DebugLayer::on_key_pressed_event(const KeyPressedEvent& event) -> void
             inspector.gizmo.mode = Mode::Local;
         }
     }
+
+#if defined(ZTH_PROFILER)
+    if (key == toggle_profiler_key)
+        _profiler_on = !_profiler_on;
+#endif
 }
 
 } // namespace zth

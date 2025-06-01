@@ -85,10 +85,10 @@ auto VertexArray::operator=(const VertexArray& other) -> VertexArray&
 }
 
 VertexArray::VertexArray(VertexArray&& other) noexcept
-    : _id(std::exchange(other._id, GL_NONE)), _count_limit(std::exchange(other._count_limit, nil)),
-      _vertex_buffer(std::exchange(other._vertex_buffer, nullptr)),
-      _index_buffer(std::exchange(other._index_buffer, nullptr)),
-      _instance_buffer(std::exchange(other._instance_buffer, nullptr))
+    : _id{ std::exchange(other._id, GL_NONE) }, _count_limit{ std::exchange(other._count_limit, nil) },
+      _vertex_buffer{ std::exchange(other._vertex_buffer, nullptr) },
+      _index_buffer{ std::exchange(other._index_buffer, nullptr) },
+      _instance_buffer{ std::exchange(other._instance_buffer, nullptr) }
 {}
 
 auto VertexArray::operator=(VertexArray&& other) noexcept -> VertexArray&

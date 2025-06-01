@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.28)
 project(zenith VERSION 0.1.0 LANGUAGES CXX)
 
 add_library(
-	zenith_core STATIC
+	zenith STATIC
 	"src/asset/asset.cpp"
-	"src/core/exception.cpp"
+	"src/core/profiler.cpp"
 	"src/core/random.cpp"
 	"src/core/scene.cpp"
 	"src/debug/ui.cpp"
@@ -45,25 +45,24 @@ add_library(
 	"src/system/file.cpp"
 	"src/system/input.cpp"
 	"src/system/temporary_storage.cpp"
-	"src/system/time.cpp"
 	"src/system/window.cpp"
 )
 
-b_embed(zenith_core "src/shaders/zth_defines.glsl")
-b_embed(zenith_core "src/shaders/zth_fallback.vert")
-b_embed(zenith_core "src/shaders/zth_fallback.frag")
-b_embed(zenith_core "src/shaders/zth_flat_color.vert")
-b_embed(zenith_core "src/shaders/zth_flat_color.frag")
-b_embed(zenith_core "src/shaders/zth_standard.vert")
-b_embed(zenith_core "src/shaders/zth_standard.frag")
-b_embed(zenith_core "src/shaders/zth_texture_2d.vert")
-b_embed(zenith_core "src/shaders/zth_texture_2d.frag")
+b_embed(zenith "src/shaders/zth_defines.glsl")
+b_embed(zenith "src/shaders/zth_fallback.vert")
+b_embed(zenith "src/shaders/zth_fallback.frag")
+b_embed(zenith "src/shaders/zth_flat_color.vert")
+b_embed(zenith "src/shaders/zth_flat_color.frag")
+b_embed(zenith "src/shaders/zth_standard.vert")
+b_embed(zenith "src/shaders/zth_standard.frag")
+b_embed(zenith "src/shaders/zth_texture_2d.vert")
+b_embed(zenith "src/shaders/zth_texture_2d.frag")
 
-target_include_directories(zenith_core PUBLIC "include")
-target_compile_features(zenith_core PRIVATE cxx_std_23)
-target_compile_options(zenith_core PRIVATE ${ZTH_COMPILE_WARNINGS})
-target_precompile_headers(zenith_core PRIVATE "src/pch.hpp")
-set_property(TARGET zenith_core PROPERTY COMPILE_WARNING_AS_ERROR On)
+target_include_directories(zenith PUBLIC "include")
+target_compile_features(zenith PRIVATE cxx_std_23)
+target_compile_options(zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
+target_precompile_headers(zenith PRIVATE "src/pch.hpp")
+set_property(TARGET zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
 
 set(ZTH_PRIVATE_DEFINITIONS
     _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING # For battery::embed.
@@ -85,32 +84,21 @@ if(ZTH_DEBUG_LOGGING)
     list(APPEND ZTH_PUBLIC_DEFINITIONS "ZTH_DEBUG_LOGGING")
 endif()
 
-target_compile_definitions(zenith_core PRIVATE ${ZTH_PRIVATE_DEFINITIONS})
-target_compile_definitions(zenith_core PUBLIC ${ZTH_PUBLIC_DEFINITIONS})
-
-add_subdirectory("imgui")
-
-target_link_libraries(zenith_core PUBLIC assimp)
-target_link_libraries(zenith_core PUBLIC EnTT)
-target_link_libraries(zenith_core PUBLIC glad)
-target_link_libraries(zenith_core PUBLIC glfw)
-target_link_libraries(zenith_core PUBLIC glm)
-target_link_libraries(zenith_core PUBLIC imgui)
-target_link_libraries(zenith_core PUBLIC Jolt)
-target_link_libraries(zenith_core PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
-target_link_libraries(zenith_core PUBLIC stb_image)
-
-add_library(
-    zenith STATIC
-    "src/core/main.cpp"
-)
-
-target_compile_features(zenith PRIVATE cxx_std_23)
-target_compile_options(zenith PRIVATE ${ZTH_COMPILE_WARNINGS})
-target_precompile_headers(zenith REUSE_FROM zenith_core)
-set_property(TARGET zenith PROPERTY COMPILE_WARNING_AS_ERROR On)
+if(ZTH_PROFILER)
+    list(APPEND ZTH_PUBLIC_DEFINITIONS "ZTH_PROFILER")
+endif()
 
 target_compile_definitions(zenith PRIVATE ${ZTH_PRIVATE_DEFINITIONS})
 target_compile_definitions(zenith PUBLIC ${ZTH_PUBLIC_DEFINITIONS})
 
-target_link_libraries(zenith PUBLIC zenith_core)
+add_subdirectory("imgui")
+
+target_link_libraries(zenith PUBLIC assimp)
+target_link_libraries(zenith PUBLIC EnTT)
+target_link_libraries(zenith PUBLIC glad)
+target_link_libraries(zenith PUBLIC glfw)
+target_link_libraries(zenith PUBLIC glm)
+target_link_libraries(zenith PUBLIC imgui)
+target_link_libraries(zenith PUBLIC Jolt)
+target_link_libraries(zenith PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(zenith PUBLIC stb_image)

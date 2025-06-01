@@ -4,7 +4,7 @@ namespace scripts {
 
 auto Cube::on_update(zth::EntityHandle actor) -> void
 {
-    const auto time = zth::Time::time<float>();
+    const auto time = static_cast<float>(zth::Application::time());
 
     auto& transform = actor.get<zth::TransformComponent>();
 

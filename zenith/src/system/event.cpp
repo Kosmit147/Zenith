@@ -6,31 +6,34 @@
 namespace zth {
 
 Event::Event(WindowResizedEvent event)
-    : _type(EventType::WindowResized), _category(EventCategory::WindowEvent), _window_resized_event(event)
+    : _type{ EventType::WindowResized }, _category{ EventCategory::WindowEvent }, _window_resized_event{ event }
 {}
 
 Event::Event(KeyPressedEvent event)
-    : _type(EventType::KeyPressed), _category(EventCategory::InputEvent), _key_pressed_event(event)
+    : _type{ EventType::KeyPressed }, _category{ EventCategory::InputEvent }, _key_pressed_event{ event }
 {}
 
 Event::Event(KeyReleasedEvent event)
-    : _type(EventType::KeyReleased), _category(EventCategory::InputEvent), _key_released_event(event)
+    : _type{ EventType::KeyReleased }, _category{ EventCategory::InputEvent }, _key_released_event{ event }
 {}
 
 Event::Event(MouseButtonPressedEvent event)
-    : _type(EventType::MouseButtonPressed), _category(EventCategory::InputEvent), _mouse_button_pressed_event(event)
+    : _type{ EventType::MouseButtonPressed }, _category{ EventCategory::InputEvent },
+      _mouse_button_pressed_event{ event }
 {}
 
 Event::Event(MouseButtonReleasedEvent event)
-    : _type(EventType::MouseButtonReleased), _category(EventCategory::InputEvent), _mouse_button_released_event(event)
+    : _type{ EventType::MouseButtonReleased }, _category{ EventCategory::InputEvent },
+      _mouse_button_released_event{ event }
 {}
 
 Event::Event(MouseMovedEvent event)
-    : _type(EventType::MouseMoved), _category(EventCategory::InputEvent), _mouse_moved_event(event)
+    : _type{ EventType::MouseMoved }, _category{ EventCategory::InputEvent }, _mouse_moved_event{ event }
 {}
 
 Event::Event(MouseWheelScrolledEvent event)
-    : _type(EventType::MouseWheelScrolled), _category(EventCategory::InputEvent), _mouse_wheel_scrolled_event(event)
+    : _type{ EventType::MouseWheelScrolled }, _category{ EventCategory::InputEvent },
+      _mouse_wheel_scrolled_event{ event }
 {}
 
 auto Event::window_resized_event() const -> WindowResizedEvent

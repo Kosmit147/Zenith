@@ -16,6 +16,7 @@
 #include "zenith/renderer/light.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
+#include "zenith/system/application.hpp"
 #include "zenith/system/input.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/system/window.hpp"
@@ -1266,101 +1267,102 @@ auto DebugPanel::display() -> void
 {
     begin_window(_label.c_str());
 
-    text_wrapped("Jolt Config: {}", JPH::GetConfigurationString());
-    text("FPS: {:.2f}", ImGui::GetIO().Framerate);
-
     {
-        auto temporary_storage_capacity = TemporaryStorage::capacity();
-        auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
+        text_wrapped("Jolt Config: {}", JPH::GetConfigurationString());
+        text("FPS: {:.2f}", Application::frame_rate());
 
-        // @todo: We should choose the unit to use here dynamically instead of always using MB.
-        text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
-        text("Temporary storage usage: {:.0f}%",
-             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
+        auto frame_time = Application::frame_time();
+        auto fixed_update_time = Application::fixed_update_time();
+        auto update_time = Application::update_time();
+        auto render_time = Application::render_time();
 
-        auto last_frame_time = Window::last_frame_time();
-        auto target_frame_time = Window::target_frame_time();
+        text("Frame time: {:.4f}ms", frame_time * 1000.0);
+        text("Fixed update time: {:.4f}ms ({:.2f}%)", fixed_update_time * 1000.0,
+             fixed_update_time / frame_time * 100.0);
+        text("Update time: {:.4f}ms ({:.2f}%)", update_time * 1000.0, update_time / frame_time * 100.0);
+        text("Render time: {:.4f}ms ({:.2f}%)", render_time * 1000.0, render_time / frame_time * 100.0);
 
-        if (target_frame_time != 0.0)
+        text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
+        text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
+
         {
-            text("Frame time: {:.4f}ms ({:.2f}%)", last_frame_time * 1000.0,
-                 last_frame_time / target_frame_time * 100.0);
+            auto temporary_storage_capacity = TemporaryStorage::capacity();
+            auto temporary_storage_usage = TemporaryStorage::usage_last_frame();
+
+            // @todo: We should choose the unit to use here dynamically instead of always using MB.
+            text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
+            text("Temporary storage usage: {:.2f}%", static_cast<double>(temporary_storage_usage)
+                                                         / static_cast<double>(temporary_storage_capacity) * 100.0);
         }
-        else
+
+        bool frame_rate_limit_enabled;
+
         {
-            text("Frame time: {:.4f}ms", last_frame_time * 1000.0);
+            auto limit = Window::frame_rate_limit();
+            frame_rate_limit_enabled = limit.has_value();
+            _frame_rate_limit = limit.value_or(_frame_rate_limit);
         }
 
-        auto last_render_time = SceneManager::last_render_time();
-        text("Render time: {:.4f}ms ({:.2f}%)", last_render_time * 1000.0, last_render_time / last_frame_time * 100.0);
-    }
+        if (checkbox("FPS Limit", frame_rate_limit_enabled))
+        {
+            if (frame_rate_limit_enabled)
+                Window::set_frame_rate_limit(_frame_rate_limit);
+            else
+                Window::disable_frame_rate_limit();
+        }
 
-    text("Draw Calls (3D): {}", Renderer::draw_calls_last_frame());
-    text("Draw Calls (2D): {}", Renderer2D::draw_calls_last_frame());
-
-    bool frame_rate_limit_enabled;
-
-    {
-        auto limit = Window::frame_rate_limit();
-        frame_rate_limit_enabled = limit.has_value();
-        _frame_rate_limit = limit.value_or(_frame_rate_limit);
-    }
-
-    if (checkbox("FPS Limit", frame_rate_limit_enabled))
-    {
         if (frame_rate_limit_enabled)
-            Window::set_frame_rate_limit(_frame_rate_limit);
-        else
-            Window::disable_frame_rate_limit();
+        {
+            if (input_int("##", _frame_rate_limit))
+                Window::set_frame_rate_limit(_frame_rate_limit);
+        }
+
+        {
+            auto blending_enabled = Renderer::blending_enabled();
+
+            if (checkbox("Blending", blending_enabled))
+                Renderer::set_blending_enabled(blending_enabled);
+        }
+
+        {
+            auto depth_test_enabled = Renderer::depth_test_enabled();
+
+            if (checkbox("Depth Test", depth_test_enabled))
+                Renderer::set_depth_test_enabled(depth_test_enabled);
+        }
+
+        {
+            auto face_culling_enabled = Renderer::face_culling_enabled();
+
+            if (checkbox("Face Culling", face_culling_enabled))
+                Renderer::set_face_culling_enabled(face_culling_enabled);
+        }
+
+        {
+            auto multisampling_enabled = Renderer::multisampling_enabled();
+
+            if (checkbox("Multisampling", multisampling_enabled))
+                Renderer::set_multisampling_enabled(multisampling_enabled);
+        }
+
+        {
+            auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
+
+            if (checkbox("Wireframe", wireframe_mode_enabled))
+                Renderer::set_wireframe_mode_enabled(wireframe_mode_enabled);
+        }
+
+        input_float("Delta time limit", Application::delta_time_limit);
+        input_float("Fixed time step", Application::fixed_time_step);
+        input_int("Max fixed updates per frame", Application::max_fixed_updates_per_frame);
+
+        text("Vendor: {}", gl::Context::vendor_string());
+        text("Renderer: {}", gl::Context::renderer_string());
+        text("Version: {}", gl::Context::version_string());
+        text("GLSL Version: {}", gl::Context::glsl_version_string());
+
+        end_window();
     }
-
-    if (frame_rate_limit_enabled)
-    {
-        if (input_int("##", _frame_rate_limit))
-            Window::set_frame_rate_limit(_frame_rate_limit);
-    }
-
-    {
-        auto blending_enabled = Renderer::blending_enabled();
-
-        if (checkbox("Blending", blending_enabled))
-            Renderer::set_blending_enabled(blending_enabled);
-    }
-
-    {
-        auto depth_test_enabled = Renderer::depth_test_enabled();
-
-        if (checkbox("Depth Test", depth_test_enabled))
-            Renderer::set_depth_test_enabled(depth_test_enabled);
-    }
-
-    {
-        auto face_culling_enabled = Renderer::face_culling_enabled();
-
-        if (checkbox("Face Culling", face_culling_enabled))
-            Renderer::set_face_culling_enabled(face_culling_enabled);
-    }
-
-    {
-        auto multisampling_enabled = Renderer::multisampling_enabled();
-
-        if (checkbox("Multisampling", multisampling_enabled))
-            Renderer::set_multisampling_enabled(multisampling_enabled);
-    }
-
-    {
-        auto wireframe_mode_enabled = Renderer::wireframe_mode_enabled();
-
-        if (checkbox("Wireframe", wireframe_mode_enabled))
-            Renderer::set_wireframe_mode_enabled(wireframe_mode_enabled);
-    }
-
-    text("Vendor: {}", gl::Context::vendor_string());
-    text("Renderer: {}", gl::Context::renderer_string());
-    text("Version: {}", gl::Context::version_string());
-    text("GLSL Version: {}", gl::Context::glsl_version_string());
-
-    end_window();
 }
 
 ScenePicker::ScenePicker(StringView label) : _label{ label } {}

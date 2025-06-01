@@ -9,11 +9,11 @@ add_executable(
 	"src/character.cpp"
 	"src/containers.cpp"
 	"src/embedded.cpp"
+	"src/main.cpp"
 	"src/main_layer.cpp"
 	"src/main_scene.cpp"
 	"src/physics.cpp"
 	"src/sprites.cpp"
-	"src/testbed.cpp"
 )
 
 b_embed(testbed "assets/cobble_diffuse.png")

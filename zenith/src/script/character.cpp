@@ -5,8 +5,8 @@
 #include "zenith/ecs/ecs.hpp"
 #include "zenith/log/formatters.hpp"
 #include "zenith/physics/physics.hpp"
+#include "zenith/system/application.hpp"
 #include "zenith/system/event.hpp"
-#include "zenith/system/time.hpp"
 #include "zenith/system/window.hpp"
 
 namespace zth::scripts {
@@ -131,10 +131,10 @@ auto CharacterController::on_fixed_update(EntityHandle actor) -> void
     character->SetUp(JPH::Vec3::sAxisY());
     character->SetRotation(JPH::Quat::sIdentity());
 
-    // @todo: Do we need to call this?
+    // @todo: Do we need to call this?.
     character->UpdateGroundVelocity();
 
-    // Determine new basic velocity
+    // Determine new basic velocity.
     auto current_vertical_velocity = character->GetLinearVelocity().Dot(character->GetUp()) * character->GetUp();
     auto ground_velocity = character->GetGroundVelocity();
     JPH::Vec3 new_velocity;
@@ -143,10 +143,10 @@ auto CharacterController::on_fixed_update(EntityHandle actor) -> void
     if (character->GetGroundState() == JPH::CharacterVirtual::EGroundState::OnGround
         && !character->IsSlopeTooSteep(character->GetGroundNormal()))
     {
-        // Assume velocity of ground when on ground
+        // Assume velocity of ground when on ground>
         new_velocity = ground_velocity;
 
-        // Jump
+        // Jump.
         if (Input::is_key_pressed(jump_key) && moving_towards_ground)
             new_velocity += jump_speed * character->GetUp();
     }
@@ -155,15 +155,15 @@ auto CharacterController::on_fixed_update(EntityHandle actor) -> void
         new_velocity = current_vertical_velocity;
     }
 
-    // Gravity
-    new_velocity += Physics::gravity() * Time::fixed_time_step<float>();
+    // Gravity.
+    new_velocity += Physics::gravity() * static_cast<float>(Application::fixed_time_step);
 
-    // Player input
+    // Player input.
     new_velocity += desired_velocity;
 
     debug::text("New Velocity: Vec3({}, {}, {})", new_velocity.GetX(), new_velocity.GetY(), new_velocity.GetZ());
 
-    // Update character velocity
+    // Update character velocity.
     character->SetLinearVelocity(new_velocity);
 
     debug::end_window();

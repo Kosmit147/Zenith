@@ -1,12 +1,12 @@
 #include "zenith/core/scene.hpp"
 
 #include "zenith/core/assert.hpp"
+#include "zenith/core/profiler.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/physics/physics.hpp"
 #include "zenith/renderer/coordinate_space.hpp"
 #include "zenith/renderer/renderer.hpp"
-#include "zenith/system/time.hpp"
 
 namespace zth {
 
@@ -27,6 +27,8 @@ Scene::Scene(String&& name) : _name{ std::move(name) }
 
 auto Scene::start_frame() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     on_frame_start();
 }
 
@@ -42,6 +44,8 @@ auto Scene::dispatch_event(const Event& event) -> void
 
 auto Scene::fixed_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     // @todo: Should character controller be updated before other bodies or after?
     auto character_controllers = _registry.view<CharacterControllerComponent>();
 
@@ -82,7 +86,7 @@ auto Scene::fixed_update() -> void
         transform.set_translation(position);
         transform.set_rotation(rotation);
     }
-    
+
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
@@ -93,6 +97,8 @@ auto Scene::fixed_update() -> void
 
 auto Scene::update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
@@ -111,6 +117,8 @@ auto Scene::update() -> void
 
 auto Scene::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto camera_entity_id = _registry.view<const CameraComponent>().front();
 
     if (camera_entity_id == null_entity)
@@ -368,10 +376,8 @@ auto Scene::set_up_registry_listeners() -> void
 auto SceneManager::init() -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing scene manager...");
-
-    _scene = make_unique<PlaceholderScene>();
+    _scene = make_unique<Scene>();
     _scene->load();
-
     ZTH_INTERNAL_TRACE("Scene manager initialized.");
     return {};
 }
@@ -411,9 +417,7 @@ auto SceneManager::update() -> void
 
 auto SceneManager::render() -> void
 {
-    auto time = Time::time();
     _scene->render();
-    _last_render_time = Time::time() - time;
 }
 
 auto SceneManager::on_render() -> void
