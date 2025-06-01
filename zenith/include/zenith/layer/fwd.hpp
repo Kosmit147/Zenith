@@ -6,6 +6,6 @@ class Layer;
 
 class SystemLayer;
 class RuntimeLayer;
-class DebugLayer;
+class DebugOverlay;
 
 } // namespace zth
