@@ -40,6 +40,7 @@ public:
     static auto pop_overlay() -> bool;
 
     static auto run() -> void;
+    static auto quit() -> void;
 
     [[nodiscard]] static auto time() -> double;
     [[nodiscard]] static auto delta_time() -> double;
