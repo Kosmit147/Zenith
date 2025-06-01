@@ -34,7 +34,7 @@ auto Application::init(const ApplicationSpec& spec) -> Result<void, String>
     if (!result)
         return Error{ result.error() };
 
-    result = push_overlay(make_unique<DebugLayer>());
+    result = push_overlay(make_unique<DebugOverlay>());
     if (!result)
         return Error{ result.error() };
 
@@ -111,6 +111,7 @@ auto Application::delta_time() -> double
 
 auto Application::frame_rate() -> double
 {
+    // @todo: Calculate the frame rate on our own instead of relying on ImGui.
     return ImGui::GetIO().Framerate;
 }
 

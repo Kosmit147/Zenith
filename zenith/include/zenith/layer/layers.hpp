@@ -53,7 +53,7 @@ private:
     auto on_detach() -> void override;
 };
 
-class DebugLayer : public Layer
+class DebugOverlay : public Layer
 {
 public:
     Key toggle_debug_mode_key = Key::F1;
@@ -67,9 +67,9 @@ public:
 #endif
 
 public:
-    explicit DebugLayer() = default;
-    ZTH_NO_COPY_NO_MOVE(DebugLayer)
-    ~DebugLayer() override = default;
+    explicit DebugOverlay() = default;
+    ZTH_NO_COPY_NO_MOVE(DebugOverlay)
+    ~DebugOverlay() override = default;
 
     auto render() -> void override;
 
