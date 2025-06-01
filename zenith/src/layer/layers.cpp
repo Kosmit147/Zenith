@@ -22,8 +22,9 @@ namespace zth {
 // 4. gl::Context
 // 5. Input
 
-SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec)
-    : _logger_spec{ logger_spec }, _window_spec{ window_spec }
+SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec, usize temporary_storage_capacity)
+    : _logger_spec{ logger_spec }, _window_spec{ window_spec },
+      _temporary_storage_capacity{ temporary_storage_capacity }
 {}
 
 auto SystemLayer::on_frame_start() -> void
@@ -49,7 +50,7 @@ auto SystemLayer::on_attach() -> Result<void, String>
 
     ZTH_INTERNAL_TRACE("Initializing system layer...");
 
-    result = TemporaryStorage::init();
+    result = TemporaryStorage::init(_temporary_storage_capacity);
     if (!result)
         return Error{ result.error() };
     Defer shut_down_temporary_storage{ [] { TemporaryStorage::shut_down(); } };

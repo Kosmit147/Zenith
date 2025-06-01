@@ -25,7 +25,8 @@ auto Application::init(const ApplicationSpec& spec) -> Result<void, String>
         pop_all_layers();
     } };
 
-    auto result = push_layer(make_unique<SystemLayer>(spec.logger_spec, spec.window_spec));
+    auto result =
+        push_layer(make_unique<SystemLayer>(spec.logger_spec, spec.window_spec, spec.temporary_storage_capacity));
     if (!result)
         return Error{ result.error() };
 
