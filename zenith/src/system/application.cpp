@@ -1,5 +1,7 @@
 #include "zenith/system/application.hpp"
 
+#include <imgui.h>
+
 #include "zenith/core/profiler.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/layer/layers.hpp"
@@ -98,6 +100,11 @@ auto Application::time() -> double
 auto Application::delta_time() -> double
 {
     return _delta_time;
+}
+
+auto Application::frame_rate() -> double
+{
+    return ImGui::GetIO().Framerate;
 }
 
 auto Application::frame_time() -> double

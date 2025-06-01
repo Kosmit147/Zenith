@@ -1142,7 +1142,7 @@ auto DebugPanel::display() -> void
     begin_window(_label.c_str());
 
     {
-        text("FPS: {:.2f}", ImGui::GetIO().Framerate);
+        text("FPS: {:.2f}", Application::frame_rate());
 
         auto frame_time = Application::frame_time();
         auto fixed_update_time = Application::fixed_update_time();

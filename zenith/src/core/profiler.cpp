@@ -76,6 +76,7 @@ auto Profiler::display() -> void
     ZTH_PROFILE_FUNCTION();
 
     debug::begin_window("Profiler");
+    debug::text("Frame time: {:.4f}ms", Application::frame_time() * 1000.0);
     merge_and_display_sub_entries({ 0 });
     debug::end_window();
 }
