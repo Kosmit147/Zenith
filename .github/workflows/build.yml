@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: # Values based on presets defined in CMakePresets.json
+        config: # Flags based on presets defined in CMakePresets.json
           - { name: debug, build_type: Debug, flags:                          -DZTH_DEVELOPER=TRUE -DZTH_ASSERTIONS=TRUE  -DZTH_GL_DEBUG=TRUE  -DZTH_DEBUG_LOGGING=TRUE  -DZTH_PROFILER=TRUE }
           - { name: optimized-debug, build_type: RelWithDebInfo, flags:       -DZTH_DEVELOPER=TRUE -DZTH_ASSERTIONS=TRUE  -DZTH_GL_DEBUG=TRUE  -DZTH_DEBUG_LOGGING=TRUE  -DZTH_PROFILER=TRUE }
           - { name: development, build_type: RelWithDebInfo, flags:           -DZTH_DEVELOPER=TRUE -DZTH_ASSERTIONS=FALSE -DZTH_GL_DEBUG=TRUE  -DZTH_DEBUG_LOGGING=TRUE  -DZTH_PROFILER=TRUE }

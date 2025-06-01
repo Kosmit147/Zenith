@@ -62,7 +62,9 @@ public:
     Key switch_to_gizmo_rotate_mode_key = Key::E;
     Key switch_to_gizmo_scale_mode_key = Key::R;
 
+#if defined(ZTH_PROFILER)
     Key toggle_profiler_key = Key::F10;
+#endif
 
 public:
     explicit DebugLayer() = default;
