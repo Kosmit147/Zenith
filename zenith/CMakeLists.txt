@@ -4,6 +4,7 @@ project(zenith VERSION 0.1.0 LANGUAGES CXX)
 add_library(
 	zenith STATIC
 	"src/asset/asset.cpp"
+	"src/core/profiler.cpp"
 	"src/core/random.cpp"
 	"src/core/scene.cpp"
 	"src/debug/ui.cpp"
@@ -78,6 +79,10 @@ endif()
 
 if(ZTH_DEBUG_LOGGING)
     list(APPEND ZTH_PUBLIC_DEFINITIONS "ZTH_DEBUG_LOGGING")
+endif()
+
+if(ZTH_PROFILER)
+    list(APPEND ZTH_PUBLIC_DEFINITIONS "ZTH_PROFILER")
 endif()
 
 target_compile_definitions(zenith PRIVATE ${ZTH_PRIVATE_DEFINITIONS})

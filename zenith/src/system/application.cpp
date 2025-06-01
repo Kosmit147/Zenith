@@ -1,8 +1,8 @@
 #include "zenith/system/application.hpp"
 
+#include "zenith/core/profiler.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/layer/layers.hpp"
-#include "zenith/renderer/renderer.hpp"
 #include "zenith/system/event_queue.hpp"
 #include "zenith/system/window.hpp"
 #include "zenith/util/defer.hpp"
@@ -64,8 +64,16 @@ auto Application::run() -> void
 {
     Window::make_context_current();
 
+#if defined(ZTH_PROFILER)
+    Profiler::init();
+#endif
+
     while (!Window::should_close())
     {
+#if defined(ZTH_PROFILER)
+        Profiler::start_frame();
+#endif
+
         start_frame();
 
         while (auto event = EventQueue::pop())
@@ -133,6 +141,8 @@ auto Application::pop_all_overlays() -> void
 
 auto Application::start_frame() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto current_time = time();
     _frame_time = current_time - _prev_start_frame_time_point;
     _delta_time = std::min(_frame_time, delta_time_limit);
@@ -150,6 +160,8 @@ auto Application::dispatch_event(const Event& event) -> void
 
 auto Application::fixed_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto start_fixed_update_time_point = time();
 
     auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_time_step;
@@ -168,6 +180,8 @@ auto Application::fixed_update() -> void
 
 auto Application::update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto start_update_time_point = time();
 
     _layers.update();
@@ -178,9 +192,9 @@ auto Application::update() -> void
 
 auto Application::render() -> void
 {
-    auto start_render_time_point = time();
+    ZTH_PROFILE_FUNCTION();
 
-    Renderer::clear();
+    auto start_render_time_point = time();
 
     _layers.render();
     _overlays.render();
