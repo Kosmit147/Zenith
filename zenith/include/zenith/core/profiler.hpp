@@ -47,16 +47,10 @@ private:
 
 struct ProfilerEntry
 {
-    EntryMarkerIndex opening_marker_index; // Index of the corresponding opening marker in the marker array.
     const char* label;
     double time; // In seconds.
-};
-
-struct MergedProfilerEntry
-{
-    const char* label;
-    double time; // In seconds.
-    TemporaryVector<EntryMarkerIndex> opening_marker_indices;
+    // Index of the corresponding opening markers in the marker array.
+    TemporaryVector<EntryMarkerIndex> source_opening_marker_indices;
 };
 
 class ScopeProfiler
@@ -85,9 +79,7 @@ public:
 private:
     // This is used to get to the corresponding opening marker whenever we end an entry.
     static Vector<EntryMarkerIndex> _opening_marker_index_stack;
-
     static Vector<ProfilerEntry> _entry_stack;
-    static Vector<MergedProfilerEntry> _merged_entry_stack;
 
     static Vector<ProfilerEntryMarker> _this_frame_markers;
     static Vector<ProfilerEntryMarker> _last_frame_markers;
@@ -98,7 +90,7 @@ private:
     static auto begin_profile() -> void;
     static auto end_profile() -> void;
 
-    static auto merge_and_display_sub_entries(const TemporaryVector<EntryMarkerIndex>& parent_indices) -> void;
+    static auto merge_and_display_sub_entries(const TemporaryVector<EntryMarkerIndex>& indices) -> void;
 };
 
 } // namespace zth

@@ -6,7 +6,6 @@ namespace zth {
 
 struct ProfilerEntryMarker;
 struct ProfilerEntry;
-struct MergedProfilerEntry;
 class ScopeProfiler;
 class Profiler;
 
