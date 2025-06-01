@@ -92,6 +92,8 @@ private:
     static Vector<ProfilerEntryMarker> _this_frame_markers;
     static Vector<ProfilerEntryMarker> _last_frame_markers;
 
+    static inline bool _snapshot = false;
+
 private:
     static auto begin_profile() -> void;
     static auto end_profile() -> void;
