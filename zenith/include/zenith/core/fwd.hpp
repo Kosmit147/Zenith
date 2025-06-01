@@ -2,6 +2,16 @@
 
 namespace zth {
 
+#if defined(ZTH_PROFILER)
+
+struct ProfilerEntryMarker;
+struct ProfilerEntry;
+struct MergedProfilerEntry;
+class ScopeProfiler;
+class Profiler;
+
+#endif
+
 class Random;
 
 class Scene;

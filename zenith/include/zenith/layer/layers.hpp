@@ -55,9 +55,12 @@ class DebugLayer : public Layer
 {
 public:
     Key toggle_debug_mode_key = Key::F1;
+
     Key switch_to_gizmo_translate_mode_key = Key::Q;
     Key switch_to_gizmo_rotate_mode_key = Key::E;
     Key switch_to_gizmo_scale_mode_key = Key::R;
+
+    Key toggle_profiler_key = Key::F10;
 
 public:
     explicit DebugLayer() = default;
@@ -75,6 +78,10 @@ private:
     debug::DebugPanel _debug_panel;
 
     bool _debug_mode_on = false;
+
+#if defined(ZTH_PROFILER)
+    bool _profiler_on = false;
+#endif
 
     // This gets set if we enter debug mode and the cursor is not enabled. In that case we need to enable the cursor and
     // revert the change when we leave debug mode.

@@ -34,6 +34,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ZTH_ASSERTIONS_DEFAULT ON)
     set(ZTH_GL_DEBUG_DEFAULT ON)
     set(ZTH_DEBUG_LOGGING_DEFAULT ON)
+    set(ZTH_PROFILER_DEFAULT OFF)
 
     set(B_PRODUCTION_MODE OFF) # For battery-embed.
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release"
@@ -44,6 +45,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release"
     set(ZTH_ASSERTIONS_DEFAULT OFF)
     set(ZTH_GL_DEBUG_DEFAULT OFF)
     set(ZTH_DEBUG_LOGGING_DEFAULT OFF)
+    set(ZTH_PROFILER_DEFAULT OFF)
 
     set(B_PRODUCTION_MODE ON) # For battery-embed.
 endif()
@@ -51,6 +53,7 @@ endif()
 set(ZTH_ASSERTIONS ${ZTH_ASSERTIONS_DEFAULT} CACHE BOOL "Enable assertions and debug breaks")
 set(ZTH_GL_DEBUG ${ZTH_GL_DEBUG_DEFAULT} CACHE BOOL "Enable OpenGL debugging features")
 set(ZTH_DEBUG_LOGGING ${ZTH_DEBUG_LOGGING_DEFAULT} CACHE BOOL "Enable debug logging")
+set(ZTH_PROFILER ${ZTH_PROFILER_DEFAULT} CACHE BOOL "Enable profiler")
 
 get_compile_warnings(ZTH_COMPILE_WARNINGS)
 

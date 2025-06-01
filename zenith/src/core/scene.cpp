@@ -1,6 +1,7 @@
 #include "zenith/core/scene.hpp"
 
 #include "zenith/core/assert.hpp"
+#include "zenith/core/profiler.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/renderer/coordinate_space.hpp"
@@ -23,6 +24,8 @@ Scene::Scene(String&& name) : _name{ std::move(name) }
 
 auto Scene::start_frame() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     on_frame_start();
 }
 
@@ -38,6 +41,8 @@ auto Scene::dispatch_event(const Event& event) -> void
 
 auto Scene::fixed_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
@@ -48,6 +53,8 @@ auto Scene::fixed_update() -> void
 
 auto Scene::update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto scripts = _registry.view<ScriptComponent>();
 
     for (auto&& [entity_id, script] : scripts.each())
@@ -66,6 +73,8 @@ auto Scene::update() -> void
 
 auto Scene::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto camera_entity_id = _registry.view<const CameraComponent>().front();
 
     if (camera_entity_id == null_entity)

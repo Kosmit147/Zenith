@@ -1,6 +1,7 @@
 #include "zenith/layer/layers.hpp"
 
 #include "zenith/asset/asset.hpp"
+#include "zenith/core/profiler.hpp"
 #include "zenith/core/random.hpp"
 #include "zenith/core/scene.hpp"
 #include "zenith/gl/context.hpp"
@@ -27,6 +28,8 @@ SystemLayer::SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window
 
 auto SystemLayer::on_frame_start() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     TemporaryStorage::start_frame();
     Input::start_frame();
 }
@@ -98,11 +101,15 @@ auto SystemLayer::on_detach() -> void
 
 auto RuntimeLayer::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::render();
 }
 
 auto RuntimeLayer::on_frame_start() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     Renderer::start_frame();
     Renderer2D::start_frame();
     SceneManager::start_frame();
@@ -116,18 +123,24 @@ auto RuntimeLayer::on_event(const Event& event) -> void
     SceneManager::dispatch_event(event);
 }
 
-void RuntimeLayer::on_fixed_update()
+auto RuntimeLayer::on_fixed_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::fixed_update();
 }
 
 auto RuntimeLayer::on_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::update();
 }
 
 auto RuntimeLayer::on_render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     SceneManager::on_render();
 }
 
@@ -196,11 +209,15 @@ auto RuntimeLayer::on_detach() -> void
 
 auto DebugLayer::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ImGuiRenderer::render();
 }
 
 auto DebugLayer::on_frame_start() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ImGuiRenderer::start_frame();
 }
 
@@ -212,12 +229,19 @@ auto DebugLayer::on_event(const Event& event) -> void
 
 auto DebugLayer::on_update() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     if (_debug_mode_on)
     {
         auto& scene = SceneManager::scene();
         _scene_hierarchy_panel.display(scene.registry());
         _debug_panel.display();
     }
+
+#if defined(ZTH_PROFILER)
+    if (_profiler_on)
+        Profiler::display();
+#endif
 }
 
 auto DebugLayer::on_attach() -> Result<void, String>
@@ -293,6 +317,11 @@ auto DebugLayer::on_key_pressed_event(const KeyPressedEvent& event) -> void
             inspector.gizmo.mode = Mode::Local;
         }
     }
+
+#if defined(ZTH_PROFILER)
+    if (key == toggle_profiler_key)
+        _profiler_on = !_profiler_on;
+#endif
 }
 
 } // namespace zth

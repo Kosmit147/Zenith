@@ -41,7 +41,7 @@ auto FlyCamera::debug_edit() -> void
     }
 }
 
-void FlyCamera::on_event(EntityHandle actor, const Event& event)
+auto FlyCamera::on_event(EntityHandle actor, const Event& event) -> void
 {
     if (event.type() == EventType::WindowResized)
     {

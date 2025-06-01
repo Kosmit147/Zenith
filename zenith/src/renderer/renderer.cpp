@@ -4,6 +4,7 @@
 #include <glm/gtx/structured_bindings.hpp>
 
 #include "zenith/core/assert.hpp"
+#include "zenith/core/profiler.hpp"
 #include "zenith/ecs/components.hpp"
 #include "zenith/gl/shader.hpp"
 #include "zenith/gl/texture.hpp"
@@ -106,6 +107,8 @@ auto Renderer::init() -> Result<void, String>
 
 auto Renderer::start_frame() -> void
 {
+    clear();
+
     renderer->_draw_calls_last_frame = renderer->_draw_calls_this_frame;
     renderer->_draw_calls_this_frame = 0;
 }
@@ -357,6 +360,8 @@ auto Renderer::instance_buffer() -> const gl::InstanceBuffer&
 
 auto Renderer::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     upload_camera_data(renderer->_current_camera_position, renderer->_current_camera_view_projection);
     upload_light_data();
     batch_draw_commands();
@@ -390,6 +395,8 @@ auto Renderer::draw_instanced(const gl::VertexArray& vertex_array, const Materia
 
 auto Renderer::batch_draw_commands() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     // @speed: We should look into how we could batch draw commands more efficiently. It would probably also be more
     // optimal to copy the transforms rather than storing pointers to them for better cache efficiency.
 
@@ -430,6 +437,8 @@ auto Renderer::batch_draw_commands() -> void
 
 auto Renderer::render_batch(const RenderBatch& batch) -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     auto& instance_data = renderer->_temporary_instance_data;
     instance_data.clear();
 
@@ -446,6 +455,8 @@ auto Renderer::render_batch(const RenderBatch& batch) -> void
 
 auto Renderer::bind_material(const Material& material) -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ZTH_ASSERT(material.shader != nullptr);
     material.shader->bind();
     upload_material_data(material);
@@ -468,6 +479,8 @@ auto Renderer::bind_material(const Material& material) -> void
 
 auto Renderer::upload_camera_data(glm::vec3 camera_position, const glm::mat4& view_projection) -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     CameraUboData camera_ubo_data = {
         .view_projection = view_projection,
         .camera_position = camera_position,
@@ -478,6 +491,8 @@ auto Renderer::upload_camera_data(glm::vec3 camera_position, const glm::mat4& vi
 
 auto Renderer::upload_material_data(const Material& material) -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     MaterialUboData material_ubo_data = {
         .albedo = material.albedo,
         .ambient = material.ambient,
@@ -491,6 +506,8 @@ auto Renderer::upload_material_data(const Material& material) -> void
 
 auto Renderer::upload_light_data() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     // @speed: Maybe we should collect all the data first and then buffer it all at once in these functions?
     // Also: we probably shouldn't buffer all this data every frame, but only when it changes.
 
@@ -703,6 +720,8 @@ auto Renderer2D::draw_calls_last_frame() -> u32
 
 auto Renderer2D::render() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     shaders::texture_2d()->bind();
 
     batch_draw_rect_commands();
@@ -734,6 +753,8 @@ auto Renderer2D::draw_instanced(const gl::VertexArray& vertex_array, u32 instanc
 
 auto Renderer2D::batch_draw_rect_commands() -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     // @speed: We should look into how we could batch draw commands more efficiently.
 
     auto& draw_commands = renderer_2d->_draw_rect_commands;
@@ -779,6 +800,8 @@ auto Renderer2D::batch_draw_rect_commands() -> void
 
 auto Renderer2D::render_batch(const RectRenderBatch& batch) -> void
 {
+    ZTH_PROFILE_FUNCTION();
+
     ZTH_ASSERT(batch.rects.size() == batch.colors.size());
 
     renderer_2d->_vertex_buffer.clear();
