@@ -15,7 +15,8 @@ namespace zth {
 class SystemLayer : public Layer
 {
 public:
-    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec);
+    explicit SystemLayer(const LoggerSpec& logger_spec, const WindowSpec& window_spec,
+                         usize temporary_storage_capacity);
     ZTH_NO_COPY_NO_MOVE(SystemLayer)
     ~SystemLayer() override = default;
 
@@ -25,6 +26,7 @@ public:
 private:
     LoggerSpec _logger_spec;
     WindowSpec _window_spec;
+    usize _temporary_storage_capacity;
 
 private:
     [[nodiscard]] auto on_attach() -> Result<void, String> override;

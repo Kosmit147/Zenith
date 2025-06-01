@@ -6,13 +6,13 @@
 
 namespace zth {
 
-memory::Buffer<> TemporaryStorage::_buffer{ initial_capacity };
+memory::Buffer<> TemporaryStorage::_buffer;
 Vector<UniquePtr<byte[]>> TemporaryStorage::_overflow_allocations;
 
-auto TemporaryStorage::init() -> Result<void, String>
+auto TemporaryStorage::init(usize initial_capacity) -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing temporary storage...");
-    reset();
+    reset_with_new_capacity(initial_capacity);
     ZTH_INTERNAL_TRACE("Temporary storage initialized.");
     return {};
 }

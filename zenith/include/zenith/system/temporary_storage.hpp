@@ -22,12 +22,9 @@ namespace zth {
 class TemporaryStorage
 {
 public:
-    static constexpr usize initial_capacity = memory::megabytes(10);
-
-public:
     TemporaryStorage() = delete;
 
-    [[nodiscard]] static auto init() -> Result<void, String>;
+    [[nodiscard]] static auto init(usize initial_capacity) -> Result<void, String>;
     static auto start_frame() -> void;
     static auto shut_down() -> void;
 

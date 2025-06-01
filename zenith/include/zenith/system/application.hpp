@@ -4,6 +4,7 @@
 #include "zenith/layer/layer.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/memory/managed.hpp"
+#include "zenith/memory/memory.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/window.hpp"
@@ -19,6 +20,7 @@ struct ApplicationSpec
     double delta_time_limit = 1 / 30.0; // In seconds.
     double fixed_time_step = 1 / 60.0;  // In seconds.
     usize max_fixed_updates_per_frame = 50;
+    usize temporary_storage_capacity = memory::megabytes(20);
 };
 
 class Application
