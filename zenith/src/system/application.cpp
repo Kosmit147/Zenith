@@ -18,6 +18,7 @@ auto Application::init(const ApplicationSpec& spec) -> Result<void, String>
 {
     delta_time_limit = spec.delta_time_limit;
     fixed_time_step = spec.fixed_time_step;
+    max_fixed_updates_per_frame = spec.max_fixed_updates_per_frame;
 
     Defer cleanup{ [&] {
         pop_all_overlays();
@@ -178,6 +179,7 @@ auto Application::fixed_update() -> void
 
     auto accumulated_fixed_update_time = static_cast<double>(_fixed_updates_performed) * fixed_time_step;
     auto fixed_updates_to_perform = static_cast<usize>((time() - accumulated_fixed_update_time) / fixed_time_step);
+    fixed_updates_to_perform = std::min(fixed_updates_to_perform, max_fixed_updates_per_frame);
 
     for (usize i = 0; i < fixed_updates_to_perform; i++)
     {

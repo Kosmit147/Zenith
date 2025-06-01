@@ -18,6 +18,7 @@ struct ApplicationSpec
     LoggerSpec logger_spec{};
     double delta_time_limit = 1 / 30.0; // In seconds.
     double fixed_time_step = 1 / 60.0;  // In seconds.
+    usize max_fixed_updates_per_frame = 50;
 };
 
 class Application
@@ -25,6 +26,7 @@ class Application
 public:
     static inline double delta_time_limit = 1 / 30.0;
     static inline double fixed_time_step = 1 / 60.0;
+    static inline usize max_fixed_updates_per_frame = 50;
 
 public:
     Application() = delete;

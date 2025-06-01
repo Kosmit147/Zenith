@@ -1226,6 +1226,7 @@ auto DebugPanel::display() -> void
 
     input_float("Delta time limit", Application::delta_time_limit);
     input_float("Fixed time step", Application::fixed_time_step);
+    input_int("Max fixed updates per frame", Application::max_fixed_updates_per_frame);
 
     text("Vendor: {}", gl::Context::vendor_string());
     text("Renderer: {}", gl::Context::renderer_string());
