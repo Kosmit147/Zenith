@@ -8,5 +8,4 @@
 #include "system/file.hpp"
 #include "system/input.hpp"
 #include "system/temporary_storage.hpp"
-#include "system/timer.hpp"
 #include "system/window.hpp"
