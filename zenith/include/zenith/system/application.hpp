@@ -43,6 +43,9 @@ public:
 
     [[nodiscard]] static auto time() -> double;
     [[nodiscard]] static auto delta_time() -> double;
+
+    [[nodiscard]] static auto frame_rate() -> double;
+
     [[nodiscard]] static auto frame_time() -> double;
     [[nodiscard]] static auto fixed_update_time() -> double;
     [[nodiscard]] static auto update_time() -> double;
