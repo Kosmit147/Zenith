@@ -92,6 +92,11 @@ auto Application::run() -> void
     shut_down();
 }
 
+auto Application::quit() -> void
+{
+    Window::close();
+}
+
 auto Application::time() -> double
 {
     return Window::time();
