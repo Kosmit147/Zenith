@@ -180,7 +180,7 @@ auto Profiler::merge_and_display_sub_entries(const TemporaryVector<EntryMarkerIn
         const auto& current_entry = _entry_stack[index];
 
         auto entry_label = format_to_temporary("{}", current_entry.label);
-        auto node_opened = ImGui::TreeNodeEx(entry_label.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+        auto node_opened = ImGui::TreeNode(entry_label.c_str());
 
         ImGui::SameLine(ImGui::GetWindowWidth() - 100.0f);
         debug::text("{:.4f}ms", current_entry.time * 1000.0);
