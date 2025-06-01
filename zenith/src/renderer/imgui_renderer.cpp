@@ -12,7 +12,7 @@ namespace zth {
 
 auto ImGuiRenderer::init() -> Result<void, String>
 {
-    ZTH_INTERNAL_TRACE("Initializing ImGui renderer...");
+    ZTH_INTERNAL_TRACE("Initializing ImGui Renderer...");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -25,7 +25,7 @@ auto ImGuiRenderer::init() -> Result<void, String>
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-    ZTH_INTERNAL_TRACE("ImGui renderer initialized.");
+    ZTH_INTERNAL_TRACE("ImGui Renderer initialized.");
     return {};
 }
 
@@ -35,12 +35,12 @@ auto ImGuiRenderer::start_frame() -> void
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::DockSpaceOverViewport(ImGui::GetID("Main Window Dockspace"), ImGui::GetMainViewport(),
+    auto* viewport = ImGui::GetMainViewport();
+    ImGui::DockSpaceOverViewport(ImGui::GetID("Main Window Dock Space"), viewport,
                                  ImGuiDockNodeFlags_PassthruCentralNode);
 
     ImGuizmo::BeginFrame();
-    auto& io = ImGui::GetIO();
-    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    ImGuizmo::SetRect(viewport->Pos.x, viewport->Pos.y, viewport->Size.x, viewport->Size.y);
 }
 
 auto ImGuiRenderer::render() -> void
@@ -57,11 +57,11 @@ auto ImGuiRenderer::render() -> void
 
 auto ImGuiRenderer::shut_down() -> void
 {
-    ZTH_INTERNAL_TRACE("Shutting down ImGui renderer...");
+    ZTH_INTERNAL_TRACE("Shutting down ImGui Renderer...");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    ZTH_INTERNAL_TRACE("ImGui renderer shut down.");
+    ZTH_INTERNAL_TRACE("ImGui Renderer shut down.");
 }
 
 } // namespace zth
