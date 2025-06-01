@@ -1163,8 +1163,8 @@ auto DebugPanel::display() -> void
 
         // @todo: We should choose the unit to use here dynamically instead of always using MB.
         text("Temporary storage capacity: {:.2f}MB", memory::to_megabytes(temporary_storage_capacity));
-        text("Temporary storage usage: {:.0f}%",
-             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity));
+        text("Temporary storage usage: {:.2f}%",
+             static_cast<double>(temporary_storage_usage) / static_cast<double>(temporary_storage_capacity) * 100.0);
     }
 
     bool frame_rate_limit_enabled;
