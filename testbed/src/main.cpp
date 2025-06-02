@@ -39,6 +39,14 @@ auto main() -> int
         return -1;
     }
 
+    push_layer_result = zth::Application::push_overlay(zth::make_unique<zth::DebugOverlay>());
+
+    if (!push_layer_result)
+    {
+        std::println(std::cerr, "CRITICAL ERROR: {}", push_layer_result.error());
+        return -1;
+    }
+
     zth::SceneManager::queue_scene<MainScene>();
     zth::Application::run();
 }

@@ -205,22 +205,46 @@ auto RuntimeLayer::on_detach() -> void
     ZTH_INTERNAL_TRACE("Runtime layer shut down.");
 }
 
-// --- Debug Overlay
+// --- ImGui Overlay
 // 1. ImGuiRenderer
 
-auto DebugOverlay::render() -> void
+auto ImGuiOverlay::render() -> void
 {
     ZTH_PROFILE_FUNCTION();
 
     ImGuiRenderer::render();
 }
 
-auto DebugOverlay::on_frame_start() -> void
+auto ImGuiOverlay::on_frame_start() -> void
 {
     ZTH_PROFILE_FUNCTION();
 
     ImGuiRenderer::start_frame();
 }
+
+auto ImGuiOverlay::on_attach() -> Result<void, String>
+{
+    ZTH_INTERNAL_TRACE("Initializing ImGui overlay...");
+
+    auto result = ImGuiRenderer::init();
+    if (!result)
+        return Error{ result.error() };
+    Defer shut_down_imgui_renderer{ [] { ImGuiRenderer::shut_down(); } };
+
+    shut_down_imgui_renderer.dismiss();
+
+    ZTH_INTERNAL_TRACE("ImGui overlay initialized...");
+    return {};
+}
+
+auto ImGuiOverlay::on_detach() -> void
+{
+    ZTH_INTERNAL_TRACE("Shutting down ImGui overlay...");
+    ImGuiRenderer::shut_down();
+    ZTH_INTERNAL_TRACE("ImGui overlay shut down.");
+}
+
+// --- Debug Overlay
 
 auto DebugOverlay::on_event(const Event& event) -> void
 {
@@ -248,14 +272,6 @@ auto DebugOverlay::on_update() -> void
 auto DebugOverlay::on_attach() -> Result<void, String>
 {
     ZTH_INTERNAL_TRACE("Initializing debug overlay...");
-
-    auto result = ImGuiRenderer::init();
-    if (!result)
-        return Error{ result.error() };
-    Defer shut_down_imgui_renderer{ [] { ImGuiRenderer::shut_down(); } };
-
-    shut_down_imgui_renderer.dismiss();
-
     ZTH_INTERNAL_TRACE("Debug overlay initialized...");
     return {};
 }
@@ -263,7 +279,6 @@ auto DebugOverlay::on_attach() -> Result<void, String>
 auto DebugOverlay::on_detach() -> void
 {
     ZTH_INTERNAL_TRACE("Shutting down debug overlay...");
-    ImGuiRenderer::shut_down();
     ZTH_INTERNAL_TRACE("Debug overlay shut down.");
 }
 

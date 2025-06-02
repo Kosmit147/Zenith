@@ -53,6 +53,21 @@ private:
     auto on_detach() -> void override;
 };
 
+class ImGuiOverlay : public Layer
+{
+public:
+    explicit ImGuiOverlay() = default;
+    ZTH_NO_COPY_NO_MOVE(ImGuiOverlay)
+    ~ImGuiOverlay() override = default;
+
+    auto render() -> void override;
+    auto on_frame_start() -> void override;
+
+private:
+    [[nodiscard]] auto on_attach() -> Result<void, String> override;
+    auto on_detach() -> void override;
+};
+
 class DebugOverlay : public Layer
 {
 public:
@@ -71,9 +86,6 @@ public:
     ZTH_NO_COPY_NO_MOVE(DebugOverlay)
     ~DebugOverlay() override = default;
 
-    auto render() -> void override;
-
-    auto on_frame_start() -> void override;
     auto on_event(const Event& event) -> void override;
     auto on_update() -> void override;
 
