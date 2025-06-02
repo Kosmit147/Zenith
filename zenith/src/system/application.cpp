@@ -34,7 +34,7 @@ auto Application::init(const ApplicationSpec& spec) -> Result<void, String>
     if (!result)
         return Error{ result.error() };
 
-    result = push_overlay(make_unique<DebugOverlay>());
+    result = push_overlay(make_unique<ImGuiOverlay>());
     if (!result)
         return Error{ result.error() };
 
