@@ -3,7 +3,6 @@
 class MainLayer : public zth::Layer
 {
 public:
-    static constexpr auto toggle_cursor_key = zth::Key::LeftControl;
     static constexpr auto prev_scene_key = zth::Key::Left;
     static constexpr auto next_scene_key = zth::Key::Right;
 

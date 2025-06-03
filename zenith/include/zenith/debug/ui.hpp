@@ -8,8 +8,10 @@
 
 #include <concepts>
 #include <functional>
+#include <memory>
 #include <utility>
 
+#include "zenith/asset/asset.hpp"
 #include "zenith/core/fwd.hpp"
 #include "zenith/core/typedefs.hpp"
 #include "zenith/ecs/ecs.hpp"
@@ -23,13 +25,15 @@
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/optional.hpp"
+#include "zenith/util/reference.hpp"
 
 namespace zth::debug {
 
 constexpr inline auto default_float_drag_speed = 0.01f;
 constexpr inline auto default_int_drag_speed = 1.0f;
 
-auto begin_window(const char* label) -> void;
+auto begin_window(const char* label, Optional<Reference<bool>> open = nil) -> void;
 auto end_window() -> void;
 
 auto text(const char* txt) -> void;
@@ -204,6 +208,8 @@ auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
 auto select_key(const char* label, Key& key) -> bool;
 auto select_mouse_button(const char* label, MouseButton& button) -> bool;
 
+auto edit_material(Material& material) -> void;
+
 auto select_light_type(LightType& type) -> bool;
 auto edit_light_properties(LightProperties& properties) -> void;
 auto edit_light_attenuation(LightAttenuation& attenuation) -> void;
@@ -244,50 +250,83 @@ struct TransformGizmo
 
 struct EntityInspectorPanel
 {
-    TransformGizmo gizmo;
+    String display_label = "Entity Inspector";
+    TransformGizmo gizmo{};
 
-    auto display(EntityHandle entity) const -> void;
+    auto display(EntityHandle entity, Optional<Reference<bool>> open = nil) const -> void;
 };
 
 class SceneHierarchyPanel
 {
 public:
+    String display_label;
     EntityInspectorPanel inspector;
+    String search;
 
 public:
-    explicit SceneHierarchyPanel() = default;
+    explicit SceneHierarchyPanel(StringView label = "Scene Hierarchy");
     ZTH_NO_COPY_NO_MOVE(SceneHierarchyPanel)
     ~SceneHierarchyPanel() = default;
 
-    auto display(Registry& registry) -> void;
+    auto display(Registry& registry, Optional<Reference<bool>> open = nil) -> void;
 
 private:
     EntityId _selected_entity_id = null_entity;
-    String _search;
+};
+
+class AssetBrowser
+{
+public:
+    String display_label;
+    float icon_size = 7.0f;
+
+public:
+    explicit AssetBrowser(StringView label = "Asset Browser");
+    ZTH_NO_COPY_NO_MOVE(AssetBrowser)
+    ~AssetBrowser() = default;
+
+    auto display(Optional<Reference<bool>> open = nil) -> void;
+
+private:
+    bool _asset_editor_open = false;
+
+    Optional<AssetId> _selected_material_id;
+    std::shared_ptr<Material> _selected_material;
+
+private:
+    auto display_materials() -> void;
+
+    auto select_material(AssetId material_id, std::shared_ptr<Material> material) -> void;
+    auto deselect_material() -> void;
 };
 
 class DebugPanel
 {
 public:
+    String display_label;
+
+public:
     explicit DebugPanel(StringView label = "Debug");
     ZTH_NO_COPY_NO_MOVE(DebugPanel)
     ~DebugPanel() = default;
 
-    auto display() -> void;
+    auto display(Optional<Reference<bool>> open = nil) -> void;
 
 private:
-    String _label;
     u32 _frame_rate_limit = 60;
 };
 
 class ScenePicker
 {
 public:
+    String display_label;
+
+public:
     explicit ScenePicker(StringView label = "Scene");
     ZTH_NO_COPY_NO_MOVE(ScenePicker)
     ~ScenePicker() = default;
 
-    auto display() -> void;
+    auto display(Optional<Reference<bool>> open = nil) -> void;
 
     template<std::derived_from<Scene> T> auto add_scene(StringView name);
 
@@ -295,7 +334,6 @@ public:
     auto next_scene() -> void;
 
 private:
-    String _label;
     usize _selected_scene_idx = 0;
     usize _scene_count = 0;
 

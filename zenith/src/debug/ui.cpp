@@ -12,6 +12,7 @@
 #include "zenith/gl/context.hpp"
 #include "zenith/memory/memory.hpp"
 #include "zenith/renderer/light.hpp"
+#include "zenith/renderer/material.hpp"
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
 #include "zenith/system/application.hpp"
@@ -94,9 +95,9 @@ template<typename Component> auto display_component_for_entity_in_inspector(Enti
 
 } // namespace
 
-auto begin_window(const char* label) -> void
+auto begin_window(const char* label, Optional<Reference<bool>> open) -> void
 {
-    ImGui::Begin(label);
+    ImGui::Begin(label, open ? &open->get() : nullptr);
 }
 
 auto end_window() -> void
@@ -839,6 +840,16 @@ auto select_mouse_button(const char* label, MouseButton& button) -> bool
     return select_stringifiable_enum(label, button, mouse_button_enumerations);
 }
 
+auto edit_material(Material& material) -> void
+{
+    // @todo: Select shader and textures.
+    pick_color("Albedo", material.albedo);
+    drag_vec("Ambient", material.ambient);
+    drag_vec("Diffuse", material.diffuse);
+    drag_vec("Specular", material.specular);
+    drag_float("Shininess", material.shininess, material_shininess_drag_speed);
+}
+
 auto select_light_type(LightType& type) -> bool
 {
     return select_stringifiable_enum("Type", type, light_type_enumerations);
@@ -1026,11 +1037,11 @@ auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
     return false;
 }
 
-auto EntityInspectorPanel::display(EntityHandle entity) const -> void
+auto EntityInspectorPanel::display(EntityHandle entity, Optional<Reference<bool>> open) const -> void
 {
     ZTH_ASSERT(entity.valid());
 
-    begin_window("Entity Inspector");
+    begin_window(display_label.c_str(), open);
     ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
     {
@@ -1089,19 +1100,21 @@ auto EntityInspectorPanel::display(EntityHandle entity) const -> void
     end_window();
 }
 
-auto SceneHierarchyPanel::display(Registry& registry) -> void
-{
-    begin_window("Scene Hierarchy");
+SceneHierarchyPanel::SceneHierarchyPanel(StringView label) : display_label{ label } {}
 
-    input_text("Search", _search);
+auto SceneHierarchyPanel::display(Registry& registry, Optional<Reference<bool>> open) -> void
+{
+    begin_window(display_label.c_str(), open);
+
+    input_text("Search", search);
 
     for (auto entity_id : registry.view<EntityId>())
     {
         const auto& tag = registry.get<const TagComponent>(entity_id);
 
-        if (!_search.empty())
+        if (!search.empty())
         {
-            if (!case_insensitive_contains(tag.tag, _search))
+            if (!case_insensitive_contains(tag.tag, search))
                 continue;
         }
 
@@ -1135,11 +1148,102 @@ auto SceneHierarchyPanel::display(Registry& registry) -> void
     end_window();
 }
 
-DebugPanel::DebugPanel(StringView label) : _label{ label } {}
+AssetBrowser::AssetBrowser(StringView label) : display_label{ label } {}
 
-auto DebugPanel::display() -> void
+auto AssetBrowser::display(Optional<Reference<bool>> open) -> void
 {
-    begin_window(_label.c_str());
+    begin_window(display_label.c_str(), open);
+
+    if (ImGui::BeginTabBar("Tabs"))
+    {
+        if (ImGui::BeginTabItem("Meshes"))
+        {
+            text("TODO!");
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Materials"))
+        {
+            display_materials();
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Shaders"))
+        {
+            text("TODO!");
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("Textures"))
+        {
+            text("TODO!");
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
+
+    if (_asset_editor_open)
+    {
+        if (_selected_material)
+        {
+            begin_window("Material###AssetEditor", _asset_editor_open);
+            edit_material(*_selected_material);
+            end_window();
+
+            if (!_asset_editor_open)
+                deselect_material();
+        }
+        else
+        {
+            begin_window("Asset###AssetEditor", _asset_editor_open);
+            end_window();
+        }
+    }
+
+    end_window();
+}
+
+auto AssetBrowser::display_materials() -> void
+{
+    const auto element_side_size = ImGui::GetFontSize() * icon_size;
+    const auto element_size = ImVec2{ element_side_size, element_side_size };
+
+    for (auto&& [material_id, material] : AssetManager::all<Material>())
+    {
+        auto label = format_to_temporary("{}", material_id);
+        auto width_available = ImGui::GetContentRegionAvail().x;
+        auto is_selected = _selected_material_id && *_selected_material_id == material_id;
+
+        if (ImGui::Selectable(label.c_str(), is_selected, ImGuiSelectableFlags_None, element_size))
+            select_material(material_id, material);
+
+        width_available -= ImGui::GetItemRectSize().x;
+
+        if (width_available >= element_size.x)
+            ImGui::SameLine();
+    }
+}
+
+auto AssetBrowser::select_material(AssetId material_id, std::shared_ptr<Material> material) -> void
+{
+    _selected_material_id = material_id;
+    _selected_material = std::move(material);
+    _asset_editor_open = true;
+}
+
+auto AssetBrowser::deselect_material() -> void
+{
+    _selected_material_id = nil;
+    _selected_material = nullptr;
+    _asset_editor_open = false;
+}
+
+DebugPanel::DebugPanel(StringView label) : display_label{ label } {}
+
+auto DebugPanel::display(Optional<Reference<bool>> open) -> void
+{
+    begin_window(display_label.c_str(), open);
 
     {
         text("FPS: {:.2f}", Application::frame_rate());
@@ -1236,11 +1340,11 @@ auto DebugPanel::display() -> void
     end_window();
 }
 
-ScenePicker::ScenePicker(StringView label) : _label{ label } {}
+ScenePicker::ScenePicker(StringView label) : display_label{ label } {}
 
-auto ScenePicker::display() -> void
+auto ScenePicker::display(Optional<Reference<bool>> open) -> void
 {
-    begin_window(_label.c_str());
+    begin_window(display_label.c_str(), open);
 
     text("{}", _scene_names[_selected_scene_idx]);
     text("Prev");

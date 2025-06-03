@@ -6,6 +6,8 @@
 #include "zenith/stl/vector.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/optional.hpp"
+#include "zenith/util/reference.hpp"
 
 // The profiler is designed in such a way as to be the least invasive and have the least amount of impact on the
 // performance of the measured functions/scopes as well as on the performance of the whole application.
@@ -71,7 +73,7 @@ public:
 
     static auto init() -> void;
     static auto start_frame() -> void;
-    static auto display() -> void;
+    static auto display(Optional<Reference<bool>> open = nil) -> void;
 
     static auto begin_entry(const char* label) -> void;
     static auto end_entry(double time) -> void;

@@ -71,15 +71,18 @@ private:
 class DebugOverlay : public Layer
 {
 public:
-    Key toggle_debug_mode_key = Key::F1;
-
-    Key switch_to_gizmo_translate_mode_key = Key::Q;
-    Key switch_to_gizmo_rotate_mode_key = Key::E;
-    Key switch_to_gizmo_scale_mode_key = Key::R;
+    Key toggle_cursor_key = Key::LeftControl;
+    Key toggle_scene_hierarchy_panel_key = Key::F1;
+    Key toggle_asset_browser_key = Key::F2;
+    Key toggle_debug_panel_key = Key::F9;
 
 #if defined(ZTH_PROFILER)
     Key toggle_profiler_key = Key::F10;
 #endif
+
+    Key switch_to_gizmo_translate_mode_key = Key::Q;
+    Key switch_to_gizmo_rotate_mode_key = Key::E;
+    Key switch_to_gizmo_scale_mode_key = Key::R;
 
 public:
     explicit DebugOverlay() = default;
@@ -91,17 +94,16 @@ public:
 
 private:
     debug::SceneHierarchyPanel _scene_hierarchy_panel;
+    debug::AssetBrowser _asset_browser;
     debug::DebugPanel _debug_panel;
 
-    bool _debug_mode_on = false;
+    bool _scene_hierarchy_panel_open = false;
+    bool _asset_browser_open = false;
+    bool _debug_panel_open = false;
 
 #if defined(ZTH_PROFILER)
-    bool _profiler_on = false;
+    bool _profiler_open = false;
 #endif
-
-    // This gets set if we enter debug mode and the cursor is not enabled. In that case we need to enable the cursor and
-    // revert the change when we leave debug mode.
-    bool _had_to_enable_cursor = false;
 
 private:
     [[nodiscard]] auto on_attach() -> Result<void, String> override;

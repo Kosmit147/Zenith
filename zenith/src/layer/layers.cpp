@@ -256,16 +256,18 @@ auto DebugOverlay::on_update() -> void
 {
     ZTH_PROFILE_FUNCTION();
 
-    if (_debug_mode_on)
-    {
-        auto& scene = SceneManager::scene();
-        _scene_hierarchy_panel.display(scene.registry());
-        _debug_panel.display();
-    }
+    if (_scene_hierarchy_panel_open)
+        _scene_hierarchy_panel.display(SceneManager::scene().registry(), _scene_hierarchy_panel_open);
+
+    if (_asset_browser_open)
+        _asset_browser.display(_asset_browser_open);
+
+    if (_debug_panel_open)
+        _debug_panel.display(_debug_panel_open);
 
 #if defined(ZTH_PROFILER)
-    if (_profiler_on)
-        Profiler::display();
+    if (_profiler_open)
+        Profiler::display(_profiler_open);
 #endif
 }
 
@@ -286,29 +288,13 @@ auto DebugOverlay::on_key_pressed_event(const KeyPressedEvent& event) -> void
 {
     auto [key] = event;
 
-    if (key == toggle_debug_mode_key)
-    {
-        if (!_debug_mode_on)
-        {
-            if (!Window::cursor_enabled())
-            {
-                Window::set_cursor_enabled(true);
-                _had_to_enable_cursor = true;
-            }
+    if (key == toggle_cursor_key)
+        Window::set_cursor_enabled(!Window::cursor_enabled());
 
-            _debug_mode_on = true;
-        }
-        else
-        {
-            if (_had_to_enable_cursor)
-                Window::set_cursor_enabled(false);
+    if (key == toggle_scene_hierarchy_panel_key)
+        _scene_hierarchy_panel_open = !_scene_hierarchy_panel_open;
 
-            _debug_mode_on = false;
-            _had_to_enable_cursor = false;
-        }
-    }
-
-    if (_debug_mode_on)
+    if (_scene_hierarchy_panel_open)
     {
         using Operation = debug::GizmoOperation;
         using Mode = debug::GizmoMode;
@@ -334,9 +320,15 @@ auto DebugOverlay::on_key_pressed_event(const KeyPressedEvent& event) -> void
         }
     }
 
+    if (key == toggle_asset_browser_key)
+        _asset_browser_open = !_asset_browser_open;
+
+    if (key == toggle_debug_panel_key)
+        _debug_panel_open = !_debug_panel_open;
+
 #if defined(ZTH_PROFILER)
     if (key == toggle_profiler_key)
-        _profiler_on = !_profiler_on;
+        _profiler_open = !_profiler_open;
 #endif
 }
 
