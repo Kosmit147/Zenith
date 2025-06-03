@@ -38,3 +38,7 @@
 	path = dependencies/assimp
 	url = https://github.com/assimp/assimp.git
 	branch = master
+[submodule "dependencies/magic_enum"]
+	path = dependencies/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
+	branch = master
