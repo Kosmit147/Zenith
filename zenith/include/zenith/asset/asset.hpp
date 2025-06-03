@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <ranges>
 #include <type_traits>
 
 #include "zenith/core/typedefs.hpp"
@@ -35,6 +36,7 @@ class AssetManager
 {
 public:
     template<Asset A> using AssetStorage = DenseUnorderedMap<AssetId, std::shared_ptr<A>>;
+    template<Asset A> using AssetView = std::ranges::ref_view<AssetStorage<A>>;
 
     AssetManager() = delete;
 
@@ -64,9 +66,11 @@ public:
 
     template<Asset A> [[nodiscard]] static auto contains(AssetId id) -> bool;
 
+    template<Asset A> [[nodiscard]] static auto all() -> AssetView<A>;
+
 private:
     template<Asset A> static AssetStorage<A> _storage;
-    template<Asset A> static StringView _asset_type_str;
+    template<Asset A> static StringView _asset_type_string;
 };
 
 } // namespace zth

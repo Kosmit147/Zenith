@@ -19,7 +19,7 @@ auto AssetManager::add(AssetId id, const std::shared_ptr<A>& handle) -> Optional
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_string<A>, id);
         return nil;
     }
 
@@ -35,7 +35,7 @@ auto AssetManager::add(AssetId id, std::shared_ptr<A>&& handle) -> Optional<Refe
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_string<A>, id);
         return nil;
     }
 
@@ -54,7 +54,7 @@ auto AssetManager::add(AssetId id, const A& asset) -> Optional<Reference<const s
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_string<A>, id);
         return nil;
     }
 
@@ -73,7 +73,7 @@ auto AssetManager::add(AssetId id, A&& asset) -> Optional<Reference<const std::s
 
     if (!success)
     {
-        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_str<A>, id);
+        ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't add {} under id {}.", _asset_type_string<A>, id);
         return nil;
     }
 
@@ -91,7 +91,7 @@ template<Asset A> auto AssetManager::get(AssetId id) -> Optional<std::shared_ptr
         return ref;
     }
 
-    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} with id {}.", _asset_type_str<A>, id);
+    ZTH_INTERNAL_ERROR("[Asset Manager] Couldn't get {} with id {}.", _asset_type_string<A>, id);
     return nil;
 }
 
@@ -109,6 +109,11 @@ template<Asset A> auto AssetManager::remove(AssetId id) -> bool
 template<Asset A> auto AssetManager::contains(AssetId id) -> bool
 {
     return _storage<A>.contains(id);
+}
+
+template<Asset A> auto AssetManager::all() -> AssetView<A>
+{
+    return std::ranges::views::all(_storage<A>);
 }
 
 } // namespace zth

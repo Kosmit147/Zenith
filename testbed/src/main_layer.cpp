@@ -31,9 +31,6 @@ auto MainLayer::on_key_pressed_event(const zth::KeyPressedEvent& event) -> void
     case Escape:
         zth::Window::close();
         break;
-    case toggle_cursor_key:
-        zth::Window::set_cursor_enabled(!zth::Window::cursor_enabled());
-        break;
     case next_scene_key:
         _scene_picker.next_scene();
         break;

@@ -13,10 +13,10 @@ template<> AssetManager::AssetStorage<Material> AssetManager::_storage<Material>
 template<> AssetManager::AssetStorage<gl::Shader> AssetManager::_storage<gl::Shader>;
 template<> AssetManager::AssetStorage<gl::Texture2D> AssetManager::_storage<gl::Texture2D>;
 
-template<> StringView AssetManager::_asset_type_str<Mesh> = "mesh";
-template<> StringView AssetManager::_asset_type_str<Material> = "material";
-template<> StringView AssetManager::_asset_type_str<gl::Shader> = "shader";
-template<> StringView AssetManager::_asset_type_str<gl::Texture2D> = "texture";
+template<> StringView AssetManager::_asset_type_string<Mesh> = "mesh";
+template<> StringView AssetManager::_asset_type_string<Material> = "material";
+template<> StringView AssetManager::_asset_type_string<gl::Shader> = "shader";
+template<> StringView AssetManager::_asset_type_string<gl::Texture2D> = "texture";
 
 auto AssetManager::init() -> Result<void, String>
 {

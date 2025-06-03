@@ -68,11 +68,11 @@ auto Profiler::start_frame() -> void
     begin_profile();
 }
 
-auto Profiler::display() -> void
+auto Profiler::display(Optional<Reference<bool>> open) -> void
 {
     ZTH_PROFILE_FUNCTION();
 
-    debug::begin_window("Profiler");
+    debug::begin_window("Profiler", open);
 
     debug::text("Frame time: {:.4f}ms", Application::frame_time() * 1000.0);
 
@@ -182,7 +182,7 @@ auto Profiler::merge_and_display_sub_entries(const TemporaryVector<EntryMarkerIn
         auto entry_label = format_to_temporary("{}", current_entry.label);
         auto node_opened = ImGui::TreeNode(entry_label.c_str());
 
-        ImGui::SameLine(ImGui::GetWindowWidth() - 100.0f);
+        ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::GetFontSize() * 5.0f);
         debug::text("{:.4f}ms", current_entry.time * 1000.0);
 
         if (node_opened)
