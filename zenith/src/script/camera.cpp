@@ -27,16 +27,16 @@ auto FlyCamera::debug_edit() -> void
         debug::slide_angle("Maximum Pitch", max_pitch, 0.0f, 90.0f);
     }
 
-    debug::select_key("Move Forward Key", move_forward_key);
-    debug::select_key("Move Backward Key", move_backward_key);
-    debug::select_key("Move Left Key", move_left_key);
-    debug::select_key("Move Right Key", move_right_key);
+    debug::select_enum("Move Forward Key", move_forward_key);
+    debug::select_enum("Move Backward Key", move_backward_key);
+    debug::select_enum("Move Left Key", move_left_key);
+    debug::select_enum("Move Right Key", move_right_key);
 
     debug::checkbox("Sprinting Enabled", sprinting_enabled);
 
     if (sprinting_enabled)
     {
-        debug::select_key("Sprint Key", sprint_key);
+        debug::select_enum("Sprint Key", sprint_key);
         debug::drag_float("Sprinting Speed Multiplier", sprinting_speed_multiplier);
     }
 }

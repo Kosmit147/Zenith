@@ -67,7 +67,8 @@ set(ZTH_PRIVATE_DEFINITIONS
 
 set(ZTH_PUBLIC_DEFINITIONS
     GLM_ENABLE_EXPERIMENTAL # For matrix decomposition.
-	IMGUI_DEFINE_MATH_OPERATORS
+    IMGUI_DEFINE_MATH_OPERATORS
+    MAGIC_ENUM_CONFIG_FILE="zenith/config/magic_enum_config.hpp"
 )
 
 if(ZTH_ASSERTIONS)
@@ -97,5 +98,6 @@ target_link_libraries(zenith PUBLIC glad)
 target_link_libraries(zenith PUBLIC glfw)
 target_link_libraries(zenith PUBLIC glm)
 target_link_libraries(zenith PUBLIC imgui)
+target_link_libraries(zenith PUBLIC magic_enum)
 target_link_libraries(zenith PUBLIC spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(zenith PUBLIC stb_image)

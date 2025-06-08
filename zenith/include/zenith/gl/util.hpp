@@ -14,15 +14,15 @@ using GlslBool = GLuint;
 
 enum class DataType : u16
 {
-    None = GL_NONE,
-    UnsignedByte = GL_UNSIGNED_BYTE,
-    Byte = GL_BYTE,
-    UnsignedShort = GL_UNSIGNED_SHORT,
-    Short = GL_SHORT,
-    UnsignedInt = GL_UNSIGNED_INT,
-    Int = GL_INT,
-    Float = GL_FLOAT,
-    Double = GL_DOUBLE,
+    None = GL_NONE,                    // 0
+    UnsignedByte = GL_UNSIGNED_BYTE,   // 5 121
+    Byte = GL_BYTE,                    // 5 120
+    UnsignedShort = GL_UNSIGNED_SHORT, // 5 123
+    Short = GL_SHORT,                  // 5 122
+    UnsignedInt = GL_UNSIGNED_INT,     // 5 125
+    Int = GL_INT,                      // 5 124
+    Float = GL_FLOAT,                  // 5 126
+    Double = GL_DOUBLE,                // 5 130
 };
 
 template<typename T> constexpr inline DataType to_data_type; // Must be specialized.

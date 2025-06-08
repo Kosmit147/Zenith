@@ -3,6 +3,7 @@
 #include "zenith/fwd.hpp"
 
 #include "zenith/asset.hpp"
+#include "zenith/config.hpp"
 #include "zenith/core.hpp"
 #include "zenith/debug.hpp"
 #include "zenith/ecs.hpp"

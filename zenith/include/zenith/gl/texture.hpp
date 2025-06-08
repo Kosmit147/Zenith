@@ -15,26 +15,26 @@ namespace zth::gl {
 
 enum class TextureFormat : u16
 {
-    R = GL_RED,
-    Rg = GL_RG,
-    Rgb = GL_RGB,
-    Rgba = GL_RGBA,
+    R = GL_RED,     // 6 403
+    Rg = GL_RG,     // 33 319
+    Rgb = GL_RGB,   // 6 407
+    Rgba = GL_RGBA, // 6 408
 };
 
 enum class SizedTextureFormat : u16
 {
-    R8 = GL_R8,
-    Rg8 = GL_RG8,
-    Rgb8 = GL_RGB8,
-    Rgba8 = GL_RGBA8,
+    R8 = GL_R8,       // 33 321
+    Rg8 = GL_RG8,     // 33 323
+    Rgb8 = GL_RGB8,   // 32 849
+    Rgba8 = GL_RGBA8, // 32 856
 };
 
 enum class TextureWrapMode : u16
 {
-    Repeat = GL_REPEAT,
-    MirroredRepeat = GL_MIRRORED_REPEAT,
-    ClampToEdge = GL_CLAMP_TO_EDGE,
-    ClampToBorder = GL_CLAMP_TO_BORDER,
+    Repeat = GL_REPEAT,                  // 10 497
+    MirroredRepeat = GL_MIRRORED_REPEAT, // 33 648
+    ClampToEdge = GL_CLAMP_TO_EDGE,      // 33 071
+    ClampToBorder = GL_CLAMP_TO_BORDER,  // 33 069
 };
 
 enum class TextureFilteringMode : u8

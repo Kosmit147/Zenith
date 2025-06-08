@@ -10,9 +10,7 @@
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/defer.hpp"
 
-namespace zth {
-
-namespace gl {
+namespace zth::gl {
 
 // @test: All shader types (tess control, tess evaluation, geometry) and loading them from files.
 
@@ -450,34 +448,6 @@ auto to_gl_enum(ShaderType shader_type) -> GLenum
     std::unreachable();
 }
 
-} // namespace gl
+} // namespace zth::gl
 
-auto to_string(gl::ShaderType shader_type) -> const char*
-{
-    switch (shader_type)
-    {
-        using enum gl::ShaderType;
-    case Compute:
-        return "Compute";
-    case Vertex:
-        return "Vertex";
-    case TessControl:
-        return "TessControl";
-    case TessEvaluation:
-        return "TessEvaluation";
-    case Geometry:
-        return "Geometry";
-    case Fragment:
-        return "Fragment";
-    }
-
-    ZTH_ASSERT(false);
-    return "Unknown";
-}
-
-} // namespace zth
-
-ZTH_DEFINE_FORMATTER(zth::gl::ShaderType, shader_type)
-{
-    return ZTH_FORMAT_OUT("{}", zth::to_string(shader_type));
-}
+ZTH_DEFINE_REFLECTED_ENUM(zth::gl::ShaderType);

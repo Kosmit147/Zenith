@@ -5,6 +5,7 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/system/input.hpp"
+#include "zenith/util/meta.hpp"
 
 namespace zth {
 
@@ -17,12 +18,18 @@ enum class EventType : u8
     MouseButtonReleased,
     MouseMoved,
     MouseWheelScrolled,
+
+    MinEnumValue = WindowResized,
+    MaxEnumValue = MouseWheelScrolled,
 };
 
 enum class EventCategory : u8
 {
     WindowEvent,
     InputEvent,
+
+    MinEnumValue = WindowEvent,
+    MaxEnumValue = InputEvent,
 };
 
 struct WindowResizedEvent
@@ -98,13 +105,11 @@ private:
     };
 };
 
-[[nodiscard]] auto to_string(EventType event_type) -> const char*;
-[[nodiscard]] auto to_string(EventCategory event_category) -> const char*;
-
 } // namespace zth
 
-ZTH_DECLARE_FORMATTER(zth::EventType);
-ZTH_DECLARE_FORMATTER(zth::EventCategory);
+ZTH_DECLARE_REFLECTED_ENUM(zth::EventType);
+ZTH_DECLARE_REFLECTED_ENUM(zth::EventCategory);
+
 ZTH_DECLARE_FORMATTER(zth::WindowResizedEvent);
 ZTH_DECLARE_FORMATTER(zth::KeyPressedEvent);
 ZTH_DECLARE_FORMATTER(zth::KeyReleasedEvent);

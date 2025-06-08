@@ -1,7 +1,5 @@
 #include "zenith/debug/ui.hpp"
 
-#include <imgui.h>
-#include <ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/trigonometric.hpp>
 #include <imgui_stdlib.h>
@@ -31,30 +29,37 @@ constexpr auto material_shininess_drag_speed = default_float_drag_speed * 10.0f;
 
 constexpr auto default_relative_item_width = 12.0f;
 
-auto select_stringifiable_enum(const char* label, auto& value, const auto& enum_values) -> bool
+[[nodiscard]] auto to_imguizmo_enum(GizmoOperation operation) -> ImGuizmo::OPERATION
 {
-    auto value_changed = false;
-
-    if (ImGui::BeginCombo(label, to_string(value)))
+    switch (operation)
     {
-        for (auto current_value : enum_values)
-        {
-            const auto is_selected = current_value == value;
-
-            if (ImGui::Selectable(to_string(current_value), is_selected))
-            {
-                value = current_value;
-                value_changed = true;
-            }
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
+        using enum GizmoOperation;
+    case Translate:
+        return ImGuizmo::TRANSLATE;
+    case Rotate:
+        return ImGuizmo::ROTATE;
+    case Scale:
+        return ImGuizmo::SCALE;
     }
 
-    return value_changed;
+    ZTH_ASSERT(false);
+    return ImGuizmo::TRANSLATE;
+}
+
+[[nodiscard]] auto to_imguizmo_enum(GizmoMode mode) -> ImGuizmo::MODE
+{
+
+    switch (mode)
+    {
+        using enum GizmoMode;
+    case Local:
+        return ImGuizmo::LOCAL;
+    case World:
+        return ImGuizmo::WORLD;
+    }
+
+    ZTH_ASSERT(false);
+    return ImGuizmo::LOCAL;
 }
 
 template<typename Component> auto display_component_for_entity_in_inspector(EntityHandle entity) -> void
@@ -830,16 +835,6 @@ auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool
     return false;
 }
 
-auto select_key(const char* label, Key& key) -> bool
-{
-    return select_stringifiable_enum(label, key, key_enumerations);
-}
-
-auto select_mouse_button(const char* label, MouseButton& button) -> bool
-{
-    return select_stringifiable_enum(label, button, mouse_button_enumerations);
-}
-
 auto edit_material(Material& material) -> void
 {
     // @todo: Select shader and textures.
@@ -848,11 +843,6 @@ auto edit_material(Material& material) -> void
     drag_vec("Diffuse", material.diffuse);
     drag_vec("Specular", material.specular);
     drag_float("Shininess", material.shininess, material_shininess_drag_speed);
-}
-
-auto select_light_type(LightType& type) -> bool
-{
-    return select_stringifiable_enum("Type", type, light_type_enumerations);
 }
 
 auto edit_light_properties(LightProperties& properties) -> void
@@ -936,7 +926,7 @@ auto edit_component(LightComponent& light) -> void
 {
     auto light_type = light.type();
 
-    if (select_light_type(light_type))
+    if (select_enum("Light Type", light_type))
         light.set_light(light_type);
 
     switch (light.type())
@@ -997,38 +987,8 @@ auto TransformGizmo::manipulate(TransformComponent& transform) const -> bool
     auto& view = Renderer::current_camera_view();
     auto& projection = Renderer::current_camera_projection();
 
-    auto gizmo_operation = [this] {
-        switch (operation)
-        {
-            using enum GizmoOperation;
-        case Translate:
-            return ImGuizmo::TRANSLATE;
-        case Rotate:
-            return ImGuizmo::ROTATE;
-        case Scale:
-            return ImGuizmo::SCALE;
-        }
-
-        ZTH_ASSERT(false);
-        return ImGuizmo::TRANSLATE;
-    }();
-
-    auto gizmo_mode = [this] {
-        switch (mode)
-        {
-            using enum GizmoMode;
-        case Local:
-            return ImGuizmo::LOCAL;
-        case World:
-            return ImGuizmo::WORLD;
-        }
-
-        ZTH_ASSERT(false);
-        return ImGuizmo::LOCAL;
-    }();
-
-    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), gizmo_operation, gizmo_mode,
-                             glm::value_ptr(transform_matrix), nullptr, nullptr))
+    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), to_imguizmo_enum(operation),
+                             to_imguizmo_enum(mode), glm::value_ptr(transform_matrix), nullptr, nullptr))
     {
         transform.set_transform(transform_matrix);
         return true;
@@ -1044,14 +1004,13 @@ auto EntityInspectorPanel::display(EntityHandle entity, Optional<Reference<bool>
     begin_window(display_label.c_str(), open);
     ImGui::PushItemWidth(ImGui::GetFontSize() * default_relative_item_width);
 
-    {
-        edit_component(entity.tag());
-        text("ID: {}", entity.id());
-        display_component_for_entity_in_inspector<TransformComponent>(entity);
+    edit_component(entity.tag());
+    text("ID: {}", entity.id());
 
-        if (Window::cursor_enabled())
-            gizmo.manipulate(entity.transform());
-    }
+    display_component_for_entity_in_inspector<TransformComponent>(entity);
+
+    if (Window::cursor_enabled())
+        gizmo.manipulate(entity.transform());
 
     if (entity.any_of<CameraComponent>())
         display_component_for_entity_in_inspector<CameraComponent>(entity);

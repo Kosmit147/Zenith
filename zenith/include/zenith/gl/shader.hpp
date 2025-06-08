@@ -6,35 +6,30 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include <array>
 #include <filesystem>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/log/format.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/stl/vector.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/meta.hpp"
 #include "zenith/util/optional.hpp"
 
-namespace zth {
-
-namespace gl {
+namespace zth::gl {
 
 enum class ShaderType : u16
 {
-    Compute = GL_COMPUTE_SHADER,
-    Vertex = GL_VERTEX_SHADER,
-    TessControl = GL_TESS_CONTROL_SHADER,
-    TessEvaluation = GL_TESS_EVALUATION_SHADER,
-    Geometry = GL_GEOMETRY_SHADER,
-    Fragment = GL_FRAGMENT_SHADER,
-};
+    Compute = GL_COMPUTE_SHADER,                // 37 305
+    Vertex = GL_VERTEX_SHADER,                  // 35 633
+    TessControl = GL_TESS_CONTROL_SHADER,       // 36 488
+    TessEvaluation = GL_TESS_EVALUATION_SHADER, // 36 487
+    Geometry = GL_GEOMETRY_SHADER,              // 36 313
+    Fragment = GL_FRAGMENT_SHADER,              // 35 632
 
-constexpr inline std::array shader_type_enumerations = {
-    ShaderType::Compute,        ShaderType::Vertex,   ShaderType::TessControl,
-    ShaderType::TessEvaluation, ShaderType::Geometry, ShaderType::Fragment,
+    MinEnumValue = Fragment,
+    MaxEnumValue = Compute,
 };
 
 struct ShaderSources
@@ -128,10 +123,6 @@ auto Shader::set_unif(StringView name, const auto& val) const -> void
 
 [[nodiscard]] auto to_gl_enum(ShaderType shader_type) -> GLenum;
 
-} // namespace gl
+} // namespace zth::gl
 
-[[nodiscard]] auto to_string(gl::ShaderType shader_type) -> const char*;
-
-} // namespace zth
-
-ZTH_DECLARE_FORMATTER(zth::gl::ShaderType);
+ZTH_DECLARE_REFLECTED_ENUM(zth::gl::ShaderType);

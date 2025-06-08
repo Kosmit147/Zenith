@@ -2,13 +2,10 @@
 
 #include <glad/glad.h>
 
-#include "zenith/core/assert.hpp"
 #include "zenith/log/logger.hpp"
 #include "zenith/util/macros.hpp"
 
-namespace zth {
-
-namespace gl {
+namespace zth::gl {
 
 namespace {
 
@@ -16,7 +13,7 @@ auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]
                     [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
     -> void
 {
-    auto type_str = [=] {
+    auto type_string = [=] {
         switch (type)
         {
         case GL_DEBUG_TYPE_ERROR:
@@ -41,14 +38,14 @@ auto debug_callback([[maybe_unused]] GLenum source, GLenum type, [[maybe_unused]
     switch (severity)
     {
     case GL_DEBUG_SEVERITY_NOTIFICATION:
-        ZTH_INTERNAL_INFO("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_INFO("[OpenGL] {}: {}", type_string, message);
         break;
     case GL_DEBUG_SEVERITY_LOW:
     case GL_DEBUG_SEVERITY_MEDIUM:
-        ZTH_INTERNAL_WARN("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_WARN("[OpenGL] {}: {}", type_string, message);
         break;
     case GL_DEBUG_SEVERITY_HIGH:
-        ZTH_INTERNAL_ERROR("[OpenGL] {}: {}", type_str, message);
+        ZTH_INTERNAL_ERROR("[OpenGL] {}: {}", type_string, message);
         ZTH_DEBUG_BREAK;
         break;
     default:
@@ -130,31 +127,11 @@ auto Context::log_context_info() -> void
                       _vendor_string, _renderer_string, _version_string, _glsl_version_string);
 }
 
-} // namespace gl
+} // namespace zth::gl
 
-auto to_string(gl::Profile gl_profile) -> const char*
-{
-    switch (gl_profile)
-    {
-        using enum gl::Profile;
-    case Compatibility:
-        return "Compatibility";
-    case Core:
-        return "Core";
-    }
-
-    ZTH_ASSERT(false);
-    return "Unknown";
-}
-
-} // namespace zth
+ZTH_DEFINE_REFLECTED_ENUM(zth::gl::Profile);
 
 ZTH_DEFINE_FORMATTER(zth::gl::Version, version)
 {
     return ZTH_FORMAT_OUT("{}.{}", version.major, version.minor);
-}
-
-ZTH_DEFINE_FORMATTER(zth::gl::Profile, profile)
-{
-    return ZTH_FORMAT_OUT("{}", zth::to_string(profile));
 }

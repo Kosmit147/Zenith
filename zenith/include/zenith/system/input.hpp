@@ -4,13 +4,11 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-#include <array>
-
 #include "zenith/core/typedefs.hpp"
-#include "zenith/log/format.hpp"
 #include "zenith/stl/map.hpp"
 #include "zenith/stl/string.hpp"
 #include "zenith/system/fwd.hpp"
+#include "zenith/util/meta.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/result.hpp"
 
@@ -173,6 +171,9 @@ enum class Key : u16
     RightAlt = GLFW_KEY_RIGHT_ALT,
     RightSuper = GLFW_KEY_RIGHT_SUPER,
     Menu = GLFW_KEY_MENU,
+
+    MinEnumValue = Space,
+    MaxEnumValue = Menu,
 };
 
 enum class MouseButton : u8
@@ -180,144 +181,15 @@ enum class MouseButton : u8
     Left = GLFW_MOUSE_BUTTON_LEFT,
     Middle = GLFW_MOUSE_BUTTON_MIDDLE,
     Right = GLFW_MOUSE_BUTTON_RIGHT,
-};
 
-constexpr inline std::array key_enumerations = {
-    Key::Space,
-    Key::Apostrophe,
-    Key::Comma,
-    Key::Minus,
-    Key::Period,
-    Key::Slash,
-    Key::Num0,
-    Key::Num1,
-    Key::Num2,
-    Key::Num3,
-    Key::Num4,
-    Key::Num5,
-    Key::Num6,
-    Key::Num7,
-    Key::Num8,
-    Key::Num9,
-    Key::Semicolon,
-    Key::Equal,
-    Key::A,
-    Key::B,
-    Key::C,
-    Key::D,
-    Key::E,
-    Key::F,
-    Key::G,
-    Key::H,
-    Key::I,
-    Key::J,
-    Key::K,
-    Key::L,
-    Key::M,
-    Key::N,
-    Key::O,
-    Key::P,
-    Key::Q,
-    Key::R,
-    Key::S,
-    Key::T,
-    Key::U,
-    Key::V,
-    Key::W,
-    Key::X,
-    Key::Y,
-    Key::Z,
-    Key::LeftBracket,
-    Key::BackSlash,
-    Key::RightBracket,
-    Key::GraveAccent,
-    Key::World1,
-    Key::World2,
-    Key::Escape,
-    Key::Enter,
-    Key::Tab,
-    Key::Backspace,
-    Key::Insert,
-    Key::Delete,
-    Key::Right,
-    Key::Left,
-    Key::Down,
-    Key::Up,
-    Key::PageUp,
-    Key::PageDown,
-    Key::Home,
-    Key::End,
-    Key::CapsLock,
-    Key::ScrollLock,
-    Key::NumLock,
-    Key::PrintScreen,
-    Key::Pause,
-    Key::F1,
-    Key::F2,
-    Key::F3,
-    Key::F4,
-    Key::F5,
-    Key::F6,
-    Key::F7,
-    Key::F8,
-    Key::F9,
-    Key::F10,
-    Key::F11,
-    Key::F12,
-    Key::F13,
-    Key::F14,
-    Key::F15,
-    Key::F16,
-    Key::F17,
-    Key::F18,
-    Key::F19,
-    Key::F20,
-    Key::F21,
-    Key::F22,
-    Key::F23,
-    Key::F24,
-    Key::F25,
-    Key::Keypad0,
-    Key::Keypad1,
-    Key::Keypad2,
-    Key::Keypad3,
-    Key::Keypad4,
-    Key::Keypad5,
-    Key::Keypad6,
-    Key::Keypad7,
-    Key::Keypad8,
-    Key::Keypad9,
-    Key::KeypadDecimal,
-    Key::KeypadDivide,
-    Key::KeypadMultiply,
-    Key::KeypadSubtract,
-    Key::KeypadAdd,
-    Key::KeypadEnter,
-    Key::KeypadEqual,
-    Key::LeftShift,
-    Key::LeftControl,
-    Key::LeftAlt,
-    Key::LeftSuper,
-    Key::RightShift,
-    Key::RightControl,
-    Key::RightAlt,
-    Key::RightSuper,
-    Key::Menu,
-};
-
-constexpr inline std::array mouse_button_enumerations = {
-    MouseButton::Left,
-    MouseButton::Middle,
-    MouseButton::Right,
+    MinEnumValue = Left,
+    MaxEnumValue = Right,
 };
 
 [[nodiscard]] auto glfw_key_to_key(int key) -> Optional<Key>;
 [[nodiscard]] auto glfw_mouse_button_to_mouse_button(int button) -> Optional<MouseButton>;
 
-[[nodiscard]] auto to_string(Key key) -> const char*;
-[[nodiscard]] auto to_string(MouseButton button) -> const char*;
-
 } // namespace zth
 
-ZTH_DECLARE_FORMATTER(zth::Key);
-ZTH_DECLARE_FORMATTER(zth::MouseButton);
+ZTH_DECLARE_REFLECTED_ENUM(zth::Key);
+ZTH_DECLARE_REFLECTED_ENUM(zth::MouseButton);
