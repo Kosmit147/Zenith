@@ -8,10 +8,7 @@
 
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/logger.hpp"
-#include "zenith/stl/span.hpp"
 #include "zenith/stl/string.hpp"
-#include "zenith/stl/vector.hpp"
-#include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/defer.hpp"
 #include "zenith/util/optional.hpp"
 

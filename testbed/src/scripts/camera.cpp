@@ -22,20 +22,20 @@ auto Camera::debug_edit() -> void
         zth::debug::slide_angle("Maximum Pitch", max_pitch, 0.0f, 90.0f);
     }
 
-    zth::debug::select_key("Move Forward Key", move_forward_key);
-    zth::debug::select_key("Move Backward Key", move_backward_key);
-    zth::debug::select_key("Move Left Key", move_left_key);
-    zth::debug::select_key("Move Right Key", move_right_key);
+    zth::debug::select_enum("Move Forward Key", move_forward_key);
+    zth::debug::select_enum("Move Backward Key", move_backward_key);
+    zth::debug::select_enum("Move Left Key", move_left_key);
+    zth::debug::select_enum("Move Right Key", move_right_key);
 
     zth::debug::checkbox("Sprinting Enabled", sprinting_enabled);
 
     if (sprinting_enabled)
     {
-        zth::debug::select_key("Sprint Key", sprint_key);
+        zth::debug::select_enum("Sprint Key", sprint_key);
         zth::debug::drag_float("Sprinting Speed Multiplier", sprinting_speed_multiplier);
     }
 
-    zth::debug::select_key("Toggle Flashlight Key", toggle_flashlight_key);
+    zth::debug::select_enum("Toggle Flashlight Key", toggle_flashlight_key);
 }
 
 auto Camera::on_event(zth::EntityHandle actor, const zth::Event& event) -> void

@@ -6,7 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "zenith/util/reflection.hpp"
+#include "zenith/util/meta.hpp"
 
 namespace zth::gl {
 

@@ -8,12 +8,14 @@
 
 #include "zenith/stl/string.hpp"
 
+// Must be used together with ZTH_DEFINE_FORMATTER macro.
 #define ZTH_DECLARE_FORMATTER(type)                                                                                    \
     template<> struct ::fmt::formatter<type> : formatter<::zth::StringView>                                            \
     {                                                                                                                  \
         static auto format(const type&, format_context& ctx) -> decltype(ctx.out());                                   \
     }
 
+// Use ZTH_FORMAT_OUT macro to format to the output. Must be used only once in an implementation file.
 #define ZTH_DEFINE_FORMATTER(type, var)                                                                                \
     auto ::fmt::formatter<type>::format(const type& var, format_context& ctx)->decltype(ctx.out())
 

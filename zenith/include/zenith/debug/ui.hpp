@@ -1,5 +1,7 @@
 #pragma once
 
+#include <imgui.h>
+#include <ImGuizmo.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -25,6 +27,7 @@
 #include "zenith/system/fwd.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/util/macros.hpp"
+#include "zenith/util/meta.hpp"
 #include "zenith/util/optional.hpp"
 #include "zenith/util/reference.hpp"
 
@@ -192,6 +195,8 @@ auto input_float(const char* label, double& value, double step = 0.0) -> bool;
 
 auto input_text(const char* label, String& value) -> bool;
 
+template<meta::ReflectedEnum E> auto select_enum(const char* label, E& value) -> bool;
+
 auto drag_rect(const char* label, Rect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
 auto drag_rect(const char* label, BoundedRect<u32>& rect, float drag_speed = default_int_drag_speed) -> bool;
 
@@ -205,12 +210,8 @@ auto drag_euler_angles(const char* label, math::EulerAngles& angles, float drag_
 auto edit_quat(const char* label, glm::quat& quaternion) -> bool;
 auto edit_quat_as_euler_angles(const char* label, glm::quat& quaternion) -> bool;
 
-auto select_key(const char* label, Key& key) -> bool;
-auto select_mouse_button(const char* label, MouseButton& button) -> bool;
-
 auto edit_material(Material& material) -> void;
 
-auto select_light_type(LightType& type) -> bool;
 auto edit_light_properties(LightProperties& properties) -> void;
 auto edit_light_attenuation(LightAttenuation& attenuation) -> void;
 auto edit_directional_light(DirectionalLight& light) -> void;
@@ -227,17 +228,17 @@ auto edit_component(MeshRendererComponent& mesh) -> void;
 auto edit_component(MaterialComponent& material) -> void;
 auto edit_component(ScriptComponent& script) -> void;
 
-enum class GizmoOperation : u8
+enum class GizmoOperation : u16
 {
-    Translate,
-    Rotate,
-    Scale,
+    Translate = ImGuizmo::TRANSLATE, // 7
+    Rotate = ImGuizmo::ROTATE,       // 120
+    Scale = ImGuizmo::SCALE,         // 896
 };
 
 enum class GizmoMode : u8
 {
-    Local,
-    World,
+    Local = ImGuizmo::LOCAL, // 0
+    World = ImGuizmo::WORLD, // 1
 };
 
 struct TransformGizmo
@@ -343,6 +344,32 @@ private:
 private:
     auto load_scene(usize idx) const -> void;
 };
+
+template<meta::ReflectedEnum E> auto select_enum(const char* label, E& value) -> bool
+{
+    auto value_changed = false;
+
+    if (ImGui::BeginCombo(label, meta::enum_name(value).data()))
+    {
+        for (auto current_value : meta::enum_values<E>())
+        {
+            const auto is_selected = current_value == value;
+
+            if (ImGui::Selectable(meta::enum_name(current_value).data(), is_selected))
+            {
+                value = current_value;
+                value_changed = true;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return value_changed;
+}
 
 template<typename... Args> auto text(fmt::format_string<Args...> fmt, Args&&... args) -> void
 {

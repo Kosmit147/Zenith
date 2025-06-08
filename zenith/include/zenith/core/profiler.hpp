@@ -99,8 +99,8 @@ private:
 
 // clang-format off
 
-#define ZTH_PROFILE_SCOPE(scope_name) zth::ScopeProfiler ZTH_UNIQUE_NAME(scope_profiler_){ scope_name }
-#define ZTH_PROFILE_FUNCTION() zth::ScopeProfiler ZTH_UNIQUE_NAME(scope_profiler_){ __FUNCTION__ }
+#define ZTH_PROFILE_SCOPE(scope_name) ::zth::ScopeProfiler ZTH_UNIQUE_NAME(scope_profiler_){ scope_name }
+#define ZTH_PROFILE_FUNCTION() ::zth::ScopeProfiler ZTH_UNIQUE_NAME(scope_profiler_){ __FUNCTION__ }
 
 // clang-format on
 

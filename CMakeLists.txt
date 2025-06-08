@@ -84,6 +84,7 @@ add_subdirectory("dependencies/entt")
 add_subdirectory("dependencies/glad")
 add_subdirectory("dependencies/glfw")
 add_subdirectory("dependencies/glm")
+add_subdirectory("dependencies/magic_enum")
 add_subdirectory("dependencies/spdlog")
 add_subdirectory("dependencies/stb_image")
 

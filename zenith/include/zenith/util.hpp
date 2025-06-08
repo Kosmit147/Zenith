@@ -9,5 +9,4 @@
 #include "util/optional.hpp"
 #include "util/overload.hpp"
 #include "util/reference.hpp"
-#include "util/reflection.hpp"
 #include "util/result.hpp"

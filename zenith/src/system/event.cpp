@@ -78,57 +78,10 @@ auto Event::mouse_wheel_scrolled_event() const -> MouseWheelScrolledEvent
     return _mouse_wheel_scrolled_event;
 }
 
-auto to_string(EventType event_type) -> const char*
-{
-    switch (event_type)
-    {
-        using enum EventType;
-    case WindowResized:
-        return "WindowResized";
-    case KeyPressed:
-        return "KeyPressed";
-    case KeyReleased:
-        return "KeyReleased";
-    case MouseButtonPressed:
-        return "MouseButtonPressed";
-    case MouseButtonReleased:
-        return "MouseButtonReleased";
-    case MouseMoved:
-        return "MouseMoved";
-    case MouseWheelScrolled:
-        return "MouseWheelScrolled";
-    }
-
-    ZTH_ASSERT(false);
-    return "Unknown";
-}
-
-auto to_string(EventCategory event_category) -> const char*
-{
-    switch (event_category)
-    {
-        using enum EventCategory;
-    case WindowEvent:
-        return "WindowEvent";
-    case InputEvent:
-        return "InputEvent";
-    }
-
-    ZTH_ASSERT(false);
-    return "Unknown";
-}
-
 } // namespace zth
 
-ZTH_DEFINE_FORMATTER(zth::EventType, event_type)
-{
-    return ZTH_FORMAT_OUT("{}", zth::to_string(event_type));
-}
-
-ZTH_DEFINE_FORMATTER(zth::EventCategory, event_category)
-{
-    return ZTH_FORMAT_OUT("{}", zth::to_string(event_category));
-}
+ZTH_DEFINE_REFLECTED_ENUM(zth::EventType);
+ZTH_DEFINE_REFLECTED_ENUM(zth::EventCategory);
 
 ZTH_DEFINE_FORMATTER(zth::WindowResizedEvent, event)
 {

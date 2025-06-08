@@ -3,11 +3,10 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 #include "zenith/stl/string.hpp"
+#include "zenith/util/meta.hpp"
 #include "zenith/util/result.hpp"
 
-namespace zth {
-
-namespace gl {
+namespace zth::gl {
 
 struct Version
 {
@@ -21,6 +20,9 @@ enum class Profile : u8
 {
     Compatibility,
     Core,
+
+    MinEnumValue = Compatibility,
+    MaxEnumValue = Core,
 };
 
 class Context
@@ -59,11 +61,7 @@ private:
     static auto log_context_info() -> void; // log_context_info needs context variables to be retrieved first.
 };
 
-} // namespace gl
+} // namespace zth::gl
 
-[[nodiscard]] auto to_string(gl::Profile gl_profile) -> const char*;
-
-} // namespace zth
-
+ZTH_DECLARE_REFLECTED_ENUM(zth::gl::Profile);
 ZTH_DECLARE_FORMATTER(zth::gl::Version);
-ZTH_DECLARE_FORMATTER(zth::gl::Profile);

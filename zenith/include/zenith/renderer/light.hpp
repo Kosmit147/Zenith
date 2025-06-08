@@ -1,12 +1,10 @@
 #pragma once
 
-#include <array>
-
 #include <glm/trigonometric.hpp>
 #include <glm/vec3.hpp>
 
 #include "zenith/core/typedefs.hpp"
-#include "zenith/log/format.hpp"
+#include "zenith/util/meta.hpp"
 
 namespace zth {
 
@@ -16,13 +14,9 @@ enum class LightType : u8
     Point,
     Spot,
     Ambient,
-};
 
-constexpr inline std::array light_type_enumerations = {
-    LightType::Directional,
-    LightType::Point,
-    LightType::Spot,
-    LightType::Ambient,
+    MinEnumValue = Directional,
+    MaxEnumValue = Ambient,
 };
 
 struct LightProperties
@@ -80,8 +74,6 @@ struct AmbientLight
     glm::vec3 ambient{ 0.1f };
 };
 
-[[nodiscard]] auto to_string(LightType light_type) -> const char*;
-
 } // namespace zth
 
-ZTH_DECLARE_FORMATTER(zth::LightType);
+ZTH_DECLARE_REFLECTED_ENUM(zth::LightType);
