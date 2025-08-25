@@ -14,7 +14,6 @@
 #include "zenith/renderer/renderer.hpp"
 #include "zenith/stl/string_algorithm.hpp"
 #include "zenith/system/application.hpp"
-#include "zenith/system/input.hpp"
 #include "zenith/system/temporary_storage.hpp"
 #include "zenith/system/window.hpp"
 
