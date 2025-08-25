@@ -9,6 +9,8 @@
 #include "zenith/core/typedefs.hpp"
 #include "zenith/log/format.hpp"
 
+static_assert(magic_enum::is_magic_enum_supported);
+
 namespace zth::meta {
 
 // clang-format off
