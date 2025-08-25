@@ -65,7 +65,7 @@ template<typename T>
 concept ReflectedEnum = EnumWithDefinedRange<T> && reflected_enum_tag<std::remove_cvref_t<T>>;
 
 // Enum must have MinEnumValue and MaxEnumValue aliases defined on it.
-#define ZTH_DERIVE_REFLECTED_ENUM_RANGE(enum_type)                                                                     \
+#define ZTH_INTERNAL_DERIVE_REFLECTED_ENUM_RANGE(enum_type)                                                            \
     template<> struct ::magic_enum::customize::enum_range<enum_type>                                                   \
     {                                                                                                                  \
         static_assert(::zth::meta::ReflectedEnum<enum_type>);                                                          \
@@ -75,7 +75,7 @@ concept ReflectedEnum = EnumWithDefinedRange<T> && reflected_enum_tag<std::remov
                       "max - min must be less than UINT16_MAX due to magic enum's limitations");                       \
     };
 
-#define ZTH_DERIVE_REFLECTED_ENUM_FORMATTER(enum_type)                                                                 \
+#define ZTH_INTERNAL_DERIVE_REFLECTED_ENUM_FORMATTER(enum_type)                                                        \
     ZTH_DEFINE_FORMATTER(enum_type, enum_value)                                                                        \
     {                                                                                                                  \
         static_assert(::zth::meta::ReflectedEnum<enum_type>);                                                          \
@@ -87,11 +87,11 @@ concept ReflectedEnum = EnumWithDefinedRange<T> && reflected_enum_tag<std::remov
 #define ZTH_DECLARE_REFLECTED_ENUM(enum_type)                                                                          \
     static_assert(::zth::meta::EnumWithDefinedRange<enum_type>);                                                       \
     template<> constexpr inline auto ::zth::meta::reflected_enum_tag<enum_type> = true;                                \
-    ZTH_DERIVE_REFLECTED_ENUM_RANGE(enum_type);                                                                        \
+    ZTH_INTERNAL_DERIVE_REFLECTED_ENUM_RANGE(enum_type);                                                               \
     ZTH_DECLARE_FORMATTER(enum_type)
 
 // Must be used only once in an implementation file.
-#define ZTH_DEFINE_REFLECTED_ENUM(enum_type) ZTH_DERIVE_REFLECTED_ENUM_FORMATTER(enum_type)
+#define ZTH_DEFINE_REFLECTED_ENUM(enum_type) ZTH_INTERNAL_DERIVE_REFLECTED_ENUM_FORMATTER(enum_type)
 
 [[nodiscard]] constexpr auto enum_name(ReflectedEnum auto&& e) -> decltype(auto)
 {
@@ -101,11 +101,6 @@ concept ReflectedEnum = EnumWithDefinedRange<T> && reflected_enum_tag<std::remov
 template<ReflectedEnum E> [[nodiscard]] constexpr auto enum_values() -> decltype(auto)
 {
     return magic_enum::enum_values<E>();
-}
-
-template<ReflectedEnum E> [[nodiscard]] constexpr auto enum_type_name() -> decltype(auto)
-{
-    return magic_enum::enum_type_name<E>();
 }
 
 } // namespace zth::meta

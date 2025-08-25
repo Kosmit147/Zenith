@@ -3,6 +3,8 @@
 #include "zenith/stl/string.hpp"
 #include "zenith/util/optional.hpp"
 
+// @important: The include path to this file needs to be defined under MAGIC_ENUM_CONFIG_FILE.
+
 #define MAGIC_ENUM_USING_ALIAS_STRING using string = ::zth::String;
 #define MAGIC_ENUM_USING_ALIAS_STRING_VIEW using string_view = ::zth::StringView;
 #define MAGIC_ENUM_USING_ALIAS_OPTIONAL template<typename T> using optional = ::zth::Optional<T>;
