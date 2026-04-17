@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Kosmit147/Zenith/blob/master/LICENSE.md)
 [![Build](https://github.com/Kosmit147/Zenith/actions/workflows/build.yml/badge.svg)](https://github.com/Kosmit147/Zenith/actions/workflows/build.yml)
 
-A 3D video game engine made for a university project.
+A 3D video game engine.
 
 </div>
 
